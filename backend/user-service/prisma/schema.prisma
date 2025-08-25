@@ -1,0 +1,143 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                   Int                   @id @default(autoincrement())
+  username             String                @unique
+  email                String                @unique
+  passwordHash         String?               @map("password_hash")
+  googleId             String?               @unique @map("google_id")
+  avatarUrl            String?               @map("avatar_url")
+  phone                String?
+  membershipLevel      String                @default("BASIC") @map("membership_level")
+  membershipExpiresAt  DateTime?             @map("membership_expires_at")
+  isActive             Boolean               @default(true) @map("is_active")
+  emailVerified        Boolean               @default(false) @map("email_verified")
+  lastLoginAt          DateTime?             @map("last_login_at")
+  preferences          String?               // JSON as String for SQLite
+  createdAt            DateTime              @default(now()) @map("created_at")
+  updatedAt            DateTime              @updatedAt @map("updated_at")
+
+  // Relations
+  sessions             UserSession[]
+  emailVerifications   EmailVerification[]
+  orders               Order[]
+  systemLogs           SystemLog[]
+  
+  @@map("users")
+}
+
+model UserSession {
+  id          Int      @id @default(autoincrement())
+  userId      Int      @map("user_id")
+  token       String   @unique
+  refreshToken String? @unique @map("refresh_token")
+  expiresAt   DateTime @map("expires_at")
+  ipAddress   String?  @map("ip_address")
+  userAgent   String?  @map("user_agent")
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_sessions")
+}
+
+model EmailVerification {
+  id        Int                   @id @default(autoincrement())
+  userId    Int?                  @map("user_id")
+  email     String
+  code      String
+  type      String                @default("REGISTER")
+  expiresAt DateTime              @map("expires_at")
+  used      Boolean               @default(false)
+  createdAt DateTime              @default(now()) @map("created_at")
+
+  // Relations
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("email_verifications")
+}
+
+model MembershipPlan {
+  id             Int             @id @default(autoincrement())
+  name           String
+  level          String
+  durationMonths Int             @map("duration_months")
+  price          Float
+  originalPrice  Float?          @map("original_price")
+  discount       Int             @default(0)
+  features       String          // JSON as String for SQLite
+  isActive       Boolean         @default(true) @map("is_active")
+  popular        Boolean         @default(false)
+  createdAt      DateTime        @default(now()) @map("created_at")
+
+  // Relations
+  orders Order[]
+
+  @@map("membership_plans")
+}
+
+model Order {
+  id             Int         @id @default(autoincrement())
+  userId         Int         @map("user_id")
+  planId         Int         @map("plan_id")
+  orderNumber    String      @unique @map("order_number")
+  amount         Float
+  currency       String
+  paymentMethod  String        @map("payment_method")
+  paymentAddress String?     @map("payment_address")
+  paymentTxid    String?     @map("payment_txid")
+  status         String      @default("PENDING")
+  expiresAt      DateTime    @map("expires_at")
+  paidAt         DateTime?   @map("paid_at")
+  createdAt      DateTime    @default(now()) @map("created_at")
+
+  // Relations
+  user User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan MembershipPlan @relation(fields: [planId], references: [id])
+
+  @@map("orders")
+}
+
+model SystemConfig {
+  id          Int      @id @default(autoincrement())
+  configKey   String   @unique @map("config_key")
+  configValue String?  @map("config_value")
+  description String?
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("system_configs")
+}
+
+model SystemLog {
+  id        Int       @id @default(autoincrement())
+  userId    Int?      @map("user_id")
+  level     String
+  action    String
+  message   String?
+  ipAddress String?   @map("ip_address")
+  userAgent String?   @map("user_agent")
+  metadata  String?   // JSON as String for SQLite
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  // Relations
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@map("system_logs")
+}
+
+// Enums are replaced with String types for SQLite compatibility
+// Valid values:
+// - MembershipLevel: "BASIC", "PREMIUM", "PROFESSIONAL"
+// - EmailVerificationType: "REGISTER", "LOGIN", "RESET_PASSWORD", "CHANGE_EMAIL"
+// - PaymentMethod: "USDT", "BTC"
+// - OrderStatus: "PENDING", "PAID", "EXPIRED", "CANCELLED"
+// - LogLevel: "INFO", "WARNING", "ERROR"

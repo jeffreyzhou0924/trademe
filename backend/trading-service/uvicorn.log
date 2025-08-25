@@ -1,0 +1,2 @@
+INFO:     Will watch for changes in these directories: ['/root/trademe/backend/trading-service']
+ERROR:    [Errno 98] Address already in use

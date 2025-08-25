@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head><title>控制台测试</title></head>
+<body>
+    <h1>控制台测试</h1>
+    <div id="root">Loading...</div>
+    
+    <script type="module">
+        console.log('🚀 开始控制台测试');
+        
+        // 直接测试main.tsx导入
+        import('/src/main.tsx')
+            .then((module) => {
+                console.log('✅ Main模块导入成功:', module);
+                
+                // 等待React渲染
+                setTimeout(() => {
+                    const root = document.getElementById('root');
+                    console.log('Root内容:', root.innerHTML);
+                    if (root.innerHTML.trim() && root.innerHTML !== 'Loading...') {
+                        console.log('✅ React已成功渲染!');
+                        document.body.innerHTML += '<h2 style="color:green;">✅ React应用正常工作!</h2>';
+                    } else {
+                        console.log('❌ React未渲染');
+                        document.body.innerHTML += '<h2 style="color:red;">❌ React应用未工作</h2>';
+                    }
+                }, 2000);
+            })
+            .catch(error => {
+                console.error('❌ Main模块导入失败:', error);
+                console.error('错误详情:', error.message);
+                console.error('错误堆栈:', error.stack);
+                document.body.innerHTML += '<h2 style="color:red;">❌ 导入失败: ' + error.message + '</h2>';
+            });
+    </script>
+</body>
+</html>

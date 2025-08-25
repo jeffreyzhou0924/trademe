@@ -1,0 +1,166 @@
+version: '3.8'
+
+services:
+  # 数据库服务
+  mysql:
+    image: mysql:8.0
+    container_name: trademe_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root123456
+      MYSQL_DATABASE: trademe
+      MYSQL_USER: trademe
+      MYSQL_PASSWORD: trademe123
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - trademe_network
+
+  redis:
+    image: redis:7-alpine
+    container_name: trademe_redis
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    networks:
+      - trademe_network
+
+  influxdb:
+    image: influxdb:2.7
+    container_name: trademe_influxdb
+    environment:
+      DOCKER_INFLUXDB_INIT_MODE: setup
+      DOCKER_INFLUXDB_INIT_USERNAME: admin
+      DOCKER_INFLUXDB_INIT_PASSWORD: admin123456
+      DOCKER_INFLUXDB_INIT_ORG: trademe
+      DOCKER_INFLUXDB_INIT_BUCKET: market_data
+    ports:
+      - "8086:8086"
+    volumes:
+      - influxdb_data:/var/lib/influxdb2
+    networks:
+      - trademe_network
+
+  # 后端服务
+  user-service:
+    build: 
+      context: ./backend/user-service
+      dockerfile: Dockerfile
+    container_name: trademe_user_service
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: mysql://trademe:trademe123@mysql:3306/trademe
+      REDIS_URL: redis://redis:6379
+    ports:
+      - "3001:3001"
+    depends_on:
+      - mysql
+      - redis
+    volumes:
+      - ./backend/user-service:/app
+      - /app/node_modules
+    networks:
+      - trademe_network
+
+  trading-service:
+    build:
+      context: ./backend/trading-service
+      dockerfile: Dockerfile
+    container_name: trademe_trading_service
+    environment:
+      DATABASE_URL: mysql://trademe:trademe123@mysql:3306/trademe
+      REDIS_URL: redis://redis:6379
+      INFLUXDB_URL: http://influxdb:8086
+    ports:
+      - "8001:8001"
+    depends_on:
+      - mysql
+      - redis
+      - influxdb
+    volumes:
+      - ./backend/trading-service:/app
+    networks:
+      - trademe_network
+
+  ai-service:
+    build:
+      context: ./backend/ai-service
+      dockerfile: Dockerfile
+    container_name: trademe_ai_service
+    environment:
+      REDIS_URL: redis://redis:6379
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+    ports:
+      - "8002:8002"
+    depends_on:
+      - redis
+    volumes:
+      - ./backend/ai-service:/app
+    networks:
+      - trademe_network
+
+  market-service:
+    build:
+      context: ./backend/market-service
+      dockerfile: Dockerfile
+    container_name: trademe_market_service
+    environment:
+      REDIS_URL: redis://redis:6379
+      INFLUXDB_URL: http://influxdb:8086
+    ports:
+      - "8003:8003"
+    depends_on:
+      - redis
+      - influxdb
+    volumes:
+      - ./backend/market-service:/app
+    networks:
+      - trademe_network
+
+  # API网关
+  nginx:
+    image: nginx:alpine
+    container_name: trademe_nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/ssl:/etc/nginx/ssl
+    depends_on:
+      - user-service
+      - trading-service
+      - ai-service
+      - market-service
+    networks:
+      - trademe_network
+
+  # 前端服务
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: trademe_frontend
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost/api/v1
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    networks:
+      - trademe_network
+
+volumes:
+  mysql_data:
+  redis_data:
+  influxdb_data:
+
+networks:
+  trademe_network:
+    driver: bridge

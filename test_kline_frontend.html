@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>真实K线数据测试</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+</head>
+<body>
+    <h1>真实K线数据测试</h1>
+    <button onclick="testKlineData()">测试获取BTC/USDT数据</button>
+    <div id="result"></div>
+    <div id="chart" style="width: 800px; height: 400px; margin-top: 20px;"></div>
+
+    <script>
+        async function testKlineData() {
+            try {
+                console.log('🧪 开始测试K线数据API...')
+                
+                const apiUrl = `http://43.167.252.120/klines/BTC/USDT?exchange=okx&timeframe=1h&limit=20`
+                console.log('📡 请求URL:', apiUrl)
+                
+                const response = await fetch(apiUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                
+                console.log('📊 响应状态:', response.status, response.statusText)
+                
+                if (response.ok) {
+                    const data = await response.json()
+                    console.log('✅ 成功获取数据:', data)
+                    
+                    document.getElementById('result').innerHTML = `
+                        <h3>✅ 成功获取${data.count}条真实K线数据</h3>
+                        <p>交易对: ${data.symbol}</p>
+                        <p>最新价格: ${data.klines[data.klines.length-1][4]} USDT</p>
+                        <p>数据时间: ${new Date(data.klines[data.klines.length-1][0]).toLocaleString()}</p>
+                    `
+                    
+                    // 绘制图表
+                    drawChart(data.klines)
+                } else {
+                    const errorText = await response.text()
+                    console.error('❌ API错误:', errorText)
+                    document.getElementById('result').innerHTML = `<h3>❌ API错误: ${response.status}</h3><p>${errorText}</p>`
+                }
+            } catch (error) {
+                console.error('❌ 网络错误:', error)
+                document.getElementById('result').innerHTML = `<h3>❌ 网络错误</h3><p>${error.message}</p>`
+            }
+        }
+        
+        function drawChart(klineData) {
+            const chart = echarts.init(document.getElementById('chart'))
+            
+            const option = {
+                title: { text: 'BTC/USDT 真实K线图' },
+                xAxis: {
+                    type: 'category',
+                    data: klineData.map(k => {
+                        const date = new Date(k[0])
+                        return `${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`
+                    })
+                },
+                yAxis: { scale: true },
+                series: [{
+                    name: 'K线',
+                    type: 'candlestick',
+                    data: klineData.map(k => [k[1], k[4], k[3], k[2]]), // [open, close, low, high]
+                    itemStyle: {
+                        color: '#00da3c',
+                        color0: '#ec0000',
+                        borderColor: '#00da3c',
+                        borderColor0: '#ec0000'
+                    }
+                }]
+            }
+            
+            chart.setOption(option)
+        }
+        
+        // 页面加载后自动测试
+        window.onload = () => {
+            setTimeout(testKlineData, 1000)
+        }
+    </script>
+</body>
+</html>

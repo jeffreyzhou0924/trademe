@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>API测试页面</title>
+    <style>
+        body { font-family: Arial; padding: 20px; background: #f5f5f5; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; }
+        button { padding: 10px 20px; margin: 10px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 4px; }
+        button:hover { background: #0056b3; }
+        .result { margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 4px; white-space: pre-wrap; font-family: monospace; }
+        .error { background: #ffebee; color: #c62828; }
+        .success { background: #e8f5e9; color: #2e7d32; }
+        input { padding: 8px; margin: 5px; width: 250px; }
+        h2 { color: #333; }
+        .section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Trademe API 测试页面</h1>
+        
+        <div class="section">
+            <h2>1. 环境检查</h2>
+            <button onclick="checkEnvironment()">检查环境变量</button>
+            <button onclick="checkAPIConnections()">检查API连接</button>
+            <div id="env-result" class="result"></div>
+        </div>
+
+        <div class="section">
+            <h2>2. 用户登录测试</h2>
+            <div>
+                <input type="email" id="email" placeholder="邮箱" value="publictest@example.com">
+                <input type="password" id="password" placeholder="密码" value="PublicTest123!">
+            </div>
+            <button onclick="testLogin()">测试登录</button>
+            <button onclick="testLoginWithAxios()">使用Axios测试</button>
+            <div id="login-result" class="result"></div>
+        </div>
+
+        <div class="section">
+            <h2>3. 已认证API测试</h2>
+            <button onclick="testAuthenticatedAPI()">获取用户信息</button>
+            <button onclick="testTradingAPI()">测试交易服务</button>
+            <div id="auth-result" class="result"></div>
+        </div>
+
+        <div class="section">
+            <h2>4. 网络诊断</h2>
+            <button onclick="testCORS()">测试CORS配置</button>
+            <button onclick="testWebSocket()">测试WebSocket</button>
+            <div id="network-result" class="result"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        let accessToken = null;
+
+        function log(elementId, message, isError = false) {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.className = `result ${isError ? 'error' : 'success'}`;
+        }
+
+        function checkEnvironment() {
+            const info = {
+                当前URL: window.location.href,
+                协议: window.location.protocol,
+                主机: window.location.host,
+                用户代理: navigator.userAgent,
+                本地存储可用: typeof(Storage) !== "undefined",
+                Cookies启用: navigator.cookieEnabled
+            };
+            log('env-result', JSON.stringify(info, null, 2));
+        }
+
+        async function checkAPIConnections() {
+            const endpoints = [
+                { name: '用户服务健康检查', url: 'http://localhost:3001/health' },
+                { name: '用户服务API', url: 'http://localhost:3001/api/v1/auth/login', method: 'OPTIONS' },
+                { name: '交易服务健康检查', url: 'http://localhost:8001/health' },
+                { name: '公网用户服务', url: 'http://43.167.252.120/health' },
+                { name: '公网API路径', url: 'http://43.167.252.120/api/v1/auth/login', method: 'OPTIONS' }
+            ];
+
+            let results = '=== API连接测试结果 ===\n';
+            
+            for (const endpoint of endpoints) {
+                try {
+                    const response = await fetch(endpoint.url, { 
+                        method: endpoint.method || 'GET',
+                        mode: 'cors'
+                    });
+                    results += `✅ ${endpoint.name}: ${response.status} ${response.statusText}\n`;
+                } catch (error) {
+                    results += `❌ ${endpoint.name}: ${error.message}\n`;
+                }
+            }
+            
+            log('env-result', results);
+        }
+
+        async function testLogin() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            try {
+                const response = await fetch('http://localhost:3001/api/v1/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email, password }),
+                    mode: 'cors'
+                });
+
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    accessToken = data.data.access_token;
+                    log('login-result', 
+                        `登录成功！\n\n用户信息：\n${JSON.stringify(data.data.user, null, 2)}\n\nToken已保存，可以测试认证API了`);
+                } else {
+                    log('login-result', `登录失败：${data.message || '未知错误'}`, true);
+                }
+            } catch (error) {
+                log('login-result', `网络错误：${error.message}`, true);
+            }
+        }
+
+        async function testLoginWithAxios() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            try {
+                const response = await axios.post('http://localhost:3001/api/v1/auth/login', {
+                    email, password
+                });
+
+                if (response.data.success) {
+                    accessToken = response.data.data.access_token;
+                    log('login-result', 
+                        `Axios登录成功！\n\n用户信息：\n${JSON.stringify(response.data.data.user, null, 2)}`);
+                }
+            } catch (error) {
+                log('login-result', 
+                    `Axios错误：${error.response?.data?.message || error.message}`, true);
+            }
+        }
+
+        async function testAuthenticatedAPI() {
+            if (!accessToken) {
+                log('auth-result', '请先登录获取Token', true);
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:3001/api/v1/auth/me', {
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`
+                    }
+                });
+
+                const data = await response.json();
+                log('auth-result', `用户信息获取成功：\n${JSON.stringify(data, null, 2)}`);
+            } catch (error) {
+                log('auth-result', `获取用户信息失败：${error.message}`, true);
+            }
+        }
+
+        async function testTradingAPI() {
+            if (!accessToken) {
+                log('auth-result', '请先登录获取Token', true);
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:8001/api/v1/strategies/', {
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`
+                    }
+                });
+
+                const data = await response.json();
+                log('auth-result', `策略列表获取成功：\n${JSON.stringify(data, null, 2)}`);
+            } catch (error) {
+                log('auth-result', `获取策略失败：${error.message}`, true);
+            }
+        }
+
+        async function testCORS() {
+            const tests = [
+                { url: 'http://localhost:3001/health', name: '本地用户服务' },
+                { url: 'http://localhost:8001/health', name: '本地交易服务' },
+                { url: 'http://43.167.252.120/health', name: '公网服务' }
+            ];
+
+            let results = '=== CORS测试结果 ===\n';
+            
+            for (const test of tests) {
+                try {
+                    const response = await fetch(test.url, {
+                        method: 'GET',
+                        mode: 'cors',
+                        credentials: 'include'
+                    });
+                    results += `✅ ${test.name}: CORS正常\n`;
+                } catch (error) {
+                    results += `❌ ${test.name}: CORS错误 - ${error.message}\n`;
+                }
+            }
+            
+            log('network-result', results);
+        }
+
+        function testWebSocket() {
+            try {
+                const ws = new WebSocket('ws://localhost:3001');
+                
+                ws.onopen = () => {
+                    log('network-result', 'WebSocket连接成功');
+                    ws.close();
+                };
+                
+                ws.onerror = (error) => {
+                    log('network-result', `WebSocket连接失败：${error}`, true);
+                };
+            } catch (error) {
+                log('network-result', `WebSocket错误：${error.message}`, true);
+            }
+        }
+
+        // 页面加载时自动检查环境
+        window.onload = () => {
+            checkEnvironment();
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+2025-08-21 10:14:50.371 | INFO     | __main__:run_all_tests:259 - 🚀 开始Trading API集成测试
+2025-08-21 10:14:50.371 | INFO     | __main__:test_api_routes_structure:77 - 🔍 测试API路由结构...
+2025-08-21 10:14:50.372 | INFO     | __main__:test_api_routes_structure:113 - ✅ API路由结构完整: 21 个路由
+2025-08-21 10:14:50.372 | INFO     | __main__:test_database_dependency_injection:122 - 🔧 测试数据库依赖注入...
+2025-08-21 10:14:50.380 | INFO     | app.services.trading_service:get_account_balance:48 - 获取用户 1 在 binance 的账户余额
+2025-08-21 10:14:50.381 | ERROR    | app.services.exchange_service:get_exchange:104 - 获取交易所实例失败: binance, 用户: 1, 错误: 'coroutine' object has no attribute 'api_key'
+2025-08-21 10:14:50.383 | WARNING  | app.services.trading_service:get_account_balance:85 - 无法获取账户余额: binance
+2025-08-21 10:14:50.384 | INFO     | __main__:test_database_dependency_injection:134 - ✅ 数据库依赖注入正常
+2025-08-21 10:14:50.384 | INFO     | __main__:test_authentication_integration:143 - 🔐 测试认证集成...
+2025-08-21 10:14:50.386 | ERROR    | __main__:test_authentication_integration:158 - ❌ 认证集成测试失败: 'ExchangeService' object has no attribute 'get_supported_exchanges'
+2025-08-21 10:14:50.386 | INFO     | __main__:test_error_handling:163 - ⚠️ 测试错误处理...
+2025-08-21 10:14:50.389 | INFO     | __main__:test_error_handling:173 - ✅ 参数验证错误处理正常
+2025-08-21 10:14:50.389 | INFO     | __main__:test_response_models:185 - 📋 测试响应模型...
+2025-08-21 10:14:50.390 | ERROR    | __main__:test_response_models:205 - ❌ 响应模型测试失败: 'ExchangeService' object has no attribute 'get_supported_exchanges'
+2025-08-21 10:14:50.390 | INFO     | __main__:test_business_logic_integration:210 - 🔄 测试业务逻辑集成...
+2025-08-21 10:14:50.391 | INFO     | app.services.trading_service:get_order_by_id:373 - 获取订单详情: statistics
+2025-08-21 10:14:50.391 | WARNING  | app.services.trading_service:get_order_by_id:398 - 订单不存在: statistics
+2025-08-21 10:14:50.392 | INFO     | __main__:test_business_logic_integration:218 - ✅ 业务逻辑集成正常
+2025-08-21 10:14:50.392 | INFO     | __main__:test_async_operations:230 - ⚡ 测试异步操作...
+2025-08-21 10:14:50.394 | ERROR    | __main__:test_async_operations:254 - ❌ 异步操作测试失败: 'ExchangeService' object has no attribute 'get_supported_exchanges'
+2025-08-21 10:14:50.394 | INFO     | __main__:print_test_results:280 - 
+============================================================
+2025-08-21 10:14:50.394 | INFO     | __main__:print_test_results:281 - 📊 Trading API集成测试结果汇总
+2025-08-21 10:14:50.394 | INFO     | __main__:print_test_results:282 - ============================================================
+2025-08-21 10:14:50.394 | INFO     | __main__:print_test_results:300 - API路由结构完整性                ✅ 通过
+2025-08-21 10:14:50.394 | INFO     | __main__:print_test_results:300 - 数据库依赖注入                   ✅ 通过
+2025-08-21 10:14:50.394 | INFO     | __main__:print_test_results:300 - 用户认证集成                    ❌ 失败
+2025-08-21 10:14:50.394 | INFO     | __main__:print_test_results:300 - 错误处理机制                    ✅ 通过
+2025-08-21 10:14:50.394 | INFO     | __main__:print_test_results:300 - 响应模型验证                    ❌ 失败
+2025-08-21 10:14:50.394 | INFO     | __main__:print_test_results:300 - 业务逻辑集成                    ✅ 通过
+2025-08-21 10:14:50.394 | INFO     | __main__:print_test_results:300 - 异步操作支持                    ❌ 失败
+2025-08-21 10:14:50.394 | INFO     | __main__:print_test_results:302 - ------------------------------------------------------------
+2025-08-21 10:14:50.394 | INFO     | __main__:print_test_results:303 - 总计测试: 7 个
+2025-08-21 10:14:50.394 | INFO     | __main__:print_test_results:304 - 通过测试: 4 个
+2025-08-21 10:14:50.394 | INFO     | __main__:print_test_results:305 - 失败测试: 3 个
+2025-08-21 10:14:50.394 | INFO     | __main__:print_test_results:306 - 通过率: 57.1%
+2025-08-21 10:14:50.395 | WARNING  | __main__:print_test_results:311 - ⚠️  部分API集成测试失败，请检查具体错误
+2025-08-21 10:14:50.395 | INFO     | __main__:print_test_results:313 - ============================================================
+2025-08-21 10:14:50.395 | INFO     | __main__:main:334 - API集成测试结束
+2025-08-21 10:16:36.566 | INFO     | __main__:run_all_tests:259 - 🚀 开始Trading API集成测试
+2025-08-21 10:16:36.566 | INFO     | __main__:test_api_routes_structure:77 - 🔍 测试API路由结构...
+2025-08-21 10:16:36.567 | INFO     | __main__:test_api_routes_structure:113 - ✅ API路由结构完整: 21 个路由
+2025-08-21 10:16:36.567 | INFO     | __main__:test_database_dependency_injection:122 - 🔧 测试数据库依赖注入...
+2025-08-21 10:16:36.572 | INFO     | app.services.trading_service:get_account_balance:48 - 获取用户 1 在 binance 的账户余额
+2025-08-21 10:16:36.573 | ERROR    | app.services.exchange_service:get_exchange:104 - 获取交易所实例失败: binance, 用户: 1, 错误: 'coroutine' object has no attribute 'api_key'
+2025-08-21 10:16:36.574 | WARNING  | app.services.trading_service:get_account_balance:85 - 无法获取账户余额: binance
+2025-08-21 10:16:36.576 | INFO     | __main__:test_database_dependency_injection:134 - ✅ 数据库依赖注入正常
+2025-08-21 10:16:36.576 | INFO     | __main__:test_authentication_integration:143 - 🔐 测试认证集成...
+2025-08-21 10:16:36.577 | INFO     | __main__:test_authentication_integration:154 - ✅ 认证集成正常
+2025-08-21 10:16:36.577 | INFO     | __main__:test_error_handling:163 - ⚠️ 测试错误处理...
+2025-08-21 10:16:36.582 | INFO     | __main__:test_error_handling:173 - ✅ 参数验证错误处理正常
+2025-08-21 10:16:36.582 | INFO     | __main__:test_response_models:185 - 📋 测试响应模型...
+2025-08-21 10:16:36.584 | INFO     | __main__:test_response_models:195 - ✅ 响应模型格式正确
+2025-08-21 10:16:36.584 | INFO     | __main__:test_business_logic_integration:210 - 🔄 测试业务逻辑集成...
+2025-08-21 10:16:36.584 | INFO     | app.services.trading_service:get_order_by_id:373 - 获取订单详情: statistics
+2025-08-21 10:16:36.585 | WARNING  | app.services.trading_service:get_order_by_id:398 - 订单不存在: statistics
+2025-08-21 10:16:36.585 | INFO     | __main__:test_business_logic_integration:218 - ✅ 业务逻辑集成正常
+2025-08-21 10:16:36.585 | INFO     | __main__:test_async_operations:230 - ⚡ 测试异步操作...
+2025-08-21 10:16:36.587 | INFO     | app.services.trading_service:get_order_by_id:373 - 获取订单详情: statistics
+2025-08-21 10:16:36.587 | WARNING  | app.services.trading_service:get_order_by_id:398 - 订单不存在: statistics
+2025-08-21 10:16:36.588 | INFO     | app.services.trading_service:get_user_trading_sessions:770 - 获取用户 1 的交易会话
+2025-08-21 10:16:36.589 | INFO     | app.services.trading_service:get_user_trading_sessions:794 - 返回 0 个交易会话
+2025-08-21 10:16:36.589 | INFO     | __main__:test_async_operations:248 - ✅ 异步操作正常
+2025-08-21 10:16:36.589 | INFO     | __main__:print_test_results:280 - 
+============================================================
+2025-08-21 10:16:36.589 | INFO     | __main__:print_test_results:281 - 📊 Trading API集成测试结果汇总
+2025-08-21 10:16:36.589 | INFO     | __main__:print_test_results:282 - ============================================================
+2025-08-21 10:16:36.589 | INFO     | __main__:print_test_results:300 - API路由结构完整性                ✅ 通过
+2025-08-21 10:16:36.589 | INFO     | __main__:print_test_results:300 - 数据库依赖注入                   ✅ 通过
+2025-08-21 10:16:36.590 | INFO     | __main__:print_test_results:300 - 用户认证集成                    ✅ 通过
+2025-08-21 10:16:36.590 | INFO     | __main__:print_test_results:300 - 错误处理机制                    ✅ 通过
+2025-08-21 10:16:36.590 | INFO     | __main__:print_test_results:300 - 响应模型验证                    ✅ 通过
+2025-08-21 10:16:36.590 | INFO     | __main__:print_test_results:300 - 业务逻辑集成                    ✅ 通过
+2025-08-21 10:16:36.590 | INFO     | __main__:print_test_results:300 - 异步操作支持                    ✅ 通过
+2025-08-21 10:16:36.590 | INFO     | __main__:print_test_results:302 - ------------------------------------------------------------
+2025-08-21 10:16:36.590 | INFO     | __main__:print_test_results:303 - 总计测试: 7 个
+2025-08-21 10:16:36.590 | INFO     | __main__:print_test_results:304 - 通过测试: 7 个
+2025-08-21 10:16:36.590 | INFO     | __main__:print_test_results:305 - 失败测试: 0 个
+2025-08-21 10:16:36.590 | INFO     | __main__:print_test_results:306 - 通过率: 100.0%
+2025-08-21 10:16:36.590 | INFO     | __main__:print_test_results:309 - 🎉 所有API集成测试通过! 前后端对接就绪!
+2025-08-21 10:16:36.590 | INFO     | __main__:print_test_results:313 - ============================================================
+2025-08-21 10:16:36.590 | INFO     | __main__:main:334 - API集成测试结束

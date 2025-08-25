@@ -1,0 +1,36 @@
+# USDT支付系统集成测试依赖
+
+# 核心测试框架
+pytest>=7.0.0
+pytest-asyncio>=0.21.0
+pytest-html>=3.1.0
+pytest-cov>=4.0.0
+pytest-mock>=3.10.0
+
+# 异步测试支持
+aiohttp>=3.8.0
+aiosqlite>=0.18.0
+
+# 模拟和测试工具
+httpx>=0.24.0
+respx>=0.20.0
+freezegun>=1.2.0
+factory-boy>=3.2.0
+
+# 数据库测试
+alembic>=1.9.0
+sqlalchemy[asyncio]>=1.4.0
+
+# 性能和负载测试
+locust>=2.14.0
+pytest-benchmark>=4.0.0
+
+# 报告生成
+jinja2>=3.1.0
+markupsafe>=2.1.0
+
+# 代码质量检查
+flake8>=5.0.0
+black>=22.0.0
+isort>=5.11.0
+mypy>=1.0.0

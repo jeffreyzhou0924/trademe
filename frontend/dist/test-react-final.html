@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>React加载验证测试</title>
+    <style>
+        body { font-family: Arial; margin: 20px; line-height: 1.6; }
+        .status { padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .success { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
+        .error { background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
+        .loading { background: #fff3cd; border: 1px solid #ffeaa7; color: #856404; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 5px; font-size: 12px; overflow-x: auto; }
+        .test-result { margin: 10px 0; padding: 10px; border: 1px solid #ddd; border-radius: 5px; }
+        .progress { margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>🔧 React应用加载验证</h1>
+    
+    <div class="status loading" id="status">
+        ⏳ 正在验证React修复效果...
+    </div>
+    
+    <div class="progress">
+        <h3>测试进度:</h3>
+        <div id="progress-log"></div>
+    </div>
+    
+    <div class="test-result">
+        <h3>详细测试结果:</h3>
+        <pre id="test-details"></pre>
+    </div>
+    
+    <!-- React应用根节点 - 用于检测渲染 -->
+    <div id="test-root" style="display: none;"></div>
+    
+    <script type="module">
+        let progressLog = [];
+        let testDetails = [];
+        const progressElement = document.getElementById('progress-log');
+        const statusElement = document.getElementById('status');
+        const detailsElement = document.getElementById('test-details');
+        
+        function addProgress(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logMessage = `[${timestamp}] ${message}`;
+            progressLog.push(logMessage);
+            progressElement.innerHTML = progressLog.join('<br>');
+            console.log(logMessage);
+        }
+        
+        function addDetail(message) {
+            testDetails.push(message);
+            detailsElement.textContent = testDetails.join('\n');
+        }
+        
+        function setStatus(message, className) {
+            statusElement.textContent = message;
+            statusElement.className = `status ${className}`;
+        }
+        
+        // 错误捕获
+        window.addEventListener('error', (e) => {
+            addProgress(`❌ 全局错误: ${e.message} at ${e.filename}:${e.lineno}`, 'error');
+            addDetail(`Error: ${e.message}\nFile: ${e.filename}:${e.lineno}:${e.colno}\nStack: ${e.error?.stack || 'N/A'}`);
+        });
+        
+        window.addEventListener('unhandledrejection', (e) => {
+            addProgress(`❌ Promise错误: ${e.reason}`, 'error');
+            addDetail(`Promise Rejection: ${e.reason}`);
+        });
+        
+        async function runTests() {
+            try {
+                addProgress('🚀 开始React加载验证测试');
+                
+                // 测试1: 检查基本的浏览器环境
+                addProgress('1️⃣ 检查浏览器环境...');
+                const envTest = {
+                    importMeta: typeof import.meta !== 'undefined',
+                    viteModeExists: typeof import.meta.env !== 'undefined',
+                    viteMode: import.meta.env?.MODE,
+                    vitePublicTest: import.meta.env?.VITE_PUBLIC_TEST
+                };
+                addDetail(`Browser Environment:\n${JSON.stringify(envTest, null, 2)}`);
+                addProgress('✅ 浏览器环境检查完成');
+                
+                // 测试2: 尝试创建基本React元素
+                addProgress('2️⃣ 测试React导入...');
+                
+                let reactModule, reactDomModule;
+                
+                try {
+                    reactModule = await import('/node_modules/.vite/deps/react.js?v=0ef459ff');
+                    addProgress('✅ React模块导入成功');
+                    addDetail(`React version: ${reactModule.version || 'unknown'}`);
+                } catch (error) {
+                    addProgress(`❌ React模块导入失败: ${error.message}`);
+                    addDetail(`React import error: ${error.stack}`);
+                }
+                
+                try {
+                    reactDomModule = await import('/node_modules/.vite/deps/react-dom_client.js?v=0ef459ff');
+                    addProgress('✅ ReactDOM模块导入成功');
+                } catch (error) {
+                    addProgress(`❌ ReactDOM模块导入失败: ${error.message}`);
+                    addDetail(`ReactDOM import error: ${error.stack}`);
+                }
+                
+                // 测试3: 测试websocketManager
+                addProgress('3️⃣ 测试WebSocketManager...');
+                try {
+                    const wsManager = await import('/src/utils/websocketManager.ts');
+                    addProgress('✅ WebSocketManager导入成功，process错误已修复');
+                    addDetail(`WebSocketManager config: baseUrl=${wsManager.wsManager?.config?.baseUrl || 'N/A'}`);
+                } catch (error) {
+                    addProgress(`❌ WebSocketManager导入失败: ${error.message}`);
+                    addDetail(`WebSocketManager error: ${error.stack}`);
+                }
+                
+                // 测试4: 检查主应用
+                addProgress('4️⃣ 尝试导入主应用...');
+                try {
+                    const mainApp = await import('/src/main.tsx');
+                    addProgress('✅ 主应用导入成功！');
+                    addDetail(`Main app exported: ${Object.keys(mainApp).join(', ')}`);
+                    
+                    // 测试渲染
+                    addProgress('5️⃣ 检查页面根元素...');
+                    const rootElement = document.getElementById('root');
+                    if (rootElement) {
+                        addProgress('✅ 找到#root元素');
+                        const rootContent = rootElement.innerHTML;
+                        if (rootContent.trim() && !rootContent.includes('React应用将在这里渲染')) {
+                            addProgress('✅ React应用已成功渲染到页面！');
+                            addDetail(`Root element content length: ${rootContent.length} characters`);
+                            setStatus('✅ React应用加载成功，所有问题已修复！', 'success');
+                        } else {
+                            addProgress('⚠️ #root元素存在但内容为空或显示占位文本');
+                            addDetail(`Root element content: ${rootContent.substring(0, 500)}...`);
+                        }
+                    } else {
+                        addProgress('❌ 未找到#root元素');
+                    }
+                    
+                } catch (error) {
+                    addProgress(`❌ 主应用导入失败: ${error.message}`);
+                    addDetail(`Main app error: ${error.stack}`);
+                    setStatus('❌ React应用仍存在加载问题', 'error');
+                }
+                
+                addProgress('🎯 测试完成！');
+                
+            } catch (error) {
+                addProgress(`❌ 测试执行失败: ${error.message}`);
+                addDetail(`Test execution error: ${error.stack}`);
+                setStatus('❌ 验证测试失败', 'error');
+            }
+        }
+        
+        // 等待页面完全加载后开始测试
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', runTests);
+        } else {
+            setTimeout(runTests, 1000);
+        }
+    </script>
+</body>
+</html>

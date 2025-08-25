@@ -1,0 +1,3792 @@
+
+<!DOCTYPE html><html lang="zh-CN"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trademe - 实盘管理</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    }
+
+    body {
+      background-color: #eef2f8;
+      padding: 30px;
+      min-height: 100vh;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 30px;
+      align-items: flex-start;
+    }
+
+    .page-container {
+      width: 1440px;
+      min-height: 800px;
+      background-color: white;
+      border-radius: 14px;
+      box-shadow: 0 10px 28px rgba(26, 61, 124, 0.16);
+      border: 1px solid #d8e1f0;
+      padding: 0;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .content-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    .primary-btn {
+      background-color: #1a4499;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 24px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s;
+      box-shadow: 0 2px 5px rgba(26, 68, 153, 0.2);
+    }
+
+    .primary-btn:hover {
+      background-color: #0d3584;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(26, 68, 153, 0.3);
+    }
+
+    .form-input {
+      border: 1px solid #d8e1f0;
+      background-color: #f8fafc;
+      border-radius: 8px;
+      padding: 14px 18px;
+      font-size: 15px;
+      width: 100%;
+      transition: all 0.3s;
+      margin-bottom: 16px;
+    }
+
+    .form-input:focus {
+      border-color: #1a4499;
+      outline: none;
+      background-color: white;
+      box-shadow: 0 0 0 3px rgba(26, 68, 153, 0.1);
+    }
+
+    .nav-item {
+      color: #1a4499;
+      font-weight: 600;
+      padding: 12px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.25s;
+      margin: 0 2px;
+    }
+
+    .nav-item:hover {
+      background-color: rgba(26, 68, 153, 0.08);
+      color: #0d3584;
+    }
+
+    .nav-item.active {
+      background-color: #1a4499;
+      color: white;
+      box-shadow: 0 2px 5px rgba(26, 68, 153, 0.2);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+    }
+
+    thead th {
+      background-color: #f0f5ff;
+      border-bottom: 1px solid #d8e1f0;
+      padding: 14px 18px;
+      font-weight: 600;
+      font-size: 13px;
+      color: #495a7a;
+      text-align: left;
+    }
+
+    tbody td {
+      padding: 16px 18px;
+      border-bottom: 1px solid #eef2f8;
+      font-size: 15px;
+      color: #1e293b;
+    }
+
+    tbody tr:hover {
+      background-color: #f5f9ff;
+    }
+
+    .positive-bg {
+      background-color: #ddfbee;
+      color: #0caa6e;
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-weight: 600;
+    }
+
+    .negative-bg {
+      background-color: #ffe8e8;
+      color: #e02020;
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-weight: 600;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .status-active {
+      background-color: #ddfbee;
+      color: #0caa6e;
+    }
+
+    .status-paused {
+      background-color: #fff3c2;
+      color: #d99000;
+    }
+
+    .status-stopped {
+      background-color: #eef2f8;
+      color: #4b5b7a;
+    }
+
+    /* 深色模式样式 */
+    .dark-mode {
+      background-color: #0c1425;
+      color: #f3f4f6;
+    }
+
+    .dark-mode .page-container {
+      background-color: #1a2236;
+      border-color: #2e3a50;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+    }
+
+    .dark-mode .content-card {
+      background-color: #1a2236;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.28);
+    }
+
+    .dark-mode .form-input {
+      background-color: #374151;
+      border-color: #4b5563;
+      color: #f3f4f6;
+    }
+
+    .dark-mode .form-input:focus {
+      background-color: #374151;
+      border-color: #60a5fa;
+    }
+
+    .dark-mode .text-gray-500 {
+      color: #9ca3af;
+    }
+
+    .dark-mode .text-gray-700 {
+      color: #e5e7eb;
+    }
+
+    .dark-mode .border-gray-200 {
+      border-color: #374151;
+    }
+
+    .dark-mode .bg-gray-100 {
+      background-color: #374151;
+    }
+
+    .dark-mode .bg-white {
+      background-color: #1f2937;
+    }
+
+    .dark-mode .hover\:bg-gray-100:hover {
+      background-color: #374151;
+    }
+
+    .dark-mode table thead th {
+      background-color: #2d3748;
+      border-color: #4b5563;
+    }
+
+    .dark-mode table tbody td {
+      border-color: #4b5563;
+    }
+
+    .dark-mode tbody tr:hover {
+      background-color: #2d3748;
+    }
+  </style>
+</head>
+<body>
+  <div class="page-container">
+    <header class="py-4 px-8 flex justify-between border-b border-gray-200">
+      <div class="flex items-center">
+        <iconify-icon icon="ph:currency-circle-dollar" width="28" height="28" style="color: #1a3d7c;"></iconify-icon>
+        <h1 class="text-xl font-bold ml-3" style="color: #1a3d7c;">Trademe</h1>
+      </div>
+
+      <nav class="flex gap-2">
+        <div class="nav-item">首页</div>
+        <div class="nav-item active">策略交易</div>
+        <div class="nav-item">图表交易</div>
+        <div class="nav-item">API管理</div>
+        <div class="nav-item">交易心得</div>
+        <div class="nav-item">账户中心</div>
+      </nav>
+
+      <div class="flex items-center">
+        <div class="w-9 h-9 rounded-full bg-gray-200 overflow-hidden">
+          <img src="https://modao.cc/ai/uploads/ai_pics/15/150343/aigp_1755597338.jpeg" alt="User profile picture" class="w-full h-full object-cover">
+        </div>
+      </div>
+    </header>
+
+    <!-- 语言和主题切换按钮 -->
+    <div class="absolute top-4 right-8 flex items-center space-x-4">
+      <div class="flex items-center space-x-2">
+        <button class="lang-toggle px-2 py-1 text-sm rounded-md bg-gray-100 hover:bg-gray-200" data-lang="zh">中</button>
+        <button class="lang-toggle px-2 py-1 text-sm rounded-md hover:bg-gray-200" data-lang="en">EN</button>
+      </div>
+      <div class="border-l border-gray-300 h-6"></div>
+      <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-200">
+        <iconify-icon icon="mdi:theme-light-dark" width="20" height="20"></iconify-icon>
+      </button>
+    </div>
+
+    <div class="p-8">
+      <!-- 策略导航 -->
+      <div class="flex items-center mb-6">
+        <a href="#" class="text-blue-600 hover:underline flex items-center mr-2">
+          <iconify-icon icon="mdi:arrow-left" class="mr-1"></iconify-icon>
+          返回策略列表
+        </a>
+        <span class="text-gray-500">/ 实盘管理</span>
+      </div>
+
+      <div class="mb-8">
+        <h2 class="text-2xl font-bold mb-3" style="color: #1a4499;">实盘策略管理</h2>
+        <p class="text-gray-600">管理您当前运行中的实盘策略</p>
+      </div>
+
+      <!-- 策略概览卡片 -->
+      <div class="grid grid-cols-4 gap-8 mb-10">
+        <div class="content-card flex items-center">
+          <div class="w-14 h-14 rounded-lg flex items-center justify-center mr-5" style="background-color: #e0ecff;">
+            <iconify-icon icon="material-symbols:rocket-launch" width="28" height="28" style="color: #1a4499;"></iconify-icon>
+          </div>
+          <div>
+            <h3 class="text-sm text-gray-600 mb-2" data-i18n="activeStrategies">活跃策略</h3>
+            <p class="text-2xl font-bold">4</p>
+          </div>
+        </div>
+
+        <div class="content-card flex items-center">
+          <div class="w-12 h-12 rounded-lg flex items-center justify-center mr-4" style="background-color: #e9faf3;">
+            <iconify-icon icon="fluent:arrow-trending-20-filled" width="24" height="24" style="color: #21ce90;"></iconify-icon>
+          </div>
+          <div>
+            <h3 class="text-sm text-gray-500 mb-1" data-i18n="totalReturn">总收益率</h3>
+            <p class="text-2xl font-bold"><span class="positive-bg">+15.8%</span></p>
+          </div>
+        </div>
+
+        <div class="content-card flex items-center">
+          <div class="w-12 h-12 rounded-lg flex items-center justify-center mr-4" style="background-color: #f8f3d6;">
+            <iconify-icon icon="ph:trend-down-bold" width="24" height="24" style="color: #f0b90b;"></iconify-icon>
+          </div>
+          <div>
+            <h3 class="text-sm text-gray-500 mb-1" data-i18n="maxDrawdown">最大回撤</h3>
+            <p class="text-2xl font-bold"><span class="negative-bg">-6.3%</span></p>
+          </div>
+        </div>
+
+        <div class="content-card flex items-center">
+          <div class="w-12 h-12 rounded-lg flex items-center justify-center mr-4" style="background-color: #fef1f1;">
+            <iconify-icon icon="ph:clock-fill" width="24" height="24" style="color: #f53d3d;"></iconify-icon>
+          </div>
+          <div>
+            <h3 class="text-sm text-gray-500 mb-1" data-i18n="lastTrade">上次交易</h3>
+            <p class="text-lg font-bold">2<span data-i18n="hoursAgo">小时前</span></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 实盘策略表格 -->
+      <div class="content-card mb-10">
+        <div class="flex justify-between items-center mb-8">
+          <h2 class="text-xl font-bold" style="color: #1a4499;" data-i18n="strategyList">实盘策略列表</h2>
+          <div class="flex">
+            <button class="primary-btn flex items-center mr-3">
+              <iconify-icon icon="material-symbols:add" class="mr-2"></iconify-icon>
+              <span data-i18n="addStrategy">添加策略</span>
+            </button>
+            <input type="text" class="form-input w-72 mb-0" placeholder="搜索策略..." data-placeholder="searchStrategy">
+          </div>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th data-i18n="strategyName">策略名称</th>
+              <th data-i18n="tradingPair">交易对</th>
+              <th data-i18n="exchange">交易所</th>
+              <th data-i18n="status">状态</th>
+              <th data-i18n="returnRate">收益率</th>
+              <th data-i18n="signalCount">信号数量</th>
+              <th data-i18n="createdTime">创建时间</th>
+              <th data-i18n="action">操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="cursor-pointer" onclick="window.location.href='#strategy-detail-1'">
+              <td>EMA交叉策略</td>
+              <td>BTC/USDT</td>
+              <td>币安</td>
+              <td><span class="status-badge status-active" data-i18n="running">运行中</span></td>
+              <td><span class="positive-bg">+8.2%</span></td>
+              <td>16</td>
+              <td>2024-05-10</td>
+              <td>
+                <div class="flex">
+                  <button class="text-blue-600 mr-2" onclick="event.stopPropagation()">
+                    <iconify-icon icon="mdi:pause-circle" width="20"></iconify-icon>
+                  </button>
+                  <button class="text-red-600 mr-2" onclick="event.stopPropagation()">
+                    <iconify-icon icon="mdi:stop-circle" width="20"></iconify-icon>
+                  </button>
+                  <button class="text-gray-600" onclick="event.stopPropagation()">
+                    <iconify-icon icon="mdi:dots-vertical" width="20"></iconify-icon>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <tr class="cursor-pointer" onclick="window.location.href='#strategy-detail-2'">
+              <td>RSI超买超卖策略</td>
+              <td>ETH/USDT</td>
+              <td>OKX</td>
+              <td><span class="status-badge status-active">运行中</span></td>
+              <td><span class="positive-bg">+5.7%</span></td>
+              <td>12</td>
+              <td>2024-05-12</td>
+              <td>
+                <div class="flex">
+                  <button class="text-blue-600 mr-2" onclick="event.stopPropagation()">
+                    <iconify-icon icon="mdi:pause-circle" width="20"></iconify-icon>
+                  </button>
+                  <button class="text-red-600 mr-2" onclick="event.stopPropagation()">
+                    <iconify-icon icon="mdi:stop-circle" width="20"></iconify-icon>
+                  </button>
+                  <button class="text-gray-600" onclick="event.stopPropagation()">
+                    <iconify-icon icon="mdi:dots-vertical" width="20"></iconify-icon>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <tr class="cursor-pointer" onclick="window.location.href='#strategy-detail-3'">
+              <td>布林带突破策略</td>
+              <td>SOL/USDT</td>
+              <td>币安</td>
+              <td><span class="status-badge status-paused" data-i18n="paused">已暂停</span></td>
+              <td><span class="positive-bg">+10.3%</span></td>
+              <td>8</td>
+              <td>2024-05-08</td>
+              <td>
+                <div class="flex">
+                  <button class="text-green-600 mr-2" onclick="event.stopPropagation()">
+                    <iconify-icon icon="mdi:play-circle" width="20"></iconify-icon>
+                  </button>
+                  <button class="text-red-600 mr-2" onclick="event.stopPropagation()">
+                    <iconify-icon icon="mdi:stop-circle" width="20"></iconify-icon>
+                  </button>
+                  <button class="text-gray-600" onclick="event.stopPropagation()">
+                    <iconify-icon icon="mdi:dots-vertical" width="20"></iconify-icon>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <tr class="cursor-pointer" onclick="window.location.href='#strategy-detail-4'">
+              <td>MACD背离策略</td>
+              <td>DOGE/USDT</td>
+              <td>OKX</td>
+              <td><span class="status-badge status-stopped" data-i18n="stopped">已停止</span></td>
+              <td><span class="negative-bg">-2.8%</span></td>
+              <td>6</td>
+              <td>2024-05-05</td>
+              <td>
+                <div class="flex">
+                  <button class="text-green-600 mr-2" onclick="event.stopPropagation()">
+                    <iconify-icon icon="mdi:play-circle" width="20"></iconify-icon>
+                  </button>
+                  <button class="text-blue-600 mr-2" onclick="event.stopPropagation()">
+                    <iconify-icon icon="mdi:restart" width="20"></iconify-icon>
+                  </button>
+                  <button class="text-gray-600" onclick="event.stopPropagation()">
+                    <iconify-icon icon="mdi:dots-vertical" width="20"></iconify-icon>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 策略详情 -->
+      <div id="strategy-detail-1" class="content-card mb-8">
+        <div class="flex justify-between items-start mb-6">
+          <div>
+            <h2 class="text-xl font-bold mb-2" style="color: #1a3d7c;">EMA<span data-i18n="strategyDetail">交叉策略详情</span></h2>
+            <div class="flex items-center">
+              <span class="text-sm mr-3">BTC/USDT</span>
+              <span class="text-sm mr-3">币安</span>
+              <span class="status-badge status-active" data-i18n="running">运行中</span>
+            </div>
+          </div>
+          <div class="flex">
+            <button class="border border-blue-600 text-blue-600 rounded-lg px-4 py-2 flex items-center mr-2">
+              <iconify-icon icon="mdi:pause" class="mr-1"></iconify-icon>
+              <span data-i18n="pause">暂停</span>
+            </button>
+            <button class="border border-red-600 text-red-600 rounded-lg px-4 py-2 flex items-center">
+              <iconify-icon icon="mdi:stop" class="mr-1"></iconify-icon>
+              <span data-i18n="terminate">终止</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-6 mb-6">
+          <div class="p-4 border border-gray-200 rounded-lg">
+            <p class="text-gray-500 mb-2" data-i18n="totalReturn">总收益率</p>
+            <p class="text-2xl font-bold"><span class="positive-bg">+8.2%</span></p>
+          </div>
+          <div class="p-4 border border-gray-200 rounded-lg">
+            <p class="text-gray-500 mb-2" data-i18n="winRate">胜率</p>
+            <p class="text-2xl font-bold">68.4%</p>
+          </div>
+          <div class="p-4 border border-gray-200 rounded-lg">
+            <p class="text-gray-500 mb-2" data-i18n="tradeCount">交易次数</p>
+            <p class="text-2xl font-bold">16</p>
+          </div>
+        </div>
+
+        <!-- 策略收益图表 -->
+        <div class="mb-8">
+          <h3 class="font-bold mb-5" data-i18n="returnCurve">策略收益曲线</h3>
+          <div id="strategy-chart" class="h-72 bg-gray-50 rounded-lg border border-gray-100"></div>
+        </div>
+
+        <!-- 交易日志 -->
+        <div>
+          <h3 class="font-bold mb-4" data-i18n="tradingLog">交易日志</h3>
+          <table>
+            <thead>
+              <tr>
+                <th data-i18n="time">时间</th>
+                <th data-i18n="type">类型</th>
+                <th data-i18n="price">价格</th>
+                <th data-i18n="amount">数量</th>
+                <th data-i18n="returnRate">收益率</th>
+                <th data-i18n="signal">信号</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>2024-05-20 14:35</td>
+                <td class="text-green-600" data-i18n="buy">买入</td>
+                <td>$63,425</td>
+                <td>0.05</td>
+                <td>-</td>
+                <td>EMA(10)上穿EMA(50)</td>
+              </tr>
+              <tr>
+                <td>2024-05-18 09:20</td>
+                <td class="text-red-600" data-i18n="sell">卖出</td>
+                <td>$64,210</td>
+                <td>0.05</td>
+                <td class="positive-bg">+2.3%</td>
+                <td>EMA(10)下穿EMA(50)</td>
+              </tr>
+              <tr>
+                <td>2024-05-15 16:45</td>
+                <td class="text-green-600">买入</td>
+                <td>$62,760</td>
+                <td>0.05</td>
+                <td>-</td>
+                <td>EMA(10)上穿EMA(50)</td>
+              </tr>
+              <tr>
+                <td>2024-05-13 11:10</td>
+                <td class="text-red-600">卖出</td>
+                <td>$61,950</td>
+                <td>0.05</td>
+                <td class="negative-bg">-1.2%</td>
+                <td>EMA(10)下穿EMA(50)</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="flex justify-between items-center mt-4">
+            <div class="text-sm text-gray-500">
+              <span data-i18n="showing">显示</span> 1 <span data-i18n="to">到</span> 4<span data-i18n="of">，共</span> 16 <span data-i18n="records">条记录</span>
+            </div>
+            <div class="flex">
+              <button class="px-3 py-1 border border-gray-300 rounded-l-lg text-sm hover:bg-gray-100 disabled:opacity-50" disabled="" data-i18n="previousPage">上一页</button>
+              <button class="px-3 py-1 border-t border-b border-gray-300 bg-blue-50 text-blue-600 text-sm">1</button>
+              <button class="px-3 py-1 border-t border-b border-gray-300 text-sm hover:bg-gray-100">2</button>
+              <button class="px-3 py-1 border-t border-b border-gray-300 text-sm hover:bg-gray-100">3</button>
+              <button class="px-3 py-1 border border-gray-300 rounded-r-lg text-sm hover:bg-gray-100" data-i18n="nextPage">下一页</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 策略设置 -->
+      <div class="content-card">
+        <h2 class="text-xl font-bold mb-6" style="color: #1a3d7c;" data-i18n="strategySettings">策略参数设置</h2>
+
+        <div class="grid grid-cols-2 gap-6">
+          <div>
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700 mb-2" data-i18n="strategyType">策略类型</label>
+              <select class="form-input">
+                <option>EMA交叉策略</option>
+                <option>RSI超买超卖策略</option>
+                <option>布林带突破策略</option>
+                <option>MACD背离策略</option>
+              </select>
+            </div>
+
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700 mb-2" data-i18n="tradingPair">交易对</label>
+              <select class="form-input">
+                <option>BTC/USDT</option>
+                <option>ETH/USDT</option>
+                <option>SOL/USDT</option>
+                <option>DOGE/USDT</option>
+              </select>
+            </div>
+
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700 mb-2" data-i18n="exchange">交易所</label>
+              <select class="form-input">
+                <option>币安</option>
+                <option>OKX</option>
+                <option>火币</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700 mb-2" data-i18n="emaShort">EMA短周期</label>
+              <input type="number" class="form-input" value="10">
+            </div>
+
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700 mb-2" data-i18n="emaLong">EMA长周期</label>
+              <input type="number" class="form-input" value="50">
+            </div>
+
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700 mb-2" data-i18n="stopLoss">止损比例</label>
+              <div class="relative">
+                <input type="number" class="form-input pr-8" value="1.5">
+                <span class="absolute right-3 top-1/2 transform -translate-y-1/2">%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="border-t border-gray-200 pt-6 mt-6 flex justify-end">
+          <button class="border border-gray-300 rounded-lg px-4 py-2 mr-3" data-i18n="cancel">取消</button>
+          <button class="primary-btn" data-i18n="update">更新策略参数</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // 初始化收益图表
+      const strategyChart = echarts.init(document.getElementById('strategy-chart'));
+      const strategyOption = {
+        tooltip: {
+          trigger: 'axis'
+        },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true
+        },
+        xAxis: {
+          type: 'category',
+          data: ['05-10', '05-12', '05-14', '05-16', '05-18', '05-20'],
+          axisLine: {
+            lineStyle: { color: '#e2e8f0' }
+          }
+        },
+        yAxis: {
+          type: 'value',
+          name: '收益率(%)',
+          axisLine: {
+            lineStyle: { color: '#e2e8f0' }
+          },
+          splitLine: {
+            lineStyle: { color: '#f1f5f9' }
+          }
+        },
+        series: [{
+          name: '收益率',
+          type: 'line',
+          smooth: true,
+          lineStyle: {
+            width: 3,
+            color: '#1a3d7c'
+          },
+          itemStyle: {
+            color: '#1a3d7c'
+          },
+          areaStyle: {
+            color: {
+              type: 'linear',
+              x: 0, y: 0, x2: 0, y2: 1,
+              colorStops: [
+                { offset: 0, color: 'rgba(26, 61, 124, 0.2)' },
+                { offset: 1, color: 'rgba(26, 61, 124, 0.01)' }
+              ]
+            }
+          },
+          data: [0, 1.2, 0.8, 3.5, 5.9, 8.2]
+        }]
+      };
+      strategyChart.setOption(strategyOption);
+
+      // 页面文本翻译数据
+      const translations = {
+        zh: {
+          pageTitle: '实盘管理',
+          backToList: '返回策略列表',
+          strategyManagement: '实盘策略管理',
+          manageRunning: '管理您当前运行中的实盘策略',
+          activeStrategies: '活跃策略',
+          totalReturn: '总收益率',
+          maxDrawdown: '最大回撤',
+          lastTrade: '上次交易',
+          hoursAgo: '小时前',
+          strategyList: '实盘策略列表',
+          addStrategy: '添加策略',
+          searchStrategy: '搜索策略...',
+          strategyName: '策略名称',
+          tradingPair: '交易对',
+          exchange: '交易所',
+          status: '状态',
+          returnRate: '收益率',
+          signalCount: '信号数量',
+          createdTime: '创建时间',
+          action: '操作',
+          running: '运行中',
+          paused: '已暂停',
+          stopped: '已停止',
+          strategyDetail: '策略详情',
+          pause: '暂停',
+          terminate: '终止',
+          winRate: '胜率',
+          tradeCount: '交易次数',
+          returnCurve: '策略收益曲线',
+          tradingLog: '交易日志',
+          time: '时间',
+          type: '类型',
+          price: '价格',
+          amount: '数量',
+          signal: '信号',
+          buy: '买入',
+          sell: '卖出',
+          showing: '显示',
+          to: '到',
+          of: '，共',
+          records: '条记录',
+          previousPage: '上一页',
+          nextPage: '下一页',
+          strategySettings: '策略参数设置',
+          strategyType: '策略类型',
+          emaShort: 'EMA短周期',
+          emaLong: 'EMA长周期',
+          stopLoss: '止损比例',
+          cancel: '取消',
+          update: '更新策略参数'
+        },
+        en: {
+          pageTitle: 'Live Trading',
+          backToList: 'Back to Strategy List',
+          strategyManagement: 'Live Strategy Management',
+          manageRunning: 'Manage your current running strategies',
+          activeStrategies: 'Active Strategies',
+          totalReturn: 'Total Return',
+          maxDrawdown: 'Max Drawdown',
+          lastTrade: 'Last Trade',
+          hoursAgo: 'hours ago',
+          strategyList: 'Strategy List',
+          addStrategy: 'Add Strategy',
+          searchStrategy: 'Search strategies...',
+          strategyName: 'Strategy Name',
+          tradingPair: 'Trading Pair',
+          exchange: 'Exchange',
+          status: 'Status',
+          returnRate: 'Return Rate',
+          signalCount: 'Signal Count',
+          createdTime: 'Created Time',
+          action: 'Action',
+          running: 'Running',
+          paused: 'Paused',
+          stopped: 'Stopped',
+          strategyDetail: 'Strategy Detail',
+          pause: 'Pause',
+          terminate: 'Terminate',
+          winRate: 'Win Rate',
+          tradeCount: 'Trade Count',
+          returnCurve: 'Return Curve',
+          tradingLog: 'Trading Log',
+          time: 'Time',
+          type: 'Type',
+          price: 'Price',
+          amount: 'Amount',
+          signal: 'Signal',
+          buy: 'Buy',
+          sell: 'Sell',
+          showing: 'Showing',
+          to: 'to',
+          of: 'of',
+          records: 'records',
+          previousPage: 'Previous',
+          nextPage: 'Next',
+          strategySettings: 'Strategy Settings',
+          strategyType: 'Strategy Type',
+          emaShort: 'EMA Short Period',
+          emaLong: 'EMA Long Period',
+          stopLoss: 'Stop Loss %',
+          cancel: 'Cancel',
+          update: 'Update Parameters'
+        }
+      };
+
+      // 设置当前语言
+      let currentLang = localStorage.getItem('trademe-language') || 'zh';
+
+      // 设置当前主题
+      let darkMode = localStorage.getItem('trademe-theme') === 'dark';
+      if (darkMode) {
+        document.body.classList.add('dark-mode');
+      }
+
+      // 初始化语言按钮
+      const langButtons = document.querySelectorAll('.lang-toggle');
+      langButtons.forEach(btn => {
+        if (btn.dataset.lang === currentLang) {
+          btn.classList.add('bg-gray-100');
+        } else {
+          btn.classList.remove('bg-gray-100');
+        }
+
+        btn.addEventListener('click', () => {
+          currentLang = btn.dataset.lang;
+          localStorage.setItem('trademe-language', currentLang);
+
+          // 更新按钮状态
+          langButtons.forEach(b => {
+            if (b.dataset.lang === currentLang) {
+              b.classList.add('bg-gray-100');
+            } else {
+              b.classList.remove('bg-gray-100');
+            }
+          });
+
+          // 更新页面文本
+          updatePageLanguage();
+        });
+      });
+
+      // 初始化主题切换按钮
+      const themeToggle = document.getElementById('theme-toggle');
+      if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+          darkMode = !darkMode;
+          if (darkMode) {
+            document.body.classList.add('dark-mode');
+            localStorage.setItem('trademe-theme', 'dark');
+            // 更新echarts主题
+            updateChartsTheme('dark');
+          } else {
+            document.body.classList.remove('dark-mode');
+            localStorage.setItem('trademe-theme', 'light');
+            // 更新echarts主题
+            updateChartsTheme('light');
+          }
+        });
+      }
+
+      // 更新页面语言
+      function updatePageLanguage() {
+        document.title = `数字策略交易平台 - ${translations[currentLang].pageTitle}`;
+
+        // 使用data-i18n属性更新页面文本
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+          const key = el.dataset.i18n;
+          if (translations[currentLang][key]) {
+            el.textContent = translations[currentLang][key];
+          }
+        });
+
+        // 更新特定元素
+        document.querySelector('a[href="#"].text-blue-600 > span').textContent = translations[currentLang].backToList;
+        document.querySelector('span.text-gray-500').textContent = `/ ${translations[currentLang].pageTitle}`;
+        document.querySelector('h2.text-2xl.font-bold.mb-2').textContent = translations[currentLang].strategyManagement;
+        document.querySelector('p.text-gray-500').textContent = translations[currentLang].manageRunning;
+
+        // 更新收益图表
+        strategyChart.setOption({
+          yAxis: {
+            name: translations[currentLang] === 'zh' ? '收益率(%)' : 'Return(%)'
+          }
+        });
+
+        // 重新渲染图表
+        strategyChart.resize();
+      }
+
+      // 更新charts主题
+      function updateChartsTheme(theme) {
+        const textColor = theme === 'dark' ? '#e5e7eb' : '#1e293b';
+        const lineColor = theme === 'dark' ? '#4b5563' : '#e2e8f0';
+
+        strategyChart.setOption({
+          xAxis: {
+            axisLine: { lineStyle: { color: lineColor } },
+            axisLabel: { color: textColor }
+          },
+          yAxis: {
+            axisLine: { lineStyle: { color: lineColor } },
+            axisLabel: { color: textColor },
+            splitLine: { lineStyle: { color: theme === 'dark' ? '#374151' : '#f1f5f9' } }
+          },
+          textStyle: {
+            color: textColor
+          }
+        });
+      }
+
+      // 初始加载语言
+      updatePageLanguage();
+
+      // 更新输入框占位符
+      function updatePlaceholders() {
+        document.querySelectorAll('[data-placeholder]').forEach(el => {
+          const key = el.dataset.placeholder;
+          if (translations[currentLang][key]) {
+            el.placeholder = translations[currentLang][key];
+          }
+        });
+      }
+
+      // 如果是暗黑模式，更新图表主题
+      if (darkMode) {
+        updateChartsTheme('dark');
+      }
+
+      // 更新占位符
+      updatePlaceholders();
+
+      // 监听窗口大小变化，重绘图表
+      window.addEventListener('resize', function() {
+        strategyChart.resize();
+      });
+    });
+  </script>
+
+
+
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trademe - 会员续费</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    }
+
+    /* 深色模式样式 */
+    .dark-mode {
+      background-color: #111827;
+      color: #f3f4f6;
+    }
+
+    .dark-mode .page-container {
+      background-color: #1f2937;
+      border-color: #374151;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    }
+
+    .dark-mode .content-card {
+      background-color: #1f2937;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    .dark-mode .form-input {
+      background-color: #374151;
+      border-color: #4b5563;
+      color: #f3f4f6;
+    }
+
+    .dark-mode .form-input:focus {
+      background-color: #374151;
+      border-color: #60a5fa;
+    }
+
+    .dark-mode .text-gray-500 {
+      color: #9ca3af;
+    }
+
+    .dark-mode .text-gray-700 {
+      color: #e5e7eb;
+    }
+
+    .dark-mode .border-gray-200 {
+      border-color: #374151;
+    }
+
+    .dark-mode .bg-gray-100 {
+      background-color: #374151;
+    }
+
+    .dark-mode .bg-gray-200 {
+      background-color: #4b5563;
+    }
+
+    .dark-mode .bg-white {
+      background-color: #1f2937;
+    }
+
+    .dark-mode .hover\:bg-gray-100:hover {
+      background-color: #374151;
+    }
+
+    body {
+      background-color: #f5f7fa;
+      padding: 35px;
+      min-height: 100vh;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 35px;
+      align-items: flex-start;
+    }
+
+    .page-container {
+      width: 1440px;
+      min-height: 800px;
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(26, 61, 124, 0.12);
+      border: 1px solid #e2e8f0;
+      padding: 0;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .content-card {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      padding: 20px;
+    }
+
+    .primary-btn {
+      background-color: #1a3d7c;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .primary-btn:hover {
+      background-color: #152e61;
+      transform: translateY(-2px);
+    }
+
+    .form-input {
+      border: 1px solid #e2e8f0;
+      background-color: #f8fafc;
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 14px;
+      width: 100%;
+      transition: border-color 0.3s;
+    }
+
+    .form-input:focus {
+      border-color: #1a3d7c;
+      outline: none;
+      background-color: white;
+    }
+
+    .payment-method {
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .payment-method:hover {
+      border-color: #1a3d7c;
+      background-color: #f8fafc;
+    }
+
+    .payment-method.selected {
+      border-color: #1a3d7c;
+      background-color: #f0f7ff;
+    }
+  </style>
+
+
+  <div class="page-container">
+    <header class="py-4 px-8 flex justify-between border-b border-gray-200">
+      <div class="flex items-center">
+        <iconify-icon icon="ph:currency-circle-dollar" width="28" height="28" style="color: #1a3d7c;"></iconify-icon>
+        <h1 class="text-xl font-bold ml-3" style="color: #1a3d7c;">Trademe</h1>
+      </div>
+
+      <nav class="flex gap-2">
+        <div class="nav-item">首页</div>
+        <div class="nav-item">策略交易</div>
+        <div class="nav-item">图表交易</div>
+        <div class="nav-item">API管理</div>
+        <div class="nav-item">交易心得</div>
+        <div class="nav-item active">账户中心</div>
+      </nav>
+
+      <div class="flex items-center">
+        <div class="w-9 h-9 rounded-full bg-gray-200 overflow-hidden">
+          <img src="https://modao.cc/ai/uploads/ai_pics/15/150345/aigp_1755597342.jpeg" alt="User profile picture" class="w-full h-full object-cover">
+        </div>
+      </div>
+    </header>
+
+    <!-- 语言和主题切换按钮 -->
+    <div class="absolute top-4 right-8 flex items-center space-x-4">
+      <div class="flex items-center space-x-2">
+        <button class="lang-toggle px-2 py-1 text-sm rounded-md bg-gray-100 hover:bg-gray-200" data-lang="zh">中</button>
+        <button class="lang-toggle px-2 py-1 text-sm rounded-md hover:bg-gray-200" data-lang="en">EN</button>
+      </div>
+      <div class="border-l border-gray-300 h-6"></div>
+      <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-200">
+        <iconify-icon icon="mdi:theme-light-dark" width="20" height="20"></iconify-icon>
+      </button>
+    </div>
+
+    <div class="p-8">
+      <div class="mb-6">
+        <h2 class="text-2xl font-bold mb-2" style="color: #1a3d7c;" data-i18n="membershipRenewal">会员续费</h2>
+        <p class="text-gray-500" data-i18n="selectMembershipType">选择会员类型并完成支付</p>
+      </div>
+
+      <div class="grid grid-cols-3 gap-8">
+        <div class="col-span-2">
+          <div class="content-card mb-6">
+            <h3 class="text-lg font-bold mb-4" data-i18n="selectPackage">选择会员套餐</h3>
+
+            <div class="grid grid-cols-3 gap-4">
+              <div class="payment-method">
+                <div class="flex items-center mb-2">
+                  <input type="radio" name="membership" id="monthly" checked="">
+                  <label for="monthly" class="ml-2 font-medium" data-i18n="monthly">月付</label>
+                </div>
+                <p class="text-2xl font-bold">$99<span class="text-sm font-normal" data-i18n="perMonth">/月</span></p>
+                <p class="text-sm text-gray-500 mt-1" data-i18n="autoRenewal">每月自动续费</p>
+              </div>
+
+              <div class="payment-method selected">
+                <div class="flex items-center mb-2">
+                  <input type="radio" name="membership" id="quarterly" checked="">
+                  <label for="quarterly" class="ml-2 font-medium" data-i18n="quarterly">季付</label>
+                  <span class="ml-2 px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full text-xs"><span data-i18n="save">省</span>10%</span>
+                </div>
+                <p class="text-2xl font-bold">$267.30<span class="text-sm font-normal" data-i18n="perQuarter">/季度</span></p>
+                <p class="text-sm text-gray-500 mt-1" data-i18n="autoRenewal">每3个月自动续费</p>
+              </div>
+
+              <div class="payment-method">
+                <div class="flex items-center mb-2">
+                  <input type="radio" name="membership" id="yearly">
+                  <label for="yearly" class="ml-2 font-medium" data-i18n="yearly">年付</label>
+                  <span class="ml-2 px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full text-xs"><span data-i18n="save">省</span>20%</span>
+                </div>
+                <p class="text-2xl font-bold">$950.40<span class="text-sm font-normal" data-i18n="perYear">/年</span></p>
+                <p class="text-sm text-gray-500 mt-1" data-i18n="autoRenewal">每年自动续费</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="content-card">
+            <h3 class="text-lg font-bold mb-4" data-i18n="paymentMethod">支付方式</h3>
+
+            <div class="mb-6">
+              <div class="payment-method selected flex items-center justify-between mb-4">
+                <div class="flex items-center">
+                  <input type="radio" name="payment" id="usdt" checked="">
+                  <label for="usdt" class="ml-2">
+                    <div class="flex items-center">
+                      <iconify-icon icon="cryptocurrency:usdt" width="24" height="24" class="mr-2"></iconify-icon>
+                      <span class="font-medium">USDT</span>
+                    </div>
+                  </label>
+                </div>
+                <div class="text-sm text-gray-500">Tether USD</div>
+              </div>
+
+              <div class="payment-method flex items-center justify-between">
+                <div class="flex items-center">
+                  <input type="radio" name="payment" id="btc">
+                  <label for="btc" class="ml-2">
+                    <div class="flex items-center">
+                      <iconify-icon icon="cryptocurrency:btc" width="24" height="24" class="mr-2"></iconify-icon>
+                      <span class="font-medium">BTC</span>
+                    </div>
+                  </label>
+                </div>
+                <div class="text-sm text-gray-500">Bitcoin</div>
+              </div>
+            </div>
+
+            <div class="border-t border-gray-200 pt-6">
+              <div class="bg-gray-50 p-4 rounded-lg mb-6">
+                <h4 class="font-medium mb-2" data-i18n="paymentAddress">USDT 支付地址</h4>
+                <div class="bg-white border border-gray-300 rounded p-2 flex items-center justify-between">
+                  <code class="text-sm">TJEznqjPQQQVsrz95tA4jf7jQwPg6fXYRS</code>
+                  <button class="text-blue-600 text-sm flex items-center">
+                    <iconify-icon icon="mdi:content-copy" class="mr-1"></iconify-icon>
+                    <span data-i18n="copy">复制</span>
+                  </button>
+                </div>
+                <p class="text-sm text-gray-500 mt-2" data-i18n="sendUsdt">请发送 53.99 USDT (TRC20) 到上述地址</p>
+              </div>
+
+              <div class="flex justify-center mb-6">
+                <div class="text-center">
+                  <div class="w-40 h-40 bg-gray-200 mx-auto mb-2">
+                    <!-- 支付二维码占位符 -->
+                    <div class="w-full h-full flex items-center justify-center">
+                      <p class="text-gray-500">支付二维码</p>
+                    </div>
+                  </div>
+                  <p class="text-sm text-gray-500" data-i18n="scanQrCode">扫描上方二维码支付</p>
+                </div>
+              </div>
+
+              <div class="flex flex-col items-center">
+                <button class="primary-btn px-8 py-3 mb-3" data-i18n="paymentComplete">我已完成支付</button>
+                <button class="text-gray-500 text-sm" onclick="window.history.back()" data-i18n="cancelReturn">取消并返回</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="content-card h-fit">
+          <h3 class="text-lg font-bold mb-4" data-i18n="orderSummary">订单摘要</h3>
+
+          <div class="flex justify-between mb-2">
+            <span><span data-i18n="premiumMembership">高级会员</span> (<span data-i18n="quarterly">季付</span>)</span>
+            <span>$297.00</span>
+          </div>
+
+          <div class="flex justify-between mb-2 text-green-600">
+            <span><span data-i18n="discount">优惠折扣</span> (10%)</span>
+            <span>-$29.70</span>
+          </div>
+
+          <div class="border-t border-gray-200 my-3"></div>
+
+          <div class="flex justify-between font-bold">
+            <span data-i18n="total">总计</span>
+            <span>$267.30</span>
+          </div>
+
+          <div class="mt-6">
+            <h4 class="font-medium mb-2" data-i18n="membershipBenefits">会员权益:</h4>
+            <ul class="text-sm text-gray-600 space-y-2">
+              <li class="flex items-start">
+                <iconify-icon icon="ic:round-check-circle" class="mr-2 text-green-500 mt-0.5" width="16"></iconify-icon>
+                <span>绑定5个API密钥</span>
+              </li>
+              <li class="flex items-start">
+                <iconify-icon icon="ic:round-check-circle" class="mr-2 text-green-500 mt-0.5" width="16"></iconify-icon>
+                <span>每天$100 AI对话额度</span>
+              </li>
+              <li class="flex items-start">
+                <iconify-icon icon="ic:round-check-circle" class="mr-2 text-green-500 mt-0.5" width="16"></iconify-icon>
+                <span>Tick级数据回测500次/天</span>
+              </li>
+              <li class="flex items-start">
+                <iconify-icon icon="ic:round-check-circle" class="mr-2 text-green-500 mt-0.5" width="16"></iconify-icon>
+                <span>无限K线级数据回测</span>
+              </li>
+              <li class="flex items-start">
+                <iconify-icon icon="ic:round-check-circle" class="mr-2 text-green-500 mt-0.5" width="16"></iconify-icon>
+                <span>5GB交易心得存储空间</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="border-t border-gray-200 mt-6 pt-4 text-sm text-gray-500">
+            <p data-i18n="contactSupport">如有问题，请联系客服</p>
+            <p class="mt-1">support@trademe.com</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI分析对话框 -->
+  <div id="ai-dialog-overlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-xl w-3/4 max-w-4xl max-h-[80vh] flex flex-col">
+      <div class="p-4 border-b border-gray-200 flex justify-between items-center">
+        <h3 class="text-xl font-bold text-blue-700">AI交易分析助手</h3>
+        <button id="close-ai-dialog" class="text-gray-500 hover:text-gray-700">
+          <iconify-icon icon="mdi:close" width="24"></iconify-icon>
+        </button>
+      </div>
+
+      <div id="ai-chat-content" class="flex-1 p-4 overflow-y-auto">
+        <div class="flex items-start mb-4">
+          <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center mr-3">
+            <iconify-icon icon="mdi:robot-happy" style="color: #1a3d7c;"></iconify-icon>
+          </div>
+          <div class="bg-blue-50 p-3 rounded-xl rounded-tl-none">
+            <p>我是您的交易分析助手，请告诉我您想分析哪类交易记录或需要什么样的策略建议？</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="border-t border-gray-200 p-4">
+        <div class="bg-blue-50 p-2 rounded-md mb-3 flex justify-between items-center">
+          <span class="text-sm">今日AI额度：$58.32/$100</span>
+          <div class="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
+            <div class="h-full bg-blue-600" style="width: 58.32%"></div>
+          </div>
+        </div>
+        <div class="flex items-center">
+          <input id="ai-input" type="text" class="form-input flex-1 mr-2" placeholder="输入您的问题，如：分析我的BTC错误交易...">
+          <button id="send-to-ai" class="primary-btn w-24 flex items-center justify-center">
+            <iconify-icon icon="ion:send" class="mr-1"></iconify-icon>
+            发送
+          </button>
+        </div>
+        <div class="flex justify-between mt-3 text-sm">
+          <div>
+            <label class="inline-flex items-center">
+              <input type="checkbox" id="generate-strategy" class="form-checkbox h-4 w-4">
+              <span class="ml-2">自动生成交易策略</span>
+            </label>
+          </div>
+          <div class="text-gray-500">您可以要求AI帮您分析特定交易或生成策略程序</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trademe - 服务条款</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    }
+
+    body {
+      background-color: #f5f7fa;
+      padding: 35px;
+      min-height: 100vh;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 35px;
+      align-items: flex-start;
+    }
+
+    .page-container {
+      width: 1440px;
+      min-height: 800px;
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(26, 61, 124, 0.12);
+      border: 1px solid #e2e8f0;
+      padding: 0;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .content-card {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      padding: 20px;
+    }
+
+    .primary-btn {
+      background-color: #1a3d7c;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .primary-btn:hover {
+      background-color: #152e61;
+      transform: translateY(-2px);
+    }
+
+    .terms-section {
+      margin-bottom: 20px;
+    }
+
+    .terms-section h3 {
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .terms-section p {
+      margin-bottom: 10px;
+      line-height: 1.6;
+    }
+
+    .terms-section ul {
+      padding-left: 20px;
+      margin-bottom: 10px;
+    }
+
+    .terms-section ul li {
+      margin-bottom: 5px;
+    }
+
+    .sticky-footer {
+      position: sticky;
+      bottom: 0;
+      width: 100%;
+      padding: 15px;
+      background: white;
+      border-top: 1px solid #e2e8f0;
+      display: flex;
+      justify-content: center;
+      box-shadow: 0 -4px 12px rgba(0,0,0,0.05);
+    }
+  </style>
+
+
+  <div class="page-container">
+    <header class="py-6 px-8 flex justify-center border-b border-gray-200">
+      <div class="flex items-center">
+        <iconify-icon icon="ph:currency-circle-dollar" width="36" height="36" style="color: #1a3d7c;"></iconify-icon>
+        <h1 class="text-2xl font-bold ml-3" style="color: #1a3d7c;">Trademe</h1>
+      </div>
+    </header>
+
+    <!-- 语言和主题切换按钮 -->
+    <div class="absolute top-4 right-8 flex items-center space-x-4">
+      <div class="flex items-center space-x-2">
+        <button class="lang-toggle px-2 py-1 text-sm rounded-md bg-gray-100 hover:bg-gray-200" data-lang="zh">中</button>
+        <button class="lang-toggle px-2 py-1 text-sm rounded-md hover:bg-gray-200" data-lang="en">EN</button>
+      </div>
+      <div class="border-l border-gray-300 h-6"></div>
+      <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-200">
+        <iconify-icon icon="mdi:theme-light-dark" width="20" height="20"></iconify-icon>
+      </button>
+    </div>
+
+    <main class="p-8 pb-20">
+      <h2 class="text-center text-2xl font-bold mb-8" style="color: #1a3d7c;">服务条款与协议</h2>
+
+      <div class="content-card">
+        <div class="terms-section">
+          <h3>1. 服务介绍</h3>
+          <p>Trademe是一个提供数字货币策略交易服务的平台。通过我们的平台，用户可以分析市场趋势，使用AI辅助交易策略，管理API密钥连接交易所，以及记录交易心得。</p>
+        </div>
+
+        <div class="terms-section">
+          <h3>2. 账户规则</h3>
+          <p>用户在使用本平台时，需要遵守以下规则：</p>
+          <ul>
+            <li>用户需对自己的账户安全负责</li>
+            <li>不得将账户借给他人使用</li>
+            <li>不得使用平台进行任何违法活动</li>
+            <li>对自己的交易行为和决策负责</li>
+          </ul>
+        </div>
+
+        <div class="terms-section">
+          <h3>3. API密钥安全</h3>
+          <p>用户添加的API密钥均经过加密存储，平台不会保存用户的原始密钥。但用户仍需注意：</p>
+          <ul>
+            <li>仅使用"只读"或"交易"权限，避免使用提现权限</li>
+            <li>定期更换API密钥</li>
+            <li>不在公共设备上使用平台</li>
+          </ul>
+        </div>
+
+        <div class="terms-section">
+          <h3>4. 免责声明</h3>
+          <p>用户需了解数字货币市场存在高风险，平台提供的分析和策略仅供参考，不构成投资建议。用户应自行承担所有交易风险和责任。平台不对用户的交易损失负责。</p>
+        </div>
+
+        <div class="terms-section">
+          <h3>5. 服务费用</h3>
+          <p>平台提供基础服务和会员服务：</p>
+          <ul>
+            <li>基础服务：免费使用</li>
+            <li>会员服务：根据不同会员等级收费，详情见会员介绍页</li>
+          </ul>
+          <p>用户支付的会员费用一经支付，除平台技术原因外，不予退还。</p>
+        </div>
+
+        <div class="terms-section">
+          <h3>6. 内容所有权</h3>
+          <p>用户在平台上创建的交易策略和记录的交易心得，其版权归用户所有，但用户授权平台在网站内部进行展示和分享。</p>
+          <p>平台的所有设计、代码、算法等知识产权归平台所有，用户不得抄袭、复制或传播。</p>
+        </div>
+
+        <div class="terms-section">
+          <h3>7. 协议修改</h3>
+          <p>平台有权对本协议进行修改，修改后的协议将在平台上公布。用户继续使用平台服务，即表示接受修改后的协议。</p>
+        </div>
+
+        <div class="terms-section">
+          <h3>8. 法律适用</h3>
+          <p>本协议的订立、执行和解释及争议的解决均应适用中国法律。如发生平台服务条款与中国法律相抵触时，则该条款将按法律规定重新解释，而其他条款则依旧有效。</p>
+        </div>
+      </div>
+    </main>
+
+    <div class="sticky-footer">
+      <button class="primary-btn px-12 py-3" onclick="window.history.back()">我已阅读并同意服务条款</button>
+    </div>
+  </div>
+
+
+
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trademe - 验证码</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    }
+
+    body {
+      background-color: #f5f7fa;
+      padding: 35px;
+      min-height: 100vh;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 35px;
+      align-items: flex-start;
+    }
+
+    .page-container {
+      width: 1440px;
+      min-height: 800px;
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(26, 61, 124, 0.12);
+      border: 1px solid #e2e8f0;
+      padding: 0;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .content-card {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      padding: 20px;
+    }
+
+    .primary-btn {
+      background-color: #1a3d7c;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .primary-btn:hover {
+      background-color: #152e61;
+      transform: translateY(-2px);
+    }
+
+    .form-input {
+      border: 1px solid #e2e8f0;
+      background-color: #f8fafc;
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 14px;
+      width: 100%;
+      transition: border-color 0.3s;
+    }
+
+    .form-input:focus {
+      border-color: #1a3d7c;
+      outline: none;
+      background-color: white;
+    }
+
+    .verification-input {
+      text-align: center;
+      font-size: 28px;
+      letter-spacing: 8px;
+      font-weight: 600;
+    }
+  </style>
+
+
+  <div class="page-container">
+    <header class="py-6 px-8 flex justify-center border-b border-gray-200">
+      <div class="flex items-center">
+        <iconify-icon icon="ph:currency-circle-dollar" width="36" height="36" style="color: #1a3d7c;"></iconify-icon>
+        <h1 class="text-2xl font-bold ml-3" style="color: #1a3d7c;">Trademe</h1>
+      </div>
+    </header>
+
+    <!-- 语言和主题切换按钮 -->
+    <div class="absolute top-4 right-8 flex items-center space-x-4">
+      <div class="flex items-center space-x-2">
+        <button class="lang-toggle px-2 py-1 text-sm rounded-md bg-gray-100 hover:bg-gray-200" data-lang="zh">中</button>
+        <button class="lang-toggle px-2 py-1 text-sm rounded-md hover:bg-gray-200" data-lang="en">EN</button>
+      </div>
+      <div class="border-l border-gray-300 h-6"></div>
+      <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-200">
+        <iconify-icon icon="mdi:theme-light-dark" width="20" height="20"></iconify-icon>
+      </button>
+    </div>
+
+    <main class="flex flex-col items-center justify-center py-16">
+      <div class="content-card w-full max-w-md">
+        <h2 class="text-center text-2xl font-bold mb-8" style="color: #1a3d7c;">验证码确认</h2>
+
+        <div class="text-center mb-8">
+          <p class="mb-1">验证码已发送至</p>
+          <p class="font-semibold">134****7890@qq.com</p>
+        </div>
+
+        <div class="mb-8">
+          <input type="text" class="form-input verification-input" placeholder="输入验证码" maxlength="6">
+        </div>
+
+        <div class="flex justify-between items-center mb-8">
+          <button class="text-blue-600 text-sm flex items-center">
+            <iconify-icon icon="ion:reload" class="mr-1"></iconify-icon>
+            重新发送
+          </button>
+          <span class="text-gray-500 text-sm">59s后可重发</span>
+        </div>
+
+        <button class="primary-btn w-full py-3 mb-6" onclick="window.location.href='index.html'">验证并登录</button>
+
+        <div class="text-center">
+          <a href="#" class="text-gray-500 text-sm hover:text-blue-600">遇到问题? 联系客服</a>
+        </div>
+      </div>
+    </main>
+  </div>
+
+
+
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trademe</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    }
+
+    body {
+      background-color: #f5f7fa;
+      padding: 35px;
+      min-height: 100vh;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 35px;
+      align-items: flex-start;
+    }
+
+    .page-container {
+      width: 1440px;
+      min-height: 800px;
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(26, 61, 124, 0.12);
+      border: 1px solid #e2e8f0;
+      padding: 0;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .content-card {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      padding: 20px;
+    }
+
+    .primary-btn {
+      background-color: #1a3d7c;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .primary-btn:hover {
+      background-color: #152e61;
+      transform: translateY(-2px);
+    }
+
+    .form-input {
+      border: 1px solid #e2e8f0;
+      background-color: #f8fafc;
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 14px;
+      width: 100%;
+      transition: border-color 0.3s;
+    }
+
+    .form-input:focus {
+      border-color: #1a3d7c;
+      outline: none;
+      background-color: white;
+    }
+
+    .chart-container {
+      width: 100%;
+      height: 500px;
+      border-radius: 8px;
+      background: white;
+    }
+
+    .positive-bg {
+      background-color: #e9faf3;
+      color: #21ce90;
+      border-radius: 6px;
+      padding: 2px 8px;
+    }
+
+    .negative-bg {
+      background-color: #fef1f1;
+      color: #f53d3d;
+      border-radius: 6px;
+      padding: 2px 8px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+    }
+
+    thead th {
+      background-color: #f8fafc;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 12px 16px;
+      font-weight: 600;
+      font-size: 12px;
+      color: #64748b;
+      text-align: left;
+    }
+
+    tbody td {
+      padding: 12px 16px;
+      border-bottom: 1px solid #f1f5f9;
+      font-size: 14px;
+      color: #1e293b;
+    }
+
+    tbody tr:hover {
+      background-color: #f1f6ff;
+    }
+
+    .nav-item {
+      color: #1a3d7c;
+      font-weight: 500;
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .nav-item:hover, .nav-item.active {
+      background-color: #1a3d7c;
+      color: white;
+    }
+
+    .page-content > div > h2 {
+      font-size: 20px;
+      font-weight: 700;
+      color: #1a3d7c;
+      margin-bottom: 24px;
+    }
+
+    .kline-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: expect20px;
+      height: 76vh;
+    }
+
+    .api-status-indicator {
+      height: 10px;
+      width: 10px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 6px;
+    }
+
+    .status-active {
+      background-color: #21ce90;
+    }
+
+    .status-disabled {
+      background-color: #f53d3d;
+    }
+  </style>
+
+
+  <!-- 登录页面 -->
+  <div class="page-container">
+    <header class="py-6 px-8 flex justify-center border-b border-gray-200">
+      <div class="flex items-center">
+        <iconify-icon icon="ph:currency-circle-dollar" width="36" height="36" style="color: #1a3d7c;"></iconify-icon>
+        <h1 class="text-2xl font-bold ml-3" style="color: #1a3d7c;">Trademe</h1>
+      </div>
+    </header>
+
+    <main class="flex flex-col items-center justify-center py-16">
+      <div class="content-card w-full max-w-md">
+        <h2 class="text-center text-2xl font-bold mb-8" style="color: #1a3d7c;">账户登录</h2>
+
+        <button class="primary-btn w-full flex items-center justify-center py-3 mb-6">
+          <iconify-icon icon="flat-color-icons:google" width="24" height="24"></iconify-icon>
+          <span class="ml-2">通过Google账号登录</span>
+        </button>
+
+        <div class="relative flex justify-center mb-6">
+          <hr class="w-full border-gray-300">
+          <span class="absolute px-4 bg-white -top-3 text-gray-500">或通过邮箱注册</span>
+        </div>
+
+        <form>
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-1">用户名</label>
+            <input type="text" class="form-input" placeholder="输入用户名">
+          </div>
+
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-1">邮箱地址</label>
+            <input type="email" class="form-input" placeholder="输入邮箱">
+          </div>
+
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-1">密码</label>
+            <input type="password" class="form-input" placeholder="输入密码">
+          </div>
+
+          <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-1">确认密码</label>
+            <input type="password" class="form-input" placeholder="再次输入密码">
+          </div>
+
+          <button class="primary-btn w-full py-3 mb-6" onclick="window.location.href='verification.html'">创建账户</button>
+        </form>
+
+        <div class="text-center mb-4">
+          <p class="text-sm text-gray-500">已有账户? <a href="#" class="text-blue-600 hover:underline">立即登录</a></p>
+        </div>
+
+        <div class="text-center text-xs text-gray-500">
+          <p>注册即表示您同意我们的<a href="terms.html" class="text-blue-600 hover:underline">服务条款</a>和隐私政策</p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- 用户首页 -->
+  <div class="page-container">
+    <header class="py-4 px-8 flex justify-between border-b border-gray-200">
+      <div class="flex items-center">
+        <iconify-icon icon="ph:currency-circle-dollar" width="28" height="28" style="color: #1a3d7c;"></iconify-icon>
+        <h1 class="text-xl font-bold ml-3" style="color: #1a3d7c;">Trademe</h1>
+      </div>
+
+      <nav class="flex gap-2">
+        <div class="nav-item active">首页</div>
+        <div class="nav-item">策略交易</div>
+        <div class="nav-item">图表交易</div>
+        <div class="nav-item">API管理</div>
+        <div class="nav-item">交易心得</div>
+        <div class="nav-item">账户中心</div>
+      </nav>
+
+      <div class="flex items-center">
+        <div class="w-9 h-9 rounded-full bg-gray-200 overflow-hidden">
+          <img id="1" src="https://modao.cc/ai/uploads/ai_pics/15/150341/aigp_1755597333.jpeg" alt="User profile picture" class="w-full h-full object-cover">
+        </div>
+      </div>
+    </header>
+
+    <main class="p-8">
+      <section class="grid grid-cols-3 gap-6 mb-8">
+        <div class="content-card flex items-center">
+          <div class="w-12 h-12 rounded-lg flex items-center justify-center mr-4" style="background-color: #e9f1fe;">
+            <iconify-icon icon="ion:key" width="24" height="24" style="color: #1a3d7c;"></iconify-icon>
+          </div>
+          <div>
+            <h3 class="text-sm text-gray-500 mb-1">APIKEY数量</h3>
+            <p class="text-2xl font-bold">3<span class="text-sm text-gray-500">/5</span></p>
+          </div>
+        </div>
+
+        <div class="content-card flex items-center">
+          <div class="w-12 h-12 rounded-lg flex items-center justify-center mr-4" style="background-color: #e9faf3;">
+            <iconify-icon icon="material-symbols:rocket-launch" width="24" height="24" style="color: #21ce90;"></iconify-icon>
+          </div>
+          <div>
+            <h3 class="text-sm text-gray-500 mb-1">实盘策略数</h3>
+            <p class="text-2xl font-bold">4</p>
+          </div>
+        </div>
+
+        <div class="content-card flex items-center">
+          <div class="w-12 h-12 rounded-lg flex items-center justify-center mr-4" style="background-color: #e9f1fe;">
+            <iconify-icon icon="system-uicons:money-bag" width="24" height="24" style="color: #f0b90b;"></iconify-icon>
+          </div>
+          <div>
+            <h3 class="text-sm text-gray-500 mb-1">本月收益率</h3>
+            <p class="text-2xl font-bold"><span class="positive-bg">+12.3%</span></p>
+          </div>
+        </div>
+      </section>
+
+      <section class="grid grid-cols-3 gap-6 mb-8">
+        <div class="content-card">
+          <h2>快捷入口</h2>
+          <div class="grid grid-cols-2 gap-4 mt-6">
+            <button class="primary-btn flex flex-col items-center py-4">
+              <iconify-icon icon="ri:line-chart-line" width="24" height="24"></iconify-icon>
+              <span class="mt-1">图表交易</span>
+            </button>
+            <button class="primary-btn flex flex-col items-center py-4">
+              <iconify-icon icon="fa6-solid:robot" width="24" height="24"></iconify-icon>
+              <span class="mt-1">策略回测</span>
+            </button>
+            <button class="primary-btn flex flex-col items-center py-4">
+              <iconify-icon icon="ion:library" width="24" height="24"></iconify-icon>
+              <span class="mt-1">策略库</span>
+            </button>
+            <button class="primary-btn flex flex-col items-center py-4">
+              <iconify-icon icon="mdi:api" width="24" height="24"></iconify-icon>
+              <span class="mt-1">API管理</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="content-card col-span-2">
+          <div class="flex justify-between items-start">
+            <h2>当前收益率曲线</h2>
+            <div class="flex">
+              <button class="mr-2 bg-gray-100 rounded-lg px-3 py-1 text-sm">近7天</button>
+              <button class="mr-2 bg-gray-100 rounded-lg px-3 py-1 text-sm">本月</button>
+              <button class="bg-blue-50 text-blue-700 rounded-lg px-3 py-1 text-sm">近3月</button>
+            </div>
+          </div>
+          <div id="earningsChart" class="mt-4 h-64"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- K线图页面 -->
+  <div class="page-container">
+    <header class="py-4 px-8 flex justify-between border-b border-gray-200">
+      <div class="flex items-center">
+        <iconify-icon icon="ph:currency-circle-dollar" width="28" height="28" style="color: #1a3d7c;"></iconify-icon>
+        <h1 class="text-xl font-bold ml-3" style="color: #1a3d7c;">Trademe</h1>
+      </div>
+
+      <nav class="flex gap-2">
+        <div class="nav-item">首页</div>
+        <div class="nav-item">策略交易</div>
+        <div class="nav-item active">图表交易</div>
+        <div class="nav-item">API管理</div>
+        <div class="nav-item">交易心得</div>
+        <div class="nav-item">账户中心</div>
+      </nav>
+
+      <div class="flex items-center">
+        <div class="w-9 h-9 rounded-full bg-gray-200 overflow-hidden">
+          <img id="2" src="https://modao.cc/ai/uploads/ai_pics/15/150342/aigp_1755597335.jpeg" alt="User profile picture" class="w-full h-full object-cover">
+        </div>
+      </div>
+    </header>
+
+    <div class="toolbar px-8 py-4 flex gap-3 border-b border-gray-200">
+      <select class="form-input w-40">
+        <option>OKX</option>
+        <option>币安</option>
+      </select>
+
+      <select class="form-input w-32">
+        <option>现货交易</option>
+        <option>合约交易</option>
+      </select>
+
+      <input type="text" class="form-input w-64" placeholder="搜索币种 BTC/USDT, ETH/USDT...">
+
+      <button class="primary-btn flex items-center px-4">
+        <iconify-icon icon="material-symbols:add" class="mr-2"></iconify-icon>
+        AI指标助手
+      </button>
+
+      <select class="form-input w-40">
+        <option>选择指标</option>
+        <option>MACD</option>
+        <option>RSI</option>
+        <option>KDJ</option>
+        <option>布林带</option>
+        <option>移动平均线</option>
+      </select>
+
+      <select class="form-input w-40">
+        <option>选择策略</option>
+        <option>MA交叉策略</option>
+        <option>布林带突破策略</option>
+        <option>RSI超买超卖策略</option>
+        <option>MACD背离策略</option>
+      </select>
+    </div>
+
+    <div class="p-8 kline-grid">
+      <div class="content-card relative">
+        <div id="klineChart" class="h-full"></div>
+        <div class="absolute top-2 right-2 flex gap-2">
+          <button class="bg-white rounded-lg p-2 shadow hover:bg-gray-100" title="全屏查看">
+            <iconify-icon icon="material-symbols:fullscreen" width="20" height="20"></iconify-icon>
+          </button>
+          <button class="bg-white rounded-lg p-2 shadow hover:bg-gray-100" title="画线工具">
+            <iconify-icon icon="uil:line" width="20" height="20"></iconify-icon>
+          </button>
+          <button class="bg-white rounded-lg p-2 shadow hover:bg-gray-100" title="矩形工具">
+            <iconify-icon icon="mdi:rectangle-outline" width="20" height="20"></iconify-icon>
+          </button>
+          <button class="bg-white rounded-lg p-2 shadow hover:bg-gray-100" title="文字标注">
+            <iconify-icon icon="material-symbols:text-fields" width="20" height="20"></iconify-icon>
+          </button>
+          <button class="bg-white rounded-lg p-2 shadow hover:bg-gray-100" title="斐波那契回调">
+            <iconify-icon icon="ph:wave-sine" width="20" height="20"></iconify-icon>
+          </button>
+          <button class="bg-white rounded-lg p-2 shadow hover:bg-gray-100" title="删除所有标注">
+            <iconify-icon icon="mdi:eraser" width="20" height="20"></iconify-icon>
+          </button>
+        </div>
+      </div>
+
+      <div class="content-card">
+        <div class="flex justify-between mb-4">
+          <h3 class="font-bold">AI指标助手</h3>
+          <button class="text-blue-600 text-sm flex items-center">
+            <iconify-icon icon="mdi:content-save" class="mr-1"></iconify-icon>
+            保存策略
+          </button>
+        </div>
+
+        <div class="mb-4">
+          <div class="flex items-start mb-4">
+            <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center mr-3">
+              <iconify-icon icon="mdi:account-circle"></iconify-icon>
+            </div>
+            <div class="bg-gray-100 p-3 rounded-xl rounded-tl-none">
+              <p>请分析BTC当前走势并生成EMA交叉策略</p>
+            </div>
+          </div>
+
+          <div class="flex items-start">
+            <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center mr-3">
+              <iconify-icon icon="mdi:robot-happy" style="color: #1a3d7c;"></iconify-icon>
+            </div>
+            <div class="bg-blue-50 p-3 rounded-xl rounded-tl-none">
+              <p>当前BTC/USDT 1小时图显示价格在$63,200附近盘整，建议策略：<br>
+                1. 设置EMA(10)上穿EMA(50)时买入<br>
+                2. EMA(10)下穿EMA(50)时卖出<br>
+                3. 止损设在进场价下方1.5%处</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex">
+          <input class="form-input flex-1 mr-2" placeholder="输入策略指令">
+          <button class="primary-btn w-24 flex items-center justify-center">
+            <iconify-icon icon="ion:send" class="mr-1"></iconify-icon>
+            发送
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 策略库与回测页面 -->
+  <div class="page-container">
+    <header class="py-4 px-8 flex justify-between border-b border-gray-200">
+      <div class="flex items-center">
+        <iconify-icon icon="ph:currency-circle-dollar" width="28" height="28" style="color: #1a3d7c;"></iconify-icon>
+        <h1 class="text-xl font-bold ml-3" style="color: #1a3d7c;">Trademe</h1>
+      </div>
+
+      <nav class="flex gap-2">
+        <div class="nav-item">首页</div>
+        <div class="nav-item active">策略交易</div>
+        <div class="nav-item">图表交易</div>
+        <div class="nav-item">API管理</div>
+        <div class="nav-item">交易心得</div>
+        <div class="nav-item">账户中心</div>
+      </nav>
+
+      <div class="flex items-center">
+        <div class="w-9 h-9 rounded-full bg-gray-200 overflow-hidden">
+          <img id="3" src="https://modao.cc/ai/uploads/ai_pics/15/150343/aigp_1755597338.jpeg" alt="User profile picture" class="w-full h-full object-cover">
+        </div>
+      </div>
+    </header>
+
+    <div class="p-8">
+      <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-6">
+        <div class="content-card col-span-1">
+          <h2>策略选择</h2>
+          <select class="form-input mt-4 mb-6 w-full">
+            <option>EMA交叉策略</option>
+            <option>布林带突破策略</option>
+            <option>RSI超买超卖策略</option>
+            <option>MACD背离策略</option>
+            <option>均线突破策略</option>
+          </select>
+
+          <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">时间范围</label>
+            <input type="text" class="form-input" value="2024-01-01 至 2024-05-31">
+          </div>
+
+          <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">手续费等级</label>
+            <select class="form-input">
+              <option>VIP 0 (0.1%)</option>
+              <option>VIP 1 (0.08%)</option>
+              <option>VIP 2 (0.075%)</option>
+              <option selected="">VIP 3 (0.07%)</option>
+            </select>
+          </div>
+
+          <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">数据粒度</label>
+            <select class="form-input">
+              <option>1分钟</option>
+              <option>5分钟</option>
+              <option selected="">15分钟</option>
+              <option>1小时</option>
+              <option>4小时</option>
+              <option>1天</option>
+            </select>
+          </div>
+
+          <div class="flex flex-col">
+            <div class="text-center mb-3 text-sm text-gray-500">
+              今日Tick级别回测次数：285/500
+            </div>
+            <button class="primary-btn flex-1 py-3 mb-3">回测策略</button>
+            <button class="border border-blue-600 text-blue-600 rounded-lg flex-1 py-3 mb-3">部署实盘</button>
+            <a href="realtime-management.html" class="border border-green-600 text-green-600 rounded-lg py-3 text-center hover:bg-green-50">
+              实盘管理
+            </a>
+          </div>
+
+```
+
+2. 现在修改所有页面的平台名称：
+
+```html
+&lt;&lt;&lt;&lt;&lt;&lt;&lt; SEARCH
+        <h1 class="text-xl font-bold ml-3" style="color: #1a3d7c;">Trademe</h1>
+=======
+        <h1 class="text-xl font-bold ml-3" style="color: #1a3d7c;">Trademe</h1>
+        </div>
+
+        <div class="content-card col-span-3">
+          <div class="mb-6">
+            <h2>EMA交叉策略回测结果</h2>
+            <div class="mt-4 flex flex-wrap gap-6">
+              <div>
+                <label class="text-sm text-gray-500">总收益率</label>
+                <p class="text-xl font-bold"><span class="positive-bg">+35.6%</span></p>
+              </div>
+              <div>
+                <label class="text-sm text-gray-500">最大回撤</label>
+                <p class="text-xl font-bold"><span class="negative-bg">-8.7%</span></p>
+              </div>
+              <div>
+                <label class="text-sm text-gray-500">胜率</label>
+                <p class="text-xl font-bold">64.2%</p>
+              </div>
+              <div>
+                <label class="text-sm text-gray-500">总交易次数</label>
+                <p class="text-xl font-bold">147</p>
+              </div>
+              <div>
+                <label class="text-sm text-gray-500">夏普比率</label>
+                <p class="text-xl font-bold">1.85</p>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h3 class="mb-4">交易信号分析图</h3>
+            <div id="backtestChart" class="h-72 relative">
+              <div class="absolute top-2 right-2 flex gap-2">
+                <button class="bg-white rounded-lg p-2 shadow hover:bg-gray-100" title="全屏查看">
+                  <iconify-icon icon="material-symbols:fullscreen" width="20" height="20"></iconify-icon>
+                </button>
+                <button class="bg-white rounded-lg p-2 shadow hover:bg-gray-100" title="放大">
+                  <iconify-icon icon="material-symbols:zoom-in" width="20" height="20"></iconify-icon>
+                </button>
+                <button class="bg-white rounded-lg p-2 shadow hover:bg-gray-100" title="缩小">
+                  <iconify-icon icon="material-symbols:zoom-out" width="20" height="20"></iconify-icon>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-card">
+        <div class="flex justify-between items-center mb-4">
+          <h2>交易记录详情</h2>
+          <div class="flex items-center">
+            <span class="text-sm text-gray-500 mr-2">每页显示:</span>
+            <select class="form-input text-sm py-1 px-2 w-20">
+              <option>5</option>
+              <option>10</option>
+              <option>20</option>
+              <option>50</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table>
+            <thead>
+              <tr>
+                <th>交易时间</th>
+                <th>交易对</th>
+                <th>方向</th>
+                <th>价格</th>
+                <th>数量</th>
+                <th>收益率</th>
+                <th>持仓时间</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="cursor-pointer hover:bg-blue-50" data-trade-id="1">
+                <td>05-20 09:45</td>
+                <td>BTC/USDT</td>
+                <td>买入</td>
+                <td>$64,210</td>
+                <td>0.24</td>
+                <td class="positive-bg">+3.2%</td>
+                <td>2:15</td>
+                <td><button class="text-blue-600 text-sm">查看</button></td>
+              </tr>
+              <tr class="cursor-pointer hover:bg-blue-50" data-trade-id="2">
+                <td>05-20 13:20</td>
+                <td>ETH/USDT</td>
+                <td>卖出</td>
+                <td>$3,420</td>
+                <td>1.8</td>
+                <td class="negative-bg">-1.8%</td>
+                <td>1:45</td>
+                <td><button class="text-blue-600 text-sm">查看</button></td>
+              </tr>
+              <tr class="cursor-pointer hover:bg-blue-50" data-trade-id="3">
+                <td>05-19 16:05</td>
+                <td>SOL/USDT</td>
+                <td>买入</td>
+                <td>$168.2</td>
+                <td>12</td>
+                <td class="positive-bg">+5.7%</td>
+                <td>3:20</td>
+                <td><button class="text-blue-600 text-sm">查看</button></td>
+              </tr>
+              <tr class="cursor-pointer hover:bg-blue-50" data-trade-id="4">
+                <td>05-19 10:30</td>
+                <td>DOGE/USDT</td>
+                <td>卖出</td>
+                <td>$0.145</td>
+                <td>1200</td>
+                <td class="positive-bg">+2.1%</td>
+                <td>1:15</td>
+                <td><button class="text-blue-600 text-sm">查看</button></td>
+              </tr>
+              <tr class="cursor-pointer hover:bg-blue-50" data-trade-id="5">
+                <td>05-18 14:50</td>
+                <td>BTC/USDT</td>
+                <td>卖出</td>
+                <td>$67,150</td>
+                <td>0.15</td>
+                <td class="positive-bg">+4.5%</td>
+                <td>5:10</td>
+                <td><button class="text-blue-600 text-sm">查看</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="flex justify-between items-center mt-4">
+          <div class="text-sm text-gray-500">
+            显示 1 到 5，共 42 条记录
+          </div>
+          <div class="flex">
+            <button class="px-3 py-1 border border-gray-300 rounded-l-lg text-sm hover:bg-gray-100 disabled:opacity-50" disabled="">上一页</button>
+            <button class="px-3 py-1 border-t border-b border-gray-300 bg-blue-50 text-blue-600 text-sm">1</button>
+            <button class="px-3 py-1 border-t border-b border-gray-300 text-sm hover:bg-gray-100">2</button>
+            <button class="px-3 py-1 border-t border-b border-gray-300 text-sm hover:bg-gray-100">3</button>
+            <button class="px-3 py-1 border border-gray-300 rounded-r-lg text-sm hover:bg-gray-100">下一页</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- APIKEY管理页面 -->
+  <div class="page-container">
+    <header class="py-4 px-8 flex justify-between border-b border-gray-200">
+      <div class="flex items-center">
+        <iconify-icon icon="ph:currency-circle-dollar" width="28" height="28" style="color: #1a3d7c;"></iconify-icon>
+        <h1 class="text-xl font-bold ml-3" style="color: #1a3d7c;">Trademe</h1>
+      </div>
+
+      <nav class="flex gap-2">
+        <div class="nav-item">首页</div>
+        <div class="nav-item">策略交易</div>
+        <div class="nav-item">图表交易</div>
+        <div class="nav-item active">API管理</div>
+        <div class="nav-item">交易心得</div>
+        <div class="nav-item">账户中心</div>
+      </nav>
+
+      <div class="flex items-center">
+        <div class="w-9 h-9 rounded-full bg-gray-200 overflow-hidden">
+          <img id="4" src="https://modao.cc/ai/uploads/ai_pics/15/150344/aigp_1755597341.jpeg" alt="User profile picture" class="w-full h-full object-cover">
+        </div>
+      </div>
+    </header>
+
+    <div class="p-8">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        <div class="content-card">
+          <h2>新增API密钥</h2>
+          <div class="mt-6 mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-2">交易所</label>
+            <select class="form-input">
+              <option>币安 (Binance)</option>
+              <option>OKX</option>
+              <option>火币 (Huobi)</option>
+              <option>Bybit</option>
+              <option>Kraken</option>
+              <option>Coinbase</option>
+            </select>
+          </div>
+
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-2">API名称</label>
+            <input type="text" class="form-input" placeholder="例如：币安现货账户">
+          </div>
+
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-2">公钥 (API KEY)</label>
+            <input type="password" class="form-input" placeholder="输入API公钥">
+          </div>
+
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-2">密钥 (SECRET KEY)</label>
+            <input type="password" class="form-input" placeholder="输入API密钥">
+          </div>
+
+          <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">密码</label>
+            <input type="password" class="form-input" placeholder="输入账户密码以确认添加">
+          </div>
+
+          <button class="primary-btn w-full py-3">添加API密钥</button>
+        </div>
+
+        <div class="content-card">
+          <div class="flex justify-between items-start mb-6">
+            <h2>已添加API密钥</h2>
+            <div class="text-sm text-gray-500">高级会员最多可添加5个API密钥（已使用3/5）</div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table>
+              <thead>
+                <tr>
+                  <th>名称</th>
+                  <th>交易所</th>
+                  <th>权限</th>
+                  <th>状态</th>
+                  <th>创建时间</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>币安现货账户</td>
+                  <td>Binance</td>
+                  <td>只读</td>
+                  <td>
+                    <div class="flex items-center">
+                      <span class="api-status-indicator status-active"></span>
+                      有效
+                    </div>
+                  </td>
+                  <td>2024-04-15</td>
+                  <td>
+                    <button class="text-blue-600 text-sm">编辑</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>OKX合约账户</td>
+                  <td>OKX</td>
+                  <td>只读</td>
+                  <td>
+                    <div class="flex items-center">
+                      <span class="api-status-indicator status-active"></span>
+                      有效
+                    </div>
+                  </td>
+                  <td>2024-03-22</td>
+                  <td>
+                    <button class="text-blue-600 text-sm">编辑</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>币安操盘账户</td>
+                  <td>Binance</td>
+                  <td>交易</td>
+                  <td>
+                    <div class="flex items-center">
+                      <span class="api-status-indicator status-active"></span>
+                      有效
+                    </div>
+                  </td>
+                  <td>2024-05-10</td>
+                  <td>
+                    <button class="text-blue-600 text-sm">编辑</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>火币策略账户</td>
+                  <td>Huobi</td>
+                  <td>只读</td>
+                  <td>
+                    <div class="flex items-center">
+                      <span class="api-status-indicator status-disabled"></span>
+                      已失效
+                    </div>
+                  </td>
+                  <td>2024-01-30</td>
+                  <td>
+                    <button class="text-blue-600 text-sm">编辑</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 交易心得记录页面 -->
+  <div class="page-container">
+    <header class="py-4 px-8 flex justify-between border-b border-gray-200">
+      <div class="flex items-center">
+        <iconify-icon icon="ph:currency-circle-dollar" width="28" height="28" style="color: #1a3d7c;"></iconify-icon>
+        <h1 class="text-xl font-bold ml-3" style="color: #1a3d7c;">Trademe</h1>
+      </div>
+
+      <nav class="flex gap-2">
+        <div class="nav-item">首页</div>
+        <div class="nav-item">策略交易</div>
+        <div class="nav-item">图表交易</div>
+        <div class="nav-item">API管理</div>
+        <div class="nav-item active">交易心得</div>
+        <div class="nav-item">账户中心</div>
+      </nav>
+
+      <div class="flex items-center">
+        <div class="w-9 h-9 rounded-full bg-gray-200 overflow-hidden">
+          <img src="https://modao.cc/ai/uploads/ai_pics/15/150346/aigp_1755597344.jpeg" alt="User profile picture" class="w-full h-full object-cover">
+        </div>
+      </div>
+    </header>
+
+    <div class="p-8">
+      <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-6">
+        <div class="content-card col-span-1">
+          <div class="flex justify-between items-center mb-6">
+            <h2>交易心得</h2>
+            <button class="primary-btn flex items-center px-4 py-2">
+              <iconify-icon icon="material-symbols:add" class="mr-2"></iconify-icon>
+              记录心得
+            </button>
+          </div>
+
+          <div class="mb-4">
+            <input type="text" class="form-input" placeholder="搜索心得记录...">
+          </div>
+
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-2">分类筛选</label>
+            <select class="form-input" id="category-filter">
+              <option>所有分类</option>
+              <option>技术分析</option>
+              <option>基本面</option>
+              <option>策略总结</option>
+              <option>错误复盘</option>
+              <option>市场观点</option>
+            </select>
+          </div>
+
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-2">时间范围</label>
+            <select class="form-input">
+              <option>全部时间</option>
+              <option>今天</option>
+              <option>本周</option>
+              <option>本月</option>
+              <option>过去3个月</option>
+            </select>
+          </div>
+
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-2">币种</label>
+            <div class="flex flex-wrap gap-2">
+              <span class="bg-blue-50 text-blue-700 px-2 py-1 rounded-md text-sm flex items-center">
+                BTC
+                <iconify-icon icon="mdi:close" class="ml-1 cursor-pointer" width="14"></iconify-icon>
+              </span>
+              <span class="bg-blue-50 text-blue-700 px-2 py-1 rounded-md text-sm flex items-center">
+                ETH
+                <iconify-icon icon="mdi:close" class="ml-1 cursor-pointer" width="14"></iconify-icon>
+              </span>
+              <span class="bg-gray-100 text-gray-700 px-2 py-1 rounded-md text-sm cursor-pointer">
+                +添加
+              </span>
+            </div>
+          </div>
+
+          <button id="ai-analyze-btn" class="primary-btn w-full py-3 mb-4 flex items-center justify-center">
+            <iconify-icon icon="mdi:robot-happy" class="mr-2"></iconify-icon>
+            AI分析所选交易记录
+          </button>
+
+          <hr class="my-4 border-gray-200">
+
+          <div class="text-sm text-gray-500 flex justify-between">
+            <span>共有24条交易心得记录</span>
+            <span>存储空间：2.3GB/5GB</span>
+          </div>
+        </div>
+
+        <div class="content-card col-span-3">
+          <div class="mb-6 border-b border-gray-200 pb-6">
+            <div class="flex justify-between items-start mb-2">
+              <h3 class="text-xl font-bold">BTC冲高回落后的反弹策略分析</h3>
+              <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm">技术分析</span>
+            </div>
+            <div class="text-sm text-gray-500 mb-4">2024-05-18 14:23 · BTC/USDT</div>
+            <div class="mb-4">
+              <p>今日BTC从64800冲高后回落至63500区间，观察到MACD指标显示有底背离迹象，结合RSI指标已经处于超卖区域，判断此处可能是短期反弹的良好买点。</p>
+              <p class="mt-2">设置了以下交易计划：</p>
+              <ul class="list-disc ml-6 mt-2">
+                <li>入场：63600附近</li>
+                <li>止损：62900（1.1%）</li>
+                <li>目标位：64800-65200</li>
+              </ul>
+              <p class="mt-2">结果：成功触发目标位，获利1.9%。</p>
+            </div>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center">
+                <button class="flex items-center mr-4 text-gray-500 hover:text-blue-600">
+                  <iconify-icon icon="mdi:thumb-up-outline" class="mr-1" width="18"></iconify-icon>
+                  12
+                </button>
+                <button class="flex items-center text-gray-500 hover:text-blue-600">
+                  <iconify-icon icon="mdi:comment-outline" class="mr-1" width="18"></iconify-icon>
+                  3
+                </button>
+              </div>
+              <div>
+                <button class="text-blue-600 text-sm flex items-center">
+                  <iconify-icon icon="mdi:pencil" class="mr-1" width="16"></iconify-icon>
+                  编辑
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-6 border-b border-gray-200 pb-6">
+            <div class="flex justify-between items-start mb-2">
+              <h3 class="text-xl font-bold">ETH周线压力位突破分析</h3>
+              <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-sm">策略总结</span>
+            </div>
+            <div class="text-sm text-gray-500 mb-4">2024-05-15 09:47 · ETH/USDT</div>
+            <div class="mb-4">
+              <p>ETH突破3550美元阻力位后持续走高，成交量明显放大，这是一个看涨信号。但注意到当前已经连续5天上涨，短期可能有回调需求。</p>
+              <p class="mt-2">策略调整：</p>
+              <ol class="list-decimal ml-6 mt-2">
+                <li>减轻仓位，保留50%头寸继续持有</li>
+                <li>设置移动止损在入场点上方5%</li>
+                <li>下一目标位关注4000美元整数关口</li>
+              </ol>
+              <p class="mt-2">教训：上次类似情况没有设置移动止损，最终全部回吐了利润。这次要吸取教训，保护既有收益。</p>
+            </div>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center">
+                <button class="flex items-center mr-4 text-gray-500 hover:text-blue-600">
+                  <iconify-icon icon="mdi:thumb-up-outline" class="mr-1" width="18"></iconify-icon>
+                  8
+                </button>
+                <button class="flex items-center text-gray-500 hover:text-blue-600">
+                  <iconify-icon icon="mdi:comment-outline" class="mr-1" width="18"></iconify-icon>
+                  2
+                </button>
+              </div>
+              <div>
+                <button class="text-blue-600 text-sm flex items-center">
+                  <iconify-icon icon="mdi:pencil" class="mr-1" width="16"></iconify-icon>
+                  编辑
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-6">
+            <div class="flex justify-between items-start mb-2">
+              <h3 class="text-xl font-bold">SOL超跌反弹交易复盘</h3>
+              <span class="bg-red-100 text-red-800 px-2 py-1 rounded text-sm">错误复盘</span>
+            </div>
+            <div class="text-sm text-gray-500 mb-4">2024-05-10 16:35 · SOL/USDT</div>
+            <div class="mb-4">
+              <p>这次交易亏损7.2%，主要错误在于：</p>
+              <ol class="list-decimal ml-6 mt-2">
+                <li>仅关注SOL的RSI超卖，忽略了BTC作为主流币的引导作用</li>
+                <li>入场时没有等待K线收盘确认</li>
+                <li>仓位过重，占用了30%的资金</li>
+                <li>对市场突发消息反应不足，美联储加息言论导致市场恐慌</li>
+              </ol>
+              <p class="mt-2">改进措施：</p>
+              <ul class="list-disc ml-6 mt-2">
+                <li>任何交易都要先看BTC走势，顺势而为</li>
+                <li>单笔交易仓位不超过10%</li>
+                <li>入场前设置好止损，无条件执行</li>
+                <li>重要会议期间避免满仓操作</li>
+              </ul>
+            </div>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center">
+                <button class="flex items-center mr-4 text-gray-500 hover:text-blue-600">
+                  <iconify-icon icon="mdi:thumb-up-outline" class="mr-1" width="18"></iconify-icon>
+                  16
+                </button>
+                <button class="flex items-center text-gray-500 hover:text-blue-600">
+                  <iconify-icon icon="mdi:comment-outline" class="mr-1" width="18"></iconify-icon>
+                  5
+                </button>
+              </div>
+              <div>
+                <button class="text-blue-600 text-sm flex items-center">
+                  <iconify-icon icon="mdi:pencil" class="mr-1" width="16"></iconify-icon>
+                  编辑
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex justify-center mt-8">
+            <nav class="inline-flex rounded-md shadow">
+              <a href="#" class="py-2 px-4 bg-white border border-gray-300 text-sm rounded-l-md hover:bg-gray-100">
+                上一页
+              </a>
+              <a href="#" class="py-2 px-4 bg-blue-50 border border-blue-500 text-sm text-blue-700">
+                1
+              </a>
+              <a href="#" class="py-2 px-4 bg-white border border-gray-300 text-sm hover:bg-gray-100">
+                2
+              </a>
+              <a href="#" class="py-2 px-4 bg-white border border-gray-300 text-sm hover:bg-gray-100">
+                3
+              </a>
+              <a href="#" class="py-2 px-4 bg-white border border-gray-300 text-sm rounded-r-md hover:bg-gray-100">
+                下一页
+              </a>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 用户账户页面 -->
+  <div class="page-container">
+    <header class="py-4 px-8 flex justify-between border-b border-gray-200">
+      <div class="flex items-center">
+        <iconify-icon icon="ph:currency-circle-dollar" width="28" height="28" style="color: #1a3d7c;"></iconify-icon>
+        <h1 class="text-xl font-bold ml-3" style="color: #1a3d7c;">Trademe</h1>
+      </div>
+
+      <nav class="flex gap-2">
+        <div class="nav-item">首页</div>
+        <div class="nav-item">策略交易</div>
+        <div class="nav-item">图表交易</div>
+        <div class="nav-item">API管理</div>
+        <div class="nav-item">交易心得</div>
+        <div class="nav-item active">账户中心</div>
+      </nav>
+
+      <div class="flex items-center">
+        <div class="w-9 h-9 rounded-full bg-gray-200 overflow-hidden">
+          <img id="5" src="https://modao.cc/ai/uploads/ai_pics/15/150345/aigp_1755597342.jpeg" alt="User profile picture" class="w-full h-full object-cover">
+        </div>
+      </div>
+    </header>
+
+    <div class="p-8">
+      <div class="grid grid-cols-3 gap-8 mb-8">
+        <div class="content-card col-span-1 flex flex-col items-center text-center p-8">
+          <div class="w-24 h-24 rounded-full bg-gray-200 overflow-hidden mb-6">
+            <img id="6" src="https://modao.cc/ai/uploads/ai_pics/15/150346/aigp_1755597344.jpeg" alt="User profile picture" class="w-full h-full object-cover">
+          </div>
+          <h3 class="text-xl font-bold mb-1">交易员_张三</h3>
+          <p class="text-gray-500 mb-6">134****7890@qq.com</p>
+
+          <div class="flex items-center justify-center text-sm mb-6">
+            <iconify-icon icon="solar:medal-star-bold" style="color: #1a3d7c;"></iconify-icon>
+            <span class="ml-1">高级会员</span>
+          </div>
+
+          <button class="primary-btn w-full mb-3 flex items-center justify-center">
+            <iconify-icon icon="mdi:account-edit" class="mr-2"></iconify-icon>
+            编辑资料
+          </button>
+          <button class="w-full border border-gray-300 rounded-lg py-2 flex items-center justify-center">
+            <iconify-icon icon="ion:log-out-outline" class="mr-2"></iconify-icon>
+            退出登录
+          </button>
+        </div>
+
+        <div class="content-card col-span-2">
+          <h2 class="mb-6">账户概览</h2>
+          <div class="grid grid-cols-3 gap-4 mb-4">
+            <div class="p-4 border border-gray-200 rounded-lg">
+              <p class="text-gray-500">平台余额</p>
+              <p class="text-xl font-bold mt-2">$24,814<span class="text-sm ml-1">USD</span></p>
+            </div>
+            <div class="p-4 border border-gray-200 rounded-lg">
+              <p class="text-gray-500">交易所余额</p>
+              <p class="text-xl font-bold mt-2">$32,156<span class="text-sm ml-1">USD</span></p>
+            </div>
+            <div class="p-4 border border-gray-200 rounded-lg">
+              <p class="text-gray-500">收益率</p>
+              <p class="text-xl font-bold mt-2"><span class="positive-bg">+12.3%</span></p>
+            </div>
+          </div>
+
+          <div class="mb-8">
+            <div class="flex items-center justify-between mb-2">
+              <h3>收益率统计</h3>
+              <div class="flex">
+                <button class="px-3 py-1 rounded-lg bg-blue-50 text-blue-700 mr-2 text-sm">7天</button>
+                <button class="px-3 py-1 rounded-lg bg-gray-100 text-gray-700 mr-2 text-sm">月度</button>
+                <button class="px-3 py-1 rounded-lg bg-gray-100 text-gray-700 mr-2 text-sm">年度</button>
+                <button class="px-3 py-1 rounded-lg bg-gray-100 text-gray-700 text-sm">总收益</button>
+              </div>
+            </div>
+            <div class="h-48 bg-gray-50 rounded-lg border border-gray-200">
+              <!-- 收益图表将在这里显示 -->
+            </div>
+          </div>
+
+          <h3 class="mb-4">会员订阅</h3>
+          <div class="flex justify-between bg-blue-50 p-4 rounded-lg mb-6">
+            <div>
+              <p class="font-semibold">高级会员</p>
+              <p class="text-sm text-gray-500">到期时间：2024-07-15</p>
+              <p class="text-xs text-gray-500 mt-1">剩余AI额度：$58.32/天</p>
+            </div>
+            <div class="flex flex-col">
+              <button class="primary-btn px-4 mb-2" onclick="window.location.href='membership.html'">续费会员</button>
+              <button class="text-xs text-blue-600 hover:underline">查看使用情况</button>
+            </div>
+          </div>
+
+          <h3 class="mb-4">账户设置</h3>
+          <div class="grid grid-cols-2 gap-4">
+            <div class="col-span-1">
+              <label class="block text-sm font-medium text-gray-700 mb-1">用户名</label>
+              <input type="text" class="form-input" value="交易员_张三">
+            </div>
+            <div class="col-span-1">
+              <label class="block text-sm font-medium text-gray-700 mb-1">邮箱</label>
+              <input type="text" class="form-input" value="134****7890@qq.com">
+            </div>
+            <div class="col-span-2 mt-2">
+              <label class="block text-sm font-medium text-gray-700 mb-1">安全提示</label>
+              <input type="text" class="form-input" placeholder="当前未设置安全提示问题">
+            </div>
+            <div class="col-span-2 mt-2">
+              <label class="block text-sm font-medium text-gray-700 mb-1">手机号</label>
+              <input type="text" class="form-input" placeholder="+86 134 **** 7890">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-card">
+        <h2 class="mb-6">会员等级与权益</h2>
+        <div class="grid grid-cols-3 gap-6">
+          <div class="border border-gray-200 rounded-lg p-6 relative">
+            <div class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 px-4 py-1 bg-gray-100 text-gray-700 rounded-full font-medium">
+              初级会员
+            </div>
+            <div class="text-center mb-4 pt-4">
+              <p class="text-3xl font-bold">$29<span class="text-sm font-normal">/月</span></p>
+              <p class="text-sm text-gray-500 mt-2">适合新手交易者</p>
+            </div>
+            <ul class="space-y-3">
+              <li class="flex items-center">
+                <iconify-icon icon="ic:round-check-circle" class="mr-2 text-green-500" width="20"></iconify-icon>
+                <span>绑定1个API密钥</span>
+              </li>
+              <li class="flex items-center">
+                <iconify-icon icon="ic:round-check-circle" class="mr-2 text-green-500" width="20"></iconify-icon>
+                <span>每天$20 AI对话额度</span>
+              </li>
+              <li class="flex items-center">
+                <iconify-icon icon="ic:round-check-circle" class="mr-2 text-green-500" width="20"></iconify-icon>
+                <span>Tick级数据回测100次/天</span>
+              </li>
+              <li class="flex items-center">
+                <iconify-icon icon="ic:round-check-circle" class="mr-2 text-green-500" width="20"></iconify-icon>
+                <span>无限K线级数据回测</span>
+              </li>
+              <li class="flex items-center">
+                <iconify-icon icon="ic:round-check-circle" class="mr-2 text-green-500" width="20"></iconify-icon>
+                <span>1GB交易心得存储空间</span>
+              </li>
+            </ul>
+            <button class="border border-gray-300 text-gray-700 rounded-lg w-full mt-6 py-2 hover:bg-gray-50">升级会员</button>
+          </div>
+
+          <div class="border-2 border-blue-600 rounded-lg p-6 relative bg-blue-50 shadow-lg">
+            <div class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 px-4 py-1 bg-blue-600 text-white rounded-full font-medium">
+              高级会员
+            </div>
+            <div class="text-center mb-4 pt-4">
+              <p class="text-3xl font-bold">$99<span class="text-sm font-normal">/月</span></p>
+              <p class="text-sm text-gray-500 mt-2">适合活跃交易者</p>
+            </div>
+            <ul class="space-y-3">
+              <li class="flex items-center">
+                <iconify-icon icon="ic:round-check-circle" class="mr-2 text-blue-600" width="20"></iconify-icon>
+                <span>绑定5个API密钥</span>
+              </li>
+              <li class="flex items-center">
+                <iconify-icon icon="ic:round-check-circle" class="mr-2 text-blue-600" width="20"></iconify-icon>
+                <span>每天$100 AI对话额度</span>
+              </li>
+              <li class="flex items-center">
+                <iconify-icon icon="ic:round-check-circle" class="mr-2 text-blue-600" width="20"></iconify-icon>
+                <span>Tick级数据回测500次/天</span>
+              </li>
+              <li class="flex items-center">
+                <iconify-icon icon="ic:round-check-circle" class="mr-2 text-blue-600" width="20"></iconify-icon>
+                <span>无限K线级数据回测</span>
+              </li>
+              <li class="flex items-center">
+                <iconify-icon icon="ic:round-check-circle" class="mr-2 text-blue-600" width="20"></iconify-icon>
+                <span>5GB交易心得存储空间</span>
+              </li>
+            </ul>
+            <button class="primary-btn w-full mt-6" onclick="window.location.href='membership.html'">续费会员</button>
+          </div>
+
+          <div class="border border-gray-200 rounded-lg p-6 relative">
+            <div class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 px-4 py-1 bg-yellow-500 text-white rounded-full font-medium">
+              专业会员
+            </div>
+            <div class="text-center mb-4 pt-4">
+              <p class="text-3xl font-bold">$199<span class="text-sm font-normal">/月</span></p>
+              <p class="text-sm text-gray-500 mt-2">适合专业交易者</p>
+            </div>
+            <ul class="space-y-3">
+              <li class="flex items-center">
+                <iconify-icon icon="ic:round-check-circle" class="mr-2 text-green-500" width="20"></iconify-icon>
+                <span>绑定20个API密钥</span>
+              </li>
+              <li class="flex items-center">
+                <iconify-icon icon="ic:round-check-circle" class="mr-2 text-green-500" width="20"></iconify-icon>
+                <span>每天$200 AI对话额度</span>
+              </li>
+              <li class="flex items-center">
+                <iconify-icon icon="ic:round-check-circle" class="mr-2 text-green-500" width="20"></iconify-icon>
+                <span>Tick级数据回测2000次/天</span>
+              </li>
+              <li class="flex items-center">
+                <iconify-icon icon="ic:round-check-circle" class="mr-2 text-green-500" width="20"></iconify-icon>
+                <span>无限K线级数据回测</span>
+              </li>
+              <li class="flex items-center">
+                <iconify-icon icon="ic:round-check-circle" class="mr-2 text-green-500" width="20"></iconify-icon>
+                <span>20GB交易心得存储空间</span>
+              </li>
+            </ul>
+            <button class="border border-gray-300 text-gray-700 rounded-lg w-full mt-6 py-2 hover:bg-gray-50">升级会员</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // AI对话窗口相关
+      const aiDialog = document.getElementById('ai-dialog-overlay');
+      const openAiBtn = document.getElementById('ai-analyze-btn');
+      const closeAiBtn = document.getElementById('close-ai-dialog');
+      const aiInput = document.getElementById('ai-input');
+      const sendToAiBtn = document.getElementById('send-to-ai');
+      const aiChatContent = document.getElementById('ai-chat-content');
+      const generateStrategy = document.getElementById('generate-strategy');
+      const categoryFilter = document.getElementById('category-filter');
+
+      // 打开AI对话窗口
+      openAiBtn.addEventListener('click', () => {
+        const selectedCategory = categoryFilter.value;
+        aiDialog.classList.remove('hidden');
+
+        // 添加基于选择的类别的初始消息
+        if (selectedCategory && selectedCategory !== '所有分类') {
+          setTimeout(() => {
+            addAiMessage(`我已经准备好分析您的${selectedCategory}类交易记录。您希望了解什么？或者您想要我总结哪些关键点？`);
+          }, 500);
+        }
+      });
+
+      // 关闭AI对话窗口
+      closeAiBtn.addEventListener('click', () => {
+        aiDialog.classList.add('hidden');
+      });
+
+      // 发送消息给AI
+      sendToAiBtn.addEventListener('click', () => {
+        sendUserMessageToAi();
+      });
+
+      // 按Enter发送消息
+      aiInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          sendUserMessageToAi();
+        }
+      });
+
+      // 发送用户消息到AI并处理回复
+      function sendUserMessageToAi() {
+        const message = aiInput.value.trim();
+        if (!message) return;
+
+        // 显示用户消息
+        addUserMessage(message);
+        aiInput.value = '';
+
+        // 检测是否需要生成策略
+        const needStrategy = generateStrategy.checked ||
+                            message.includes('生成策略') ||
+                            message.includes('下单') ||
+                            message.includes('创建策略');
+
+        // 模拟AI思考
+        let loadingMessage = addAiMessage('<div class="flex"><div class="loading-dots">思考中<span>.</span><span>.</span><span>.</span></div></div>');
+
+        setTimeout(() => {
+          // 移除加载消息
+          loadingMessage.remove();
+
+          // 根据用户输入生成AI响应
+          let aiResponse = '';
+
+          if (needStrategy) {
+            aiResponse = generateAiStrategyResponse(message);
+          } else {
+            aiResponse = generateAiAnalysisResponse(message);
+          }
+
+          // 显示AI响应
+          addAiMessage(aiResponse);
+        }, 1500);
+      }
+
+      // 添加用户消息到对话
+      function addUserMessage(text) {
+        const messageHTML = `
+          <div class="flex items-start justify-end mb-4">
+            <div class="bg-gray-100 p-3 rounded-xl rounded-tr-none max-w-[80%]">
+              <p>${text}</p>
+            </div>
+            <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center ml-3">
+              <iconify-icon icon="mdi:account-circle"></iconify-icon>
+            </div>
+          </div>
+        `;
+        aiChatContent.insertAdjacentHTML('beforeend', messageHTML);
+        aiChatContent.scrollTop = aiChatContent.scrollHeight;
+      }
+
+      // 添加AI消息到对话
+      function addAiMessage(text) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'flex items-start mb-4';
+        messageDiv.innerHTML = `
+          <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center mr-3">
+            <iconify-icon icon="mdi:robot-happy" style="color: #1a3d7c;"></iconify-icon>
+          </div>
+          <div class="bg-blue-50 p-3 rounded-xl rounded-tl-none max-w-[80%]">
+            ${text}
+          </div>
+        `;
+        aiChatContent.appendChild(messageDiv);
+        aiChatContent.scrollTop = aiChatContent.scrollHeight;
+        return messageDiv;
+      }
+
+      // 生成AI分析响应
+      function generateAiAnalysisResponse(message) {
+        if (message.includes('BTC') || message.includes('比特币')) {
+          return `
+            <p><strong>BTC交易分析总结:</strong></p>
+            <p>根据您的交易记录分析，您的BTC交易有以下特点：</p>
+            <ul class="list-disc ml-5 mt-2">
+              <li>在60,000-65,000区间内交易成功率最高（78%）</li>
+              <li>使用EMA交叉策略的胜率（68%）高于RSI策略（51%）</li>
+              <li>平均持仓时间过短（1.8小时），可能错过更大行情</li>
+              <li>止损设置合理，但止盈过早（平均2.3%）</li>
+            </ul>
+            <p class="mt-2"><strong>改进建议:</strong></p>
+            <ul class="list-disc ml-5 mt-1">
+              <li>延长盈利单的持有时间，使用移动止损</li>
+              <li>减少交易频率，重点关注高胜率的EMA交叉信号</li>
+              <li>结合多时间周期分析确认趋势，避免逆势交易</li>
+            </ul>
+          `;
+        } else if (message.includes('错误') || message.includes('失败')) {
+          return `
+            <p><strong>交易错误模式分析:</strong></p>
+            <p>我分析了您的亏损交易记录，发现以下共同模式：</p>
+            <ol class="list-decimal ml-5 mt-2">
+              <li>在大趋势转折点频繁交易（占亏损的43%）</li>
+              <li>追涨杀跌行为明显，情绪驱动交易</li>
+              <li>对大型经济新闻事件反应不及时</li>
+              <li>止损位设置过宽，导致单笔亏损过大</li>
+            </ol>
+            <p class="mt-2">建议制定严格的交易计划，控制风险，避免情绪化交易。特别是在市场高波动期，应减小仓位或暂时观望。</p>
+          `;
+        } else {
+          return `
+            <p>根据您目前的交易记录分析，我发现以下几点值得注意：</p>
+            <ol class="list-decimal ml-5 mt-2">
+              <li>您的交易胜率为62%，高于平均水平</li>
+              <li>周三和周四的交易表现最佳（胜率达74%）</li>
+              <li>欧盘时段的交易决策质量高于亚盘</li>
+              <li>在高波动市场中表现更好，低波动区间交易收益率偏低</li>
+            </ol>
+            <p class="mt-2">您可以进一步优化交易时段选择，以及在高波动性市场中适当增加仓位。如需更具体的分析，可告诉我您关注的特定币种或策略类型。</p>
+          `;
+        }
+      }
+
+      // 生成AI策略响应
+      function generateAiStrategyResponse(message) {
+        let strategyType = '';
+        let symbol = 'BTC/USDT';
+
+        // 提取用户可能提到的策略类型和交易对
+        if (message.includes('EMA') || message.includes('均线')) {
+          strategyType = 'EMA交叉';
+        } else if (message.includes('RSI') || message.includes('相对强弱')) {
+          strategyType = 'RSI超买超卖';
+        } else if (message.includes('布林带') || message.includes('Bollinger')) {
+          strategyType = '布林带突破';
+        }
+
+        // 提取可能的交易对
+        if (message.includes('ETH')) symbol = 'ETH/USDT';
+        if (message.includes('SOL')) symbol = 'SOL/USDT';
+
+        // 如果没指定策略类型，默认使用EMA
+        if (!strategyType) strategyType = 'EMA交叉';
+
+        const pythonCode = generatePythonStrategyCode(strategyType, symbol);
+
+        return `
+          <p><strong>已为您生成${strategyType}策略：</strong></p>
+          <p class="mb-2">交易对：${symbol}，时间周期：1小时</p>
+          <div class="bg-gray-800 text-green-400 p-3 rounded-md text-sm font-mono overflow-x-auto">
+            <pre>${pythonCode}</pre>
+          </div>
+          <div class="mt-3">
+            <button class="bg-green-600 text-white px-4 py-2 rounded-md text-sm flex items-center hover:bg-green-700">
+              <iconify-icon icon="mdi:rocket-launch" class="mr-1"></iconify-icon>
+              部署到实盘
+            </button>
+            <p class="text-xs text-gray-500 mt-1">该策略已针对当前市场环境优化参数</p>
+          </div>
+        `;
+      }
+
+      // 生成Python策略代码
+      function generatePythonStrategyCode(strategyType, symbol) {
+        if (strategyType === 'EMA交叉') {
+          return `# ${symbol} EMA交叉策略
+import ccxt
+import pandas as pd
+import numpy as np
+import time
+
+# 交易所配置
+exchange = ccxt.binance({
+    'apiKey': 'YOUR_API_KEY',
+    'secret': 'YOUR_SECRET',
+    'enableRateLimit': True
+})
+
+# 策略参数
+symbol = '${symbol}'
+timeframe = '1h'
+ema_short = 10
+ema_long = 50
+stop_loss_pct = 1.5
+take_profit_pct = 3.0
+
+def fetch_ohlcv(symbol, timeframe):
+    ohlcv = exchange.fetch_ohlcv(symbol, timeframe, limit=100)
+    df = pd.DataFrame(ohlcv, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume'])
+    df['timestamp'] = pd.to_datetime(df['timestamp'], unit='ms')
+    return df
+
+def calculate_indicators(df):
+    # 计算EMA指标
+    df['ema_short'] = df['close'].ewm(span=ema_short, adjust=False).mean()
+    df['ema_long'] = df['close'].ewm(span=ema_long, adjust=False).mean()
+    return df
+
+def check_signal(df):
+    # 检查是否有交叉信号
+    df['signal'] = 0
+    df.loc[df['ema_short'] > df['ema_long'], 'signal'] = 1
+    df.loc[df['ema_short'] < df['ema_long'], 'signal'] = -1
+
+    # 检测信号变化点
+    df['signal_change'] = df['signal'].diff()
+    return df
+
+def execute_strategy():
+    while True:
+        try:
+            # 获取市场数据
+            df = fetch_ohlcv(symbol, timeframe)
+            df = calculate_indicators(df)
+            df = check_signal(df)
+
+            # 获取最新信号
+            latest = df.iloc[-1]
+            signal_change = latest['signal_change']
+            current_price = latest['close']
+
+            # 如果有买入信号
+            if signal_change == 2:  # 从-1变为1
+                amount = 0.01  # 购买数量，按需调整
+                order = exchange.create_market_buy_order(symbol, amount)
+                stop_loss = current_price * (1 - stop_loss_pct / 100)
+                take_profit = current_price * (1 + take_profit_pct / 100)
+                print(f"买入 {symbol}，价格: {current_price}, 止损: {stop_loss}, 止盈: {take_profit}")
+
+            # 如果有卖出信号
+            elif signal_change == -2:  # 从1变为-1
+                # 检查是否有持仓
+                balance = exchange.fetch_balance()
+                base_currency = symbol.split('/')[0]
+                if base_currency in balance and balance[base_currency]['free'] > 0:
+                    amount = balance[base_currency]['free']
+                    order = exchange.create_market_sell_order(symbol, amount)
+                    print(f"卖出 {symbol}，价格: {current_price}")
+
+            # 间隔10分钟检查一次
+            time.sleep(600)
+
+        except Exception as e:
+            print(f"执行错误: {e}")
+            time.sleep(60)
+
+if __name__ == "__main__":
+    execute_strategy()`;
+        } else if (strategyType === 'RSI超买超卖') {
+          return `# ${symbol} RSI超买超卖策略
+import ccxt
+import pandas as pd
+import numpy as np
+import time
+
+# 交易所配置
+exchange = ccxt.binance({
+    'apiKey': 'YOUR_API_KEY',
+    'secret': 'YOUR_SECRET',
+    'enableRateLimit': True
+})
+
+# 策略参数
+symbol = '${symbol}'
+timeframe = '1h'
+rsi_period = 14
+rsi_overbought = 70
+rsi_oversold = 30
+stop_loss_pct = 2.0
+take_profit_pct = 4.0
+
+def fetch_ohlcv(symbol, timeframe):
+    ohlcv = exchange.fetch_ohlcv(symbol, timeframe, limit=100)
+    df = pd.DataFrame(ohlcv, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume'])
+    df['timestamp'] = pd.to_datetime(df['timestamp'], unit='ms')
+    return df
+
+def calculate_rsi(df, period=14):
+    close_delta = df['close'].diff()
+    up = close_delta.clip(lower=0)
+    down = -1 * close_delta.clip(upper=0)
+
+    ma_up = up.rolling(window=period).mean()
+    ma_down = down.rolling(window=period).mean()
+
+    rsi = ma_up / (ma_up + ma_down) * 100
+    df['rsi'] = rsi
+    return df
+
+def check_signal(df):
+    # RSI超买超卖信号
+    df['signal'] = 0
+    df.loc[df['rsi'] < rsi_oversold, 'signal'] = 1  # 超卖买入
+    df.loc[df['rsi'] > rsi_overbought, 'signal'] = -1  # 超买卖出
+
+    return df
+
+def execute_strategy():
+    in_position = False
+    while True:
+        try:
+            # 获取市场数据
+            df = fetch_ohlcv(symbol, timeframe)
+            df = calculate_rsi(df, rsi_period)
+            df = check_signal(df)
+
+            # 获取最新信号
+            latest = df.iloc[-1]
+            signal = latest['signal']
+            current_price = latest['close']
+
+            # 执行交易
+            if signal == 1 and not in_position:  # 买入信号
+                amount = 0.01  # 购买数量，按需调整
+                order = exchange.create_market_buy_order(symbol, amount)
+                in_position = True
+                entry_price = current_price
+                stop_loss = entry_price * (1 - stop_loss_pct / 100)
+                take_profit = entry_price * (1 + take_profit_pct / 100)
+                print(f"买入 {symbol}，价格: {current_price}, 止损: {stop_loss}, 止盈: {take_profit}")
+
+            elif (signal == -1 or current_price <= stop_loss or current_price >= take_profit) and in_position:  # 卖出信号或触发止盈止损
+                # 检查是否有持仓
+                balance = exchange.fetch_balance()
+                base_currency = symbol.split('/')[0]
+                if base_currency in balance and balance[base_currency]['free'] > 0:
+                    amount = balance[base_currency]['free']
+                    order = exchange.create_market_sell_order(symbol, amount)
+                    in_position = False
+                    print(f"卖出 {symbol}，价格: {current_price}")
+
+            # 间隔5分钟检查一次
+            time.sleep(300)
+
+        except Exception as e:
+            print(f"执行错误: {e}")
+            time.sleep(60)
+
+if __name__ == "__main__":
+    execute_strategy()`;
+        } else {
+          return `# ${symbol} 布林带突破策略
+import ccxt
+import pandas as pd
+import numpy as np
+import time
+
+# 交易所配置
+exchange = ccxt.binance({
+    'apiKey': 'YOUR_API_KEY',
+    'secret': 'YOUR_SECRET',
+    'enableRateLimit': True
+})
+
+# 策略参数
+symbol = '${symbol}'
+timeframe = '1h'
+bb_period = 20
+bb_dev = 2.0
+stop_loss_pct = 1.8
+take_profit_pct = 3.5
+
+def fetch_ohlcv(symbol, timeframe):
+    ohlcv = exchange.fetch_ohlcv(symbol, timeframe, limit=100)
+    df = pd.DataFrame(ohlcv, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume'])
+    df['timestamp'] = pd.to_datetime(df['timestamp'], unit='ms')
+    return df
+
+def calculate_bollinger_bands(df, period=20, dev=2):
+    df['middle_band'] = df['close'].rolling(window=period).mean()
+    df['std'] = df['close'].rolling(window=period).std()
+    df['upper_band'] = df['middle_band'] + (df['std'] * dev)
+    df['lower_band'] = df['middle_band'] - (df['std'] * dev)
+    return df
+
+def check_signal(df):
+    # 布林带突破信号
+    df['signal'] = 0
+
+    # 当价格突破上轨，卖出信号
+    df.loc[df['close'] > df['upper_band'], 'signal'] = -1
+
+    # 当价格突破下轨，买入信号
+    df.loc[df['close'] < df['lower_band'], 'signal'] = 1
+
+    return df
+
+def execute_strategy():
+    in_position = False
+    while True:
+        try:
+            # 获取市场数据
+            df = fetch_ohlcv(symbol, timeframe)
+            df = calculate_bollinger_bands(df, bb_period, bb_dev)
+            df = check_signal(df)
+
+            # 获取最新信号
+            latest = df.iloc[-1]
+            signal = latest['signal']
+            current_price = latest['close']
+
+            # 执行交易
+            if signal == 1 and not in_position:  # 买入信号
+                amount = 0.01  # 购买数量，按需调整
+                order = exchange.create_market_buy_order(symbol, amount)
+                in_position = True
+                entry_price = current_price
+                stop_loss = entry_price * (1 - stop_loss_pct / 100)
+                take_profit = entry_price * (1 + take_profit_pct / 100)
+                print(f"买入 {symbol}，价格: {current_price}, 止损: {stop_loss}, 止盈: {take_profit}")
+
+            elif (signal == -1 or current_price <= stop_loss or current_price >= take_profit) and in_position:  # 卖出信号或触发止盈止损
+                # 检查是否有持仓
+                balance = exchange.fetch_balance()
+                base_currency = symbol.split('/')[0]
+                if base_currency in balance and balance[base_currency]['free'] > 0:
+                    amount = balance[base_currency]['free']
+                    order = exchange.create_market_sell_order(symbol, amount)
+                    in_position = False
+                    print(f"卖出 {symbol}，价格: {current_price}")
+
+            # 间隔5分钟检查一次
+            time.sleep(300)
+
+        except Exception as e:
+            print(f"执行错误: {e}")
+            time.sleep(60)
+
+if __name__ == "__main__":
+    execute_strategy()`;
+        }
+      }
+
+      // 添加CSS样式
+      const style = document.createElement('style');
+      style.textContent = `
+        .loading-dots span {
+          animation-name: blink;
+          animation-duration: 1.4s;
+          animation-iteration-count: infinite;
+          animation-fill-mode: both;
+        }
+        .loading-dots span:nth-child(2) {
+          animation-delay: .2s;
+        }
+        .loading-dots span:nth-child(3) {
+          animation-delay: .4s;
+        }
+        @keyframes blink {
+          0% { opacity: .2; }
+          20% { opacity: 1; }
+          100% { opacity: .2; }
+        }
+      `;
+      document.head.appendChild(style);
+
+      // Earnings chart
+      const earningsChart = echarts.init(document.getElementById('earningsChart'));
+      const earningsOption = {
+        tooltip: {
+          trigger: 'axis'
+        },
+        xAxis: {
+          type: 'category',
+          data: ['12月', '1月', '2月', '3月', '4月', '5月'],
+          axisLine: {
+            lineStyle: { color: '#e2e8f0' }
+          }
+        },
+        yAxis: {
+          type: 'value',
+          name: '收益率(%)',
+          axisLine: {
+            lineStyle: { color: '#e2e8f0' }
+          },
+          splitLine: {
+            lineStyle: { color: '#f1f5f9' }
+          }
+        },
+        series: [{
+          name: '收益率',
+          type: 'line',
+          smooth: true,
+          lineStyle: {
+            width: 4,
+            color: '#1a3d7c'
+          },
+          itemStyle: {
+            color: '#1a3d7c'
+          },
+          areaStyle: {
+            color: {
+              type: 'linear',
+              x: 0, y: 0, x2: 0, y2: 1,
+              colorStops: [
+                { offset: 0, color: 'rgba(26, 61, 124, 0.2)' },
+                { offset: 1, color: 'rgba(26, 61, 124, 0.01)' }
+              ]
+            }
+          },
+          data: [4.2, 5.7, 8.1, 9.5, 16.3, 12.3]
+        }],
+        grid: {
+          left: 50,
+          right: 30,
+          bottom: 20,
+          top: 30,
+          containLabel: true
+        }
+      };
+      earningsChart.setOption(earningsOption);
+
+      // K线图
+      const klineChart = echarts.init(document.getElementById('klineChart'));
+      const klineOption = {
+        title: {
+          text: 'BTC/USDT 1小时图',
+          left: 'left',
+          textStyle: {
+            fontSize: 16,
+            fontWeight: 'bold'
+          }
+        },
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'cross'
+          }
+        },
+        legend: {
+          data: ['K线', 'MA10', 'MA50'],
+          right: 20,
+          textStyle: {
+            color: '#1e293b'
+          }
+        },
+        grid: {
+          left: '5%',
+          right: '5%',
+          top: '15%',
+          bottom: '12%'
+        },
+        xAxis: {
+          type: 'category',
+          data: ['10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'],
+          scale: true,
+          axisLine: {
+            lineStyle: { color: '#e2e8f0' }
+          }
+        },
+        yAxis: {
+          scale: true,
+          axisLine: {
+            lineStyle: { color: '#e2e8f0' }
+          },
+          splitLine: { show: true }
+        },
+        series: [
+          {
+            name: 'K线',
+            type: 'candlestick',
+            data: [
+              [63450, 63520, 63380, 63490],
+              [63483, 63650, 63450, 63580],
+              [63585, 63620, 63420, 63450],
+              [63452, 63560, 63350, 63420],
+              [63422, 63530, 63280, 63290],
+              [63295, 63480, 63220, 63410],
+              [63415, 63540, 63330, 63370],
+              [63373, 63490, 63310, 63350]
+            ],
+            itemStyle: {
+              color: '#21ce90',
+              color0: '#f53d3d',
+              borderColor: '#21ce90',
+              borderColor0: '#f53d3d'
+            }
+          },
+          {
+            name: 'MA10',
+            type: 'line',
+            data: [63460, 63490, 63450, 63430, 63410, 63390, 63370, 63365],
+            smooth: true,
+            lineStyle: {
+              width: 2,
+              color: '#f0b90b'
+            },
+            symbol: 'none'
+          },
+          {
+            name: 'MA50',
+            type: 'line',
+            data: [63550, 63540, 63520, 63490, 63450, 63430, 63390, 63380],
+            smooth: true,
+            lineStyle: {
+              width: 2,
+              color: '#1a3d7c'
+            },
+            symbol: 'none'
+          }
+        ],
+        dataZoom: [
+          {
+            type: 'inside',
+            start: 50,
+            end: 100
+          }
+        ]
+      };
+      klineChart.setOption(klineOption);
+
+      // Backtest chart
+      const backtestChart = echarts.init(document.getElementById('backtestChart'));
+      const backtestOption = {
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'cross'
+          }
+        },
+        legend: {
+          data: ['价格', '买入信号', '卖出信号'],
+          bottom: 0,
+          textStyle: {
+            color: '#1e293b'
+          }
+        },
+        grid: {
+          left: '5%',
+          right: '5%',
+          top: '5%',
+          bottom: '15%'
+        },
+        xAxis: {
+          type: 'category',
+          data: ['5/1', '5/5', '5/10', '5/15', '5/20'],
+          axisLine: {
+            lineStyle: { color: '#e2e8f0' }
+          }
+        },
+        yAxis: {
+          type: 'value',
+          min: 61000,
+          axisLine: {
+            lineStyle: { color: '#e2e8f0' }
+          },
+          splitLine: { show: true }
+        },
+        series: [
+          {
+            name: '价格',
+            type: 'line',
+            data: [61250, 62560, 64520, 63220, 63350],
+            lineStyle: {
+              width: 3,
+              color: '#1a3d7c'
+            },
+            symbol: 'none'
+          },
+          {
+            name: '买入信号',
+            type: 'scatter',
+            data: [
+              [1, 61250],
+              [2, 62560],
+              [4, 63220]
+            ],
+            symbol: 'triangle',
+            symbolSize: 12,
+            symbolRotate: 180,
+            itemStyle: {
+              color: '#21ce90'
+            }
+          },
+          {
+            name: '卖出信号',
+            type: 'scatter',
+            data: [
+              [0, 63420],
+              [3, 63520],
+              [4, 64550]
+            ],
+            symbol: 'triangle',
+            symbolSize: 12,
+            itemStyle: {
+              color: '#f53d3d'
+            }
+          }
+        ]
+      };
+      backtestChart.setOption(backtestOption);
+    });
+  </script>
+
+  <!-- 添加语言切换和主题切换脚本 -->
+  <script>
+    // 语言数据
+    const translations = {
+      zh: {
+        membershipRenewal: '会员续费',
+        selectMembershipType: '选择会员类型并完成支付',
+        selectPackage: '选择会员套餐',
+        monthly: '月付',
+        quarterly: '季付',
+        yearly: '年付',
+        save: '省',
+        perMonth: '/月',
+        perQuarter: '/季度',
+        perYear: '/年',
+        autoRenewal: '自动续费',
+        paymentMethod: '支付方式',
+        paymentAddress: 'USDT 支付地址',
+        copy: '复制',
+        sendUsdt: '请发送 53.99 USDT (TRC20) 到上述地址',
+        scanQrCode: '扫描上方二维码支付',
+        paymentComplete: '我已完成支付',
+        cancelReturn: '取消并返回',
+        orderSummary: '订单摘要',
+        premiumMembership: '高级会员',
+        discount: '优惠折扣',
+        total: '总计',
+        membershipBenefits: '会员权益:',
+        advancedCharts: '高级K线图分析工具',
+        unlimitedApiKeys: '无限API密钥管理',
+        aiIndicators: 'AI指标助手查询/天',
+        aiTradingInsights: 'AI交易心得分析',
+        aiStrategyOptimization: 'AI策略优化/天',
+        contactSupport: '如有问题，请联系客服',
+        terms: '服务条款'
+      },
+      en: {
+        membershipRenewal: 'Membership Renewal',
+        selectMembershipType: 'Select membership type and complete payment',
+        selectPackage: 'Select Membership Package',
+        monthly: 'Monthly',
+        quarterly: 'Quarterly',
+        yearly: 'Yearly',
+        save: 'Save',
+        perMonth: '/month',
+        perQuarter: '/quarter',
+        perYear: '/year',
+        autoRenewal: 'Auto-renewal',
+        paymentMethod: 'Payment Method',
+        paymentAddress: 'USDT Payment Address',
+        copy: 'Copy',
+        sendUsdt: 'Please send 53.99 USDT (TRC20) to the address above',
+        scanQrCode: 'Scan QR code to pay',
+        paymentComplete: 'Payment Complete',
+        cancelReturn: 'Cancel and Return',
+        orderSummary: 'Order Summary',
+        premiumMembership: 'Premium Membership',
+        discount: 'Discount',
+        total: 'Total',
+        membershipBenefits: 'Membership Benefits:',
+        advancedCharts: 'Advanced Chart Analysis Tools',
+        unlimitedApiKeys: 'Unlimited API Key Management',
+        aiIndicators: 'AI Indicator Assistant Queries/day',
+        aiTradingInsights: 'AI Trading Insights Analysis',
+        aiStrategyOptimization: 'AI Strategy Optimizations/day',
+        contactSupport: 'Contact support if you have any questions',
+        terms: 'Terms of Service'
+      }
+    };
+
+    // 设置当前语言
+    let currentLang = localStorage.getItem('trademe-language') || 'zh';
+
+    // 设置当前主题
+    let darkMode = localStorage.getItem('trademe-theme') === 'dark';
+    if (darkMode) {
+      document.body.classList.add('dark-mode');
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      // 初始化语言按钮
+      const langButtons = document.querySelectorAll('.lang-toggle');
+      langButtons.forEach(btn => {
+        if (btn.dataset.lang === currentLang) {
+          btn.classList.add('bg-gray-100');
+        } else {
+          btn.classList.remove('bg-gray-100');
+        }
+
+        btn.addEventListener('click', () => {
+          currentLang = btn.dataset.lang;
+          localStorage.setItem('trademe-language', currentLang);
+
+          // 更新按钮状态
+          langButtons.forEach(b => {
+            if (b.dataset.lang === currentLang) {
+              b.classList.add('bg-gray-100');
+            } else {
+              b.classList.remove('bg-gray-100');
+            }
+          });
+
+          // 更新页面文本
+          updatePageLanguage();
+        });
+      });
+
+      // 初始化主题切换按钮
+      const themeToggle = document.getElementById('theme-toggle');
+      if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+          darkMode = !darkMode;
+          if (darkMode) {
+            document.body.classList.add('dark-mode');
+            localStorage.setItem('trademe-theme', 'dark');
+          } else {
+            document.body.classList.remove('dark-mode');
+            localStorage.setItem('trademe-theme', 'light');
+          }
+        });
+      }
+
+      // 初始化页面语言
+      updatePageLanguage();
+    });
+
+    // 更新页面语言函数
+    function updatePageLanguage() {
+      const elements = document.querySelectorAll('[data-i18n]');
+      elements.forEach(el => {
+        const key = el.dataset.i18n;
+        if (translations[currentLang][key]) {
+          el.textContent = translations[currentLang][key];
+        }
+      });
+    }
+  </script>
+
+</body></html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>最终React测试</title>
+    <style>
+        body { font-family: Arial; margin: 20px; line-height: 1.6; }
+        .status { padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .success { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
+        .error { background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
+        .loading { background: #fff3cd; border: 1px solid #ffeaa7; color: #856404; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 5px; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <h1>🔧 React修复测试</h1>
+    
+    <div class="status loading" id="status">
+        ⏳ 正在测试React应用...
+    </div>
+    
+    <div id="logs">
+        <h3>执行日志:</h3>
+        <pre id="log-content"></pre>
+    </div>
+    
+    <!-- React应用根节点 -->
+    <div id="root" style="border: 2px dashed #ccc; padding: 20px; margin: 20px 0; min-height: 50px;">
+        <em>React应用将在这里渲染...</em>
+    </div>
+    
+    <script>
+        let logs = [];
+        const logElement = document.getElementById('log-content');
+        const statusElement = document.getElementById('status');
+        
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logMessage = `[${timestamp}] ${message}`;
+            logs.push(logMessage);
+            logElement.textContent = logs.join('\n');
+            console.log(logMessage);
+        }
+        
+        function setStatus(message, className) {
+            statusElement.textContent = message;
+            statusElement.className = `status ${className}`;
+        }
+        
+        // 错误处理
+        window.addEventListener('error', (e) => {
+            log(`❌ 全局错误: ${e.message}`, 'error');
+            setStatus('❌ 发生错误，请查看日志', 'error');
+        });
+        
+        window.addEventListener('unhandledrejection', (e) => {
+            log(`❌ Promise错误: ${e.reason}`, 'error');
+            setStatus('❌ Promise错误，请查看日志', 'error');
+        });
+        
+        // 开始测试
+        log('🚀 开始测试React应用加载');
+        
+        // 直接动态导入main.tsx
+        import('/src/main.tsx')
+            .then((module) => {
+                log('✅ main.tsx导入成功');
+                log(`模块信息: ${Object.keys(module).join(', ')}`);
+                
+                // 检查React是否渲染
+                const checkRender = () => {
+                    const root = document.getElementById('root');
+                    const content = root.innerHTML.trim();
+                    
+                    if (content && !content.includes('React应用将在这里渲染')) {
+                        log('✅ React应用已成功渲染!');
+                        log(`渲染内容长度: ${content.length}字符`);
+                        setStatus('✅ React应用加载成功!', 'success');
+                        
+                        // 显示渲染内容的摘要
+                        const preview = content.length > 200 ? content.substring(0, 200) + '...' : content;
+                        log(`内容预览: ${preview}`);
+                    } else {
+                        log('⏳ React应用尚未渲染，继续等待...');
+                        setTimeout(checkRender, 1000);
+                    }
+                };
+                
+                // 等待一点时间让React渲染
+                setTimeout(checkRender, 2000);
+            })
+            .catch(error => {
+                log(`❌ main.tsx导入失败: ${error.message}`, 'error');
+                if (error.stack) {
+                    log(`错误堆栈: ${error.stack}`, 'error');
+                }
+                setStatus('❌ React应用加载失败', 'error');
+            });
+    </script>
+</body>
+</html>

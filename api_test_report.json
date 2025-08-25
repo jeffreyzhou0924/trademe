@@ -1,0 +1,71 @@
+{
+  "timestamp": "2025-08-21T13:34:40.618524",
+  "summary": {
+    "total": 10,
+    "passed": 7,
+    "failed": 3,
+    "pass_rate": 70.0
+  },
+  "results": [
+    {
+      "test": "用户服务健康检查",
+      "success": true,
+      "message": "状态: ok",
+      "timestamp": "2025-08-21T13:34:39.464998"
+    },
+    {
+      "test": "用户登录",
+      "success": true,
+      "message": "获得token: eyJhbGciOiJIUzI1NiIs...",
+      "timestamp": "2025-08-21T13:34:39.874152"
+    },
+    {
+      "test": "获取用户信息",
+      "success": true,
+      "message": "用户: None",
+      "timestamp": "2025-08-21T13:34:39.884741"
+    },
+    {
+      "test": "交易服务健康检查",
+      "success": true,
+      "message": "状态: healthy",
+      "timestamp": "2025-08-21T13:34:39.889790"
+    },
+    {
+      "test": "获取策略列表",
+      "success": false,
+      "message": "状态码: 500, 响应: {\"detail\":\"获取策略列表失败: 1 validation error for StrategyList\\nstrategies.0.parameters\\n  Input should be",
+      "timestamp": "2025-08-21T13:34:39.949859"
+    },
+    {
+      "test": "创建策略",
+      "success": false,
+      "message": "状态码: 500, 响应: {\"success\":false,\"message\":\"内部服务器错误\",\"error\":\"\\\"'type'\\\"\",\"path\":\"http://localhost:8001/api/v1/strat",
+      "timestamp": "2025-08-21T13:34:39.988482"
+    },
+    {
+      "test": "获取回测列表",
+      "success": true,
+      "message": "找到 0 个回测",
+      "timestamp": "2025-08-21T13:34:40.011979"
+    },
+    {
+      "test": "AI对话",
+      "success": true,
+      "message": "响应长度: 257",
+      "timestamp": "2025-08-21T13:34:40.614821"
+    },
+    {
+      "test": "增强版交易API",
+      "success": false,
+      "message": "状态码: 401",
+      "timestamp": "2025-08-21T13:34:40.617875"
+    },
+    {
+      "test": "WebSocket连接",
+      "success": true,
+      "message": "跳过（待实现）",
+      "timestamp": "2025-08-21T13:34:40.617970"
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>最小React测试</title>
+    <script type="module">
+        console.log('🚀 开始最小React测试');
+        
+        try {
+            // 测试直接导入React
+            const React = await import('/node_modules/.vite/deps/react.js?v=0ef459ff');
+            console.log('✅ React导入成功', React);
+            
+            const ReactDOM = await import('/node_modules/.vite/deps/react-dom_client.js?v=0ef459ff');
+            console.log('✅ ReactDOM导入成功', ReactDOM);
+            
+            // 创建简单组件
+            const element = React.default.createElement('div', {}, 'Hello React!');
+            console.log('✅ React元素创建成功', element);
+            
+            // 尝试渲染
+            const root = ReactDOM.createRoot(document.getElementById('root'));
+            root.render(element);
+            console.log('✅ React渲染完成');
+            
+            setTimeout(() => {
+                const rootEl = document.getElementById('root');
+                console.log('渲染结果:', rootEl.innerHTML);
+            }, 1000);
+            
+        } catch (error) {
+            console.error('❌ React测试失败:', error);
+            console.error('错误堆栈:', error.stack);
+        }
+    </script>
+</head>
+<body>
+    <h1>最小React测试</h1>
+    <div id="root">Loading...</div>
+</body>
+</html>

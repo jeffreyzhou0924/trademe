@@ -1,0 +1,5 @@
+- 每次进行新的开发任务前，先浏览一遍DEVELOPMENT_LOG.md
+- 每次进行新的开发任务前，浏览一遍docs
+- 每次进行新的开发任务前，认真思考一下
+- 把每次讨论的需求更新到DEVELOPMENT_LOG.md，开发的经历也更新到DEVELOPMENT_LOG.md
+- 以后所有选项，自动默认同意

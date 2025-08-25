@@ -1,0 +1,56 @@
+# Web框架 (核心)
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+pydantic==2.5.1
+pydantic-settings==2.1.0
+
+# 数据库 (简化为SQLite)
+sqlalchemy==2.0.23
+aiosqlite==0.19.0  # SQLite异步支持
+redis==5.0.1       # 缓存
+
+# 交易所集成
+ccxt==4.1.64       # 统一交易所API
+websockets==12.0   # 实时数据
+
+# AI集成 (简化版本)
+openai==1.3.8      # OpenAI API客户端
+
+# 数据处理 (简化版本)
+pandas==2.1.4     # 数据分析
+numpy==1.25.2     # 数值计算
+
+# HTTP客户端
+httpx==0.25.2     # 异步HTTP客户端
+
+# 安全和认证
+python-jose[cryptography]==3.3.0  # JWT处理
+
+# 日志
+loguru==0.7.2     # 结构化日志
+
+# 工具库
+python-dotenv==1.0.0  # 环境变量
+
+# AI集成 (主要)
+anthropic==0.34.0      # Claude AI客户端
+
+# 中间件增强
+python-multipart==0.0.6  # 文件上传支持  
+slowapi==0.1.9         # 速率限制
+python-jose[cryptography]==3.3.0  # JWT处理 (已存在但确保版本)
+
+# 移除的依赖 (简化架构):
+# - pymysql (改用SQLite)
+# - influxdb-client (使用SQLite存储时序数据)
+# - celery, flower (移除复杂任务队列)
+# - scikit-learn (暂不需要机器学习)
+# - schedule (简化定时任务)
+# - prometheus-client (简化监控)
+# - passlib[bcrypt] (用户认证在用户服务)
+# - factory-boy (减少测试复杂度)
+# - mypy (暂时跳过严格类型检查)
+
+# 包总数: 从30个减少到20个 (33%减少)
+# 安装时间: 预计从8分钟减少到4分钟
+# 内存占用: 预计从800MB减少到400MB

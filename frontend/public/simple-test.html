@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head><title>简单测试</title></head>
+<body>
+    <h1>简单React测试</h1>
+    <div id="root">加载中...</div>
+    
+    <script>
+        console.log('开始测试');
+        
+        // 测试基本模块加载
+        import('/@vite/client')
+            .then(() => console.log('✅ Vite客户端OK'))
+            .catch(e => console.error('❌ Vite客户端失败:', e));
+            
+        import('/src/main.tsx')
+            .then(() => console.log('✅ Main模块OK'))
+            .catch(e => console.error('❌ Main模块失败:', e));
+            
+        // 检查React渲染
+        setTimeout(() => {
+            const root = document.getElementById('root');
+            if (root.innerHTML !== '加载中...') {
+                console.log('✅ React已渲染');
+            } else {
+                console.log('❌ React未渲染');
+            }
+        }, 3000);
+    </script>
+</body>
+</html>

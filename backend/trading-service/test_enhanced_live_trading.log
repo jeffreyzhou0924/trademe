@@ -1,0 +1,164 @@
+2025-08-21 12:58:08.570 | INFO     | __main__:run_all_tests:536 - ============================================================
+2025-08-21 12:58:08.570 | INFO     | __main__:run_all_tests:537 - 🚀 开始实盘交易功能集成测试
+2025-08-21 12:58:08.570 | INFO     | __main__:run_all_tests:538 - ============================================================
+2025-08-21 12:58:08.570 | INFO     | __main__:setup:36 - === 初始化测试环境 ===
+2025-08-21 12:58:08.587 | INFO     | __main__:setup:44 - ✅ 数据库连接成功
+2025-08-21 12:58:08.587 | INFO     | __main__:test_import_modules:71 - 
+🧪 测试1: 模块导入测试
+2025-08-21 12:58:08.590 | ERROR    | __main__:run_all_tests:560 - 测试执行错误: parameter without a default follows parameter with a default (enhanced_exchange_service.py, line 323)
+2025-08-21 12:58:08.590 | INFO     | __main__:test_exchange_connection:112 - 
+🧪 测试2: 交易所连接测试
+2025-08-21 12:58:09.329 | INFO     | __main__:log_test_result:63 - 支持的交易所: ✅ 通过
+2025-08-21 12:58:09.329 | INFO     | __main__:log_test_result:65 -   详情: 支持 6 个交易所: binance, okx, bybit, huobi, bitget, coinbase
+2025-08-21 12:58:09.341 | INFO     | __main__:log_test_result:63 - 创建交易所实例: ✅ 通过
+2025-08-21 12:58:09.342 | INFO     | __main__:log_test_result:65 -   详情: Binance沙盒实例创建成功
+2025-08-21 12:58:09.342 | INFO     | __main__:test_risk_validation:145 - 
+🧪 测试3: 风险管理验证
+2025-08-21 12:58:09.342 | INFO     | app.core.risk_manager:validate_order:116 - 开始订单风险验证: 用户1, BTC/USDT, buy, 数量0.001
+2025-08-21 12:58:09.364 | ERROR    | app.core.risk_manager:_calculate_optimal_position_size:464 - 仓位计算失败: float division by zero
+2025-08-21 12:58:09.365 | INFO     | app.core.risk_manager:validate_order:188 - 订单风险评估完成: 批准=True, 风险等级=low, 评分=6.00
+2025-08-21 12:58:09.365 | INFO     | __main__:log_test_result:63 - 正常订单风险验证: ✅ 通过
+2025-08-21 12:58:09.365 | INFO     | __main__:log_test_result:65 -   详情: 风险等级: low, 评分: 6.00
+2025-08-21 12:58:09.365 | INFO     | app.core.risk_manager:validate_order:116 - 开始订单风险验证: 用户1, BTC/USDT, buy, 数量100
+2025-08-21 12:58:09.367 | ERROR    | app.core.risk_manager:_calculate_optimal_position_size:464 - 仓位计算失败: float division by zero
+2025-08-21 12:58:09.367 | INFO     | app.core.risk_manager:validate_order:188 - 订单风险评估完成: 批准=True, 风险等级=low, 评分=6.00
+2025-08-21 12:58:09.367 | INFO     | __main__:log_test_result:63 - 高风险订单验证: ❌ 失败
+2025-08-21 12:58:09.368 | INFO     | __main__:log_test_result:65 -   详情: 正确拒绝高风险订单: []
+2025-08-21 12:58:09.368 | INFO     | __main__:test_order_creation:196 - 
+🧪 测试4: 订单创建测试（模拟模式）
+2025-08-21 12:58:09.372 | INFO     | __main__:log_test_result:63 - 订单创建测试: ❌ 失败
+2025-08-21 12:58:09.372 | INFO     | __main__:log_test_result:65 -   详情: parameter without a default follows parameter with a default (enhanced_exchange_service.py, line 323)
+2025-08-21 12:58:09.372 | INFO     | __main__:test_position_management:260 - 
+🧪 测试5: 持仓管理测试
+2025-08-21 12:58:09.375 | INFO     | __main__:log_test_result:63 - 持仓管理测试: ❌ 失败
+2025-08-21 12:58:09.376 | INFO     | __main__:log_test_result:65 -   详情: parameter without a default follows parameter with a default (enhanced_exchange_service.py, line 323)
+2025-08-21 12:58:09.376 | INFO     | __main__:test_order_manager:310 - 
+🧪 测试6: 订单管理器测试
+2025-08-21 12:58:09.379 | INFO     | __main__:log_test_result:63 - 订单管理器测试: ❌ 失败
+2025-08-21 12:58:09.379 | INFO     | __main__:log_test_result:65 -   详情: 'OrderManager' object has no attribute 'validate_order'
+2025-08-21 12:58:09.380 | INFO     | __main__:test_error_handling:350 - 
+🧪 测试7: 错误处理和重试机制
+2025-08-21 12:58:09.383 | INFO     | __main__:log_test_result:63 - 错误处理测试: ❌ 失败
+2025-08-21 12:58:09.383 | INFO     | __main__:log_test_result:65 -   详情: 'ErrorHandler' object has no attribute '_categorize_error'
+2025-08-21 12:58:09.383 | INFO     | __main__:test_live_trading_engine:393 - 
+🧪 测试8: 实盘交易引擎测试
+2025-08-21 12:58:09.387 | INFO     | __main__:log_test_result:63 - 实盘交易引擎测试: ❌ 失败
+2025-08-21 12:58:09.388 | INFO     | __main__:log_test_result:65 -   详情: TradingSession.__init__() got an unexpected keyword argument 'symbol'
+2025-08-21 12:58:09.388 | INFO     | __main__:test_api_integration:443 - 
+🧪 测试9: API集成测试
+2025-08-21 12:58:11.578 | INFO     | app.ai.core.claude_client:__init__:98 - 使用自定义Claude API端点: https://claude.cloudcdn7.com/api
+2025-08-21 12:58:11.579 | WARNING  | app.ai.core.claude_client:__init__:104 - Claude客户端初始化失败，回退到模拟模式: AsyncClient.__init__() got an unexpected keyword argument 'proxies'
+2025-08-21 12:58:11.579 | INFO     | app.ai.core.claude_client:__init__:119 - Claude客户端初始化完成 - 模型: claude-3-5-sonnet-20241022, 启用状态: False
+2025-08-21 12:58:11.770 | INFO     | __main__:log_test_result:63 - API集成测试: ❌ 失败
+2025-08-21 12:58:11.770 | INFO     | __main__:log_test_result:65 -   详情: parameter without a default follows parameter with a default (enhanced_exchange_service.py, line 323)
+2025-08-21 12:58:11.770 | INFO     | __main__:test_database_operations:485 - 
+🧪 测试10: 数据库操作测试
+2025-08-21 12:58:11.773 | INFO     | __main__:log_test_result:63 - 查询交易记录: ✅ 通过
+2025-08-21 12:58:11.773 | INFO     | __main__:log_test_result:65 -   详情: 找到 0 条交易记录
+2025-08-21 12:58:11.773 | INFO     | __main__:log_test_result:63 - 创建交易记录对象: ✅ 通过
+2025-08-21 12:58:11.773 | INFO     | __main__:log_test_result:65 -   详情: 订单ID: TEST_ORDER_001
+2025-08-21 12:58:11.774 | INFO     | __main__:teardown:50 - === 测试环境清理完成 ===
+2025-08-21 12:58:11.774 | INFO     | __main__:generate_report:569 - 
+============================================================
+2025-08-21 12:58:11.774 | INFO     | __main__:generate_report:570 - 📊 测试报告总结
+2025-08-21 12:58:11.774 | INFO     | __main__:generate_report:571 - ============================================================
+2025-08-21 12:58:11.774 | INFO     | __main__:generate_report:578 - 总测试数: 12
+2025-08-21 12:58:11.774 | INFO     | __main__:generate_report:579 - ✅ 通过: 5
+2025-08-21 12:58:11.774 | INFO     | __main__:generate_report:580 - ❌ 失败: 7
+2025-08-21 12:58:11.774 | INFO     | __main__:generate_report:581 - 通过率: 41.7%
+2025-08-21 12:58:11.774 | INFO     | __main__:generate_report:584 - 
+失败的测试:
+2025-08-21 12:58:11.774 | INFO     | __main__:generate_report:587 -   - 高风险订单验证: 正确拒绝高风险订单: []
+2025-08-21 12:58:11.774 | INFO     | __main__:generate_report:587 -   - 订单创建测试: parameter without a default follows parameter with a default (enhanced_exchange_service.py, line 323)
+2025-08-21 12:58:11.774 | INFO     | __main__:generate_report:587 -   - 持仓管理测试: parameter without a default follows parameter with a default (enhanced_exchange_service.py, line 323)
+2025-08-21 12:58:11.774 | INFO     | __main__:generate_report:587 -   - 订单管理器测试: 'OrderManager' object has no attribute 'validate_order'
+2025-08-21 12:58:11.774 | INFO     | __main__:generate_report:587 -   - 错误处理测试: 'ErrorHandler' object has no attribute '_categorize_error'
+2025-08-21 12:58:11.774 | INFO     | __main__:generate_report:587 -   - 实盘交易引擎测试: TradingSession.__init__() got an unexpected keyword argument 'symbol'
+2025-08-21 12:58:11.774 | INFO     | __main__:generate_report:587 -   - API集成测试: parameter without a default follows parameter with a default (enhanced_exchange_service.py, line 323)
+2025-08-21 12:58:11.774 | INFO     | __main__:generate_report:590 - 
+============================================================
+2025-08-21 12:58:11.774 | INFO     | __main__:generate_report:598 - ❌ 需要改进，多个核心功能测试失败
+2025-08-21 12:58:11.774 | INFO     | __main__:generate_report:599 - 请修复问题后重新测试
+2025-08-21 12:58:11.774 | INFO     | __main__:generate_report:601 - ============================================================
+2025-08-21 12:59:50.926 | INFO     | __main__:run_all_tests:536 - ============================================================
+2025-08-21 12:59:50.926 | INFO     | __main__:run_all_tests:537 - 🚀 开始实盘交易功能集成测试
+2025-08-21 12:59:50.926 | INFO     | __main__:run_all_tests:538 - ============================================================
+2025-08-21 12:59:50.926 | INFO     | __main__:setup:36 - === 初始化测试环境 ===
+2025-08-21 12:59:50.939 | INFO     | __main__:setup:44 - ✅ 数据库连接成功
+2025-08-21 12:59:50.940 | INFO     | __main__:test_import_modules:71 - 
+🧪 测试1: 模块导入测试
+2025-08-21 12:59:50.947 | ERROR    | __main__:run_all_tests:560 - 测试执行错误: parameter without a default follows parameter with a default (enhanced_exchange_service.py, line 435)
+2025-08-21 12:59:50.947 | INFO     | __main__:test_exchange_connection:112 - 
+🧪 测试2: 交易所连接测试
+2025-08-21 12:59:51.385 | INFO     | __main__:log_test_result:63 - 支持的交易所: ✅ 通过
+2025-08-21 12:59:51.385 | INFO     | __main__:log_test_result:65 -   详情: 支持 6 个交易所: binance, okx, bybit, huobi, bitget, coinbase
+2025-08-21 12:59:51.398 | INFO     | __main__:log_test_result:63 - 创建交易所实例: ✅ 通过
+2025-08-21 12:59:51.398 | INFO     | __main__:log_test_result:65 -   详情: Binance沙盒实例创建成功
+2025-08-21 12:59:51.398 | INFO     | __main__:test_risk_validation:145 - 
+🧪 测试3: 风险管理验证
+2025-08-21 12:59:51.398 | INFO     | app.core.risk_manager:validate_order:116 - 开始订单风险验证: 用户1, BTC/USDT, buy, 数量0.001
+2025-08-21 12:59:51.417 | ERROR    | app.core.risk_manager:_calculate_optimal_position_size:464 - 仓位计算失败: float division by zero
+2025-08-21 12:59:51.417 | INFO     | app.core.risk_manager:validate_order:188 - 订单风险评估完成: 批准=True, 风险等级=low, 评分=6.00
+2025-08-21 12:59:51.417 | INFO     | __main__:log_test_result:63 - 正常订单风险验证: ✅ 通过
+2025-08-21 12:59:51.417 | INFO     | __main__:log_test_result:65 -   详情: 风险等级: low, 评分: 6.00
+2025-08-21 12:59:51.417 | INFO     | app.core.risk_manager:validate_order:116 - 开始订单风险验证: 用户1, BTC/USDT, buy, 数量100
+2025-08-21 12:59:51.419 | ERROR    | app.core.risk_manager:_calculate_optimal_position_size:464 - 仓位计算失败: float division by zero
+2025-08-21 12:59:51.419 | INFO     | app.core.risk_manager:validate_order:188 - 订单风险评估完成: 批准=True, 风险等级=low, 评分=6.00
+2025-08-21 12:59:51.419 | INFO     | __main__:log_test_result:63 - 高风险订单验证: ❌ 失败
+2025-08-21 12:59:51.419 | INFO     | __main__:log_test_result:65 -   详情: 正确拒绝高风险订单: []
+2025-08-21 12:59:51.420 | INFO     | __main__:test_order_creation:196 - 
+🧪 测试4: 订单创建测试（模拟模式）
+2025-08-21 12:59:51.425 | INFO     | __main__:log_test_result:63 - 订单创建测试: ❌ 失败
+2025-08-21 12:59:51.426 | INFO     | __main__:log_test_result:65 -   详情: parameter without a default follows parameter with a default (enhanced_exchange_service.py, line 435)
+2025-08-21 12:59:51.426 | INFO     | __main__:test_position_management:260 - 
+🧪 测试5: 持仓管理测试
+2025-08-21 12:59:51.430 | INFO     | __main__:log_test_result:63 - 持仓管理测试: ❌ 失败
+2025-08-21 12:59:51.431 | INFO     | __main__:log_test_result:65 -   详情: parameter without a default follows parameter with a default (enhanced_exchange_service.py, line 435)
+2025-08-21 12:59:51.431 | INFO     | __main__:test_order_manager:310 - 
+🧪 测试6: 订单管理器测试
+2025-08-21 12:59:51.434 | INFO     | __main__:log_test_result:63 - 订单管理器测试: ❌ 失败
+2025-08-21 12:59:51.434 | INFO     | __main__:log_test_result:65 -   详情: 'OrderManager' object has no attribute 'validate_order'
+2025-08-21 12:59:51.434 | INFO     | __main__:test_error_handling:350 - 
+🧪 测试7: 错误处理和重试机制
+2025-08-21 12:59:51.437 | INFO     | __main__:log_test_result:63 - 错误处理测试: ❌ 失败
+2025-08-21 12:59:51.437 | INFO     | __main__:log_test_result:65 -   详情: 'ErrorHandler' object has no attribute '_categorize_error'
+2025-08-21 12:59:51.437 | INFO     | __main__:test_live_trading_engine:393 - 
+🧪 测试8: 实盘交易引擎测试
+2025-08-21 12:59:51.441 | INFO     | __main__:log_test_result:63 - 实盘交易引擎测试: ❌ 失败
+2025-08-21 12:59:51.441 | INFO     | __main__:log_test_result:65 -   详情: TradingSession.__init__() got an unexpected keyword argument 'symbol'
+2025-08-21 12:59:51.441 | INFO     | __main__:test_api_integration:443 - 
+🧪 测试9: API集成测试
+2025-08-21 12:59:52.652 | INFO     | app.ai.core.claude_client:__init__:98 - 使用自定义Claude API端点: https://claude.cloudcdn7.com/api
+2025-08-21 12:59:52.653 | WARNING  | app.ai.core.claude_client:__init__:104 - Claude客户端初始化失败，回退到模拟模式: AsyncClient.__init__() got an unexpected keyword argument 'proxies'
+2025-08-21 12:59:52.653 | INFO     | app.ai.core.claude_client:__init__:119 - Claude客户端初始化完成 - 模型: claude-3-5-sonnet-20241022, 启用状态: False
+2025-08-21 12:59:52.700 | INFO     | __main__:log_test_result:63 - API集成测试: ❌ 失败
+2025-08-21 12:59:52.700 | INFO     | __main__:log_test_result:65 -   详情: parameter without a default follows parameter with a default (enhanced_exchange_service.py, line 435)
+2025-08-21 12:59:52.700 | INFO     | __main__:test_database_operations:485 - 
+🧪 测试10: 数据库操作测试
+2025-08-21 12:59:52.704 | INFO     | __main__:log_test_result:63 - 查询交易记录: ✅ 通过
+2025-08-21 12:59:52.704 | INFO     | __main__:log_test_result:65 -   详情: 找到 0 条交易记录
+2025-08-21 12:59:52.704 | INFO     | __main__:log_test_result:63 - 创建交易记录对象: ✅ 通过
+2025-08-21 12:59:52.704 | INFO     | __main__:log_test_result:65 -   详情: 订单ID: TEST_ORDER_001
+2025-08-21 12:59:52.705 | INFO     | __main__:teardown:50 - === 测试环境清理完成 ===
+2025-08-21 12:59:52.705 | INFO     | __main__:generate_report:569 - 
+============================================================
+2025-08-21 12:59:52.705 | INFO     | __main__:generate_report:570 - 📊 测试报告总结
+2025-08-21 12:59:52.705 | INFO     | __main__:generate_report:571 - ============================================================
+2025-08-21 12:59:52.705 | INFO     | __main__:generate_report:578 - 总测试数: 12
+2025-08-21 12:59:52.705 | INFO     | __main__:generate_report:579 - ✅ 通过: 5
+2025-08-21 12:59:52.705 | INFO     | __main__:generate_report:580 - ❌ 失败: 7
+2025-08-21 12:59:52.705 | INFO     | __main__:generate_report:581 - 通过率: 41.7%
+2025-08-21 12:59:52.705 | INFO     | __main__:generate_report:584 - 
+失败的测试:
+2025-08-21 12:59:52.705 | INFO     | __main__:generate_report:587 -   - 高风险订单验证: 正确拒绝高风险订单: []
+2025-08-21 12:59:52.706 | INFO     | __main__:generate_report:587 -   - 订单创建测试: parameter without a default follows parameter with a default (enhanced_exchange_service.py, line 435)
+2025-08-21 12:59:52.706 | INFO     | __main__:generate_report:587 -   - 持仓管理测试: parameter without a default follows parameter with a default (enhanced_exchange_service.py, line 435)
+2025-08-21 12:59:52.706 | INFO     | __main__:generate_report:587 -   - 订单管理器测试: 'OrderManager' object has no attribute 'validate_order'
+2025-08-21 12:59:52.706 | INFO     | __main__:generate_report:587 -   - 错误处理测试: 'ErrorHandler' object has no attribute '_categorize_error'
+2025-08-21 12:59:52.706 | INFO     | __main__:generate_report:587 -   - 实盘交易引擎测试: TradingSession.__init__() got an unexpected keyword argument 'symbol'
+2025-08-21 12:59:52.706 | INFO     | __main__:generate_report:587 -   - API集成测试: parameter without a default follows parameter with a default (enhanced_exchange_service.py, line 435)
+2025-08-21 12:59:52.706 | INFO     | __main__:generate_report:590 - 
+============================================================
+2025-08-21 12:59:52.706 | INFO     | __main__:generate_report:598 - ❌ 需要改进，多个核心功能测试失败
+2025-08-21 12:59:52.706 | INFO     | __main__:generate_report:599 - 请修复问题后重新测试
+2025-08-21 12:59:52.706 | INFO     | __main__:generate_report:601 - ============================================================

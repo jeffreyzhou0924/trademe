@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>语言和主题切换测试</title>
+    <style>
+        body { 
+            margin: 20px; 
+            font-family: Arial, sans-serif; 
+            transition: all 0.3s;
+        }
+        .controls { 
+            margin-bottom: 20px; 
+            padding: 20px; 
+            border: 1px solid #ccc; 
+            border-radius: 8px;
+        }
+        .test-results { 
+            margin-top: 20px; 
+            padding: 20px; 
+            background: #f5f5f5; 
+            border-radius: 8px;
+        }
+        button { 
+            margin: 5px; 
+            padding: 8px 16px; 
+            border: none; 
+            border-radius: 4px; 
+            cursor: pointer;
+        }
+        .light { background: white; color: black; }
+        .dark { background: #333; color: white; }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body class="light">
+    <h1>Trademe 语言和主题切换测试</h1>
+    
+    <div class="controls">
+        <h2>测试控制</h2>
+        <div>
+            <strong>语言切换:</strong>
+            <button onclick="testLanguageChange('zh')">中文</button>
+            <button onclick="testLanguageChange('en')">English</button>
+        </div>
+        <div style="margin-top: 10px;">
+            <strong>主题切换:</strong>
+            <button onclick="testThemeChange('light')">浅色模式</button>
+            <button onclick="testThemeChange('dark')">深色模式</button>
+        </div>
+        <div style="margin-top: 10px;">
+            <button onclick="testAutoStorage()">测试本地存储</button>
+            <button onclick="runAllTests()">运行全部测试</button>
+        </div>
+    </div>
+
+    <div class="test-results">
+        <h2>测试结果</h2>
+        <div id="results"></div>
+    </div>
+
+    <script>
+        let testResults = [];
+
+        function addResult(test, result, details = '') {
+            const status = result ? '✅' : '❌';
+            const className = result ? 'success' : 'error';
+            testResults.push(`<div class="${className}">${status} ${test}: ${details}</div>`);
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            document.getElementById('results').innerHTML = testResults.join('');
+        }
+
+        function testLanguageChange(lang) {
+            try {
+                // 模拟语言存储
+                localStorage.setItem('language-storage', JSON.stringify({
+                    state: { language: lang },
+                    version: 0
+                }));
+                
+                // 检查存储是否成功
+                const stored = JSON.parse(localStorage.getItem('language-storage'));
+                const success = stored.state.language === lang;
+                
+                addResult(`语言切换到 ${lang}`, success, success ? '存储成功' : '存储失败');
+                
+                // 更新页面显示
+                if (success) {
+                    document.querySelector('h1').textContent = 
+                        lang === 'zh' ? 'Trademe 语言和主题切换测试' : 'Trademe Language & Theme Test';
+                }
+            } catch (error) {
+                addResult(`语言切换到 ${lang}`, false, error.message);
+            }
+        }
+
+        function testThemeChange(theme) {
+            try {
+                // 模拟主题存储
+                localStorage.setItem('theme-storage', JSON.stringify({
+                    state: { theme: theme },
+                    version: 0
+                }));
+                
+                // 检查存储是否成功
+                const stored = JSON.parse(localStorage.getItem('theme-storage'));
+                const success = stored.state.theme === theme;
+                
+                addResult(`主题切换到 ${theme}`, success, success ? '存储成功' : '存储失败');
+                
+                // 更新页面样式
+                if (success) {
+                    document.body.className = theme;
+                    if (theme === 'dark') {
+                        document.body.style.background = '#333';
+                        document.body.style.color = 'white';
+                    } else {
+                        document.body.style.background = 'white';
+                        document.body.style.color = 'black';
+                    }
+                }
+            } catch (error) {
+                addResult(`主题切换到 ${theme}`, false, error.message);
+            }
+        }
+
+        function testAutoStorage() {
+            try {
+                // 测试localStorage可用性
+                localStorage.setItem('test', 'test');
+                const retrieved = localStorage.getItem('test');
+                localStorage.removeItem('test');
+                
+                const success = retrieved === 'test';
+                addResult('本地存储功能', success, success ? 'localStorage可用' : 'localStorage不可用');
+            } catch (error) {
+                addResult('本地存储功能', false, error.message);
+            }
+        }
+
+        function runAllTests() {
+            testResults = [];
+            addResult('开始测试', true, new Date().toLocaleString());
+            
+            testAutoStorage();
+            testLanguageChange('zh');
+            testLanguageChange('en');
+            testThemeChange('light');
+            testThemeChange('dark');
+            
+            addResult('测试完成', true, '所有测试项目已执行');
+        }
+
+        // 页面加载时显示当前状态
+        window.onload = function() {
+            const langStorage = localStorage.getItem('language-storage');
+            const themeStorage = localStorage.getItem('theme-storage');
+            
+            if (langStorage) {
+                try {
+                    const lang = JSON.parse(langStorage).state.language;
+                    addResult('检测到语言设置', true, `当前语言: ${lang}`);
+                } catch (e) {
+                    addResult('语言设置解析', false, e.message);
+                }
+            }
+            
+            if (themeStorage) {
+                try {
+                    const theme = JSON.parse(themeStorage).state.theme;
+                    addResult('检测到主题设置', true, `当前主题: ${theme}`);
+                    testThemeChange(theme); // 应用主题
+                } catch (e) {
+                    addResult('主题设置解析', false, e.message);
+                }
+            }
+        };
+    </script>
+</body>
+</html>
