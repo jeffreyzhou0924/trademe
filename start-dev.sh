@@ -64,7 +64,7 @@ fi
 echo -e "${GREEN}📊 启动交易服务 (FastAPI)...${NC}"
 cd "$PROJECT_ROOT/backend/trading-service"
 PYTHONPATH="$PROJECT_ROOT/backend/trading-service" \
-nohup uvicorn app.main:app --host 0.0.0.0 --port 8001 --reload \
+nohup uvicorn app.main:app --host 0.0.0.0 --port 8001 --reload --log-config=logging.yaml \
 > "$PROJECT_ROOT/logs/trading-service.log" 2>&1 &
 TRADING_PID=$!
 echo "交易服务 PID: $TRADING_PID"

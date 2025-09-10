@@ -2,21 +2,10 @@ import React, { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useUserInfo } from '../store'
 import { strategyApi } from '../services/api/strategy'
+import type { TradeRecord, Strategy as ApiStrategy } from '@/types/strategy'
 import toast from 'react-hot-toast'
 
-interface Trade {
-  id: number
-  exchange: string
-  symbol: string
-  side: 'BUY' | 'SELL'
-  quantity: number
-  price: number
-  total_amount: number
-  fee: number
-  order_id: string
-  executed_at: string
-  created_at: string
-}
+// Using TradeRecord from types/strategy.ts directly
 
 interface LiveStats {
   total_trades: number
@@ -37,21 +26,12 @@ interface Performance {
   sharpe_ratio: number
 }
 
-interface Strategy {
-  id: number
-  name: string
-  description: string
-  code: string
-  parameters: any
-  is_active: boolean
-  user_id: number
-  created_at: string
-}
+// Using ApiStrategy from types/strategy.ts
 
 interface LiveDetails {
-  strategy: Strategy
+  strategy: ApiStrategy
   live_stats: LiveStats
-  trades: Trade[]
+  trades: TradeRecord[]
   performance: Performance
   status: string
 }
@@ -62,7 +42,7 @@ const StrategyLiveDetailsPage: React.FC = () => {
   const { user, isPremium } = useUserInfo()
 
   const [liveDetails, setLiveDetails] = useState<LiveDetails | null>(null)
-  const [allTrades, setAllTrades] = useState<Trade[]>([])
+  const [allTrades, setAllTrades] = useState<TradeRecord[]>([])
   const [loading, setLoading] = useState(true)
   const [tradesLoading, setTradesLoading] = useState(false)
   const [currentPage, setCurrentPage] = useState(0)
@@ -93,18 +73,22 @@ const StrategyLiveDetailsPage: React.FC = () => {
     try {
       setTradesLoading(true)
       const response = await strategyApi.getStrategyTrades(
-        parseInt(strategyId),
-        pageSize,
-        page * pageSize
+        strategyId,
+        {
+          page: page + 1, // API expects 1-based pagination
+          per_page: pageSize
+        }
       )
       
       if (append) {
-        setAllTrades(prev => [...prev, ...response.trades])
+        setAllTrades(prev => [...prev, ...response.items])
       } else {
-        setAllTrades(response.trades)
+        setAllTrades(response.items)
       }
       
-      setHasMoreTrades(response.trades.length === pageSize)
+      // Handle pagination response structure
+      const hasMore = response.items ? response.items.length === pageSize : false
+      setHasMoreTrades(hasMore)
     } catch (error) {
       console.error('Failed to load trades:', error)
       toast.error('加载交易记录失败')
@@ -357,7 +341,7 @@ const StrategyLiveDetailsPage: React.FC = () => {
                 allTrades.map((trade) => (
                   <tr key={trade.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {formatTime(trade.executed_at)}
+                      {formatTime(trade.timestamp)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                       {trade.symbol}

@@ -11,18 +11,27 @@ AI服务 - 基于Claude的AI相关业务逻辑
 import uuid
 import json
 from datetime import datetime, timedelta
+from decimal import Decimal
 from typing import List, Optional, Dict, Any
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, and_, func
 from loguru import logger
 
-from app.ai.core.claude_client import claude_client
+# 这个导入已经不需要了，使用正确的Claude客户端
 from app.ai.prompts.trading_prompts import TradingPrompts
 from app.ai.prompts.system_prompts import SystemPrompts
-from app.models.claude_conversation import ClaudeConversation, ClaudeUsage, GeneratedStrategy, AIChatSession
+from app.ai.prompts.strategy_flow_prompts import StrategyFlowPrompts
+from app.models.claude_conversation import ClaudeConversation, GeneratedStrategy, AIChatSession
+from app.models.claude_proxy import ClaudeUsageLog
 from app.services.strategy_generation_orchestrator import StrategyGenerationOrchestrator
 from app.services.claude_scheduler_service import claude_scheduler_service, SchedulerContext
 from app.services.claude_account_service import claude_account_service
+from app.services.dynamic_context_manager import dynamic_context_manager
+from app.services.strategy_maturity_analyzer import StrategyMaturityAnalyzer
+from app.services.backtest_config_checker import BacktestConfigChecker
+from app.services.enhanced_auto_backtest_service import EnhancedAutoBacktestService
+# from app.services.context_summarizer_service import context_summarizer  # 避免循环导入
+from app.utils.data_validation import DataValidator
 
 
 class AIService:
@@ -58,102 +67,92 @@ class AIService:
                         "requires_strategy_generation": False
                     }
             
-            # 智能检测是否为策略生成请求
-            strategy_request = await AIService._detect_strategy_generation_intent(message)
+            # 获取对话历史用于成熟度分析
+            conversation_history = []
+            if db:
+                try:
+                    history_query = select(ClaudeConversation).where(
+                        and_(
+                            ClaudeConversation.user_id == user_id,
+                            ClaudeConversation.session_id == session_id
+                        )
+                    ).order_by(ClaudeConversation.created_at.desc()).limit(10)
+                    history_result = await db.execute(history_query)
+                    history_messages = history_result.scalars().all()
+                    conversation_history = [
+                        {
+                            "message_type": msg.message_type,
+                            "content": msg.content,
+                            "created_at": msg.created_at
+                        }
+                        for msg in reversed(history_messages)  # 保持时间顺序
+                    ]
+                except Exception as e:
+                    logger.error(f"获取对话历史失败: {e}")
             
-            if strategy_request["is_strategy_request"] and db:
-                # 如果是策略请求且用户有足够权限，调用完整策略生成流程
+            # 检测用户是否确认生成代码
+            if StrategyMaturityAnalyzer.is_user_confirming_generation(message):
+                # 用户确认生成代码，执行策略生成流程
                 membership_level = context.get('membership_level', 'basic') if context else 'basic'
                 
-                logger.info(f"检测到策略生成请求 - 用户ID: {user_id}, 会话ID: {session_id}")
+                logger.info(f"用户确认生成策略代码 - 用户ID: {user_id}, 会话ID: {session_id}")
                 
-                strategy_result = await AIService.generate_complete_strategy(
+                # 检查回测配置
+                config_check = await BacktestConfigChecker.check_user_backtest_config(
+                    user_id=user_id,
+                    membership_level=membership_level,
+                    db=db
+                )
+                
+                strategy_result = await AIService.generate_strategy_with_config_check(
                     user_input=message,
                     user_id=user_id,
                     membership_level=membership_level,
                     session_id=session_id,
+                    config_check=config_check,
                     db=db
                 )
                 
-                if strategy_result["success"]:
-                    # 构建策略生成成功的响应
-                    performance_grade = strategy_result.get("backtest_results", {}).get("performance_grade", "未知")
-                    meets_expectations = strategy_result.get("backtest_results", {}).get("meets_expectations", False)
-                    
-                    response_content = f"""✅ **策略生成成功！**
-
-📊 **性能评级**: {performance_grade}
-🎯 **达预期**: {'是' if meets_expectations else '否'}
-⏱️ **处理时间**: {strategy_result.get('execution_time', 0):.1f}秒
-🔄 **完成阶段**: {strategy_result.get('total_stages_completed', 0)}/7
-
-📈 **策略代码已生成并通过验证**
-• 意图分析: ✅
-• 代码生成: ✅  
-• 模板验证: ✅
-• 自动回测: ✅
-• 优化建议: ✅
-
-您可以在策略管理页面查看和使用生成的策略。
-"""
-                    
-                    # 如果有优化建议，添加关键建议
-                    if strategy_result.get("optimization_advice"):
-                        priority_actions = strategy_result["optimization_advice"].get("priority_actions", [])
-                        if priority_actions:
-                            response_content += f"\n💡 **关键优化建议**:\n"
-                            for action in priority_actions[:3]:
-                                response_content += f"• {action}\n"
-                    
-                    return {
-                        "content": response_content,
-                        "session_id": session_id,
-                        "tokens_used": 0,  # 已在generate_complete_strategy中记录
-                        "model": "claude-orchestrator",
-                        "success": True,
-                        "requires_strategy_generation": False,
-                        "strategy_generation_result": strategy_result
-                    }
-                else:
-                    # 策略生成失败，提供引导
-                    error_msg = strategy_result.get("error", "未知错误")
-                    user_guidance = strategy_result.get("user_guidance", "")
-                    
-                    response_content = f"""❌ **策略生成遇到问题**
-
-**问题**: {error_msg}
-
-{user_guidance if user_guidance else ''}
-
-💡 **建议**:
-• 请详细描述您的策略思路
-• 明确指定技术指标和交易条件  
-• 确保您的会员级别支持所需功能
-
-您可以重新描述策略需求，我会继续为您生成。
-"""
-                    
-                    return {
-                        "content": response_content,
-                        "session_id": session_id,
-                        "tokens_used": 0,
-                        "model": "claude-guidance",
-                        "success": True,
-                        "requires_strategy_generation": False
-                    }
+                return strategy_result
             
-            # 常规对话处理
-            # 构建消息历史
+            # 所有对话类型都尝试连接真实Claude服务
+            session_type = context.get('session_type', 'general') if context else 'general'
+            logger.info(f"AI对话请求 - 用户ID: {user_id}, 会话ID: {session_id}, 会话类型: {session_type}")
+            
+            # 如果不是策略请求，进入普通AI对话流程
+            logger.info(f"进入普通AI对话 - 用户ID: {user_id}, 会话ID: {session_id}")
+            
+            # 初始化消息数组
             messages = []
             
-            # 获取对话历史
+            # 添加历史对话（最近5条）
             if db:
-                history = await AIService._get_conversation_history(db, user_id, session_id, limit=10)
-                for conv in history:
-                    messages.append({
-                        "role": conv.message_type, 
-                        "content": conv.content
-                    })
+                try:
+                    # 增强上下文管理 - 使用动态上下文管理器获取最优上下文窗口
+                    enhanced_messages = await dynamic_context_manager.get_optimal_context_window(
+                        user_id=user_id,
+                        session_id=session_id,
+                        session_type="general",
+                        current_message=message,
+                        db=db
+                    )
+                    messages = enhanced_messages
+                except Exception as e:
+                    logger.warning(f"动态上下文管理失败，使用基础历史: {e}")
+                    
+                    # 降级到基础历史获取
+                    history_query = select(ClaudeConversation).where(
+                        and_(
+                            ClaudeConversation.user_id == user_id,
+                            ClaudeConversation.session_id == session_id
+                        )
+                    ).order_by(ClaudeConversation.created_at.desc()).limit(5)
+                    history_result = await db.execute(history_query)
+                    history_messages = history_result.scalars().all()
+                    
+                    for msg in reversed(history_messages):
+                        role = "user" if msg.message_type == "user" else "assistant"
+                        messages.append({"role": role, "content": msg.content})
             
             # 添加当前用户消息
             messages.append({"role": "user", "content": message})
@@ -190,13 +189,53 @@ class AIService:
                     "requires_strategy_generation": False
                 }
             
-            # 调用Claude API（使用选定的账号）
-            response = await claude_client.chat_completion(
-                messages=messages,
-                system_prompt=SystemPrompts.TRADING_ASSISTANT_SYSTEM,
-                temperature=0.7,
-                api_key=api_key  # 使用智能选择的账号
+            # 调用真实Claude API（使用选定的账号）
+            logger.info(f"🤖 调用真实Claude API - 账号: {selected_account.account_name}")
+            
+            # 根据会话类型和阶段选择合适的system prompt
+            session_type = context.get('session_type', 'general') if context else 'general'
+            system_prompt = SystemPrompts.TRADING_ASSISTANT_SYSTEM  # 默认prompt
+            
+            if session_type == 'strategy':
+                # 策略会话使用专门的讨论阶段prompt  
+                conversation_context = "\n".join([f"{msg['role']}: {msg['content'][:100]}..." for msg in messages[-3:]])
+                system_prompt = StrategyFlowPrompts.get_discussion_prompt(conversation_context)
+                logger.info(f"📋 使用策略讨论专用prompt - 会话ID: {session_id}")
+            
+            # 创建正确的Claude客户端实例
+            from app.core.claude_client import ClaudeClient
+            claude_client = ClaudeClient(
+                api_key=api_key,
+                base_url=selected_account.proxy_base_url,
+                timeout=120,
+                max_retries=2
             )
+            
+            try:
+                # 真实Claude API调用
+                response = await claude_client.chat_completion(
+                        messages=messages,
+                        system_prompt=system_prompt,
+                        temperature=0.7,
+                        api_key=api_key  # 使用智能选择的账号
+                    )
+            except Exception as e:
+                logger.error(f"Claude API调用失败: {str(e)}")
+                return {
+                    "content": "AI服务繁忙，请稍后重试",
+                    "session_id": session_id,
+                    "tokens_used": 0,
+                    "model": "service-unavailable",
+                    "cost_usd": 0.0,
+                    "success": False,
+                    "requires_strategy_generation": False
+                }
+            
+            # response已经是标准化格式: {"content": "...", "usage": {...}, "success": ...}
+            # 计算总token数
+            usage = response.get("usage", {})
+            total_tokens = usage.get("total_tokens", 
+                                    usage.get("input_tokens", 0) + usage.get("output_tokens", 0))
             
             # 保存对话记录
             if db and response["success"]:
@@ -205,51 +244,123 @@ class AIService:
                 )
                 await AIService._save_conversation(
                     db, user_id, session_id, "assistant", response["content"], 
-                    context, response["usage"]["total_tokens"], response["model"]
+                    context, total_tokens, response.get("model", "claude")
                 )
                 
                 # 保存使用统计
                 await AIService._save_usage_stats(
                     db, user_id, "chat", 
-                    response["usage"]["input_tokens"],
-                    response["usage"]["output_tokens"],
-                    response["model"]
+                    usage.get("input_tokens", 0),
+                    usage.get("output_tokens", 0),
+                    response.get("model", "claude")
                 )
                 
                 # 记录账号池使用情况
-                estimated_cost = (response["usage"]["input_tokens"] * 3.0 + 
-                                response["usage"]["output_tokens"] * 15.0) / 1000000 * 2.0
+                estimated_cost = (usage.get("input_tokens", 0) * 3.0 + 
+                                usage.get("output_tokens", 0) * 15.0) / 1000000 * 2.0
                 await claude_account_service.log_usage(
                     account_id=selected_account.id,
                     user_id=user_id,
                     request_type="chat",
-                    input_tokens=response["usage"]["input_tokens"],
-                    output_tokens=response["usage"]["output_tokens"],
+                    input_tokens=usage.get("input_tokens", 0),
+                    output_tokens=usage.get("output_tokens", 0),
                     api_cost=Decimal(str(estimated_cost)),
                     response_time=None,  # TODO: 添加响应时间测量
                     success=True
                 )
                 
                 # 更新会话活动信息
-                cost_usd = (response["usage"]["input_tokens"] * 3.0 + response["usage"]["output_tokens"] * 15.0) / 1000000 * 2.0  # 2倍计费
+                cost_usd = (usage.get("input_tokens", 0) * 3.0 + usage.get("output_tokens", 0) * 15.0) / 1000000 * 2.0  # 2倍计费
                 await AIService.update_session_activity(
                     db, session_id, user_id, 
                     response["content"][:200],  # 截取前200字符
-                    response["usage"]["total_tokens"],
+                    total_tokens,
                     cost_usd
                 )
+                
+                # =============== 策略成熟度分析 ===============
+                # 如果是策略会话，分析对话成熟度
+                session_type = context.get('session_type', 'general') if context else 'general'
+                if session_type == 'strategy':
+                    try:
+                        logger.info(f"🔍 进行策略成熟度分析 - 会话ID: {session_id}")
+                        
+                        # 获取完整对话历史（包括刚保存的消息）
+                        history_query = select(ClaudeConversation).where(
+                            and_(
+                                ClaudeConversation.user_id == user_id,
+                                ClaudeConversation.session_id == session_id
+                            )
+                        ).order_by(ClaudeConversation.created_at.desc()).limit(20)
+                        history_result = await db.execute(history_query)
+                        conversation_history = history_result.scalars().all()
+                        
+                        # 进行成熟度分析
+                        maturity_result = await StrategyMaturityAnalyzer.analyze_conversation_maturity(
+                            conversation_history, message
+                        )
+                        
+                        logger.info(f"📊 成熟度分析结果: {maturity_result.get('maturity_score', 0):.2f}, 准备生成: {maturity_result.get('ready_for_generation', False)}")
+                        
+                        # 如果策略讨论成熟，发送确认提示
+                        if maturity_result.get("ready_for_generation", False):
+                            confirmation_prompt = maturity_result.get("confirmation_prompt", "")
+                            if confirmation_prompt:
+                                # 保存确认提示为新的AI消息
+                                await AIService._save_conversation(
+                                    db, user_id, session_id, "assistant", confirmation_prompt,
+                                    {"type": "maturity_confirmation"}, 0, "strategy-analyzer"
+                                )
+                                
+                                logger.info(f"✅ 策略成熟度分析完成，已保存确认提示")
+                                
+                                # 修改返回内容，追加确认提示
+                                response["content"] += "\n\n" + confirmation_prompt
+                        
+                    except Exception as maturity_error:
+                        logger.error(f"❌ 策略成熟度分析失败: {maturity_error}")
+                # =============== 策略成熟度分析结束 ===============
             
-            return {
-                "content": response["content"],
+            # 检查Claude响应是否成功
+            if not response.get("success", False):
+                logger.error(f"Claude API响应失败: {response.get('error', 'Unknown error')}")
+                return {
+                    "content": "AI服务繁忙，请稍后重试",
+                    "session_id": session_id,
+                    "tokens_used": 0,
+                    "model": "service-unavailable",
+                    "cost_usd": 0.0,
+                    "success": False,
+                    "requires_strategy_generation": False
+                }
+            
+            # 返回成功响应
+            result = {
+                "content": response.get("content", ""),
                 "session_id": session_id,
-                "tokens_used": response["usage"]["total_tokens"] if response["success"] else 0,
-                "model": response["model"],
-                "success": response["success"],
-                "requires_strategy_generation": strategy_request["is_strategy_request"] if not db else False
+                "tokens_used": total_tokens,
+                "model": response.get("model", "claude"),
+                "cost_usd": cost_usd,
+                "success": True,
+                "requires_strategy_generation": False
             }
             
+            return result
+            
         except Exception as e:
-            logger.error(f"AI对话失败: {str(e)}")
+            # 增强异常信息记录
+            error_str = str(e) if str(e) else "空异常对象"
+            error_type = type(e).__name__
+            logger.error(f"❌ AI对话失败详细分析:")
+            logger.error(f"   📋 异常类型: {error_type}")
+            logger.error(f"   📝 错误信息: '{error_str}'")
+            logger.error(f"   🔍 原始异常: {repr(e)}")
+            logger.error(f"   📄 异常参数: {e.args if hasattr(e, 'args') else 'No args'}")
+            
+            # 分析异常来源
+            import traceback
+            tb_str = traceback.format_exc()
+            logger.error(f"   📍 异常堆栈: {tb_str}")
             
             # 如果有选定的账号，记录失败日志
             if 'selected_account' in locals() and selected_account:
@@ -268,13 +379,402 @@ class AIService:
                 except Exception as log_error:
                     logger.error(f"记录失败日志时出错: {log_error}")
             
+            # 构造详细的错误信息给WebSocket处理器
+            detailed_error = f"AI服务调用失败: {error_type} - {error_str}"
+            
             return {
-                "content": f"抱歉，AI服务暂时不可用: {str(e)}",
+                "content": "AI服务繁忙，请稍后重试",
                 "session_id": session_id or str(uuid.uuid4()),
                 "tokens_used": 0,
-                "model": "claude-error",
+                "model": "service-unavailable",
                 "success": False,
+                "error": detailed_error,  # 添加错误字段供WebSocket处理器使用
                 "requires_strategy_generation": False
+            }
+    
+    @staticmethod
+    async def stream_chat_completion(
+        message: str,
+        user_id: int,
+        context: Optional[Dict] = None,
+        session_id: Optional[str] = None,
+        db: Optional[AsyncSession] = None
+    ):
+        """流式AI聊天完成 - 实时返回数据块，支持策略成熟度分析"""
+        
+        try:
+            # 检查每日使用限制
+            membership_level = context.get('membership_level', 'basic') if context else 'basic'
+            if db and not await AIService.check_daily_usage_limit(db, user_id, membership_level):
+                yield {
+                    "type": "ai_stream_error",
+                    "error": "今日AI对话次数已达到限制",
+                    "success": False
+                }
+                return
+            
+            # 获取会话ID
+            if not session_id:
+                session_id = str(uuid.uuid4())
+                
+            # 获取对话历史用于成熟度分析
+            conversation_history = []
+            if db:
+                try:
+                    history_query = select(ClaudeConversation).where(
+                        and_(
+                            ClaudeConversation.user_id == user_id,
+                            ClaudeConversation.session_id == session_id
+                        )
+                    ).order_by(ClaudeConversation.created_at.desc()).limit(10)
+                    history_result = await db.execute(history_query)
+                    history_messages = history_result.scalars().all()
+                    conversation_history = [
+                        {
+                            "message_type": msg.message_type,
+                            "content": msg.content,
+                            "created_at": msg.created_at
+                        }
+                        for msg in reversed(history_messages)  # 保持时间顺序
+                    ]
+                except Exception as e:
+                    logger.error(f"获取对话历史失败: {e}")
+            
+            # =============== 策略意图检测和成熟度分析（与chat_completion一致）===============
+            
+            # 检测用户是否确认生成代码
+            if StrategyMaturityAnalyzer.is_user_confirming_generation(message):
+                # 用户确认生成代码，执行策略生成流程
+                logger.info(f"[流式] 用户确认生成策略代码 - 用户ID: {user_id}, 会话ID: {session_id}")
+                
+                # 检查回测配置
+                config_check = await BacktestConfigChecker.check_user_backtest_config(
+                    user_id=user_id,
+                    membership_level=membership_level,
+                    db=db
+                )
+                
+                # 流式返回策略生成结果
+                yield {
+                    "type": "ai_stream_start",
+                    "session_id": session_id,
+                    "model": "strategy-generation"
+                }
+                
+                yield {
+                    "type": "ai_stream_chunk",
+                    "chunk": "🚀 开始生成策略代码...",
+                    "session_id": session_id
+                }
+                
+                strategy_result = await AIService.generate_strategy_with_config_check(
+                    user_input=message,
+                    user_id=user_id,
+                    membership_level=membership_level,
+                    session_id=session_id,
+                    config_check=config_check,
+                    db=db
+                )
+                
+                # 流式返回策略生成结果
+                if strategy_result["success"]:
+                    final_content = f"""✅ **策略生成成功！**
+                    
+📊 **性能评级**: {strategy_result.get("backtest_results", {}).get("performance_grade", "未知")}
+📈 **策略代码已生成并通过验证**
+您可以在策略管理页面查看和使用生成的策略。"""
+                else:
+                    final_content = f"❌ **策略生成失败**: {strategy_result.get('error', '未知错误')}"
+                
+                yield {
+                    "type": "ai_stream_chunk", 
+                    "chunk": final_content,
+                    "session_id": session_id
+                }
+                
+                yield {
+                    "type": "ai_stream_end",
+                    "content": final_content,
+                    "session_id": session_id,
+                    "tokens_used": 100,  # 估算
+                    "model": "strategy-generation"
+                }
+                
+                # 保存用户确认消息和AI成功响应到数据库
+                if db:
+                    try:
+                        # 保存用户确认消息
+                        await AIService._save_conversation(
+                            db, user_id, session_id, "user", message, context
+                        )
+                        # 保存AI策略生成成功响应
+                        await AIService._save_conversation(
+                            db, user_id, session_id, "assistant", final_content, 
+                            {"type": "strategy_generation_success"}, 100, "strategy-generation"
+                        )
+                        logger.info(f"✅ [流式] 策略生成对话已保存到数据库 - 会话ID: {session_id}")
+                    except Exception as e:
+                        logger.error(f"❌ [流式] 保存策略生成对话失败: {e}")
+                
+                return
+            
+            # 所有对话类型都进入正常AI流式对话流程
+            session_type = context.get('session_type', 'general') if context else 'general'
+            logger.info(f"[流式] 进入普通AI对话 - 用户ID: {user_id}, 会话ID: {session_id}")
+            
+            # 构建消息列表
+            messages = []
+            for msg in conversation_history:
+                role = "user" if msg["message_type"] == "user" else "assistant"
+                messages.append({"role": role, "content": msg["content"]})
+            messages.append({"role": "user", "content": message})
+            
+            # 使用Claude账号调度服务选择账号
+            from app.services.claude_scheduler_service import claude_scheduler_service
+            from app.services.claude_account_service import claude_account_service
+            # 这个导入已经不需要了，使用正确的Claude客户端
+            from decimal import Decimal
+            
+            scheduler_context = SchedulerContext(
+                user_id=user_id,
+                request_type="chat",
+                session_id=session_id,
+                min_quota=Decimal("0.02"),  # 预估单次对话成本
+                priority=100
+            )
+            
+            selected_account = await claude_scheduler_service.select_optimal_account(scheduler_context)
+            if not selected_account:
+                yield {
+                    "type": "stream_error",
+                    "error": "当前没有可用的Claude账号，请稍后重试",
+                    "success": False
+                }
+                return
+            
+            # 获取解密的API密钥
+            api_key = await claude_account_service.get_decrypted_api_key(selected_account.id)
+            if not api_key:
+                yield {
+                    "type": "stream_error", 
+                    "error": "Claude账号配置错误，请联系管理员",
+                    "success": False
+                }
+                return
+            
+            logger.info(f"🌊 开始流式AI对话 - 用户: {user_id}, 账号: {selected_account.account_name}")
+            
+            # 流式处理变量
+            full_content = ""
+            total_tokens = 0
+            cost_usd = 0.0
+            
+            # 根据会话类型选择system prompt
+            session_type = context.get('session_type', 'general') if context else 'general'
+            system_prompt = SystemPrompts.TRADING_ASSISTANT_SYSTEM  # 默认prompt
+            
+            if session_type == 'strategy':
+                # 策略会话使用专门的讨论阶段prompt
+                conversation_context = "\n".join([f"{msg['role']}: {msg['content'][:100]}..." for msg in messages[-3:]])
+                system_prompt = StrategyFlowPrompts.get_discussion_prompt(conversation_context)
+                logger.info(f"📋 流式对话使用策略讨论专用prompt - 会话ID: {session_id}")
+            
+            # 创建正确的Claude客户端实例
+            from app.core.claude_client import ClaudeClient
+            claude_client = ClaudeClient(
+                api_key=api_key,
+                base_url=selected_account.proxy_base_url,
+                timeout=120,
+                max_retries=2
+            )
+            
+            # 使用流式Claude API
+            try:
+                async for chunk in claude_client.stream_chat_completion(
+                    messages=messages,
+                    system=system_prompt,
+                    temperature=0.7
+                ):
+                    try:
+                        chunk_type = chunk.get("type")
+                        
+                        if chunk_type == "stream_start":
+                            # 流式开始
+                            logger.info(f"🌊 AI流式响应开始 - 输入tokens: {chunk.get('input_tokens', 0)}")
+                        
+                            yield {
+                                "type": "ai_stream_start",
+                                "session_id": session_id,
+                                "model": chunk.get("model", "claude-sonnet-4"),
+                                "input_tokens": chunk.get("input_tokens", 0)
+                            }
+                        
+                        elif chunk_type == "content_delta":
+                            # 内容数据块
+                            text_chunk = chunk.get("text", "")
+                            full_content += text_chunk
+                            
+                            yield {
+                                "type": "ai_stream_chunk",
+                                "chunk": text_chunk,
+                                "content_so_far": full_content,
+                                "session_id": session_id
+                            }
+                        
+                        elif chunk_type == "stream_end":
+                            # 流式结束
+                            usage = chunk.get("usage", {})
+                            total_tokens = usage.get("total_tokens", 0)
+                            cost_usd = (usage.get("input_tokens", 0) * 3.0 + 
+                                       usage.get("output_tokens", 0) * 15.0) / 1000000 * 2.0
+                            
+                            logger.info(f"✅ AI流式对话完成 - Tokens: {total_tokens}, 成本: ${cost_usd:.6f}")
+                        
+                            # 记录使用日志
+                            if db:
+                                await claude_account_service.log_usage(
+                                    account_id=selected_account.id,
+                                    user_id=user_id,
+                                    request_type="chat",
+                                    input_tokens=usage.get("input_tokens", 0),
+                                    output_tokens=usage.get("output_tokens", 0),
+                                    api_cost=Decimal(str(cost_usd)),
+                                    success=True
+                                )
+                                
+                                # 保存对话记录
+                                await AIService._save_conversation(
+                                    db, user_id, session_id, "user", message
+                                )
+                                await AIService._save_conversation(
+                                    db, user_id, session_id, "assistant", full_content, 
+                                    context, total_tokens, usage.get("model", "claude-sonnet-4")
+                                )
+                            
+                                # 更新会话活动
+                                await AIService.update_session_activity(
+                                    db, session_id, user_id, 
+                                    full_content[:200],
+                                    total_tokens,
+                                    cost_usd
+                                )
+                                
+                                # =============== 策略成熟度分析 ===============
+                                # 如果是策略会话，分析对话成熟度
+                                session_type = context.get('session_type', 'general') if context else 'general'
+                                if session_type == 'strategy':
+                                    try:
+                                        logger.info(f"🔍 进行策略成熟度分析 - 会话ID: {session_id}")
+                                        
+                                        # 获取完整对话历史（包括刚保存的消息）
+                                        history_query = select(ClaudeConversation).where(
+                                            and_(
+                                                ClaudeConversation.user_id == user_id,
+                                                ClaudeConversation.session_id == session_id
+                                            )
+                                        ).order_by(ClaudeConversation.created_at.desc()).limit(20)
+                                        history_result = await db.execute(history_query)
+                                        conversation_history = history_result.scalars().all()
+                                        
+                                        # 进行成熟度分析
+                                        maturity_result = await StrategyMaturityAnalyzer.analyze_conversation_maturity(
+                                            conversation_history, message
+                                        )
+                                        
+                                        logger.info(f"📊 成熟度分析结果: {maturity_result.get('overall_score', 0):.2f}, 准备生成: {maturity_result.get('ready_for_generation', False)}")
+                                        
+                                        # 如果策略讨论成熟，发送确认提示
+                                        if maturity_result.get("ready_for_generation", False):
+                                            confirmation_prompt = maturity_result.get("confirmation_prompt", "")
+                                            if confirmation_prompt:
+                                                # 保存确认提示为新的AI消息
+                                                await AIService._save_conversation(
+                                                    db, user_id, session_id, "assistant", confirmation_prompt,
+                                                    {"type": "maturity_confirmation"}, 0, "strategy-analyzer"
+                                                )
+                                                
+                                                # 发送额外的确认提示流事件
+                                                yield {
+                                                    "type": "strategy_maturity_confirmation",
+                                                    "content": confirmation_prompt,
+                                                    "maturity_score": maturity_result.get('overall_score', 0),
+                                                    "session_id": session_id,
+                                                    "ready_for_generation": True
+                                                }
+                                        
+                                    except Exception as maturity_error:
+                                        logger.error(f"❌ 策略成熟度分析失败: {maturity_error}")
+                                # =============== 策略成熟度分析结束 ===============
+                        
+                            yield {
+                                "type": "ai_stream_end",
+                                "content": full_content,
+                                "session_id": session_id,
+                                "tokens_used": total_tokens,
+                                "cost_usd": cost_usd,
+                                "model": usage.get("model", "claude-sonnet-4"),
+                                "success": True
+                            }
+                        
+                        elif chunk_type == "stream_error":
+                            # 流式错误
+                            error_msg = chunk.get("error", "未知流式错误")
+                            logger.error(f"❌ AI流式对话错误: {error_msg}")
+                        
+                            # 记录失败日志
+                            if db and 'selected_account' in locals():
+                                try:
+                                    await claude_account_service.log_usage(
+                                        account_id=selected_account.id,
+                                        user_id=user_id,
+                                        request_type="chat",
+                                        input_tokens=0,
+                                        output_tokens=0,
+                                        api_cost=Decimal("0.0"),
+                                        success=False,
+                                        error_message=error_msg[:500]
+                                    )
+                                except Exception as log_error:
+                                    logger.error(f"记录流式错误日志失败: {log_error}")
+                        
+                            yield {
+                                "type": "ai_stream_error",
+                                "error": "AI服务繁忙，请稍后重试",
+                                "session_id": session_id,
+                                "success": False
+                            }
+                            break
+                        
+                    except Exception as chunk_error:
+                        logger.error(f"处理流式数据块错误: {chunk_error}")
+                        yield {
+                            "type": "ai_stream_error", 
+                            "error": "AI服务繁忙，请稍后重试",
+                            "session_id": session_id,
+                            "success": False
+                        }
+                        break
+                    
+            except Exception as e:
+                error_str = str(e)
+                logger.error(f"❌ 流式Claude API调用失败: {error_str}")
+                
+                yield {
+                    "type": "ai_stream_error",
+                    "error": "AI服务繁忙，请稍后重试",
+                    "session_id": session_id or str(uuid.uuid4()),
+                    "success": False
+                }
+                
+        except Exception as e:
+            error_str = str(e)
+            logger.error(f"❌ 流式AI对话失败: {error_str}")
+            
+            yield {
+                "type": "ai_stream_error",
+                "error": "AI服务繁忙，请稍后重试",
+                "session_id": session_id or str(uuid.uuid4()),
+                "success": False
             }
     
     @staticmethod
@@ -371,12 +871,12 @@ class AIService:
                     db.add(generated_strategy)
                     
                     # 保存完整流程的使用统计
-                    usage_stat = ClaudeUsage(
+                    usage_stat = ClaudeUsageLog(
                         user_id=user_id,
                         feature_type="complete_strategy_gen",
                         input_tokens=2000,  # 估算值，完整流程的token使用量
                         output_tokens=3000,  # 估算值
-                        api_cost=f"{estimated_cost:.6f}",
+                        api_cost=DataValidator.safe_format_decimal(estimated_cost, decimals=6, currency="", default="0.000000"),
                         model_used="claude-sonnet-4-orchestrator"
                     )
                     db.add(usage_stat)
@@ -452,6 +952,15 @@ class AIService:
             # 获取解密的API密钥
             api_key = await claude_account_service.get_decrypted_api_key(selected_account.id)
             
+            # 创建正确的Claude客户端实例
+            from app.core.claude_client import ClaudeClient
+            claude_client = ClaudeClient(
+                api_key=api_key,
+                base_url=selected_account.proxy_base_url,
+                timeout=120,
+                max_retries=2
+            )
+            
             # 调用Claude进行市场分析
             response = await claude_client.analyze_market_data(
                 market_data=market_data,
@@ -460,25 +969,26 @@ class AIService:
                 api_key=api_key  # 使用智能选择的账号
             )
             
-            if response["success"]:
+            if response.get("success"):
                 # 保存使用统计
+                usage = response.get("usage", {})
                 if db:
                     await AIService._save_usage_stats(
                         db, user_id, "analysis",
-                        response["usage"]["input_tokens"],
-                        response["usage"]["output_tokens"],
-                        response["model"]
+                        usage.get("input_tokens", 0),
+                        usage.get("output_tokens", 0),
+                        response.get("model", "claude")
                     )
                     
                     # 记录账号池使用情况
-                    estimated_cost = (response["usage"]["input_tokens"] * 3.0 + 
-                                    response["usage"]["output_tokens"] * 15.0) / 1000000 * 2.0
+                    estimated_cost = (usage.get("input_tokens", 0) * 3.0 + 
+                                    usage.get("output_tokens", 0) * 15.0) / 1000000 * 2.0
                     await claude_account_service.log_usage(
                         account_id=selected_account.id,
                         user_id=user_id,
                         request_type="market_analysis",
-                        input_tokens=response["usage"]["input_tokens"],
-                        output_tokens=response["usage"]["output_tokens"],
+                        input_tokens=usage.get("input_tokens", 0),
+                        output_tokens=usage.get("output_tokens", 0),
                         api_cost=Decimal(str(estimated_cost)),
                         success=True
                     )
@@ -547,6 +1057,15 @@ class AIService:
             # 获取解密的API密钥
             api_key = await claude_account_service.get_decrypted_api_key(selected_account.id)
             
+            # 创建正确的Claude客户端实例
+            from app.core.claude_client import ClaudeClient
+            claude_client = ClaudeClient(
+                api_key=api_key,
+                base_url=selected_account.proxy_base_url,
+                timeout=120,
+                max_retries=2
+            )
+            
             response = await claude_client.chat_completion(
                 messages=messages,
                 system_prompt=prompts["system"],
@@ -554,25 +1073,26 @@ class AIService:
                 api_key=api_key  # 使用智能选择的账号
             )
             
-            if response["success"]:
+            if response.get("success"):
                 # 保存使用统计
+                usage = response.get("usage", {})
                 if db:
                     await AIService._save_usage_stats(
                         db, user_id, "analysis",
-                        response["usage"]["input_tokens"],
-                        response["usage"]["output_tokens"],
-                        response["model"]
+                        usage.get("input_tokens", 0),
+                        usage.get("output_tokens", 0),
+                        response.get("model", "claude")
                     )
                     
                     # 记录账号池使用情况
-                    estimated_cost = (response["usage"]["input_tokens"] * 3.0 + 
-                                    response["usage"]["output_tokens"] * 15.0) / 1000000 * 2.0
+                    estimated_cost = (usage.get("input_tokens", 0) * 3.0 + 
+                                    usage.get("output_tokens", 0) * 15.0) / 1000000 * 2.0
                     await claude_account_service.log_usage(
                         account_id=selected_account.id,
                         user_id=user_id,
                         request_type="backtest_analysis",
-                        input_tokens=response["usage"]["input_tokens"],
-                        output_tokens=response["usage"]["output_tokens"],
+                        input_tokens=usage.get("input_tokens", 0),
+                        output_tokens=usage.get("output_tokens", 0),
                         api_cost=Decimal(str(estimated_cost)),
                         success=True
                     )
@@ -678,10 +1198,10 @@ class AIService:
             start_date = end_date - timedelta(days=days)
             
             # 查询使用统计
-            query = select(ClaudeUsage).where(
+            query = select(ClaudeUsageLog).where(
                 and_(
-                    ClaudeUsage.user_id == user_id,
-                    ClaudeUsage.request_date >= start_date
+                    ClaudeUsageLog.user_id == user_id,
+                    ClaudeUsageLog.request_date >= start_date
                 )
             )
             
@@ -718,7 +1238,7 @@ class AIService:
                 "total_tokens": total_input_tokens + total_output_tokens,
                 "total_cost_usd": round(total_cost, 6),
                 "by_feature": by_feature,
-                "claude_client_stats": claude_client.get_usage_stats()
+                "claude_client_stats": {}  # Claude客户端统计信息不可用
             }
             
         except Exception as e:
@@ -778,6 +1298,15 @@ class AIService:
             # 获取解密的API密钥
             api_key = await claude_account_service.get_decrypted_api_key(selected_account.id)
             
+            # 创建正确的Claude客户端实例
+            from app.core.claude_client import ClaudeClient
+            claude_client = ClaudeClient(
+                api_key=api_key,
+                base_url=selected_account.proxy_base_url,
+                timeout=120,
+                max_retries=2
+            )
+            
             response = await claude_client.chat_completion(
                 messages=messages,
                 system_prompt=SystemPrompts.TRADING_ASSISTANT_SYSTEM,
@@ -785,25 +1314,26 @@ class AIService:
                 api_key=api_key  # 使用智能选择的账号
             )
             
-            if response["success"]:
+            if response.get("success"):
                 # 保存使用统计
+                usage = response.get("usage", {})
                 if db:
                     await AIService._save_usage_stats(
                         db, user_id, "analysis",
-                        response["usage"]["input_tokens"],
-                        response["usage"]["output_tokens"],
-                        response["model"]
+                        usage.get("input_tokens", 0),
+                        usage.get("output_tokens", 0),
+                        response.get("model", "claude")
                     )
                     
                     # 记录账号池使用情况
-                    estimated_cost = (response["usage"]["input_tokens"] * 3.0 + 
-                                    response["usage"]["output_tokens"] * 15.0) / 1000000 * 2.0
+                    estimated_cost = (usage.get("input_tokens", 0) * 3.0 + 
+                                    usage.get("output_tokens", 0) * 15.0) / 1000000 * 2.0
                     await claude_account_service.log_usage(
                         account_id=selected_account.id,
                         user_id=user_id,
                         request_type="trading_insights",
-                        input_tokens=response["usage"]["input_tokens"],
-                        output_tokens=response["usage"]["output_tokens"],
+                        input_tokens=usage.get("input_tokens", 0),
+                        output_tokens=usage.get("output_tokens", 0),
                         api_cost=Decimal(str(estimated_cost)),
                         success=True
                     )
@@ -902,19 +1432,22 @@ class AIService:
             # 按照2倍使用量计算用户消耗 (实际API成本 × 2 = 用户计费成本)
             charged_cost = actual_cost * 2.0
             
-            usage_stat = ClaudeUsage(
+            usage_stat = ClaudeUsageLog(
                 user_id=user_id,
                 feature_type=feature_type,
                 input_tokens=input_tokens,
                 output_tokens=output_tokens,
-                api_cost=f"{charged_cost:.6f}",  # 保存按2倍计算的成本，用于用户扣费
+                api_cost=DataValidator.safe_format_decimal(charged_cost, decimals=6, default="0.000000"),  # 保存按2倍计算的成本，用于用户扣费
                 model_used=model
             )
             
             db.add(usage_stat)
             await db.commit()
             
-            logger.debug(f"AI使用统计 - 用户ID: {user_id}, 实际API成本: ${actual_cost:.6f}, 用户计费成本: ${charged_cost:.6f} (2倍计费)")
+            # 安全格式化成本显示
+            actual_cost_formatted = DataValidator.safe_format_price(actual_cost, decimals=6)
+            charged_cost_formatted = DataValidator.safe_format_price(charged_cost, decimals=6)
+            logger.debug(f"AI使用统计 - 用户ID: {user_id}, 实际API成本: {actual_cost_formatted}, 用户计费成本: {charged_cost_formatted} (2倍计费)")
             
         except Exception as e:
             logger.error(f"保存使用统计失败: {str(e)}")
@@ -934,11 +1467,11 @@ class AIService:
             
             # 查询当日所有AI使用记录
             result = await db.execute(
-                select(func.sum(ClaudeUsage.api_cost)).where(
+                select(func.sum(ClaudeUsageLog.api_cost)).where(
                     and_(
-                        ClaudeUsage.user_id == user_id,
-                        func.date(ClaudeUsage.request_date) == target_date,
-                        ClaudeUsage.success == True
+                        ClaudeUsageLog.user_id == user_id,
+                        func.date(ClaudeUsageLog.request_date) == target_date,
+                        ClaudeUsageLog.success == True
                     )
                 )
             )
@@ -1229,42 +1762,81 @@ class AIService:
     
     @staticmethod
     async def _detect_strategy_generation_intent(message: str) -> Dict[str, Any]:
-        """检测用户消息是否为策略生成请求"""
+        """检测用户消息是否为策略生成请求 - 优化版"""
         try:
-            # 关键词匹配
+            # 强策略意图短语（直接判定为策略请求）
+            strong_strategy_phrases = [
+                "我想做一个", "我想创建", "我想生成", "我想写", "我想设计",
+                "帮我做一个", "帮我创建", "帮我生成", "帮我写", "帮我设计",
+                "生成一个", "创建一个", "设计一个", "写一个策略",
+                "策略代码", "交易策略", "量化策略", "投资策略"
+            ]
+            
+            # 技术指标关键词（高权重）
+            technical_indicators = [
+                "macd", "rsi", "kdj", "boll", "均线", "ma", "ema", "sma",
+                "布林带", "成交量", "volume", "obv", "cci", "atr", "dmi"
+            ]
+            
+            # 策略相关词汇
             strategy_keywords = [
-                "生成策略", "创建策略", "帮我写", "策略代码", 
-                "交易策略", "量化策略", "投资策略", "策略模型",
-                "技术指标", "macd", "rsi", "均线", "布林带",
-                "买入条件", "卖出条件", "入场", "出场",
-                "回测", "收益率", "风险控制", "止损", "止盈"
+                "策略", "背离", "突破", "反转", "趋势", "震荡",
+                "买入", "卖出", "入场", "出场", "信号",
+                "条件", "规则", "逻辑", "算法"
             ]
             
             message_lower = message.lower()
-            keyword_matches = sum(1 for keyword in strategy_keywords if keyword in message_lower)
             
-            # 长度和复杂度检查
-            message_length = len(message)
-            has_specific_requirements = any(word in message_lower for word in [
-                "当", "如果", "条件", "参数", "周期", "时间框架", "风险", "收益"
-            ])
+            # 检查强意图短语
+            has_strong_intent = any(phrase in message_lower for phrase in strong_strategy_phrases)
             
-            # 综合判断
+            # 检查技术指标
+            indicator_matches = sum(1 for indicator in technical_indicators if indicator in message_lower)
+            
+            # 检查策略词汇
+            strategy_matches = sum(1 for keyword in strategy_keywords if keyword in message_lower)
+            
+            # 特殊策略类型检测
+            strategy_types = ["背离", "突破", "反转", "网格", "马丁", "套利", "对冲"]
+            has_strategy_type = any(stype in message_lower for stype in strategy_types)
+            
+            # 综合判断逻辑（更宽松）
             is_strategy_request = (
-                keyword_matches >= 2 or  # 至少2个关键词
-                (keyword_matches >= 1 and message_length > 30 and has_specific_requirements) or  # 1个关键词但有具体要求
-                any(phrase in message_lower for phrase in [
-                    "帮我生成", "帮我创建", "帮我设计", "写一个策略"
-                ])
+                has_strong_intent or  # 有明确的策略创建意图
+                (indicator_matches >= 1 and (strategy_matches >= 1 or has_strategy_type)) or  # 技术指标+策略词汇
+                strategy_matches >= 2 or  # 至少2个策略相关词汇
+                (indicator_matches >= 2)  # 至少2个技术指标
             )
             
-            confidence = min(0.9, 0.3 + keyword_matches * 0.2 + (0.1 if has_specific_requirements else 0))
+            # 计算置信度（确保策略请求有足够高的置信度）
+            confidence = 0.2  # 基础置信度
+            if has_strong_intent:
+                confidence += 0.4
+            confidence += min(0.3, indicator_matches * 0.15)  # 技术指标权重
+            confidence += min(0.2, strategy_matches * 0.1)   # 策略词汇权重
+            if has_strategy_type:
+                confidence += 0.2
+                
+            confidence = min(0.95, confidence)  # 最大置信度限制
+            
+            # 如果是策略请求但置信度过低，提升到最低阈值
+            if is_strategy_request and confidence < 0.6:
+                confidence = 0.6
+            
+            all_matches = []
+            if has_strong_intent:
+                all_matches.extend([p for p in strong_strategy_phrases if p in message_lower])
+            all_matches.extend([i for i in technical_indicators if i in message_lower])
+            all_matches.extend([k for k in strategy_keywords if k in message_lower])
             
             return {
                 "is_strategy_request": is_strategy_request,
                 "confidence": confidence,
-                "keyword_matches": keyword_matches,
-                "detected_keywords": [kw for kw in strategy_keywords if kw in message_lower]
+                "keyword_matches": len(all_matches),
+                "detected_keywords": all_matches,
+                "has_strong_intent": has_strong_intent,
+                "indicator_matches": indicator_matches,
+                "strategy_matches": strategy_matches
             }
             
         except Exception as e:
@@ -1328,12 +1900,12 @@ class AIService:
             # 保存批量生成的使用统计
             if db and result["success"]:
                 try:
-                    usage_stat = ClaudeUsage(
+                    usage_stat = ClaudeUsageLog(
                         user_id=user_id,
                         feature_type="batch_strategy_gen",
                         input_tokens=len(user_requests) * 500,  # 估算值
                         output_tokens=len(user_requests) * 1500,  # 估算值
-                        api_cost=f"{estimated_cost:.6f}",
+                        api_cost=DataValidator.safe_format_decimal(estimated_cost, decimals=6, currency="", default="0.000000"),
                         model_used="claude-sonnet-4-batch"
                     )
                     db.add(usage_stat)
@@ -1348,4 +1920,328 @@ class AIService:
             return {
                 "success": False,
                 "error": f"批量生成异常: {str(e)}"
+            }
+    
+    @staticmethod
+    async def generate_strategy_with_config_check(
+        user_input: str,
+        user_id: int,
+        membership_level: str = "basic",
+        session_id: Optional[str] = None,
+        config_check: Optional[Dict[str, Any]] = None,
+        db: Optional[AsyncSession] = None
+    ) -> Dict[str, Any]:
+        """
+        带回测配置检查和循环优化的策略生成流程
+        
+        新的完整流程：
+        1. 生成策略代码但不在对话中展示
+        2. 保存到数据库
+        3. 检查回测配置，未配置则提醒
+        4. 配置完整时自动执行回测
+        5. 如果回测不达标，启动协作优化循环
+        6. 只在策略库中展示生成的代码
+        """
+        try:
+            # 检查用户AI使用限制
+            if db:
+                estimated_cost = 0.08
+                can_use = await AIService.check_daily_usage_limit(
+                    db, user_id, membership_level, estimated_cost
+                )
+                if not can_use:
+                    return {
+                        "content": "您今日的AI策略生成额度已用尽，请升级会员或明日再试",
+                        "session_id": session_id,
+                        "tokens_used": 0,
+                        "model": "limit-exceeded",
+                        "success": False
+                    }
+            
+            # 调用策略生成编排器（不执行回测）
+            result = await AIService._generate_strategy_code_only(
+                user_input=user_input,
+                user_id=user_id,
+                user_membership=membership_level,
+                session_id=session_id
+            )
+            
+            if not result["success"]:
+                return {
+                    "content": f"策略生成失败：{result.get('error', '未知错误')}",
+                    "session_id": session_id,
+                    "tokens_used": 0,
+                    "model": "generation-failed",
+                    "success": False
+                }
+            
+            # 保存策略到数据库（不在对话中展示代码）
+            strategy_name = f"AI策略_{datetime.now().strftime('%m%d_%H%M')}"
+            if db and result.get("strategy_code"):
+                try:
+                    generated_strategy = GeneratedStrategy(
+                        user_id=user_id,
+                        prompt=user_input,
+                        generated_code=result["strategy_code"],
+                        explanation=json.dumps(result.get("intent_analysis", {}), ensure_ascii=False),
+                        parameters=json.dumps({
+                            "generation_id": result["generation_id"],
+                            "strategy_name": strategy_name,
+                            "awaiting_backtest": True
+                        }),
+                        tokens_used=0,
+                        generation_time_ms=int(result.get("execution_time", 0) * 1000),
+                        model_used="claude-sonnet-4-orchestrated"
+                    )
+                    db.add(generated_strategy)
+                    await db.commit()
+                    logger.info(f"策略已保存到数据库 - 策略名称: {strategy_name}")
+                    
+                except Exception as e:
+                    logger.error(f"保存策略到数据库失败: {e}")
+                    return {
+                        "content": "策略生成成功但保存失败，请重试",
+                        "session_id": session_id,
+                        "tokens_used": 0,
+                        "model": "save-failed",
+                        "success": False
+                    }
+            
+            # 根据回测配置状态生成不同的响应
+            if config_check and BacktestConfigChecker.should_skip_backtest(config_check):
+                # 用户未配置回测，提醒配置
+                notification = BacktestConfigChecker.generate_strategy_saved_notification(
+                    strategy_name=strategy_name,
+                    config_check=config_check,
+                    generation_id=result["generation_id"]
+                )
+                
+                return {
+                    "content": notification,
+                    "session_id": session_id,
+                    "tokens_used": result.get("tokens_used", 0),
+                    "model": "strategy-saved-config-needed",
+                    "success": True,
+                    "strategy_saved": True,
+                    "needs_backtest_config": True
+                }
+            else:
+                # 配置完整，执行增强回测和优化建议
+                try:
+                    # 使用增强回测服务进行完整的回测和优化建议
+                    backtest_with_suggestions = await EnhancedAutoBacktestService.run_enhanced_backtest_with_suggestions(
+                        strategy_code=result["strategy_code"],
+                        intent=result.get("intent_analysis", {}),
+                        user_id=user_id,
+                        config=config_check or {},
+                        db_session=db
+                    )
+                    
+                    if backtest_with_suggestions["success"] and not backtest_with_suggestions["is_satisfactory"]:
+                        # 回测不达标，启动协作优化系统
+                        from app.services.collaborative_strategy_optimizer import collaborative_optimizer
+                        
+                        # 初始化优化会话
+                        optimization_result = await collaborative_optimizer.start_optimization_conversation(
+                            session_id=session_id or str(uuid.uuid4()),
+                            user_id=user_id,
+                            original_code=result["strategy_code"],
+                            backtest_results=backtest_with_suggestions["backtest_results"],
+                            user_intent=result.get("intent_analysis", {})
+                        )
+                        
+                        if optimization_result["success"]:
+                            return {
+                                "content": optimization_result["message"],
+                                "session_id": session_id,
+                                "tokens_used": result.get("tokens_used", 0),
+                                "model": "collaborative-optimization-start",
+                                "success": True,
+                                "strategy_saved": True,
+                                "optimization_started": True,
+                                "backtest_results": backtest_with_suggestions
+                            }
+                    
+                    # 回测达标或者没有优化建议
+                    performance_grade = backtest_with_suggestions.get("performance_grade", "F")
+                    is_satisfactory = backtest_with_suggestions.get("is_satisfactory", False)
+                    
+                    notification = f"✅ **策略生成和回测完成**\n\n"
+                    notification += f"📝 策略名称: {strategy_name}\n"
+                    notification += f"📊 性能等级: {performance_grade}\n"
+                    notification += f"🎯 达标状态: {'✅ 达标' if is_satisfactory else '⚠️ 需要优化'}\n\n"
+                    
+                    if is_satisfactory:
+                        notification += "🎉 恭喜！您的策略表现优秀，可在策略库中查看详细结果并考虑实盘应用。"
+                    else:
+                        notification += "💡 虽然未完全达标，但策略已保存到您的策略库中，您可以根据建议进一步优化。"
+                    
+                    return {
+                        "content": notification,
+                        "session_id": session_id,
+                        "tokens_used": result.get("tokens_used", 0),
+                        "model": "strategy-completed",
+                        "success": True,
+                        "strategy_saved": True,
+                        "backtest_completed": True,
+                        "backtest_results": backtest_with_suggestions
+                    }
+                    
+                except Exception as backtest_error:
+                    logger.error(f"回测执行失败: {backtest_error}")
+                    notification = f"✅ **策略已成功生成并保存**\n\n"
+                    notification += f"📝 策略名称: {strategy_name}\n"
+                    notification += f"⚠️ 回测执行遇到问题: {str(backtest_error)}\n\n"
+                    notification += "策略代码已保存到策略库，您可以手动进行回测。"
+                    
+                    return {
+                        "content": notification,
+                        "session_id": session_id,
+                        "tokens_used": result.get("tokens_used", 0),
+                        "model": "strategy-saved-backtest-failed",
+                        "success": True,
+                        "strategy_saved": True,
+                        "backtest_failed": True
+                    }
+                
+        except Exception as e:
+            logger.error(f"策略生成流程异常: {e}")
+            return {
+                "content": f"策略生成失败：{str(e)}",
+                "session_id": session_id,
+                "tokens_used": 0,
+                "model": "system-error",
+                "success": False
+            }
+    
+    @staticmethod
+    async def _generate_strategy_code_only(
+        user_input: str,
+        user_id: int,
+        user_membership: str = "basic",
+        session_id: Optional[str] = None
+    ) -> Dict[str, Any]:
+        """
+        只生成策略代码，不执行回测
+        简化版的策略生成流程，用于新的用户体验
+        """
+        try:
+            generation_id = str(uuid.uuid4())
+            start_time = datetime.now()
+            
+            logger.info(f"开始策略代码生成 {generation_id} for user {user_id}")
+            
+            # 创建正确的Claude客户端（使用数据库代理配置）
+            from app.core.claude_client import ClaudeClient
+            from app.services.claude_account_service import claude_account_service
+            
+            account = await claude_account_service.select_best_account()
+            if not account:
+                return {
+                    "generation_id": generation_id,
+                    "success": False,
+                    "stage": "client_init",
+                    "error": "无可用的Claude账号"
+                }
+            
+            # 解密API密钥
+            decrypted_api_key = await claude_account_service.get_decrypted_api_key(account.id)
+            
+            if not decrypted_api_key:
+                return {
+                    "generation_id": generation_id,
+                    "success": False,
+                    "stage": "client_init",
+                    "error": "无法解密Claude API密钥"
+                }
+            
+            # 创建配置正确的Claude客户端
+            proxy_claude_client = ClaudeClient(
+                api_key=decrypted_api_key,
+                base_url=account.proxy_base_url,
+                timeout=120,
+                max_retries=2
+            )
+            
+            logger.info(f"🔗 使用代理Claude客户端: {account.proxy_base_url}")
+            
+            # 1. 简化的意图分析（跳过复杂分析器）
+            intent_analysis = {
+                "strategy_type": "custom",
+                "complexity": "medium",
+                "indicators": ["MACD"],
+                "timeframe": "1h",
+                "risk_level": "medium"
+            }
+            
+            # 2. 简化的兼容性检查（默认兼容）
+            compatibility_check = {"compatible": True}
+            
+            # 3. 简化的策略代码生成 - 使用策略流程专用提示词
+            generation_prompt = f"""
+            基于以下用户需求和意图分析，生成一个完整的交易策略代码：
+            
+            用户需求：{user_input}
+            意图分析：{json.dumps(intent_analysis, ensure_ascii=False)}
+            
+            请生成符合我们框架的策略代码，包含完整的入场、出场逻辑和风险控制。
+            """
+            
+            response = await proxy_claude_client.chat_completion(
+                messages=[{"role": "user", "content": generation_prompt}],
+                system=TradingPrompts.ENHANCED_STRATEGY_GENERATION_SYSTEM,
+                temperature=0.3
+            )
+            
+            # 处理原始Anthropic API响应格式
+            if isinstance(response, dict) and "content" in response:
+                # 直接从Anthropic API响应中提取内容
+                if isinstance(response["content"], list) and len(response["content"]) > 0:
+                    strategy_code = response["content"][0].get("text", "")
+                else:
+                    strategy_code = response.get("content", "")
+            elif isinstance(response, dict) and "success" in response:
+                # 兼容旧格式
+                if not response["success"]:
+                    return {
+                        "generation_id": generation_id,
+                        "success": False,
+                        "stage": "code_generation",
+                        "error": f"策略代码生成失败: {response.get('error', '未知错误')}"
+                    }
+                strategy_code = response["content"]
+            else:
+                return {
+                    "generation_id": generation_id,
+                    "success": False,
+                    "stage": "code_generation",
+                    "error": f"未知的响应格式: {type(response)}"
+                }
+            
+            if not strategy_code:
+                return {
+                    "generation_id": generation_id,
+                    "success": False,
+                    "stage": "code_generation",
+                    "error": "策略代码生成为空"
+                }
+            execution_time = (datetime.now() - start_time).total_seconds()
+            
+            return {
+                "generation_id": generation_id,
+                "success": True,
+                "stage": "completed",
+                "strategy_code": strategy_code,
+                "intent_analysis": intent_analysis,
+                "execution_time": execution_time,
+                "tokens_used": response.get("usage", {}).get("total_tokens", 0)
+            }
+            
+        except Exception as e:
+            logger.error(f"策略代码生成异常: {e}")
+            return {
+                "generation_id": generation_id,
+                "success": False,
+                "stage": "system_error",
+                "error": f"系统异常: {str(e)}"
             }

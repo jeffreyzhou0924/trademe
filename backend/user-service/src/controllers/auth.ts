@@ -9,6 +9,7 @@ import {
 } from '@/utils/encryption';
 import { 
   generateTokenPair, 
+  generateAccessToken,
   verifyRefreshToken, 
   JwtPayload 
 } from '@/utils/jwt';
@@ -22,6 +23,7 @@ import {
 } from '@/middleware/errorHandler';
 import { OAuth2Client } from 'google-auth-library';
 import { emailService } from '@/services/email.service';
+import { WalletService } from '@/services/wallet.service';
 
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
@@ -96,6 +98,24 @@ class AuthController {
       // 邮件发送失败不影响注册流程，但记录警告
       logger.warn('用户注册成功但验证码邮件发送失败，验证码为:', verificationCode);
     }
+
+    // 自动为新用户分配虚拟Claude API密钥 (异步，不影响注册流程)
+    AuthController.allocateClaudeKeyForNewUser(user.id).catch(error => {
+      logger.error('Failed to allocate Claude API key for new user:', { 
+        userId: user.id, 
+        email: user.email, 
+        error 
+      });
+    });
+
+    // 自动为新用户分配钱包 (异步，不影响注册流程)
+    WalletService.allocateWalletsForNewUser(user.id, user.email).catch(error => {
+      logger.error('Failed to allocate wallets for new user:', { 
+        userId: user.id, 
+        email: user.email, 
+        error 
+      });
+    });
 
     res.status(201).json({
       success: true,
@@ -353,6 +373,31 @@ class AuthController {
             }),
           },
         });
+
+        // 为Google OAuth新用户分配Claude API密钥和钱包 (异步)
+        if (user) {
+          const userId = user.id;
+          const userEmail = user.email;
+          
+          AuthController.allocateClaudeKeyForNewUser(userId).catch(error => {
+            logger.error('Failed to allocate Claude API key for Google OAuth new user:', { 
+              userId, 
+              email: userEmail, 
+              googleId,
+              error 
+            });
+          });
+
+          WalletService.allocateWalletsForNewUser(userId, userEmail).catch(error => {
+            logger.error('Failed to allocate wallets for Google OAuth new user:', { 
+              userId, 
+              email: userEmail, 
+              googleId,
+              error 
+            });
+          });
+        }
+
       } else if (!user.googleId) {
         // 绑定Google账户到已存在用户
         user = await prisma.user.update({
@@ -636,6 +681,53 @@ class AuthController {
       timestamp: new Date().toISOString(),
       request_id: req.headers['x-request-id'],
     });
+  }
+
+  /**
+   * 为新用户自动分配Claude API虚拟密钥
+   * @private
+   */
+  private static async allocateClaudeKeyForNewUser(userId: number): Promise<void> {
+    try {
+      const tradingServiceUrl = process.env.TRADING_SERVICE_URL || 'http://localhost:8001';
+      
+      // 生成内部服务调用的JWT Token
+      const internalToken = generateAccessToken({
+        userId: userId.toString(),
+        email: 'internal@trademe.com',
+        membershipLevel: 'basic'
+      });
+
+      const response = await fetch(`${tradingServiceUrl}/api/v1/user-claude-keys/auto-allocate`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${internalToken}`,
+          'User-Agent': 'Trademe-UserService/1.0'
+        },
+        body: JSON.stringify({
+          user_id: userId
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`Trading service responded with ${response.status}: ${response.statusText}`);
+      }
+
+      const result: any = await response.json();
+      logger.info('Successfully allocated Claude API key for new user:', { 
+        userId, 
+        keyId: result.data?.id,
+        virtualKey: result.data?.virtual_key ? `${result.data.virtual_key.substring(0, 10)}...` : 'N/A'
+      });
+
+    } catch (error) {
+      // 记录错误但不抛出，避免影响用户注册流程
+      logger.error('Failed to allocate Claude API key for new user:', { 
+        userId, 
+        error: error instanceof Error ? error.message : 'Unknown error' 
+      });
+    }
   }
 }
 

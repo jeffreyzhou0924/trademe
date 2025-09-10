@@ -1,16 +1,16 @@
 module.exports = {
   apps: [{
-    name: 'trademe-user-service',
+    name: 'user-service',
     script: 'dist/app.js',
     cwd: '/root/trademe/backend/user-service',
-    instances: 2,
-    exec_mode: 'cluster',
+    instances: 1,
+    exec_mode: 'fork',
     env: {
-      NODE_ENV: 'production',
+      NODE_ENV: 'development',
       PORT: 3001
     },
-    env_development: {
-      NODE_ENV: 'development',
+    env_production: {
+      NODE_ENV: 'production',
       PORT: 3001
     },
     log_file: '/root/trademe/logs/user-service.log',
@@ -24,11 +24,9 @@ module.exports = {
     min_uptime: '10s',
     watch: false,
     ignore_watch: ['node_modules', 'logs'],
-    node_args: '-r tsconfig-paths/register',
     kill_timeout: 5000,
     listen_timeout: 8000,
     shutdown_with_message: true,
-    wait_ready: true,
     autorestart: true,
     vizion: false
   }]

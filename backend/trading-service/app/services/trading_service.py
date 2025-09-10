@@ -34,6 +34,20 @@ class TradingService:
         self.logger = logger.bind(service="RealTradingService")
         self._trading_engine_started = False
     
+    def _safe_parse_datetime(self, value: Any) -> Optional[datetime]:
+        """安全地解析日期时间值"""
+        if value is None:
+            return None
+        if isinstance(value, str):
+            try:
+                return datetime.fromisoformat(value)
+            except ValueError:
+                return datetime.utcnow()
+        elif isinstance(value, datetime):
+            return value
+        else:
+            return datetime.utcnow()
+    
     async def _ensure_trading_engine_started(self):
         """确保交易引擎已启动"""
         if not self._trading_engine_started:
@@ -354,8 +368,8 @@ class TradingService:
                     remaining_quantity=order_data['remaining_quantity'],
                     avg_fill_price=order_data['avg_fill_price'],
                     status=order_data['status'],
-                    created_at=datetime.fromisoformat(order_data['created_at']),
-                    updated_at=datetime.fromisoformat(order_data['updated_at']),
+                    created_at=self._safe_parse_datetime(order_data.get('created_at')),
+                    updated_at=self._safe_parse_datetime(order_data.get('updated_at')),
                     fees=order_data['fees']
                 )
                 orders.append(order)
@@ -389,8 +403,8 @@ class TradingService:
                     remaining_quantity=order_data['remaining_quantity'],
                     avg_fill_price=order_data['avg_fill_price'],
                     status=order_data['status'],
-                    created_at=datetime.fromisoformat(order_data['created_at']),
-                    updated_at=datetime.fromisoformat(order_data['updated_at']),
+                    created_at=self._safe_parse_datetime(order_data.get('created_at')),
+                    updated_at=self._safe_parse_datetime(order_data.get('updated_at')),
                     fees=order_data['fees']
                 )
                 return order
@@ -501,8 +515,8 @@ class TradingService:
                     total_pnl=pos_data['unrealized_pnl'],
                     pnl_percent=pnl_percent,
                     trade_count=1,  # TODO: 从数据库查询
-                    first_trade_at=datetime.fromisoformat(pos_data['last_updated']),
-                    last_trade_at=datetime.fromisoformat(pos_data['last_updated'])
+                    first_trade_at=self._safe_parse_datetime(pos_data.get('last_updated')),
+                    last_trade_at=self._safe_parse_datetime(pos_data.get('last_updated'))
                 )
                 positions.append(position)
             
@@ -673,10 +687,10 @@ class TradingService:
             if trade_type:
                 query = query.where(Trade.trade_type == trade_type.upper())
             if start_date:
-                start_dt = datetime.fromisoformat(start_date)
+                start_dt = self._safe_parse_datetime(start_date)
                 query = query.where(Trade.executed_at >= start_dt)
             if end_date:
-                end_dt = datetime.fromisoformat(end_date)
+                end_dt = self._safe_parse_datetime(end_date)
                 query = query.where(Trade.executed_at <= end_dt)
             
             # 排序和分页
@@ -786,8 +800,8 @@ class TradingService:
                     max_open_positions=session_data['max_open_positions'],
                     total_trades=session_data['total_trades'],
                     daily_pnl=session_data['daily_pnl'],
-                    created_at=datetime.fromisoformat(session_data['created_at']),
-                    started_at=datetime.fromisoformat(session_data['started_at']) if session_data.get('started_at') else None
+                    created_at=self._safe_parse_datetime(session_data.get('created_at')),
+                    started_at=self._safe_parse_datetime(session_data.get('started_at')) if session_data.get('started_at') else None
                 )
                 sessions.append(session)
             

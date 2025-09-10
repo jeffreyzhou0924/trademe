@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>交易页面API测试</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-result { padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 3px; overflow-x: auto; }
+        button { padding: 8px 16px; margin: 5px; border: none; border-radius: 4px; cursor: pointer; }
+        .btn-primary { background: #007bff; color: white; }
+        .btn-success { background: #28a745; color: white; }
+    </style>
+</head>
+<body>
+    <h1>🔧 交易页面K线数据API测试</h1>
+    
+    <div id="status" class="test-result info">
+        点击按钮开始测试...
+    </div>
+    
+    <button class="btn-primary" onclick="testAuth()">1. 测试认证状态</button>
+    <button class="btn-success" onclick="testApiConnection()">2. 测试API连接</button>
+    <button class="btn-success" onclick="testKlineData()">3. 测试K线数据</button>
+    
+    <div id="results"></div>
+    
+    <script>
+        // 获取存储的认证token
+        function getAuthToken() {
+            try {
+                const authData = localStorage.getItem('auth-storage');
+                if (authData) {
+                    const parsed = JSON.parse(authData);
+                    return parsed.state?.token;
+                }
+            } catch (e) {
+                console.error('解析认证数据失败:', e);
+            }
+            return null;
+        }
+        
+        // 显示测试结果
+        function showResult(message, type = 'info', data = null) {
+            const resultsDiv = document.getElementById('results');
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `test-result ${type}`;
+            
+            let content = `<strong>${new Date().toLocaleTimeString()}</strong>: ${message}`;
+            if (data) {
+                content += `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+            }
+            resultDiv.innerHTML = content;
+            
+            resultsDiv.insertBefore(resultDiv, resultsDiv.firstChild);
+        }
+        
+        // 测试认证状态
+        async function testAuth() {
+            const token = getAuthToken();
+            if (token) {
+                showResult(`✅ 认证Token已找到，长度: ${token.length}`, 'success');
+                document.getElementById('status').innerHTML = '✅ 认证状态: 已登录';
+                document.getElementById('status').className = 'test-result success';
+            } else {
+                showResult('❌ 未找到认证Token，请先登录', 'error');
+                document.getElementById('status').innerHTML = '❌ 认证状态: 未登录 - <a href="/login">点击登录</a>';
+                document.getElementById('status').className = 'test-result error';
+            }
+        }
+        
+        // 测试API连接
+        async function testApiConnection() {
+            const token = getAuthToken();
+            if (!token) {
+                showResult('❌ 请先完成认证测试', 'error');
+                return;
+            }
+            
+            try {
+                showResult('🔄 正在测试API连接...', 'info');
+                
+                const apiUrl = 'http://43.167.252.120:8001/api/v1/market-data/klines/BTC/USDT?timeframe=1h&limit=3';
+                const response = await fetch(apiUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                showResult(`📡 HTTP响应状态: ${response.status} ${response.statusText}`, response.ok ? 'success' : 'error');
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    showResult(`✅ API连接成功`, 'success', {
+                        success: result.success,
+                        message: result.message,
+                        dataSize: result.data ? Object.keys(result.data).length : 0,
+                        klineCount: result.data?.count || 0,
+                        source: result.data?.source || 'unknown'
+                    });
+                    
+                    document.getElementById('status').innerHTML = '✅ API状态: 连接正常';
+                    document.getElementById('status').className = 'test-result success';
+                } else {
+                    const errorText = await response.text();
+                    showResult(`❌ API连接失败: ${errorText}`, 'error');
+                    document.getElementById('status').innerHTML = '❌ API状态: 连接失败';
+                    document.getElementById('status').className = 'test-result error';
+                }
+            } catch (error) {
+                showResult(`❌ 网络错误: ${error.message}`, 'error');
+                document.getElementById('status').innerHTML = '❌ API状态: 网络错误';
+                document.getElementById('status').className = 'test-result error';
+            }
+        }
+        
+        // 测试K线数据详细信息
+        async function testKlineData() {
+            const token = getAuthToken();
+            if (!token) {
+                showResult('❌ 请先完成认证测试', 'error');
+                return;
+            }
+            
+            try {
+                showResult('🔄 正在获取K线数据详情...', 'info');
+                
+                const apiUrl = 'http://43.167.252.120:8001/api/v1/market-data/klines/BTC/USDT?timeframe=1h&limit=5';
+                const response = await fetch(apiUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    
+                    if (result.success && result.data && result.data.klines) {
+                        const klines = result.data.klines;
+                        const latestKline = klines[klines.length - 1];
+                        
+                        showResult(`✅ K线数据获取成功`, 'success', {
+                            symbol: result.data.symbol,
+                            exchange: result.data.exchange,
+                            timeframe: result.data.timeframe,
+                            count: result.data.count,
+                            source: result.data.source,
+                            latestPrice: latestKline ? latestKline[4] : 'N/A',
+                            latestTime: latestKline ? new Date(latestKline[0]).toLocaleString() : 'N/A',
+                            sampleKline: latestKline ? {
+                                timestamp: new Date(latestKline[0]).toLocaleString(),
+                                open: latestKline[1],
+                                high: latestKline[2],
+                                low: latestKline[3],
+                                close: latestKline[4],
+                                volume: latestKline[5]
+                            } : null
+                        });
+                        
+                        document.getElementById('status').innerHTML = `✅ 数据状态: 获取到${result.data.count}条K线数据 (${result.data.source})`;
+                        document.getElementById('status').className = 'test-result success';
+                    } else {
+                        showResult('❌ K线数据格式错误', 'error', result);
+                    }
+                } else {
+                    const errorText = await response.text();
+                    showResult(`❌ K线数据获取失败: ${errorText}`, 'error');
+                }
+            } catch (error) {
+                showResult(`❌ K线数据测试错误: ${error.message}`, 'error');
+            }
+        }
+        
+        // 页面加载时自动测试认证状态
+        window.onload = function() {
+            testAuth();
+        };
+    </script>
+</body>
+</html>

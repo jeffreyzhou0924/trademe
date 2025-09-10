@@ -262,9 +262,15 @@ describe('Store Mock Data Tests', () => {
 
   test('should handle mock AI chat session', () => {
     const mockSession = {
-      id: 'session-1',
-      title: 'Test Chat',
-      messages: [],
+      session_id: 'session-1',
+      name: 'Test Chat',
+      description: 'Test chat session',
+      ai_mode: 'developer' as const,
+      session_type: 'strategy' as const,
+      status: 'active' as const,
+      progress: 0,
+      message_count: 0,
+      cost_total: 0,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString()
     }

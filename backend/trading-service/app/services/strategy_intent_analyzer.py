@@ -10,11 +10,36 @@ from typing import Dict, List, Any, Optional
 from datetime import datetime
 from loguru import logger
 
-from app.ai.core.claude_client import claude_client
+from app.core.claude_client import ClaudeClient
+from app.services.claude_account_service import claude_account_service
 
 
 class StrategyIntentAnalyzer:
     """策略意图分析器"""
+    
+    @staticmethod
+    async def _get_claude_client() -> Optional[ClaudeClient]:
+        """获取Claude客户端实例"""
+        try:
+            account = await claude_account_service.select_best_account()
+            if not account:
+                logger.error("没有可用的Claude账号")
+                return None
+            
+            decrypted_api_key = await claude_account_service.get_decrypted_api_key(account.id)
+            if not decrypted_api_key:
+                logger.error("无法获取解密的API密钥")
+                return None
+            
+            return ClaudeClient(
+                api_key=decrypted_api_key,
+                base_url=account.proxy_base_url,
+                timeout=120,
+                max_retries=2
+            )
+        except Exception as e:
+            logger.error(f"获取Claude客户端失败: {e}")
+            return None
     
     SUPPORTED_DATA_TYPES = [
         "kline", "orderbook", "funding_flow", 
@@ -64,16 +89,30 @@ class StrategyIntentAnalyzer:
             只返回JSON，不要其他文字。
             """
             
-            response = await claude_client.chat_completion(
+            claude_client = await StrategyIntentAnalyzer._get_claude_client()
+            if not claude_client:
+                logger.error("无法获取Claude客户端")
+                return StrategyIntentAnalyzer._get_fallback_intent(user_input)
+                
+            response = await claude_client.create_message(
                 messages=[{"role": "user", "content": intent_analysis_prompt}],
-                system_prompt="你是专业的量化策略分析师，精确提取用户需求信息。返回标准JSON格式。",
+                system="你是专业的量化策略分析师，精确提取用户需求信息。返回标准JSON格式。",
                 temperature=0.3
             )
             
             if response["success"]:
                 try:
                     # 提取JSON内容
-                    content = response["content"].strip()
+                    content = response["content"]
+                    if isinstance(content, list) and len(content) > 0:
+                        # Anthropic原始格式
+                        content = content[0].get("text", "")
+                    elif isinstance(content, str):
+                        # 包装格式
+                        pass
+                    else:
+                        content = str(content)
+                    content = content.strip()
                     if "```json" in content:
                         content = content.split("```json")[1].split("```")[0].strip()
                     elif "```" in content:
@@ -90,7 +129,7 @@ class StrategyIntentAnalyzer:
                     return intent
                     
                 except json.JSONDecodeError as e:
-                    logger.error(f"解析意图JSON失败: {e}, 内容: {response['content']}")
+                    logger.error(f"解析意图JSON失败: {e}, 内容: {content}")
                     return StrategyIntentAnalyzer._get_fallback_intent(user_input)
             else:
                 logger.error(f"AI意图分析失败: {response}")

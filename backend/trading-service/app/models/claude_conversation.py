@@ -22,7 +22,7 @@ class ClaudeConversation(Base):
     content = Column(Text, nullable=False)  # 消息内容
     context = Column(Text, nullable=True)  # JSON格式的上下文信息
     tokens_used = Column(Integer, default=0)  # 使用的token数量
-    model = Column(String(50), default="claude-3-5-sonnet-20241022")  # 使用的模型
+    model = Column(String(50), default="claude-sonnet-4-20250514")  # 使用的模型
     response_time_ms = Column(Integer, default=0)  # 响应时间(毫秒)
     success = Column(Boolean, default=True)  # 请求是否成功
     error_message = Column(Text, nullable=True)  # 错误信息
@@ -49,43 +49,6 @@ class ClaudeConversation(Base):
         }
 
 
-class ClaudeUsage(Base):
-    """Claude使用统计表"""
-    
-    __tablename__ = "claude_usage_stats"
-    
-    id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, nullable=False, index=True)  # 关联用户服务的用户ID
-    feature_type = Column(String(50), nullable=False, index=True)  # 功能类型: 'chat', 'strategy_gen', 'analysis'
-    input_tokens = Column(Integer, nullable=False, default=0)  # 输入token数
-    output_tokens = Column(Integer, nullable=False, default=0)  # 输出token数
-    api_cost = Column(String(20), default="0.000000")  # API成本 (存储为字符串保持精度)
-    model_used = Column(String(50), default="claude-3-5-sonnet-20241022")  # 使用的模型
-    response_time_ms = Column(Integer, default=0)  # 响应时间
-    success = Column(Boolean, default=True)  # 是否成功
-    request_date = Column(DateTime(timezone=True), server_default=func.now())  # 请求日期
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    
-    def __repr__(self):
-        return f"<ClaudeUsage(id={self.id}, user_id={self.user_id}, feature='{self.feature_type}', tokens={self.input_tokens + self.output_tokens})>"
-    
-    def to_dict(self):
-        """转换为字典"""
-        return {
-            "id": self.id,
-            "user_id": self.user_id,
-            "feature_type": self.feature_type,
-            "input_tokens": self.input_tokens,
-            "output_tokens": self.output_tokens,
-            "total_tokens": self.input_tokens + self.output_tokens,
-            "api_cost": self.api_cost,
-            "model_used": self.model_used,
-            "response_time_ms": self.response_time_ms,
-            "success": self.success,
-            "request_date": self.request_date.isoformat() if self.request_date else None,
-            "created_at": self.created_at.isoformat() if self.created_at else None
-        }
-
 
 class GeneratedStrategy(Base):
     """AI生成的策略表"""
@@ -103,7 +66,7 @@ class GeneratedStrategy(Base):
     performance_rating = Column(Integer, nullable=True)  # 用户评分 (1-5)
     tokens_used = Column(Integer, default=0)  # 生成时使用的token数
     generation_time_ms = Column(Integer, default=0)  # 生成耗时
-    model_used = Column(String(50), default="claude-3-5-sonnet-20241022")  # 使用的模型
+    model_used = Column(String(50), default="claude-sonnet-4-20250514")  # 使用的模型
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     

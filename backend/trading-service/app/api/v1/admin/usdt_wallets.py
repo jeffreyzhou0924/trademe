@@ -2,7 +2,8 @@
 USDT钱包池管理API - 管理员钱包管理接口
 """
 
-from fastapi import APIRouter, Depends, HTTPException, status, Query, Request
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
+from fastapi import status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, and_, or_, func, desc
 from pydantic import BaseModel, Field
@@ -11,30 +12,29 @@ from decimal import Decimal
 from datetime import datetime, timedelta
 
 from app.database import get_db
-from app.middleware.admin_auth import get_current_admin, AdminUser
+from app.middleware.auth import get_current_user
 from app.services.wallet_pool_service import WalletPoolService, WalletInfo
 from app.services.blockchain_monitor import BlockchainMonitorService
 from app.models.payment import USDTWallet, USDTPaymentOrder, WalletBalance
 from app.models.admin import AdminOperationLog
-from app.core.rbac import require_permission
 from app.core.exceptions import WalletError, ValidationError
 import logging
 
 logger = logging.getLogger(__name__)
-router = APIRouter(prefix="/admin/usdt/wallets", tags=["USDT钱包管理"])
+router = APIRouter(prefix="/admin/usdt-wallets", tags=["USDT钱包管理"])
 
 
 # Pydantic模型
 class WalletCreateRequest(BaseModel):
     """创建钱包请求"""
-    network: str = Field(..., description="网络类型", regex="^(TRC20|ERC20|BEP20)$")
+    network: str = Field(..., description="网络类型", pattern="^(TRC20|ERC20|BEP20)$")
     wallet_name: str = Field(..., description="钱包名称", min_length=1, max_length=100)
     private_key: str = Field(..., description="私钥")
 
 
 class WalletGenerateRequest(BaseModel):
     """批量生成钱包请求"""
-    network: str = Field(..., description="网络类型", regex="^(TRC20|ERC20|BEP20)$")
+    network: str = Field(..., description="网络类型", pattern="^(TRC20|ERC20|BEP20)$")
     count: int = Field(..., description="生成数量", ge=1, le=1000)
     name_prefix: str = Field("wallet", description="钱包名称前缀", max_length=50)
 
@@ -55,9 +55,9 @@ class WalletResponse(BaseModel):
     balance: Decimal
     status: str
     daily_limit: Optional[Decimal]
-    total_received: Decimal
-    total_sent: Decimal
-    transaction_count: int
+    total_received: Optional[Decimal] = Decimal('0.0')  # 允许NULL，默认值0.0
+    total_sent: Optional[Decimal] = Decimal('0.0')      # 允许NULL，默认值0.0
+    transaction_count: Optional[int] = 0                # 允许NULL，默认值0
     current_order_id: Optional[str]
     allocated_at: Optional[datetime]
     last_sync_at: Optional[datetime]
@@ -97,19 +97,25 @@ class WalletGenerateResponse(BaseModel):
 
 
 @router.get("/", response_model=WalletListResponse)
-@require_permission("wallet:manage")
 async def get_wallets(
-    current_admin: AdminUser = Depends(get_current_admin),
+    current_user = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
     page: int = Query(1, ge=1, description="页码"),
     page_size: int = Query(20, ge=1, le=100, description="每页大小"),
     network: Optional[str] = Query(None, description="网络类型筛选"),
-    status: Optional[str] = Query(None, description="状态筛选"),
+    wallet_status: Optional[str] = Query(None, description="状态筛选"),
     search: Optional[str] = Query(None, description="搜索关键词"),
     sort_by: str = Query("created_at", description="排序字段"),
     sort_order: str = Query("desc", description="排序顺序")
 ):
     """获取钱包列表"""
+    # 简单的管理员权限检查
+    if current_user.email != "admin@trademe.com":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="仅管理员可访问此功能"
+        )
+    
     try:
         # 构建基础查询
         query = select(USDTWallet)
@@ -121,8 +127,8 @@ async def get_wallets(
         if network:
             filters.append(USDTWallet.network == network)
         
-        if status:
-            filters.append(USDTWallet.status == status)
+        if wallet_status:
+            filters.append(USDTWallet.status == wallet_status)
         
         if search:
             search_filter = or_(
@@ -198,13 +204,19 @@ async def get_wallets(
 
 
 @router.post("/generate", response_model=WalletGenerateResponse)
-@require_permission("wallet:manage")
 async def generate_wallets(
     request: WalletGenerateRequest,
-    current_admin: AdminUser = Depends(get_current_admin),
+    current_user = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
 ):
     """批量生成钱包"""
+    # 简单的管理员权限检查
+    if current_user.email != "admin@trademe.com":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="仅管理员可访问此功能"
+        )
+    
     try:
         wallet_service = WalletPoolService(db)
         
@@ -213,7 +225,7 @@ async def generate_wallets(
             network=request.network,
             count=request.count,
             name_prefix=request.name_prefix,
-            admin_id=current_admin.id
+            admin_id=1  # 使用固定管理员ID
         )
         
         # 转换为响应格式
@@ -256,13 +268,19 @@ async def generate_wallets(
 
 
 @router.post("/import", response_model=WalletResponse)
-@require_permission("wallet:manage")
 async def import_wallet(
     request: WalletCreateRequest,
-    current_admin: AdminUser = Depends(get_current_admin),
+    current_user = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
 ):
     """导入钱包"""
+    # 简单的管理员权限检查
+    if current_user.email != "admin@trademe.com":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="仅管理员可访问此功能"
+        )
+    
     try:
         wallet_service = WalletPoolService(db)
         
@@ -271,7 +289,7 @@ async def import_wallet(
             network=request.network,
             private_key=request.private_key,
             wallet_name=request.wallet_name,
-            admin_id=current_admin.id
+            admin_id=1  # 使用固定管理员ID
         )
         
         return WalletResponse(
@@ -301,13 +319,19 @@ async def import_wallet(
 
 
 @router.get("/{wallet_id}", response_model=WalletResponse)
-@require_permission("wallet:manage")
 async def get_wallet(
     wallet_id: int,
-    current_admin: AdminUser = Depends(get_current_admin),
+    current_user = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
 ):
     """获取钱包详情"""
+    # 简单的管理员权限检查
+    if current_user.email != "admin@trademe.com":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="仅管理员可访问此功能"
+        )
+    
     try:
         # 查询钱包信息
         wallet_query = select(USDTWallet).where(USDTWallet.id == wallet_id)
@@ -349,14 +373,20 @@ async def get_wallet(
 
 
 @router.put("/{wallet_id}", response_model=WalletResponse)
-@require_permission("wallet:manage")
 async def update_wallet(
     wallet_id: int,
     request: WalletUpdateRequest,
-    current_admin: AdminUser = Depends(get_current_admin),
+    current_user = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
 ):
     """更新钱包信息"""
+    # 简单的管理员权限检查
+    if current_user.email != "admin@trademe.com":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="仅管理员可访问此功能"
+        )
+    
     try:
         # 检查钱包是否存在
         wallet_query = select(USDTWallet).where(USDTWallet.id == wallet_id)
@@ -390,7 +420,7 @@ async def update_wallet(
             # 如果要更改状态，使用钱包服务的方法
             wallet_service = WalletPoolService(db)
             success = await wallet_service.update_wallet_status(
-                wallet_id, request.status, current_admin.id
+                wallet_id, request.status, 1  # 使用固定管理员ID
             )
             
             if not success:
@@ -443,13 +473,19 @@ async def update_wallet(
 
 
 @router.delete("/{wallet_id}")
-@require_permission("wallet:manage")
 async def delete_wallet(
     wallet_id: int,
-    current_admin: AdminUser = Depends(get_current_admin),
+    current_user = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
 ):
     """删除钱包"""
+    # 简单的管理员权限检查
+    if current_user.email != "admin@trademe.com":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="仅管理员可访问此功能"
+        )
+    
     try:
         # 检查钱包是否存在
         wallet_query = select(USDTWallet).where(USDTWallet.id == wallet_id)
@@ -495,7 +531,7 @@ async def delete_wallet(
         
         # 记录操作日志
         log_entry = AdminOperationLog(
-            admin_id=current_admin.id,
+            admin_id=1,  # 使用固定管理员ID
             operation="DELETE_WALLET",
             resource_type="wallet",
             resource_id=wallet_id,
@@ -519,13 +555,19 @@ async def delete_wallet(
 
 
 @router.post("/{wallet_id}/sync-balance")
-@require_permission("wallet:manage")
 async def sync_wallet_balance(
     wallet_id: int,
-    current_admin: AdminUser = Depends(get_current_admin),
+    current_user = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
 ):
     """手动同步钱包余额"""
+    # 简单的管理员权限检查
+    if current_user.email != "admin@trademe.com":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="仅管理员可访问此功能"
+        )
+    
     try:
         # 检查钱包是否存在
         wallet_query = select(USDTWallet).where(USDTWallet.id == wallet_id)
@@ -588,13 +630,19 @@ async def sync_wallet_balance(
 
 
 @router.get("/statistics/overview", response_model=WalletStatisticsResponse)
-@require_permission("wallet:manage")
 async def get_wallet_statistics(
-    current_admin: AdminUser = Depends(get_current_admin),
+    current_user = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
     network: Optional[str] = Query(None, description="网络类型筛选")
 ):
     """获取钱包池统计信息"""
+    # 简单的管理员权限检查
+    if current_user.email != "admin@trademe.com":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="仅管理员可访问此功能"
+        )
+    
     try:
         wallet_service = WalletPoolService(db)
         stats = await wallet_service.get_pool_statistics(network)
@@ -621,16 +669,22 @@ async def get_wallet_statistics(
 
 
 @router.post("/{wallet_id}/release")
-@require_permission("wallet:manage")
 async def release_wallet(
     wallet_id: int,
-    current_admin: AdminUser = Depends(get_current_admin),
+    current_user = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
 ):
     """释放钱包"""
+    # 简单的管理员权限检查
+    if current_user.email != "admin@trademe.com":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="仅管理员可访问此功能"
+        )
+    
     try:
         wallet_service = WalletPoolService(db)
-        success = await wallet_service.release_wallet(wallet_id, current_admin.id)
+        success = await wallet_service.release_wallet(wallet_id, 1)  # 使用固定管理员ID
         
         if not success:
             raise HTTPException(

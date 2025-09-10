@@ -502,6 +502,26 @@ const AdminDashboardPage = () => {
                   </div>
                 </button>
 
+                <button 
+                  onClick={() => navigate('/admin/data')}
+                  className="group w-full text-left px-4 py-4 rounded-xl bg-gray-50 hover:bg-gray-100 border border-gray-200 hover:border-gray-300 transition-all duration-300 hover:scale-[1.02]"
+                >
+                  <div className="flex items-center">
+                    <div className="w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center mr-4 group-hover:shadow-lg group-hover:shadow-orange-100 transition-all duration-300">
+                      <svg className="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4" />
+                      </svg>
+                    </div>
+                    <div className="flex-1">
+                      <div className="font-semibold text-gray-900 group-hover:text-orange-700 transition-colors duration-300">数据管理</div>
+                      <div className="text-sm text-gray-600">历史数据下载和质量监控</div>
+                    </div>
+                    <svg className="w-5 h-5 text-orange-600 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                </button>
+
                 <button className="group w-full text-left px-4 py-4 rounded-xl bg-gray-50 hover:bg-gray-100 border border-gray-200 hover:border-gray-300 transition-all duration-300 hover:scale-[1.02]">
                   <div className="flex items-center">
                     <div className="w-10 h-10 rounded-lg bg-amber-100 flex items-center justify-center mr-4 group-hover:shadow-lg group-hover:shadow-amber-100 transition-all duration-300">

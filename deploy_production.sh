@@ -184,7 +184,7 @@ fi
 if ! lsof -i:8001 > /dev/null; then
     echo "启动交易服务..."
     cd $BACKEND_TRADING_SERVICE
-    PYTHONPATH=$BACKEND_TRADING_SERVICE uvicorn app.main:app --host 0.0.0.0 --port 8001 --workers 4 &
+    PYTHONPATH=$BACKEND_TRADING_SERVICE uvicorn app.main:app --host 0.0.0.0 --port 8001 --workers 4 --log-config=logging.yaml &
     sleep 5
 fi
 

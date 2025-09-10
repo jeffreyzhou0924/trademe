@@ -4,9 +4,10 @@ Trademe Trading Service - 策略管理API
 提供策略的增删改查、执行、优化等功能
 """
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Body
 from sqlalchemy.ext.asyncio import AsyncSession
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
+from pydantic import BaseModel
 import asyncio
 
 from app.database import get_db
@@ -15,11 +16,40 @@ from app.schemas.strategy import (
     StrategyList, StrategyExecution, StrategyFromAI
 )
 from app.services.strategy_service import StrategyService
+from app.services.enhanced_strategy_validator import EnhancedStrategyValidator
 from app.middleware.auth import get_current_user
 from app.models.user import User
 from app.core.strategy_engine import strategy_engine, StrategyContext
 
 router = APIRouter()
+
+
+# 策略质量评估相关的数据模型
+class StrategyQualityAssessmentRequest(BaseModel):
+    """策略质量评估请求"""
+    code: str
+    target_market: Optional[str] = "BTCUSDT"
+    
+    class Config:
+        schema_extra = {
+            "example": {
+                "code": "class MyStrategy(EnhancedBaseStrategy):\n    def get_data_requirements(self):\n        return [DataRequest(symbol='BTCUSDT', data_type=DataType.KLINE)]\n    \n    async def on_data_update(self, data_type: str, data: Dict) -> Optional[TradingSignal]:\n        return TradingSignal(signal_type=SignalType.BUY, confidence=0.8)",
+                "target_market": "BTCUSDT"
+            }
+        }
+
+
+class StrategyQualityAssessmentResponse(BaseModel):
+    """策略质量评估响应"""
+    valid: bool
+    final_quality_score: float
+    risk_score: float
+    risk_level: str
+    enhanced_checks: Dict[str, Any]
+    intelligent_suggestions: List[Dict[str, Any]]
+    optimization_opportunities: List[Dict[str, Any]]
+    errors: List[str] = []
+    warnings: List[str] = []
 
 
 @router.get("/", response_model=StrategyList)
@@ -87,6 +117,68 @@ async def create_strategy(
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"创建策略失败: {str(e)}")
+
+
+@router.post("/quality-assessment", response_model=StrategyQualityAssessmentResponse)
+async def assess_strategy_quality(
+    request: StrategyQualityAssessmentRequest,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    策略质量评估API
+    
+    对提供的策略代码进行全面的质量评估，包括：
+    - 基础语法和模板验证
+    - 风险控制分析
+    - 逻辑一致性检查
+    - 性能优化建议
+    - 市场适应性评估
+    - AI驱动的智能建议
+    """
+    try:
+        # 构建验证上下文
+        validation_context = {
+            "user_id": current_user.id,
+            "membership_level": getattr(current_user, 'membership_level', 'basic'),
+            "target_market": request.target_market,
+            "assessment_timestamp": asyncio.get_event_loop().time()
+        }
+        
+        # 执行增强策略校验
+        validation_result = await EnhancedStrategyValidator.validate_strategy_enhanced(
+            request.code, validation_context
+        )
+        
+        # 构建响应
+        response_data = {
+            "valid": validation_result.get("valid", False),
+            "final_quality_score": validation_result.get("final_quality_score", 0.0),
+            "risk_score": validation_result.get("risk_score", 0.0),
+            "risk_level": validation_result.get("enhanced_checks", {}).get("risk_analysis", {}).get("risk_level", "未评估"),
+            "enhanced_checks": validation_result.get("enhanced_checks", {}),
+            "intelligent_suggestions": validation_result.get("intelligent_suggestions", []),
+            "optimization_opportunities": validation_result.get("optimization_opportunities", []),
+            "errors": validation_result.get("errors", []),
+            "warnings": validation_result.get("warnings", [])
+        }
+        
+        return StrategyQualityAssessmentResponse(**response_data)
+        
+    except Exception as e:
+        # 发生异常时返回错误响应
+        error_response = {
+            "valid": False,
+            "final_quality_score": 0.0,
+            "risk_score": 0.0,
+            "risk_level": "评估失败",
+            "enhanced_checks": {"error": f"评估过程异常: {str(e)}"},
+            "intelligent_suggestions": [],
+            "optimization_opportunities": [],
+            "errors": [f"策略质量评估失败: {str(e)}"],
+            "warnings": ["建议检查策略代码格式和内容"]
+        }
+        return StrategyQualityAssessmentResponse(**error_response)
 
 
 @router.put("/{strategy_id}", response_model=StrategyResponse)

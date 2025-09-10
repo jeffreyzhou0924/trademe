@@ -6,14 +6,17 @@ export interface ChatMessage {
   timestamp: string
   metadata?: {
     codeBlock?: string
-    analysis?: any
+    analysis?: string  // 改为string避免渲染对象
     suggestions?: string[]
+    isError?: boolean
+    isStreaming?: boolean  // 支持流式消息标记
+    isWaitingFirstChunk?: boolean  // 等待第一个数据块的标记
   }
 }
 
 // 支持双模式的会话类型
 export type AIMode = 'developer' | 'trader'
-export type SessionType = 'strategy' | 'indicator' | 'general'
+export type SessionType = 'strategy' | 'indicator' | 'trading_system'
 export type SessionStatus = 'active' | 'completed' | 'archived'
 
 export interface ChatSession {
@@ -102,6 +105,7 @@ export const aiApi = {
       return handleApiResponse(response)
     } catch (error) {
       handleApiError(error)
+      throw error // 确保错误被正确抛出
     }
   },
 
@@ -153,7 +157,7 @@ export const aiApi = {
     message: string, 
     sessionId?: string, 
     aiMode: AIMode = 'developer',
-    sessionType: SessionType = 'general',
+    sessionType: SessionType = 'strategy',
     context?: Record<string, any>
   ): Promise<{
     response: string

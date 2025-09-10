@@ -26,6 +26,7 @@ from app.models.backtest import Backtest
 from app.models.api_key import ApiKey
 from app.models.claude_conversation import ClaudeUsage
 from app.core.exceptions import UserManagementError
+from app.utils.data_validation import DataValidator
 
 logger = logging.getLogger(__name__)
 
@@ -140,7 +141,7 @@ class UserBehaviorAnalysisService:
             # 保存或更新行为画像
             await self._save_behavior_profile(insight)
             
-            logger.info(f"用户 {user_id} 行为分析完成: {user_type}, 参与度 {engagement_metrics['engagement_score']:.2f}")
+            logger.info(f"用户 {user_id} 行为分析完成: {user_type}, 参与度 {DataValidator.safe_format_decimal(engagement_metrics['engagement_score'], decimals=2)}")
             
             return insight
             

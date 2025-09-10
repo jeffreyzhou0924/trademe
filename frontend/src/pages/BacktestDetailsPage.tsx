@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { useParams, Link, useNavigate } from 'react-router-dom'
 import { AdvancedBacktestChart, AdvancedMetrics, MonthlyReturn } from '../components/charts'
 import { LoadingSpinner, Button } from '../components/common'
 import { backtestApi } from '../services/api/backtest'
+import { aiApi } from '../services/api/ai'
 import { formatDateTime, formatCurrency, formatPercent } from '../utils/format'
+import toast from 'react-hot-toast'
 
 interface BacktestDetails {
   id: string
@@ -25,10 +27,16 @@ interface BacktestDetails {
 
 const BacktestDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>()
+  const navigate = useNavigate()
   const [backtest, setBacktest] = useState<BacktestDetails | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState<'overview' | 'analysis' | 'trades'>('overview')
+  
+  // AI分析相关状态
+  const [aiAnalyzing, setAiAnalyzing] = useState(false)
+  const [aiAnalysisResult, setAiAnalysisResult] = useState<any>(null)
+  const [showSendToAiConfirm, setShowSendToAiConfirm] = useState(false)
 
   // 加载回测详情
   useEffect(() => {
@@ -158,6 +166,55 @@ const BacktestDetailsPage: React.FC = () => {
     return trades
   }
 
+  // 发送回测结果给AI分析
+  const handleSendToAiAnalysis = async () => {
+    if (!backtest || !id) return
+
+    try {
+      setAiAnalyzing(true)
+      toast.loading('正在发送回测结果给AI分析...', { id: 'ai-analysis' })
+
+      // 调用AI分析API
+      const analysisResult = await aiApi.analyzeBacktestResults(parseInt(id))
+      
+      setAiAnalysisResult(analysisResult)
+      toast.success('AI分析完成！点击查看分析报告', { 
+        id: 'ai-analysis',
+        duration: 3000
+      })
+
+      // 显示AI分析结果
+      setShowSendToAiConfirm(false)
+      setActiveTab('analysis')
+      
+    } catch (error) {
+      console.error('AI分析失败:', error)
+      toast.error('AI分析失败，请稍后重试', { id: 'ai-analysis' })
+    } finally {
+      setAiAnalyzing(false)
+    }
+  }
+
+  // 基于AI分析结果优化策略
+  const handleOptimizeStrategy = () => {
+    if (!aiAnalysisResult || !backtest) return
+    
+    // 跳转到AI对话页面，并传递优化上下文
+    const optimizationContext = {
+      backtestId: id,
+      strategyName: backtest.strategy_name,
+      analysisResult: aiAnalysisResult,
+      action: 'optimize_strategy'
+    }
+    
+    navigate('/ai-chat', { 
+      state: { 
+        context: optimizationContext,
+        autoStart: true 
+      }
+    })
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -225,11 +282,42 @@ const BacktestDetailsPage: React.FC = () => {
             下载报告
           </Button>
           <Button
-            variant="default"
+            variant="outline"
             className="px-4 py-2"
           >
             复制配置
           </Button>
+          {backtest.status === 'completed' && (
+            <Button
+              variant="primary"
+              className="px-4 py-2 bg-purple-600 hover:bg-purple-700"
+              onClick={() => setShowSendToAiConfirm(true)}
+              disabled={aiAnalyzing}
+            >
+              {aiAnalyzing ? (
+                <>
+                  <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  AI分析中...
+                </>
+              ) : (
+                <>
+                  🤖 发送结果给AI分析
+                </>
+              )}
+            </Button>
+          )}
+          {aiAnalysisResult && (
+            <Button
+              variant="primary"
+              className="px-4 py-2 bg-green-600 hover:bg-green-700"
+              onClick={handleOptimizeStrategy}
+            >
+              🚀 基于分析优化策略
+            </Button>
+          )}
         </div>
       </div>
 
@@ -443,6 +531,121 @@ const BacktestDetailsPage: React.FC = () => {
           )}
         </div>
       </div>
+
+      {/* AI分析确认对话框 */}
+      {showSendToAiConfirm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <div className="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-purple-100 rounded-full">
+              <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+              </svg>
+            </div>
+            <h3 className="text-lg font-medium text-center text-gray-900 mb-2">
+              发送回测结果给AI分析？
+            </h3>
+            <p className="text-center text-gray-600 mb-6">
+              AI将深度分析您的回测结果，识别策略的优势和改进空间，并提供具体的优化建议。
+            </p>
+            <div className="flex space-x-3">
+              <Button
+                variant="outline"
+                className="flex-1"
+                onClick={() => setShowSendToAiConfirm(false)}
+              >
+                取消
+              </Button>
+              <Button
+                variant="primary"
+                className="flex-1 bg-purple-600 hover:bg-purple-700"
+                onClick={handleSendToAiAnalysis}
+              >
+                确认发送
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* AI分析结果展示 */}
+      {aiAnalysisResult && (
+        <div className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-xl border border-purple-200 p-6">
+          <div className="flex items-center mb-4">
+            <div className="flex items-center justify-center w-10 h-10 bg-purple-600 rounded-full mr-3">
+              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+              </svg>
+            </div>
+            <h3 className="text-xl font-semibold text-gray-900">🤖 AI深度分析报告</h3>
+          </div>
+          
+          <div className="bg-white rounded-lg p-6 shadow-sm">
+            <div className="space-y-6">
+              {/* 性能总结 */}
+              <div>
+                <h4 className="font-semibold text-gray-900 mb-3 flex items-center">
+                  📊 性能总结
+                </h4>
+                <div className="bg-blue-50 rounded-lg p-4">
+                  <p className="text-blue-800 text-sm leading-relaxed">
+                    {aiAnalysisResult.performance_summary || '正在生成性能分析...'}
+                  </p>
+                </div>
+              </div>
+
+              {/* 优势分析 */}
+              {aiAnalysisResult.strengths && aiAnalysisResult.strengths.length > 0 && (
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-3 flex items-center">
+                    ✅ 策略优势
+                  </h4>
+                  <div className="space-y-2">
+                    {aiAnalysisResult.strengths.map((strength: string, index: number) => (
+                      <div key={index} className="flex items-start">
+                        <div className="flex-shrink-0 w-2 h-2 bg-green-500 rounded-full mt-2 mr-3"></div>
+                        <p className="text-gray-700 text-sm">{strength}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* 改进建议 */}
+              {aiAnalysisResult.improvement_suggestions && aiAnalysisResult.improvement_suggestions.length > 0 && (
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-3 flex items-center">
+                    💡 改进建议
+                  </h4>
+                  <div className="space-y-3">
+                    {aiAnalysisResult.improvement_suggestions.map((suggestion: string, index: number) => (
+                      <div key={index} className="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-lg">
+                        <p className="text-amber-800 text-sm font-medium">{suggestion}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* 操作按钮 */}
+              <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200">
+                <Button
+                  variant="outline"
+                  onClick={() => setAiAnalysisResult(null)}
+                >
+                  关闭分析
+                </Button>
+                <Button
+                  variant="primary"
+                  className="bg-green-600 hover:bg-green-700"
+                  onClick={handleOptimizeStrategy}
+                >
+                  🚀 基于分析优化策略
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

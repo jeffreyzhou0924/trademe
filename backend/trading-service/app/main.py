@@ -14,23 +14,31 @@ from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.security import HTTPBearer
 from contextlib import asynccontextmanager
+from decimal import Decimal
 import time
 import uvicorn
 import json
 import asyncio
+from loguru import logger
 from typing import Dict, Set
 
 from app.config import settings
 from app.database import init_db, close_db, get_db
 from app.redis_client import init_redis, close_redis
 from app.api.v1 import api_router
+from app.api.v1.claude_compatible import router as claude_compatible_router
+from app.services.okx_auth_service import initialize_okx_auth
 # 暂时禁用支付自动化，专注于用户管理系统整合
 # from app.services.payment_automation import payment_automation
 from app.middleware.auth import get_current_user, get_current_active_user, create_access_token, AuthenticationError
 from app.middleware.rate_limiting import rate_limiting_middleware
-from app.middleware.structured_logging import structured_logging_middleware, business_logger
+from app.middleware.structured_logging import structured_logging_middleware, structured_logger
 from app.schemas.user import UserLogin, UserLoginResponse, UserResponse
 from app.middleware.auth import verify_jwt_token
+
+# Phase 1 安全集成 - 验证中间件
+from app.middleware.api_validation_middleware import APIValidationMiddleware
+from app.services.api_validation_service import api_validation_service
 
 
 @asynccontextmanager
@@ -39,6 +47,28 @@ async def lifespan(app: FastAPI):
     # 启动
     await init_db()
     await init_redis()
+    
+    # 🆕 初始化OKX认证服务
+    try:
+        okx_service = initialize_okx_auth(
+            api_key=settings.okx_api_key,
+            secret_key=settings.okx_secret_key, 
+            passphrase=settings.okx_passphrase,
+            sandbox=settings.okx_sandbox
+        )
+        
+        # 测试OKX API连接
+        connection_ok = await okx_service.test_connection()
+        if connection_ok:
+            print("🔑 OKX API认证成功，已连接到真实交易接口")
+        else:
+            print("⚠️ OKX API连接测试失败，但服务已初始化")
+            
+    except Exception as e:
+        print(f"❌ OKX认证服务初始化失败: {e}")
+        # 不中断应用启动，但记录错误
+        import traceback
+        traceback.print_exc()
     
     # 暂时禁用支付自动化，专注于用户管理系统整合
     # try:
@@ -102,6 +132,20 @@ if settings.environment == "production":
 async def structured_logging_middleware_handler(request: Request, call_next):
     return await structured_logging_middleware(request, call_next)
 
+# Phase 1 安全集成 - API验证中间件
+try:
+    app.add_middleware(
+        APIValidationMiddleware,
+        validation_service=api_validation_service,
+        enable_logging=True,
+        enable_rate_limiting=False,  # 由专门的速率限制中间件处理
+        enable_security_checks=True,
+        enable_caching=True
+    )
+    print("✅ API验证中间件集成成功")
+except Exception as e:
+    print(f"⚠️ API验证中间件集成失败: {e}")
+
 # 速率限制中间件
 @app.middleware("http")
 async def rate_limiting_middleware_handler(request: Request, call_next):
@@ -119,18 +163,27 @@ async def add_process_time_header(request: Request, call_next):
 # 全局异常处理
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
+    import traceback
+    # 记录完整的错误堆栈
+    error_traceback = traceback.format_exc()
+    structured_logger.log_error(request, exc, getattr(request.state, 'request_id', 'unknown'))
+    
     return JSONResponse(
         status_code=500,
         content={
             "success": False,
             "message": "内部服务器错误",
             "error": str(exc) if settings.debug else "服务器错误",
+            "traceback": error_traceback if settings.debug else None,
             "path": str(request.url)
         }
     )
 
 # 注册路由
 app.include_router(api_router, prefix="/api/v1")
+
+# 注册Claude API兼容路由（根级别，兼容Claude标准API结构）
+app.include_router(claude_compatible_router, tags=["Claude API兼容"])
 
 # 根路径健康检查
 @app.get("/")
@@ -348,6 +401,21 @@ class WebSocketManager:
 # 创建全局WebSocket管理器
 ws_manager = WebSocketManager()
 
+# 🌊 导入流式AI处理器
+from app.api.v1.ai_websocket import AIWebSocketHandler
+ai_handler = AIWebSocketHandler(ws_manager)
+
+def safe_json_value(value):
+    """安全地转换值为JSON可序列化格式"""
+    if value is None:
+        return ""
+    elif isinstance(value, Decimal):
+        return float(value)
+    elif isinstance(value, (int, float, bool)):
+        return value
+    else:
+        return str(value)
+
 # WebSocket认证和实时数据端点
 @app.websocket("/ws/realtime")
 async def websocket_realtime_endpoint(websocket: WebSocket):
@@ -457,6 +525,30 @@ async def websocket_realtime_endpoint(websocket: WebSocket):
                         "type": "stats",
                         "data": stats
                     }))
+                    
+                elif message_type == "ai_chat":
+                    # 🌊 处理AI聊天请求 - 使用流式AI处理器
+                    print(f"🌊 收到流式AI聊天请求，用户: {user_id}")
+                    
+                    # 获取数据库会话并调用流式AI处理器
+                    from app.database import get_db
+                    async for db in get_db():
+                        try:
+                            await ai_handler.handle_ai_chat_request(
+                                connection_id=connection_id,
+                                user_id=int(user_id),
+                                message_data=message,
+                                db=db
+                            )
+                        except Exception as e:
+                            logger.error(f"🌊 流式AI处理错误: {str(e)}")
+                            await websocket.send_text(json.dumps({
+                                "type": "ai_stream_error",
+                                "request_id": message.get("request_id"),
+                                "error": str(e),
+                                "message": "流式AI处理失败，请稍后重试"
+                            }))
+                        break
                     
                 else:
                     # 未知消息类型

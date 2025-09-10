@@ -20,7 +20,7 @@ from app.models.payment import (
 )
 from app.services.usdt_wallet_service import usdt_wallet_service
 from app.services.blockchain_monitor_service import blockchain_monitor_service
-from app.core.config import settings
+from app.config import settings
 
 
 class PaymentOrderService:

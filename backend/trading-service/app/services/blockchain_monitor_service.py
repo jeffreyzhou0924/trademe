@@ -1,25 +1,25 @@
 """
-区块链监控服务 - USDT支付系统核心组件
-支持TRON (TRC20) 和 Ethereum (ERC20) 网络实时交易监控
+区块链监控服务 - 统一的多链区块链交互服务
 """
 
+import os
 import asyncio
-import time
-from datetime import datetime, timedelta
-from typing import List, Optional, Dict, Any, Tuple
-from decimal import Decimal
-from dataclasses import dataclass
-from loguru import logger
 import aiohttp
-import json
-
-from sqlalchemy import select, update, and_, or_
+import time
+from typing import Optional, Dict, List, Any, Union, Tuple
+from decimal import Decimal
+from datetime import datetime, timedelta
+from dataclasses import dataclass
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select, update, func, and_
 
+from app.models.payment import USDTWallet, BlockchainTransaction, WalletBalance, USDTPaymentOrder
 from app.database import AsyncSessionLocal
-from app.models.payment import USDTWallet, USDTPaymentOrder, BlockchainTransaction
+from app.config import settings
 from app.services.usdt_wallet_service import usdt_wallet_service
-from app.core.config import settings
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass

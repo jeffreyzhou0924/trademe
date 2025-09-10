@@ -22,7 +22,7 @@ from app.models.strategy import Strategy
 from app.models.trade import Trade
 from app.models.backtest import Backtest
 from app.models.api_key import ApiKey
-from app.models.claude_conversation import ClaudeUsage
+from app.models.claude_proxy import ClaudeUsageLog
 from app.core.exceptions import UserManagementError
 
 logger = logging.getLogger(__name__)
@@ -121,7 +121,7 @@ class UserManagementService:
         )
         
         # AI使用统计
-        ai_usage_query = select(func.count(ClaudeUsage.id)).where(ClaudeUsage.user_id == user_id)
+        ai_usage_query = select(func.count(ClaudeUsageLog.id)).where(ClaudeUsageLog.user_id == user_id)
         
         # 执行查询
         results = await asyncio.gather(
@@ -794,10 +794,10 @@ class UserManagementService:
             ai_chat_count_30d = ai_chat_result.scalar() or 0
             
             # AI成本统计
-            ai_cost_query = select(func.sum(ClaudeUsage.total_cost)).where(
+            ai_cost_query = select(func.sum(ClaudeUsageLog.api_cost)).where(
                 and_(
-                    ClaudeUsage.user_id == user_id,
-                    ClaudeUsage.created_at >= thirty_days_ago
+                    ClaudeUsageLog.user_id == user_id,
+                    ClaudeUsageLog.request_date >= thirty_days_ago
                 )
             )
             ai_cost_result = await self.db.execute(ai_cost_query)

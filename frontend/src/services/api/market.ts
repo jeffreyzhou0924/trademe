@@ -56,12 +56,12 @@ export const marketApi = {
       return {
         symbol: data.symbol,
         price: data.price,
-        change24h: data.change_24h,
-        high24h: data.high_24h,
-        low24h: data.low_24h,
-        volume24h: data.volume_24h,
-        timestamp: data.timestamp,
-        exchange: 'okx'
+        change: data.change_24h,
+        change_percent: data.change_percent || 0,
+        high_24h: data.high_24h,
+        low_24h: data.low_24h,
+        volume_24h: data.volume_24h,
+        timestamp: data.timestamp
       }
     } catch (error) {
       console.error('获取价格数据失败:', error)

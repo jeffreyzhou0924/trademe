@@ -1,0 +1,251 @@
+
+> @trademe/frontend@1.0.0 dev
+> vite
+
+
+  VITE v5.4.19  ready in 1148 ms
+
+  ➜  Local:   http://localhost:3000/
+  ➜  Network: http://10.203.0.15:3000/
+12:52:31 PM [vite] page reload src/components/trading/KlineChart.tsx
+12:53:04 PM [vite] page reload src/components/trading/KlineChart.tsx
+12:53:35 PM [vite] page reload src/components/trading/KlineChart.tsx
+12:53:54 PM [vite] page reload src/components/trading/KlineChart.tsx
+12:56:00 PM [vite] hmr update /src/pages/TradingPage.tsx, /src/index.css
+1:01:56 PM [vite] page reload src/components/trading/KlineChart.tsx
+1:02:21 PM [vite] page reload src/components/trading/KlineChart.tsx
+1:02:47 PM [vite] page reload src/components/trading/KlineChart.tsx
+1:12:25 PM [vite] hmr update /src/pages/TradingPage.tsx, /src/index.css
+1:14:38 PM [vite] hmr update /src/pages/TradingPage.tsx, /src/index.css
+1:17:24 PM [vite] hmr update /src/pages/TradingPage.tsx, /src/index.css
+2:07:56 PM [vite] hmr update /src/index.css, /src/pages/AIChatPage.tsx, /src/pages/StrategyLiveDetailsPage.tsx, /src/pages/OverviewPage.tsx, /src/pages/StrategiesPage.tsx, /src/pages/LiveStrategiesPage.tsx, /src/pages/APIManagementPage.tsx, /src/pages/ProfilePage.tsx, /src/pages/TradingNotesPage.tsx, /src/pages/TradingPage.tsx, /src/components/ai/WebSocketStatus.tsx
+2:08:55 PM [vite] hmr update /src/index.css, /src/pages/AIChatPage.tsx, /src/pages/StrategyLiveDetailsPage.tsx, /src/pages/OverviewPage.tsx, /src/pages/StrategiesPage.tsx, /src/pages/LiveStrategiesPage.tsx, /src/pages/APIManagementPage.tsx, /src/pages/ProfilePage.tsx, /src/pages/TradingNotesPage.tsx, /src/pages/TradingPage.tsx, /src/components/ai/WebSocketStatus.tsx
+2:09:28 PM [vite] hmr update /src/index.css, /src/pages/AIChatPage.tsx, /src/pages/StrategyLiveDetailsPage.tsx, /src/pages/OverviewPage.tsx, /src/pages/StrategiesPage.tsx, /src/pages/LiveStrategiesPage.tsx, /src/pages/APIManagementPage.tsx, /src/pages/ProfilePage.tsx, /src/pages/TradingNotesPage.tsx, /src/pages/TradingPage.tsx, /src/components/ai/WebSocketStatus.tsx
+2:09:54 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css, /src/pages/StrategyLiveDetailsPage.tsx, /src/pages/OverviewPage.tsx, /src/pages/StrategiesPage.tsx, /src/pages/LiveStrategiesPage.tsx, /src/pages/APIManagementPage.tsx, /src/pages/ProfilePage.tsx, /src/pages/TradingNotesPage.tsx, /src/pages/TradingPage.tsx, /src/components/ai/WebSocketStatus.tsx
+2:15:52 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css, /src/pages/StrategyLiveDetailsPage.tsx, /src/pages/OverviewPage.tsx, /src/pages/StrategiesPage.tsx, /src/pages/LiveStrategiesPage.tsx, /src/pages/APIManagementPage.tsx, /src/pages/ProfilePage.tsx, /src/pages/TradingNotesPage.tsx, /src/pages/TradingPage.tsx, /src/components/ai/WebSocketStatus.tsx
+2:17:34 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css, /src/pages/StrategyLiveDetailsPage.tsx, /src/pages/OverviewPage.tsx, /src/pages/StrategiesPage.tsx, /src/pages/LiveStrategiesPage.tsx, /src/pages/APIManagementPage.tsx, /src/pages/ProfilePage.tsx, /src/pages/TradingNotesPage.tsx, /src/pages/TradingPage.tsx, /src/components/ai/WebSocketStatus.tsx
+2:19:55 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css, /src/pages/StrategyLiveDetailsPage.tsx, /src/pages/OverviewPage.tsx, /src/pages/StrategiesPage.tsx, /src/pages/LiveStrategiesPage.tsx, /src/pages/APIManagementPage.tsx, /src/pages/ProfilePage.tsx, /src/pages/TradingNotesPage.tsx, /src/pages/TradingPage.tsx, /src/components/ai/WebSocketStatus.tsx
+2:21:18 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css, /src/pages/StrategyLiveDetailsPage.tsx, /src/pages/OverviewPage.tsx, /src/pages/StrategiesPage.tsx, /src/pages/LiveStrategiesPage.tsx, /src/pages/APIManagementPage.tsx, /src/pages/ProfilePage.tsx, /src/pages/TradingNotesPage.tsx, /src/pages/TradingPage.tsx, /src/components/ai/WebSocketStatus.tsx
+2:22:24 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css, /src/pages/StrategyLiveDetailsPage.tsx, /src/pages/OverviewPage.tsx, /src/pages/StrategiesPage.tsx, /src/pages/LiveStrategiesPage.tsx, /src/pages/APIManagementPage.tsx, /src/pages/ProfilePage.tsx, /src/pages/TradingNotesPage.tsx, /src/pages/TradingPage.tsx, /src/components/ai/WebSocketStatus.tsx
+10:27:01 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css, /src/pages/StrategyLiveDetailsPage.tsx, /src/pages/OverviewPage.tsx, /src/pages/StrategiesPage.tsx, /src/pages/LiveStrategiesPage.tsx, /src/pages/APIManagementPage.tsx, /src/pages/ProfilePage.tsx, /src/pages/TradingNotesPage.tsx, /src/pages/TradingPage.tsx, /src/components/ai/WebSocketStatus.tsx
+7:04:40 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css, /src/pages/StrategyLiveDetailsPage.tsx, /src/pages/OverviewPage.tsx, /src/pages/StrategiesPage.tsx, /src/pages/LiveStrategiesPage.tsx, /src/pages/APIManagementPage.tsx, /src/pages/ProfilePage.tsx, /src/pages/TradingNotesPage.tsx, /src/pages/TradingPage.tsx, /src/components/ai/WebSocketStatus.tsx
+7:04:59 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css, /src/pages/StrategyLiveDetailsPage.tsx, /src/pages/OverviewPage.tsx, /src/pages/StrategiesPage.tsx, /src/pages/LiveStrategiesPage.tsx, /src/pages/APIManagementPage.tsx, /src/pages/ProfilePage.tsx, /src/pages/TradingNotesPage.tsx, /src/pages/TradingPage.tsx, /src/components/ai/WebSocketStatus.tsx
+7:05:45 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css, /src/pages/StrategyLiveDetailsPage.tsx, /src/pages/OverviewPage.tsx, /src/pages/StrategiesPage.tsx, /src/pages/LiveStrategiesPage.tsx, /src/pages/APIManagementPage.tsx, /src/pages/ProfilePage.tsx, /src/pages/TradingNotesPage.tsx, /src/pages/TradingPage.tsx, /src/components/ai/WebSocketStatus.tsx
+7:06:33 PM [vite] hmr update /src/index.css, /src/pages/AIChatPage.tsx, /src/pages/StrategyLiveDetailsPage.tsx, /src/pages/OverviewPage.tsx, /src/pages/StrategiesPage.tsx, /src/pages/LiveStrategiesPage.tsx, /src/pages/APIManagementPage.tsx, /src/pages/ProfilePage.tsx, /src/pages/TradingNotesPage.tsx, /src/pages/TradingPage.tsx, /src/components/ai/WebSocketStatus.tsx
+3:31:46 PM [vite] hmr update /src/pages/TradingPage.tsx, /src/index.css
+3:31:55 PM [vite] hmr update /src/pages/TradingPage.tsx, /src/index.css
+3:32:01 PM [vite] hmr update /src/pages/TradingPage.tsx, /src/index.css
+3:32:45 PM [vite] hmr update /src/pages/TradingPage.tsx, /src/index.css
+3:47:51 PM [vite] hmr update /src/pages/TradingPage.tsx, /src/index.css
+3:48:02 PM [vite] hmr update /src/pages/TradingPage.tsx, /src/index.css
+3:49:47 PM [vite] hmr update /src/pages/TradingPage.tsx, /src/index.css
+3:49:57 PM [vite] hmr update /src/pages/TradingPage.tsx, /src/index.css
+3:50:04 PM [vite] hmr update /src/pages/TradingPage.tsx, /src/index.css
+3:50:22 PM [vite] hmr update /src/pages/TradingPage.tsx, /src/index.css
+3:52:48 PM [vite] hmr update /src/pages/TradingPage.tsx, /src/index.css
+3:53:01 PM [vite] hmr update /src/pages/TradingPage.tsx, /src/index.css
+3:54:57 PM [vite] hmr update /src/pages/TradingPage.tsx, /src/index.css, /src/components/trading/SuperChart/SuperChart.tsx, /src/components/trading/StrategyPanel/StrategyPanel.tsx, /src/components/trading/MarketPanel/MarketPanel.tsx, /src/components/trading/SuperChart/DrawingToolbar.tsx, /src/components/trading/SuperChart/TechnicalIndicators.tsx, /src/components/trading/SuperChart/KlineChart.tsx, /src/components/trading/StrategyPanel/StrategyLibrary.tsx, /src/components/trading/StrategyPanel/IndicatorLibrary.tsx, /src/components/trading/StrategyPanel/AnalysisLibrary.tsx, /src/components/trading/MarketPanel/SymbolSearch.tsx, /src/components/trading/MarketPanel/WatchList.tsx, /src/components/trading/MarketPanel/OrderBook.tsx
+3:55:09 PM [vite] hmr update /src/pages/TradingPage.tsx, /src/index.css, /src/components/trading/SuperChart/SuperChart.tsx, /src/components/trading/StrategyPanel/StrategyPanel.tsx, /src/components/trading/MarketPanel/MarketPanel.tsx, /src/components/trading/SuperChart/DrawingToolbar.tsx, /src/components/trading/SuperChart/TechnicalIndicators.tsx, /src/components/trading/SuperChart/KlineChart.tsx, /src/components/trading/StrategyPanel/StrategyLibrary.tsx, /src/components/trading/StrategyPanel/IndicatorLibrary.tsx, /src/components/trading/StrategyPanel/AnalysisLibrary.tsx, /src/components/trading/MarketPanel/SymbolSearch.tsx, /src/components/trading/MarketPanel/WatchList.tsx, /src/components/trading/MarketPanel/OrderBook.tsx
+3:55:20 PM [vite] hmr update /src/pages/TradingPage.tsx, /src/index.css, /src/components/trading/SuperChart/SuperChart.tsx, /src/components/trading/StrategyPanel/StrategyPanel.tsx, /src/components/trading/MarketPanel/MarketPanel.tsx, /src/components/trading/SuperChart/DrawingToolbar.tsx, /src/components/trading/SuperChart/TechnicalIndicators.tsx, /src/components/trading/SuperChart/KlineChart.tsx, /src/components/trading/StrategyPanel/StrategyLibrary.tsx, /src/components/trading/StrategyPanel/IndicatorLibrary.tsx, /src/components/trading/StrategyPanel/AnalysisLibrary.tsx, /src/components/trading/MarketPanel/SymbolSearch.tsx, /src/components/trading/MarketPanel/WatchList.tsx, /src/components/trading/MarketPanel/OrderBook.tsx
+3:55:33 PM [vite] hmr update /src/pages/TradingPage.tsx, /src/index.css, /src/components/trading/SuperChart/SuperChart.tsx, /src/components/trading/StrategyPanel/StrategyPanel.tsx, /src/components/trading/MarketPanel/MarketPanel.tsx, /src/components/trading/SuperChart/DrawingToolbar.tsx, /src/components/trading/SuperChart/TechnicalIndicators.tsx, /src/components/trading/SuperChart/KlineChart.tsx, /src/components/trading/StrategyPanel/StrategyLibrary.tsx, /src/components/trading/StrategyPanel/IndicatorLibrary.tsx, /src/components/trading/StrategyPanel/AnalysisLibrary.tsx, /src/components/trading/MarketPanel/SymbolSearch.tsx, /src/components/trading/MarketPanel/WatchList.tsx, /src/components/trading/MarketPanel/OrderBook.tsx
+3:55:41 PM [vite] hmr update /src/index.css, /src/pages/TradingPage.tsx, /src/components/trading/StrategyPanel/StrategyLibrary.tsx, /src/components/trading/StrategyPanel/AnalysisLibrary.tsx
+3:55:52 PM [vite] hmr update /src/index.css, /src/pages/TradingPage.tsx, /src/components/trading/StrategyPanel/StrategyLibrary.tsx, /src/components/trading/StrategyPanel/AnalysisLibrary.tsx
+3:56:00 PM [vite] hmr update /src/index.css, /src/pages/TradingPage.tsx, /src/components/trading/StrategyPanel/StrategyLibrary.tsx, /src/components/trading/StrategyPanel/AnalysisLibrary.tsx
+3:56:05 PM [vite] hmr update /src/index.css, /src/pages/TradingPage.tsx, /src/components/trading/StrategyPanel/StrategyLibrary.tsx, /src/components/trading/StrategyPanel/AnalysisLibrary.tsx
+3:56:10 PM [vite] hmr update /src/index.css, /src/pages/TradingPage.tsx, /src/components/trading/StrategyPanel/StrategyLibrary.tsx, /src/components/trading/StrategyPanel/AnalysisLibrary.tsx
+3:56:15 PM [vite] hmr update /src/index.css, /src/pages/TradingPage.tsx, /src/components/trading/StrategyPanel/StrategyLibrary.tsx, /src/components/trading/StrategyPanel/AnalysisLibrary.tsx
+3:56:21 PM [vite] hmr update /src/index.css, /src/pages/TradingPage.tsx, /src/components/trading/StrategyPanel/StrategyLibrary.tsx, /src/components/trading/StrategyPanel/AnalysisLibrary.tsx
+4:03:16 PM [vite] hmr update /src/index.css, /src/pages/TradingPage.tsx, /src/components/trading/StrategyPanel/StrategyLibrary.tsx, /src/components/trading/StrategyPanel/AnalysisLibrary.tsx
+4:03:25 PM [vite] hmr update /src/index.css, /src/pages/TradingPage.tsx, /src/components/trading/StrategyPanel/StrategyLibrary.tsx, /src/components/trading/StrategyPanel/AnalysisLibrary.tsx
+4:04:46 PM [vite] hmr update /src/index.css, /src/pages/TradingPage.tsx, /src/components/trading/StrategyPanel/StrategyLibrary.tsx, /src/components/trading/StrategyPanel/AnalysisLibrary.tsx
+4:04:58 PM [vite] hmr update /src/index.css, /src/pages/TradingPage.tsx, /src/components/trading/StrategyPanel/StrategyLibrary.tsx, /src/components/trading/StrategyPanel/AnalysisLibrary.tsx
+4:05:02 PM [vite] hmr update /src/index.css, /src/pages/TradingPage.tsx, /src/components/trading/StrategyPanel/StrategyLibrary.tsx, /src/components/trading/StrategyPanel/AnalysisLibrary.tsx
+4:05:08 PM [vite] hmr update /src/index.css, /src/pages/TradingPage.tsx, /src/components/trading/StrategyPanel/StrategyLibrary.tsx, /src/components/trading/StrategyPanel/AnalysisLibrary.tsx
+4:05:12 PM [vite] hmr update /src/index.css, /src/pages/TradingPage.tsx, /src/components/trading/StrategyPanel/StrategyLibrary.tsx, /src/components/trading/StrategyPanel/AnalysisLibrary.tsx
+4:05:17 PM [vite] hmr update /src/index.css, /src/pages/TradingPage.tsx, /src/components/trading/StrategyPanel/StrategyLibrary.tsx, /src/components/trading/StrategyPanel/AnalysisLibrary.tsx
+4:05:32 PM [vite] hmr update /src/index.css, /src/pages/TradingPage.tsx, /src/components/trading/StrategyPanel/StrategyLibrary.tsx, /src/components/trading/StrategyPanel/AnalysisLibrary.tsx
+4:18:30 PM [vite] hmr update /src/index.css, /src/pages/TradingPage.tsx, /src/components/trading/StrategyPanel/StrategyLibrary.tsx, /src/components/trading/StrategyPanel/AnalysisLibrary.tsx
+4:18:40 PM [vite] hmr update /src/index.css, /src/pages/TradingPage.tsx, /src/components/trading/StrategyPanel/StrategyLibrary.tsx, /src/components/trading/StrategyPanel/AnalysisLibrary.tsx
+4:29:09 PM [vite] hmr update /src/index.css, /src/pages/TradingPage.tsx, /src/components/trading/StrategyPanel/StrategyLibrary.tsx, /src/components/trading/StrategyPanel/AnalysisLibrary.tsx
+4:30:15 PM [vite] hmr update /src/index.css, /src/pages/TradingPage.tsx, /src/components/trading/StrategyPanel/StrategyLibrary.tsx, /src/components/trading/StrategyPanel/AnalysisLibrary.tsx
+4:30:27 PM [vite] hmr update /src/index.css, /src/pages/TradingPage.tsx, /src/components/trading/StrategyPanel/StrategyLibrary.tsx, /src/components/trading/StrategyPanel/AnalysisLibrary.tsx
+4:30:36 PM [vite] hmr update /src/index.css, /src/pages/TradingPage.tsx, /src/components/trading/StrategyPanel/StrategyLibrary.tsx, /src/components/trading/StrategyPanel/AnalysisLibrary.tsx
+4:39:13 PM [vite] hmr update /src/index.css, /src/pages/TradingPage.tsx, /src/components/trading/StrategyPanel/StrategyLibrary.tsx, /src/components/trading/StrategyPanel/AnalysisLibrary.tsx
+4:39:32 PM [vite] hmr update /src/index.css, /src/pages/TradingPage.tsx, /src/components/trading/StrategyPanel/StrategyLibrary.tsx, /src/components/trading/StrategyPanel/AnalysisLibrary.tsx
+4:40:36 PM [vite] hmr update /src/index.css, /src/pages/TradingPage.tsx, /src/components/trading/StrategyPanel/StrategyLibrary.tsx, /src/components/trading/StrategyPanel/AnalysisLibrary.tsx
+4:43:55 PM [vite] hmr update /src/components/trading/SuperChart/KlineChart.tsx, /src/index.css
+4:44:09 PM [vite] hmr update /src/components/trading/SuperChart/KlineChart.tsx, /src/index.css
+4:44:27 PM [vite] hmr update /src/components/trading/SuperChart/KlineChart.tsx, /src/index.css
+4:44:58 PM [vite] hmr update /src/components/trading/SuperChart/KlineChart.tsx, /src/index.css
+4:48:11 PM [vite] hmr update /src/components/trading/SuperChart/SuperChart.tsx, /src/index.css
+4:48:19 PM [vite] hmr update /src/components/trading/SuperChart/SuperChart.tsx, /src/index.css
+4:48:56 PM [vite] hmr update /src/components/trading/SuperChart/SuperChart.tsx, /src/index.css
+4:49:05 PM [vite] hmr update /src/components/trading/SuperChart/SuperChart.tsx, /src/index.css
+4:49:13 PM [vite] hmr update /src/components/trading/SuperChart/SuperChart.tsx, /src/index.css
+4:49:21 PM [vite] hmr update /src/components/trading/SuperChart/KlineChart.tsx, /src/index.css
+The request url "/root/trademe/frontend/.env" is outside of Vite serving allow list.
+
+- /root/trademe/frontend
+
+Refer to docs https://vite.dev/config/server-options.html#server-fs-allow for configurations and more details.
+
+4:50:11 PM [vite] hmr update /src/components/trading/SuperChart/KlineChart.tsx, /src/index.css
+4:57:42 PM [vite] hmr update /src/pages/TradingPage.tsx, /src/index.css
+4:59:15 PM [vite] hmr update /src/components/trading/SuperChart/SuperChart.tsx, /src/index.css
+5:00:29 PM [vite] hmr update /src/components/trading/SuperChart/ChartControls.tsx, /src/index.css
+5:02:00 PM [vite] hmr update /src/components/trading/SuperChart/TechnicalIndicators.tsx, /src/index.css
+5:02:31 PM [vite] hmr update /src/components/trading/SuperChart/TechnicalIndicators.tsx, /src/index.css
+5:05:04 PM [vite] hmr update /src/App.tsx, /src/index.css
+5:05:22 PM [vite] hmr update /src/index.css
+5:05:29 PM [vite] hmr update /src/pages/TradingPage.tsx, /src/index.css
+5:09:32 PM [vite] hmr update /src/pages/TradingPage.tsx, /src/index.css
+5:10:43 PM [vite] hmr update /src/pages/TradingPage.tsx, /src/index.css
+5:11:15 PM [vite] hmr update /src/pages/TradingPage.tsx, /src/index.css
+5:11:48 PM [vite] hmr update /src/pages/TradingPage.tsx, /src/index.css
+5:18:04 PM [vite] hmr update /src/pages/TradingPage.tsx, /src/index.css, /src/components/trading/SuperChart/SuperChart.tsx, /src/components/trading/StrategyPanel/StrategyPanel.tsx, /src/components/trading/MarketPanel/MarketPanel.tsx, /src/components/trading/SuperChart/DrawingToolbar.tsx, /src/components/trading/SuperChart/TechnicalIndicators.tsx, /src/components/trading/SuperChart/KlineChart.tsx, /src/components/trading/StrategyPanel/StrategyLibrary.tsx, /src/components/trading/StrategyPanel/IndicatorLibrary.tsx, /src/components/trading/StrategyPanel/AnalysisLibrary.tsx, /src/components/trading/MarketPanel/SymbolSearch.tsx, /src/components/trading/MarketPanel/WatchList.tsx, /src/components/trading/MarketPanel/OrderBook.tsx
+5:18:31 PM [vite] hmr update /src/pages/TradingPage.tsx, /src/index.css, /src/components/trading/SuperChart/SuperChart.tsx, /src/components/trading/StrategyPanel/StrategyPanel.tsx, /src/components/trading/MarketPanel/MarketPanel.tsx, /src/components/trading/SuperChart/DrawingToolbar.tsx, /src/components/trading/SuperChart/TechnicalIndicators.tsx, /src/components/trading/SuperChart/KlineChart.tsx, /src/components/trading/StrategyPanel/StrategyLibrary.tsx, /src/components/trading/StrategyPanel/IndicatorLibrary.tsx, /src/components/trading/StrategyPanel/AnalysisLibrary.tsx, /src/components/trading/MarketPanel/SymbolSearch.tsx, /src/components/trading/MarketPanel/WatchList.tsx, /src/components/trading/MarketPanel/OrderBook.tsx
+5:18:59 PM [vite] hmr update /src/components/trading/SuperChart/KlineChart.tsx, /src/index.css
+5:20:30 PM [vite] hmr update /src/components/trading/SuperChart/KlineChart.tsx, /src/index.css
+5:20:49 PM [vite] hmr update /src/components/trading/SuperChart/KlineChart.tsx, /src/index.css
+5:21:00 PM [vite] hmr update /src/components/trading/SuperChart/KlineChart.tsx, /src/index.css
+5:21:11 PM [vite] hmr update /src/components/trading/SuperChart/KlineChart.tsx, /src/index.css
+5:21:40 PM [vite] hmr update /src/components/trading/SuperChart/KlineChart.tsx, /src/index.css
+5:22:02 PM [vite] hmr update /src/components/trading/SuperChart/KlineChart.tsx, /src/index.css
+5:22:49 PM [vite] hmr update /src/pages/TradingPage.tsx, /src/index.css
+5:23:08 PM [vite] hmr update /src/pages/TradingPage.tsx, /src/index.css
+5:26:55 PM [vite] hmr update /src/pages/TradingPage.tsx, /src/index.css
+5:27:59 PM [vite] hmr update /src/pages/TradingPage.tsx, /src/index.css
+5:40:02 PM [vite] hmr update /src/components/trading/SuperChart/KlineChart.tsx, /src/index.css
+5:40:25 PM [vite] hmr update /src/components/trading/SuperChart/KlineChart.tsx, /src/index.css
+5:41:31 PM [vite] hmr update /src/pages/TradingPage.tsx, /src/index.css, /src/components/trading/SuperChart/SuperChart.tsx, /src/components/trading/StrategyPanel/StrategyPanel.tsx, /src/components/trading/MarketPanel/MarketPanel.tsx, /src/components/trading/SuperChart/DrawingToolbar.tsx, /src/components/trading/SuperChart/TechnicalIndicators.tsx, /src/components/trading/SuperChart/KlineChart.tsx, /src/components/trading/StrategyPanel/StrategyLibrary.tsx, /src/components/trading/StrategyPanel/IndicatorLibrary.tsx, /src/components/trading/StrategyPanel/AnalysisLibrary.tsx, /src/components/trading/MarketPanel/SymbolSearch.tsx, /src/components/trading/MarketPanel/WatchList.tsx, /src/components/trading/MarketPanel/OrderBook.tsx
+5:41:37 PM [vite] hmr update /src/pages/TradingPage.tsx, /src/index.css, /src/components/trading/SuperChart/SuperChart.tsx, /src/components/trading/StrategyPanel/StrategyPanel.tsx, /src/components/trading/MarketPanel/MarketPanel.tsx, /src/components/trading/SuperChart/DrawingToolbar.tsx, /src/components/trading/SuperChart/TechnicalIndicators.tsx, /src/components/trading/SuperChart/KlineChart.tsx, /src/components/trading/StrategyPanel/StrategyLibrary.tsx, /src/components/trading/StrategyPanel/IndicatorLibrary.tsx, /src/components/trading/StrategyPanel/AnalysisLibrary.tsx, /src/components/trading/MarketPanel/SymbolSearch.tsx, /src/components/trading/MarketPanel/WatchList.tsx, /src/components/trading/MarketPanel/OrderBook.tsx
+5:41:44 PM [vite] hmr update /src/pages/TradingPage.tsx, /src/index.css, /src/components/trading/SuperChart/SuperChart.tsx, /src/components/trading/StrategyPanel/StrategyPanel.tsx, /src/components/trading/MarketPanel/MarketPanel.tsx, /src/components/trading/SuperChart/DrawingToolbar.tsx, /src/components/trading/SuperChart/TechnicalIndicators.tsx, /src/components/trading/SuperChart/KlineChart.tsx, /src/components/trading/StrategyPanel/StrategyLibrary.tsx, /src/components/trading/StrategyPanel/IndicatorLibrary.tsx, /src/components/trading/StrategyPanel/AnalysisLibrary.tsx, /src/components/trading/MarketPanel/SymbolSearch.tsx, /src/components/trading/MarketPanel/WatchList.tsx, /src/components/trading/MarketPanel/OrderBook.tsx
+5:41:51 PM [vite] hmr update /src/pages/TradingPage.tsx, /src/index.css, /src/components/trading/SuperChart/SuperChart.tsx, /src/components/trading/StrategyPanel/StrategyPanel.tsx, /src/components/trading/MarketPanel/MarketPanel.tsx, /src/components/trading/SuperChart/DrawingToolbar.tsx, /src/components/trading/SuperChart/TechnicalIndicators.tsx, /src/components/trading/SuperChart/KlineChart.tsx, /src/components/trading/StrategyPanel/StrategyLibrary.tsx, /src/components/trading/StrategyPanel/IndicatorLibrary.tsx, /src/components/trading/StrategyPanel/AnalysisLibrary.tsx, /src/components/trading/MarketPanel/SymbolSearch.tsx, /src/components/trading/MarketPanel/WatchList.tsx, /src/components/trading/MarketPanel/OrderBook.tsx
+5:42:58 PM [vite] hmr update /src/components/trading/SuperChart/SuperChart.tsx, /src/index.css
+5:43:04 PM [vite] hmr update /src/components/trading/SuperChart/SuperChart.tsx, /src/index.css
+5:43:19 PM [vite] hmr update /src/components/trading/SuperChart/SuperChart.tsx, /src/index.css
+5:43:35 PM [vite] hmr update /src/components/trading/SuperChart/KlineChart.tsx, /src/index.css
+5:44:17 PM [vite] hmr update /src/components/trading/SuperChart/KlineChart.tsx, /src/index.css
+5:49:45 PM [vite] hmr update /src/components/trading/SuperChart/DrawingToolbar.tsx, /src/index.css
+5:50:39 PM [vite] hmr update /src/components/trading/SuperChart/DrawingToolbar.tsx, /src/index.css
+5:51:01 PM [vite] hmr update /src/components/trading/SuperChart/SuperChart.tsx, /src/index.css
+5:51:12 PM [vite] hmr update /src/components/trading/SuperChart/SuperChart.tsx, /src/index.css
+5:52:10 PM [vite] hmr update /src/components/trading/SuperChart/SuperChart.tsx, /src/index.css
+5:52:20 PM [vite] hmr update /src/pages/TradingPage.tsx, /src/index.css
+5:56:24 PM [vite] hmr update /src/pages/TradingPage.tsx, /src/index.css
+5:59:47 PM [vite] hmr update /src/components/trading/SuperChart/SuperChart.tsx, /src/index.css
+5:59:56 PM [vite] hmr update /src/components/trading/SuperChart/SuperChart.tsx, /src/index.css
+6:00:04 PM [vite] hmr update /src/components/trading/SuperChart/SuperChart.tsx, /src/index.css
+6:00:10 PM [vite] hmr update /src/components/trading/SuperChart/SuperChart.tsx, /src/index.css
+6:00:16 PM [vite] hmr update /src/components/trading/SuperChart/DrawingToolbar.tsx, /src/index.css
+6:00:31 PM [vite] hmr update /src/components/trading/SuperChart/DrawingToolbar.tsx, /src/index.css
+6:00:46 PM [vite] hmr update /src/components/trading/SuperChart/DrawingToolbar.tsx, /src/index.css
+6:01:03 PM [vite] hmr update /src/components/trading/SuperChart/DrawingToolbar.tsx, /src/index.css
+6:01:12 PM [vite] hmr update /src/components/trading/SuperChart/DrawingToolbar.tsx, /src/index.css
+6:01:26 PM [vite] hmr update /src/components/trading/SuperChart/DrawingToolbar.tsx, /src/index.css
+6:01:46 PM [vite] hmr update /src/components/trading/SuperChart/DrawingToolbar.tsx, /src/index.css
+6:01:54 PM [vite] hmr update /src/components/trading/SuperChart/DrawingToolbar.tsx, /src/index.css
+6:02:07 PM [vite] hmr update /src/components/trading/SuperChart/KlineChart.tsx, /src/index.css
+6:02:14 PM [vite] hmr update /src/components/trading/SuperChart/KlineChart.tsx, /src/index.css
+6:02:19 PM [vite] hmr update /src/components/trading/SuperChart/KlineChart.tsx, /src/index.css
+6:03:06 PM [vite] hmr update /src/components/trading/SuperChart/KlineChart.tsx, /src/index.css
+6:03:15 PM [vite] hmr update /src/components/trading/SuperChart/KlineChart.tsx, /src/index.css
+6:03:56 PM [vite] hmr update /src/components/trading/SuperChart/DrawingToolbar.tsx, /src/index.css
+9:01:08 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css
+9:01:16 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css
+9:01:23 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css
+9:01:33 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css
+9:01:41 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css
+9:02:05 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css
+9:02:16 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css
+9:02:52 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css
+9:03:01 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css
+9:03:08 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css
+9:03:16 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css
+9:03:29 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css
+9:03:45 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css
+9:03:52 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css
+9:14:29 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css
+9:14:46 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css
+9:14:54 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css
+9:15:23 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css
+9:19:15 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css
+9:19:45 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css
+9:19:59 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css
+9:29:54 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css
+9:30:00 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css
+9:31:04 PM [vite] hmr update /src/index.css, /src/pages/LiveStrategiesPage.tsx, /src/pages/AIChatPage.tsx, /src/pages/StrategyLiveDetailsPage.tsx, /src/pages/OverviewPage.tsx, /src/pages/StrategiesPage.tsx, /src/pages/APIManagementPage.tsx, /src/pages/ProfilePage.tsx, /src/pages/TradingNotesPage.tsx, /src/pages/TradingPage.tsx, /src/components/ai/WebSocketStatus.tsx
+9:31:29 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css
+9:31:35 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css
+9:32:26 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css
+9:32:46 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css
+9:33:02 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css
+9:33:24 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css
+9:33:39 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css
+9:34:00 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css
+9:34:40 PM [vite] hmr update /src/index.css, /src/pages/LiveStrategiesPage.tsx, /src/pages/AIChatPage.tsx, /src/pages/StrategyLiveDetailsPage.tsx, /src/pages/OverviewPage.tsx, /src/pages/StrategiesPage.tsx, /src/pages/APIManagementPage.tsx, /src/pages/ProfilePage.tsx, /src/pages/TradingNotesPage.tsx, /src/pages/TradingPage.tsx, /src/components/ai/WebSocketStatus.tsx
+9:35:19 PM [vite] hmr update /src/index.css, /src/pages/LiveStrategiesPage.tsx, /src/pages/AIChatPage.tsx, /src/pages/StrategyLiveDetailsPage.tsx, /src/pages/OverviewPage.tsx, /src/pages/StrategiesPage.tsx, /src/pages/APIManagementPage.tsx, /src/pages/ProfilePage.tsx, /src/pages/TradingNotesPage.tsx, /src/pages/TradingPage.tsx, /src/components/ai/WebSocketStatus.tsx
+9:35:32 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css, /src/pages/StrategyLiveDetailsPage.tsx, /src/pages/OverviewPage.tsx, /src/pages/StrategiesPage.tsx, /src/pages/LiveStrategiesPage.tsx, /src/pages/APIManagementPage.tsx, /src/pages/ProfilePage.tsx, /src/pages/TradingNotesPage.tsx, /src/pages/TradingPage.tsx, /src/components/ai/WebSocketStatus.tsx
+9:35:47 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css, /src/pages/StrategyLiveDetailsPage.tsx, /src/pages/OverviewPage.tsx, /src/pages/StrategiesPage.tsx, /src/pages/LiveStrategiesPage.tsx, /src/pages/APIManagementPage.tsx, /src/pages/ProfilePage.tsx, /src/pages/TradingNotesPage.tsx, /src/pages/TradingPage.tsx, /src/components/ai/WebSocketStatus.tsx
+9:37:29 PM [vite] page reload src/store/__tests__/storeIntegration.test.ts
+9:38:02 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css, /src/pages/StrategyLiveDetailsPage.tsx, /src/pages/OverviewPage.tsx, /src/pages/StrategiesPage.tsx, /src/pages/LiveStrategiesPage.tsx, /src/pages/APIManagementPage.tsx, /src/pages/ProfilePage.tsx, /src/pages/TradingNotesPage.tsx, /src/pages/TradingPage.tsx, /src/components/ai/WebSocketStatus.tsx
+10:26:57 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css, /src/pages/StrategyLiveDetailsPage.tsx, /src/pages/OverviewPage.tsx, /src/pages/StrategiesPage.tsx, /src/pages/LiveStrategiesPage.tsx, /src/pages/APIManagementPage.tsx, /src/pages/ProfilePage.tsx, /src/pages/TradingNotesPage.tsx, /src/pages/TradingPage.tsx, /src/components/ai/WebSocketStatus.tsx
+The request url "/root/trademe/frontend/.env" is outside of Vite serving allow list.
+The request url "/root/trademe/frontend/.env" is outside of Vite serving allow list.
+The request url "/root/trademe/frontend/.env" is outside of Vite serving allow list.
+The request url "/root/trademe/frontend/.env" is outside of Vite serving allow list.
+The request url "/root/trademe/frontend/.env" is outside of Vite serving allow list.
+The request url "/root/trademe/frontend/.env" is outside of Vite serving allow list.
+2:09:23 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css
+2:09:39 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css
+2:10:15 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css
+2:11:41 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css
+2:12:43 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css
+2:13:05 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css
+2:13:30 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css
+2:20:33 PM [vite] hmr update /src/pages/BacktestDetailsPage.tsx, /src/index.css
+2:20:42 PM [vite] hmr update /src/pages/BacktestDetailsPage.tsx, /src/index.css
+2:21:06 PM [vite] hmr update /src/pages/BacktestDetailsPage.tsx, /src/index.css
+2:21:22 PM [vite] hmr update /src/pages/BacktestDetailsPage.tsx, /src/index.css
+2:21:56 PM [vite] hmr update /src/pages/BacktestDetailsPage.tsx, /src/index.css
+2:23:16 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css
+2:23:34 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css
+2:23:47 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css
+2:24:16 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css
+The request url "/root/trademe/frontend/.env" is outside of Vite serving allow list.
+8:55:48 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css
+8:56:09 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css
+8:56:28 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css
+9:17:11 PM [vite] ✨ new dependencies optimized: @heroicons/react/24/outline
+9:17:11 PM [vite] ✨ optimized dependencies changed. reloading
+The request url "/root/trademe/frontend/.env" is outside of Vite serving allow list.
+9:59:17 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css
+9:59:26 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css
+9:59:48 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css
+10:00:15 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css
+10:01:07 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css
+10:03:14 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css
+11:05:52 PM [vite] Pre-transform error: /root/trademe/frontend/src/pages/AIChatPage.tsx: Unexpected reserved word 'await'. (1770:26)
+
+  1768 |           
+  1769 |           // 发送回测启动消息
+> 1770 |           const success = await sendMessage(message)
+       |                           ^
+  1771 |           if (!success) {
+  1772 |             setMessageInput(message)
+  1773 |             // 如果消息发送失败，重置状态
+11:34:10 AM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css
+11:34:29 AM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css
+11:35:01 AM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css
+12:00:10 PM [vite] Pre-transform error: /root/trademe/frontend/src/pages/AIChatPage.tsx: Unexpected reserved word 'await'. (1797:26)
+
+  1795 |           
+  1796 |           // 发送回测启动消息
+> 1797 |           const success = await sendMessage(message)
+       |                           ^
+  1798 |           if (!success) {
+  1799 |             setMessageInput(message)
+  1800 |             // 如果消息发送失败，重置状态
+12:07:18 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css
+12:09:31 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css
+12:13:57 PM [vite] hmr update /src/pages/AIChatPage.tsx, /src/index.css

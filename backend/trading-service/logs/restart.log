@@ -1,0 +1,43 @@
+INFO:     Will watch for changes in these directories: ['/root/trademe/backend/trading-service']
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+INFO:     Started reloader process [1849442] using StatReload
+2025-09-09 15:05:44.236 | INFO     | app.ai.core.claude_client:__init__:114 - 使用自定义Claude API端点: https://claude.cloudcdn7.com/api
+2025-09-09 15:05:44.280 | INFO     | app.ai.core.claude_client:__init__:118 - Claude客户端初始化成功
+2025-09-09 15:05:44.281 | INFO     | app.ai.core.claude_client:_init_proxy_manager:156 - ✅ 代理重试管理器已初始化
+2025-09-09 15:05:44.281 | INFO     | app.ai.core.claude_client:__init__:138 - Claude客户端初始化完成 - 模型: claude-sonnet-4-20250514, 启用状态: True
+/usr/local/lib/python3.12/dist-packages/pydantic/_internal/_config.py:373: UserWarning: Valid config keys have changed in V2:
+* 'schema_extra' has been renamed to 'json_schema_extra'
+  warnings.warn(message, UserWarning)
+2025-09-09 15:05:46.216 | INFO     | app.services.okx_service:__init__:116 - 🚀 OKX交易服务初始化完成
+INFO:app.services.wallet_generator:多链钱包生成器初始化完成
+INFO:app.security.crypto_manager:加密管理器初始化完成
+✅ 使用logging.yaml配置文件
+✅ API验证中间件集成成功
+2025-09-09 15:05:46 | uvicorn.error | INFO | Started server process [1849452]
+2025-09-09 15:05:46 | uvicorn.error | INFO | Waiting for application startup.
+2025-09-09 15:05:46 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/auth/register, 字段数: 2
+2025-09-09 15:05:46 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/auth/login, 字段数: 2
+2025-09-09 15:05:46 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/trading/orders, 字段数: 5
+2025-09-09 15:05:46 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/strategies, 字段数: 3
+2025-09-09 15:05:46 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/ai/chat, 字段数: 3
+2025-09-09 15:05:46 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/market-data/klines, 字段数: 3
+2025-09-09 15:05:46 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/backtest, 字段数: 5
+2025-09-09 15:05:46 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/wallet/transfer, 字段数: 3
+2025-09-09 15:05:46 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/data/download, 字段数: 5
+✅ 数据库初始化成功
+📋 包含的表：用户、策略、回测、交易、API密钥、市场数据、Claude对话、交易心得
+📋 管理后台表：管理员、Claude代理池、USDT支付、数据采集
+✅ Redis连接成功
+🔑 OKX API认证成功，已连接到真实交易接口
+🚀 Trading Service 启动成功
+📊 环境: development
+🏠 Host: 0.0.0.0:8001
+2025-09-09 15:05:47 | uvicorn.error | INFO | Application startup complete.
+2025-09-09 15:07:49 | uvicorn.error | INFO | Shutting down
+2025-09-09 15:07:49 | uvicorn.error | INFO | Waiting for application shutdown.
+✅ 数据库连接已关闭
+✅ Redis连接已关闭
+👋 Trading Service 已关闭
+2025-09-09 15:07:49 | uvicorn.error | INFO | Application shutdown complete.
+2025-09-09 15:07:49 | uvicorn.error | INFO | Finished server process [1849452]
+INFO:     Stopping reloader process [1849442]

@@ -1,0 +1,2434 @@
+INFO:     Will watch for changes in these directories: ['/root/trademe/backend/trading-service']
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+INFO:     Started reloader process [3235580] using WatchFiles
+2025-09-03 13:12:18.089 | INFO     | app.ai.core.claude_client:__init__:114 - 使用自定义Claude API端点: https://claude.cloudcdn7.com/api
+2025-09-03 13:12:18.113 | INFO     | app.ai.core.claude_client:__init__:118 - Claude客户端初始化成功
+2025-09-03 13:12:18.113 | INFO     | app.ai.core.claude_client:_init_proxy_manager:156 - ✅ 代理重试管理器已初始化
+2025-09-03 13:12:18.113 | INFO     | app.ai.core.claude_client:__init__:138 - Claude客户端初始化完成 - 模型: claude-sonnet-4-20250514, 启用状态: True
+2025-09-03 13:12:18.895 | INFO     | app.services.okx_service:__init__:116 - 🚀 OKX交易服务初始化完成
+INFO:app.services.wallet_generator:多链钱包生成器初始化完成
+INFO:app.security.crypto_manager:加密管理器初始化完成
+✅ 使用logging.yaml配置文件
+✅ API验证中间件集成成功
+2025-09-03 13:12:19 | uvicorn.error | INFO | Started server process [3235593]
+2025-09-03 13:12:19 | uvicorn.error | INFO | Waiting for application startup.
+2025-09-03 13:12:19 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/auth/register, 字段数: 2
+2025-09-03 13:12:19 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/auth/login, 字段数: 2
+2025-09-03 13:12:19 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/trading/orders, 字段数: 5
+2025-09-03 13:12:19 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/strategies, 字段数: 3
+2025-09-03 13:12:19 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/ai/chat, 字段数: 3
+2025-09-03 13:12:19 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/market-data/klines, 字段数: 3
+2025-09-03 13:12:19 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/backtest, 字段数: 5
+2025-09-03 13:12:19 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/wallet/transfer, 字段数: 3
+2025-09-03 13:12:19 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/data/download, 字段数: 5
+✅ 数据库初始化成功
+📋 包含的表：用户、策略、回测、交易、API密钥、市场数据、Claude对话、交易心得
+📋 管理后台表：管理员、Claude代理池、USDT支付、数据采集
+✅ Redis连接成功
+🔑 OKX API认证成功，已连接到真实交易接口
+🚀 Trading Service 启动成功
+📊 环境: development
+🏠 Host: 0.0.0.0:8001
+2025-09-03 13:12:19 | uvicorn.error | INFO | Application startup complete.
+2025-09-03 13:15:18 | app.middleware.api_validation_middleware | INFO | API请求: {"method": "POST", "url": "http://localhost:8001/api/v1/ai/chat", "path": "/api/v1/ai/chat", "client_ip": "127.0.***.***.***", "user_agent": "curl/8.5.0", "timestamp": "2025-09-03T05:15:18.734482", "headers": {"host": "localhost:8001", "user-agent": "curl/8.5.0", "accept": "*/*", "content-type": "application/json", "authorization": "Bearer eyJhbGciOi...bWUy1Q", "content-length": "74"}, "body": {"content": "测试Claude API密钥修复效果", "session_type": "strategy"}}
+2025-09-03 13:15:18.737 | INFO     | app.middleware.structured_logging:log_request_start:139 - Request started
+2025-09-03 13:15:18.792 | INFO     | app.services.ai_service:chat_completion:173 - 动态上下文优化 - 会话:655b3110-d376-4d60-96cc-ddcb7e5451d2, 窗口:10, 策略:default_fallback
+2025-09-03 13:15:18 | app.services.claude_scheduler_service | INFO | Starting account selection with context: SchedulerContext(user_id=6, request_type='chat', model_name=None, session_id='655b3110-d376-4d60-96cc-ddcb7e5451d2', min_quota=Decimal('0.02'), prefer_proxy=False, excluded_accounts=None, priority=100)
+2025-09-03 13:15:18 | app.services.claude_scheduler_service | INFO | Query returned 1 raw candidates
+2025-09-03 13:15:18 | app.services.claude_scheduler_service | INFO |   - claudetest: status=active, limit=100.00, usage=0.00, remaining=100.00
+2025-09-03 13:15:18 | app.services.claude_scheduler_service | INFO | Account claudetest suitable check: True
+2025-09-03 13:15:18 | app.services.claude_scheduler_service | INFO | Found 1 suitable candidate accounts after filtering
+2025-09-03 13:15:18 | app.services.claude_scheduler_service | INFO | Account selection decision: {
+  "timestamp": "2025-09-03T05:15:18.800040",
+  "selected_account_id": 1,
+  "selected_account_name": "claudetest",
+  "score": 89.86493932166667,
+  "reasons": [
+    "success_rate: 100.0%",
+    "remaining_quota: $100.00 (score: 100.0)",
+    "response_time: 1694ms (score: 73.5)",
+    "last_used_hours: 0.08580299416666667 (score: 1.7)"
+  ],
+  "context": {
+    "user_id": 6,
+    "request_type": "chat",
+    "model_name": null,
+    "session_id": "655b3110-d376-4d60-96cc-ddcb7e5451d2",
+    "priority": 100
+  }
+}
+2025-09-03 13:15:18 | app.services.claude_scheduler_service | INFO | Selected account: claudetest (ID: 1, Score: 89.86)
+--- Logging error ---
+Traceback (most recent call last):
+  File "/root/trademe/backend/trading-service/app/security/crypto_manager.py", line 144, in decrypt_private_key
+    combined_data = base64.b64decode(encrypted_private_key.encode('utf-8'))
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/base64.py", line 88, in b64decode
+    return binascii.a2b_base64(s, strict_mode=validate)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+binascii.Error: Incorrect padding
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/__init__.py", line 464, in format
+    return self._format(record)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 460, in _format
+    return self._fmt % values
+           ~~~~~~~~~~^~~~~~~~
+KeyError: 'user_id'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/handlers.py", line 73, in emit
+    if self.shouldRollover(record):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/handlers.py", line 196, in shouldRollover
+    msg = "%s\n" % self.format(record)
+                   ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 999, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 706, in format
+    s = self.formatMessage(record)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 675, in formatMessage
+    return self._style.format(record)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 466, in format
+    raise ValueError('Formatting field not found in record: %s' % e)
+ValueError: Formatting field not found in record: 'user_id'
+Call stack:
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/server.py", line 67, in run
+    return asyncio.run(self.serve(sockets=sockets))
+  File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run
+    return runner.run(main)
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 85, in __call__
+    await self.app(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/routing.py", line 78, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/routing.py", line 75, in app
+    response = await f(request)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/fastapi/routing.py", line 302, in app
+    raw_response = await run_endpoint_function(
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/fastapi/routing.py", line 213, in run_endpoint_function
+    return await dependant.call(**values)
+  File "/root/trademe/backend/trading-service/app/api/v1/ai.py", line 49, in chat_with_ai
+    response = await unified_proxy_ai_service.chat_completion_with_context(
+  File "/root/trademe/backend/trading-service/app/services/simplified_ai_service.py", line 188, in chat_completion_with_context
+    return await AIService.chat_completion(**supported_params)
+  File "/root/trademe/backend/trading-service/app/services/ai_service.py", line 202, in chat_completion
+    api_key = await claude_account_service.get_decrypted_api_key(selected_account.id)
+  File "/root/trademe/backend/trading-service/app/services/claude_account_service.py", line 201, in get_decrypted_api_key
+    return self._decrypt_sensitive_data(account.api_key)
+  File "/root/trademe/backend/trading-service/app/services/claude_account_service.py", line 81, in _decrypt_sensitive_data
+    return self.crypto_manager.decrypt_private_key(encrypted_data, additional_context)
+  File "/root/trademe/backend/trading-service/app/security/crypto_manager.py", line 172, in decrypt_private_key
+    logger.error(f"私钥解密失败: {e}")
+Message: '私钥解密失败: Incorrect padding'
+Arguments: ()
+2025-09-03 13:15:18 | app.services.claude_account_service | ERROR | Failed to decrypt data for : 私钥解密失败: Incorrect padding
+2025-09-03 13:15:18 | app.services.claude_account_service | WARNING | Using plaintext API key for account 1 - should be encrypted!
+2025-09-03 13:15:18.808 | INFO     | app.ai.core.claude_client:chat_completion:477 - 🔄 使用代理重试管理器处理请求
+2025-09-03 13:15:18 | app.services.proxy_retry_manager | INFO | 🏥 Started proxy health monitoring
+2025-09-03 13:15:27 | app.services.proxy_retry_manager | INFO | ✅ Request successful via Custom Proxy (attempt 1/3)
+2025-09-03 13:15:27.698 | INFO     | app.ai.core.claude_client:_make_request_with_proxy_retry:217 - ✅ 请求成功通过 Custom Proxy (尝试 1次)
+2025-09-03 13:15:27.720 | DEBUG    | app.services.ai_service:_save_usage_stats:949 - AI使用统计 - 用户ID: 6, 实际API成本: $0.000000, 用户计费成本: $0.000000 (2倍计费)
+2025-09-03 13:15:27.751 | WARNING  | app.middleware.structured_logging:log_request_end:181 - Slow request completed in 9.014s
+2025-09-03 13:15:27 | app.middleware.api_validation_middleware | INFO | API响应: {"method": "POST", "path": "/api/v1/ai/chat", "status_code": 200, "duration": 9016.82, "timestamp": "2025-09-03T05:15:27.751264"}
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/__init__.py", line 464, in format
+    return self._format(record)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 460, in _format
+    return self._fmt % values
+           ~~~~~~~~~~^~~~~~~~
+KeyError: 'duration'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/handlers.py", line 73, in emit
+    if self.shouldRollover(record):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/handlers.py", line 196, in shouldRollover
+    msg = "%s\n" % self.format(record)
+                   ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 999, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 706, in format
+    s = self.formatMessage(record)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 675, in formatMessage
+    return self._style.format(record)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 466, in format
+    raise ValueError('Formatting field not found in record: %s' % e)
+ValueError: Formatting field not found in record: 'duration'
+Call stack:
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/server.py", line 67, in run
+    return asyncio.run(self.serve(sockets=sockets))
+  File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run
+    return runner.run(main)
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 185, in __call__
+    await response(scope, wrapped_receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 214, in __call__
+    await send(
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 161, in _send
+    await send(message)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 476, in send
+    self.access_logger.info(
+Message: '%s - "%s %s HTTP/%s" %d'
+Arguments: ('127.0.0.1:53700', 'POST', '/api/v1/ai/chat', '1.1', 200)
+2025-09-03 13:19:01 | uvicorn.error | INFO | 167.234.***.***.***:0 - "WebSocket /ws/realtime" [accepted]
+🔌 WebSocket连接请求: conn_1756876741446
+2025-09-03 13:19:01 | uvicorn.error | INFO | connection open
+2025-09-03 13:19:02.009 | INFO     | app.services.ai_service:chat_completion:173 - 动态上下文优化 - 会话:proxy-test-session, 窗口:10, 策略:default_fallback
+🤖 开始调用真实Claude AI服务，用户: 6, 内容: 简单回答：1+1等于几？...
+📡 调用AIService.chat_completion...
+2025-09-03 13:19:02 | app.services.claude_scheduler_service | INFO | Starting account selection with context: SchedulerContext(user_id=6, request_type='chat', model_name=None, session_id='proxy-test-session', min_quota=Decimal('0.02'), prefer_proxy=False, excluded_accounts=None, priority=100)
+2025-09-03 13:19:02 | app.services.claude_scheduler_service | INFO | Query returned 1 raw candidates
+2025-09-03 13:19:02 | app.services.claude_scheduler_service | INFO |   - claudetest: status=active, limit=100.00, usage=0.00, remaining=100.00
+2025-09-03 13:19:02 | app.services.claude_scheduler_service | INFO | Account claudetest suitable check: True
+2025-09-03 13:19:02 | app.services.claude_scheduler_service | INFO | Found 1 suitable candidate accounts after filtering
+2025-09-03 13:19:02 | app.services.claude_scheduler_service | INFO | Account selection decision: {
+  "timestamp": "2025-09-03T05:19:02.013003",
+  "selected_account_id": 1,
+  "selected_account_name": "claudetest",
+  "score": 89.98894652833333,
+  "reasons": [
+    "success_rate: 100.0%",
+    "remaining_quota: $100.00 (score: 100.0)",
+    "response_time: 1694ms (score: 73.5)",
+    "last_used_hours: 0.1478065975 (score: 3.0)"
+  ],
+  "context": {
+    "user_id": 6,
+    "request_type": "chat",
+    "model_name": null,
+    "session_id": "proxy-test-session",
+    "priority": 100
+  }
+}
+2025-09-03 13:19:02 | app.services.claude_scheduler_service | INFO | Selected account: claudetest (ID: 1, Score: 89.99)
+--- Logging error ---
+Traceback (most recent call last):
+  File "/root/trademe/backend/trading-service/app/security/crypto_manager.py", line 144, in decrypt_private_key
+    combined_data = base64.b64decode(encrypted_private_key.encode('utf-8'))
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/base64.py", line 88, in b64decode
+    return binascii.a2b_base64(s, strict_mode=validate)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+binascii.Error: Incorrect padding
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/__init__.py", line 464, in format
+    return self._format(record)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 460, in _format
+    return self._fmt % values
+           ~~~~~~~~~~^~~~~~~~
+KeyError: 'user_id'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/handlers.py", line 73, in emit
+    if self.shouldRollover(record):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/handlers.py", line 196, in shouldRollover
+    msg = "%s\n" % self.format(record)
+                   ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 999, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 706, in format
+    s = self.formatMessage(record)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 675, in formatMessage
+    return self._style.format(record)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 466, in format
+    raise ValueError('Formatting field not found in record: %s' % e)
+ValueError: Formatting field not found in record: 'user_id'
+Call stack:
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/server.py", line 67, in run
+    return asyncio.run(self.serve(sockets=sockets))
+  File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run
+    return runner.run(main)
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/protocols/websockets/websockets_impl.py", line 244, in run_asgi
+    result = await self.app(self.scope, self.asgi_receive, self.asgi_send)  # type: ignore[func-returns-value]
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 151, in __call__
+    await self.app(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 103, in __call__
+    await self.app(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 103, in __call__
+    await self.app(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 103, in __call__
+    await self.app(scope, receive, send)
+  [Previous line repeated 1 more time]
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 77, in __call__
+    await self.app(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/routing.py", line 364, in handle
+    await self.app(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/routing.py", line 97, in app
+    await wrap_app_handling_exceptions(app, session)(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/routing.py", line 95, in app
+    await func(session)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/fastapi/routing.py", line 384, in app
+    await dependant.call(**solved_result.values)
+  File "/root/trademe/backend/trading-service/app/main.py", line 561, in websocket_realtime_endpoint
+    result = await AIService.chat_completion(
+  File "/root/trademe/backend/trading-service/app/services/ai_service.py", line 202, in chat_completion
+    api_key = await claude_account_service.get_decrypted_api_key(selected_account.id)
+  File "/root/trademe/backend/trading-service/app/services/claude_account_service.py", line 201, in get_decrypted_api_key
+    return self._decrypt_sensitive_data(account.api_key)
+  File "/root/trademe/backend/trading-service/app/services/claude_account_service.py", line 81, in _decrypt_sensitive_data
+    return self.crypto_manager.decrypt_private_key(encrypted_data, additional_context)
+  File "/root/trademe/backend/trading-service/app/security/crypto_manager.py", line 172, in decrypt_private_key
+    logger.error(f"私钥解密失败: {e}")
+Message: '私钥解密失败: Incorrect padding'
+Arguments: ()
+2025-09-03 13:19:02 | app.services.claude_account_service | ERROR | Failed to decrypt data for : 私钥解密失败: Incorrect padding
+2025-09-03 13:19:02 | app.services.claude_account_service | WARNING | Using plaintext API key for account 1 - should be encrypted!
+2025-09-03 13:19:02.016 | INFO     | app.ai.core.claude_client:chat_completion:477 - 🔄 使用代理重试管理器处理请求
+2025-09-03 13:19:05 | app.services.proxy_retry_manager | INFO | ✅ Request successful via Custom Proxy (attempt 1/3)
+2025-09-03 13:19:05.275 | INFO     | app.ai.core.claude_client:_make_request_with_proxy_retry:217 - ✅ 请求成功通过 Custom Proxy (尝试 1次)
+2025-09-03 13:19:05.286 | DEBUG    | app.services.ai_service:_save_usage_stats:949 - AI使用统计 - 用户ID: 6, 实际API成本: $0.000000, 用户计费成本: $0.000000 (2倍计费)
+📨 AI服务返回结果: {"content": "2\n\n\u4e0d\u8fc7\u4f5c\u4e3aTrademe\u91cf\u5316\u4ea4\u6613\u5e73\u53f0\u7684AI\u52a9\u624b\uff0c\u6211\u66f4\u64c5\u957f\u5e2e\u60a8\u89e3\u7b54\u91cf\u5316\u4ea4\u6613\u3001\u7b56\u7565\u5f00\u53d1\u3001\u5e02\u573a\u5206\u6790\u7b49\u4e13\u4e1a\u95ee\u9898\u3002\u5982\u679c\u60a8\u6709\u4efb\u4f55\u5173\u4e8e\u52a0\u5bc6\u8d27\u5e01\u4ea4\u6613\u6216\u91cf\u5316\u7b56\u7565\u7684\u7591\u95ee\uff0c\u968f\u65f6\u53ef\u4ee5\u54a8\u8be2\u6211\uff01\ud83d\udcc8", "session_id": "proxy
+📤 发送WebSocket响应: {"type": "ai_chat_success", "request_id": "proxy-test-1756876741770", "response": "2\n\n\u4e0d\u8fc7\u4f5c\u4e3aTrademe\u91cf\u5316\u4ea4\u6613\u5e73\u53f0\u7684AI\u52a9\u624b\uff0c\u6211\u66f4\u64c5\u957f\u5e2e\u60a8\u89e3\u7b54\u91cf\u5316\u4ea4\u6613\u3001\u7b56\u7565\u5f00\u53d1\u3001\u5e02\u573a\u5206\u6790\u7b49\u4e13\u4e1a\u95ee\u9898\u3002\u5982\u679c\u60a8\u6709\u4efb\u4f55\u5173\u4e8e\u52a0\u5bc6\u8d27\u5e01\u4ea4\u6613\u6216\u91cf\u5316\u7b56\u7565\u7684\u7591\u95ee\uff0c\u968f\u65f6\
+WebSocket消息处理错误: (<CloseCode.NO_STATUS_RCVD: 1005>, '')
+❌ WebSocket连接已断开: conn_1756876741446 (用户: 6)
+2025-09-03 13:19:05 | uvicorn.error | INFO | connection closed
+2025-09-03 13:19:12 | uvicorn.error | INFO | 167.234.***.***.***:0 - "WebSocket /ws/realtime" [accepted]
+🔌 WebSocket连接请求: conn_1756876752367
+2025-09-03 13:19:12 | uvicorn.error | INFO | connection open
+2025-09-03 13:19:12.906 | INFO     | app.services.ai_service:chat_completion:173 - 动态上下文优化 - 会话:proxy-test-session, 窗口:10, 策略:default_fallback
+🤖 开始调用真实Claude AI服务，用户: 6, 内容: 简单回答：1+1等于几？...
+📡 调用AIService.chat_completion...
+2025-09-03 13:19:12 | app.services.claude_scheduler_service | INFO | Starting account selection with context: SchedulerContext(user_id=6, request_type='chat', model_name=None, session_id='proxy-test-session', min_quota=Decimal('0.02'), prefer_proxy=False, excluded_accounts=None, priority=100)
+2025-09-03 13:19:12 | app.services.claude_scheduler_service | INFO | Using sticky session account: 1
+--- Logging error ---
+Traceback (most recent call last):
+  File "/root/trademe/backend/trading-service/app/security/crypto_manager.py", line 144, in decrypt_private_key
+    combined_data = base64.b64decode(encrypted_private_key.encode('utf-8'))
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/base64.py", line 88, in b64decode
+    return binascii.a2b_base64(s, strict_mode=validate)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+binascii.Error: Incorrect padding
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/__init__.py", line 464, in format
+    return self._format(record)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 460, in _format
+    return self._fmt % values
+           ~~~~~~~~~~^~~~~~~~
+KeyError: 'user_id'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/handlers.py", line 73, in emit
+    if self.shouldRollover(record):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/handlers.py", line 196, in shouldRollover
+    msg = "%s\n" % self.format(record)
+                   ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 999, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 706, in format
+    s = self.formatMessage(record)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 675, in formatMessage
+    return self._style.format(record)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 466, in format
+    raise ValueError('Formatting field not found in record: %s' % e)
+ValueError: Formatting field not found in record: 'user_id'
+Call stack:
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/server.py", line 67, in run
+    return asyncio.run(self.serve(sockets=sockets))
+  File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run
+    return runner.run(main)
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/protocols/websockets/websockets_impl.py", line 244, in run_asgi
+    result = await self.app(self.scope, self.asgi_receive, self.asgi_send)  # type: ignore[func-returns-value]
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 151, in __call__
+    await self.app(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 103, in __call__
+    await self.app(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 103, in __call__
+    await self.app(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 103, in __call__
+    await self.app(scope, receive, send)
+  [Previous line repeated 1 more time]
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 77, in __call__
+    await self.app(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/routing.py", line 364, in handle
+    await self.app(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/routing.py", line 97, in app
+    await wrap_app_handling_exceptions(app, session)(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/routing.py", line 95, in app
+    await func(session)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/fastapi/routing.py", line 384, in app
+    await dependant.call(**solved_result.values)
+  File "/root/trademe/backend/trading-service/app/main.py", line 561, in websocket_realtime_endpoint
+    result = await AIService.chat_completion(
+  File "/root/trademe/backend/trading-service/app/services/ai_service.py", line 202, in chat_completion
+    api_key = await claude_account_service.get_decrypted_api_key(selected_account.id)
+  File "/root/trademe/backend/trading-service/app/services/claude_account_service.py", line 201, in get_decrypted_api_key
+    return self._decrypt_sensitive_data(account.api_key)
+  File "/root/trademe/backend/trading-service/app/services/claude_account_service.py", line 81, in _decrypt_sensitive_data
+    return self.crypto_manager.decrypt_private_key(encrypted_data, additional_context)
+  File "/root/trademe/backend/trading-service/app/security/crypto_manager.py", line 172, in decrypt_private_key
+    logger.error(f"私钥解密失败: {e}")
+Message: '私钥解密失败: Incorrect padding'
+Arguments: ()
+2025-09-03 13:19:12 | app.services.claude_account_service | ERROR | Failed to decrypt data for : 私钥解密失败: Incorrect padding
+2025-09-03 13:19:12 | app.services.claude_account_service | WARNING | Using plaintext API key for account 1 - should be encrypted!
+2025-09-03 13:19:12.918 | INFO     | app.ai.core.claude_client:chat_completion:477 - 🔄 使用代理重试管理器处理请求
+2025-09-03 13:19:16 | app.services.proxy_retry_manager | INFO | ✅ Request successful via Custom Proxy (attempt 1/3)
+2025-09-03 13:19:16.551 | INFO     | app.ai.core.claude_client:_make_request_with_proxy_retry:217 - ✅ 请求成功通过 Custom Proxy (尝试 1次)
+2025-09-03 13:19:16.563 | DEBUG    | app.services.ai_service:_save_usage_stats:949 - AI使用统计 - 用户ID: 6, 实际API成本: $0.000000, 用户计费成本: $0.000000 (2倍计费)
+📨 AI服务返回结果: {"content": "2\n\n**\u98ce\u9669\u63d0\u793a\uff1a** \u867d\u7136\u8fd9\u662f\u4e00\u4e2a\u7b80\u5355\u7684\u6570\u5b66\u95ee\u9898\uff0c\u4f46\u5728\u91cf\u5316\u4ea4\u6613\u4e2d\uff0c\u770b\u4f3c\u7b80\u5355\u7684\u8ba1\u7b97\u5f80\u5f80\u9690\u85cf\u7740\u590d\u6742\u7684\u5e02\u573a\u903b\u8f91\u3002\u5efa\u8bae\u5728\u5236\u5b9a\u4ea4\u6613\u7b56\u7565\u65f6\uff0c\u4e0d\u4ec5\u8981\u5173\u6ce8\u57fa\u7840\u8ba1\u7b97\uff0c\u66f4\u8981\u8003\u8651\u5e02\u573a\u6ce2\u52a8\u3001\u624b\u7eed\u8
+📤 发送WebSocket响应: {"type": "ai_chat_success", "request_id": "proxy-test-1756876752668", "response": "2\n\n**\u98ce\u9669\u63d0\u793a\uff1a** \u867d\u7136\u8fd9\u662f\u4e00\u4e2a\u7b80\u5355\u7684\u6570\u5b66\u95ee\u9898\uff0c\u4f46\u5728\u91cf\u5316\u4ea4\u6613\u4e2d\uff0c\u770b\u4f3c\u7b80\u5355\u7684\u8ba1\u7b97\u5f80\u5f80\u9690\u85cf\u7740\u590d\u6742\u7684\u5e02\u573a\u903b\u8f91\u3002\u5efa\u8bae\u5728\u5236\u5b9a\u4ea4\u6613\u7b56\u7565\u65f6\uff0c\u4e0d\u4ec5\u8981\u5173\u6ce8\u57fa\u7840\u8ba1\u7b97\uff0
+WebSocket消息处理错误: (<CloseCode.NO_STATUS_RCVD: 1005>, '')
+❌ WebSocket连接已断开: conn_1756876752367 (用户: 6)
+2025-09-03 13:19:16 | uvicorn.error | INFO | connection closed
+2025-09-03 13:19:23 | app.middleware.api_validation_middleware | INFO | API请求: {"method": "GET", "url": "http://43.167.***.***.***/api/v1/ai/usage/stats?days=1", "path": "/api/v1/ai/usage/stats", "client_ip": "167.234.***.***.***", "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.***.***.*** Safari/537.36", "timestamp": "2025-09-03T05:19:23.562799", "headers": {"host": "43.167.***.***.***", "x-real-ip": "167.234.***.***.***", "x-forwarded-for": "167.234.***.***.***", "x-forwarded-proto": "http", "connection": "close", "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.***.***.*** Safari/537.36", "accept": "application/json, text/plain, */*", "accept-encoding": "gzip, deflate", "accept-language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7", "authorization": "Bearer eyJhbGciOi...jfgiYc", "referer": "http://43.167.***.***.***/ai-chat"}, "query_params": {"days": "1"}}
+2025-09-03 13:19:23 | app.middleware.api_validation_middleware | ERROR | 安全检查失败: name 're' is not defined
+2025-09-03 13:19:23 | app.services.integrated_cache_manager | WARNING | 缓存管理器尚未初始化
+2025-09-03 13:19:23 | app.services.api_validation_service | WARNING | 端点验证配置不存在: /api/v1/ai/usage/stats
+2025-09-03 13:19:23.564 | INFO     | app.middleware.structured_logging:log_request_start:139 - Request started
+2025-09-03 13:19:23.567 | INFO     | app.middleware.structured_logging:log_request_end:181 - Request completed in 0.004s
+2025-09-03 13:19:23 | app.middleware.api_validation_middleware | INFO | API响应: {"method": "GET", "path": "/api/v1/ai/usage/stats", "status_code": 200, "duration": 5.36, "timestamp": "2025-09-03T05:19:23.568124"}
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/__init__.py", line 464, in format
+    return self._format(record)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 460, in _format
+    return self._fmt % values
+           ~~~~~~~~~~^~~~~~~~
+KeyError: 'duration'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/handlers.py", line 73, in emit
+    if self.shouldRollover(record):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/handlers.py", line 196, in shouldRollover
+    msg = "%s\n" % self.format(record)
+                   ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 999, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 706, in format
+    s = self.formatMessage(record)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 675, in formatMessage
+    return self._style.format(record)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 466, in format
+    raise ValueError('Formatting field not found in record: %s' % e)
+ValueError: Formatting field not found in record: 'duration'
+Call stack:
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/server.py", line 67, in run
+    return asyncio.run(self.serve(sockets=sockets))
+  File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run
+    return runner.run(main)
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 185, in __call__
+    await response(scope, wrapped_receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 214, in __call__
+    await send(
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 161, in _send
+    await send(message)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 476, in send
+    self.access_logger.info(
+Message: '%s - "%s %s HTTP/%s" %d'
+Arguments: ('167.234.211.253:0', 'GET', '/api/v1/ai/usage/stats?days=1', '1.0', 200)
+2025-09-03 13:19:23 | app.middleware.api_validation_middleware | INFO | API请求: {"method": "GET", "url": "http://43.167.***.***.***/api/v1/ai/sessions?ai_mode=developer", "path": "/api/v1/ai/sessions", "client_ip": "167.234.***.***.***", "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.***.***.*** Safari/537.36", "timestamp": "2025-09-03T05:19:23.683339", "headers": {"host": "43.167.***.***.***", "x-real-ip": "167.234.***.***.***", "x-forwarded-for": "167.234.***.***.***", "x-forwarded-proto": "http", "connection": "close", "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.***.***.*** Safari/537.36", "accept": "application/json, text/plain, */*", "accept-encoding": "gzip, deflate", "accept-language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7", "authorization": "Bearer eyJhbGciOi...jfgiYc", "referer": "http://43.167.***.***.***/ai-chat"}, "query_params": {"ai_mode": "developer"}}
+2025-09-03 13:19:23 | app.middleware.api_validation_middleware | ERROR | 安全检查失败: name 're' is not defined
+2025-09-03 13:19:23 | app.services.integrated_cache_manager | WARNING | 缓存管理器尚未初始化
+2025-09-03 13:19:23 | app.services.api_validation_service | WARNING | 端点验证配置不存在: /api/v1/ai/sessions
+2025-09-03 13:19:23.684 | INFO     | app.middleware.structured_logging:log_request_start:139 - Request started
+2025-09-03 13:19:23.688 | INFO     | app.middleware.structured_logging:log_request_end:181 - Request completed in 0.004s
+2025-09-03 13:19:23 | app.middleware.api_validation_middleware | INFO | API响应: {"method": "GET", "path": "/api/v1/ai/sessions", "status_code": 200, "duration": 5.85, "timestamp": "2025-09-03T05:19:23.689143"}
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/__init__.py", line 464, in format
+    return self._format(record)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 460, in _format
+    return self._fmt % values
+           ~~~~~~~~~~^~~~~~~~
+KeyError: 'duration'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/handlers.py", line 73, in emit
+    if self.shouldRollover(record):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/handlers.py", line 196, in shouldRollover
+    msg = "%s\n" % self.format(record)
+                   ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 999, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 706, in format
+    s = self.formatMessage(record)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 675, in formatMessage
+    return self._style.format(record)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 466, in format
+    raise ValueError('Formatting field not found in record: %s' % e)
+ValueError: Formatting field not found in record: 'duration'
+Call stack:
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/server.py", line 67, in run
+    return asyncio.run(self.serve(sockets=sockets))
+  File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run
+    return runner.run(main)
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 185, in __call__
+    await response(scope, wrapped_receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 214, in __call__
+    await send(
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 161, in _send
+    await send(message)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 476, in send
+    self.access_logger.info(
+Message: '%s - "%s %s HTTP/%s" %d'
+Arguments: ('167.234.211.253:0', 'GET', '/api/v1/ai/sessions?ai_mode=developer', '1.0', 200)
+2025-09-03 13:19:24 | app.middleware.api_validation_middleware | INFO | API请求: {"method": "GET", "url": "http://43.167.***.***.***/api/v1/ai/chat/history?session_id=00d03dd6-5742-4cdf-8f49-338ae5b990fc&limit=20", "path": "/api/v1/ai/chat/history", "client_ip": "167.234.***.***.***", "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.***.***.*** Safari/537.36", "timestamp": "2025-09-03T05:19:24.727019", "headers": {"host": "43.167.***.***.***", "x-real-ip": "167.234.***.***.***", "x-forwarded-for": "167.234.***.***.***", "x-forwarded-proto": "http", "connection": "close", "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.***.***.*** Safari/537.36", "accept": "application/json, text/plain, */*", "accept-encoding": "gzip, deflate", "accept-language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7", "authorization": "Bearer eyJhbGciOi...jfgiYc", "referer": "http://43.167.***.***.***/ai-chat"}, "query_params": {"session_id": "00d03dd6-5742-4cdf-8f49-338ae5b990fc", "limit": "20"}}
+2025-09-03 13:19:24 | app.middleware.api_validation_middleware | ERROR | 安全检查失败: name 're' is not defined
+2025-09-03 13:19:24 | app.services.integrated_cache_manager | WARNING | 缓存管理器尚未初始化
+2025-09-03 13:19:24 | app.services.api_validation_service | WARNING | 端点验证配置不存在: /api/v1/ai/chat/history
+2025-09-03 13:19:24.730 | INFO     | app.middleware.structured_logging:log_request_start:139 - Request started
+2025-09-03 13:19:24.740 | INFO     | app.middleware.structured_logging:log_request_end:181 - Request completed in 0.010s
+2025-09-03 13:19:24 | app.middleware.api_validation_middleware | INFO | API响应: {"method": "GET", "path": "/api/v1/ai/chat/history", "status_code": 200, "duration": 13.26, "timestamp": "2025-09-03T05:19:24.740257"}
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/__init__.py", line 464, in format
+    return self._format(record)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 460, in _format
+    return self._fmt % values
+           ~~~~~~~~~~^~~~~~~~
+KeyError: 'duration'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/handlers.py", line 73, in emit
+    if self.shouldRollover(record):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/handlers.py", line 196, in shouldRollover
+    msg = "%s\n" % self.format(record)
+                   ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 999, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 706, in format
+    s = self.formatMessage(record)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 675, in formatMessage
+    return self._style.format(record)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 466, in format
+    raise ValueError('Formatting field not found in record: %s' % e)
+ValueError: Formatting field not found in record: 'duration'
+Call stack:
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/server.py", line 67, in run
+    return asyncio.run(self.serve(sockets=sockets))
+  File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run
+    return runner.run(main)
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 185, in __call__
+    await response(scope, wrapped_receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 214, in __call__
+    await send(
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 161, in _send
+    await send(message)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 476, in send
+    self.access_logger.info(
+Message: '%s - "%s %s HTTP/%s" %d'
+Arguments: ('167.234.211.253:0', 'GET', '/api/v1/ai/chat/history?session_id=00d03dd6-5742-4cdf-8f49-338ae5b990fc&limit=20', '1.0', 200)
+2025-09-03 13:19:25 | uvicorn.error | INFO | 167.234.***.***.***:0 - "WebSocket /ws/realtime" [accepted]
+🔌 WebSocket连接请求: conn_1756876765954
+2025-09-03 13:19:25 | uvicorn.error | INFO | connection open
+2025-09-03 13:19:27.699 | INFO     | app.services.dynamic_context_manager:calculate_optimal_context_window:95 - 动态上下文计算完成 - 会话:00d03dd6-5742-4cdf-8f49-338ae5b990fc, 窗口:12, 消息数:3
+2025-09-03 13:19:27.703 | INFO     | app.services.dynamic_context_manager:calculate_optimal_context_window:95 - 动态上下文计算完成 - 会话:00d03dd6-5742-4cdf-8f49-338ae5b990fc, 窗口:12, 消息数:3
+2025-09-03 13:19:27.703 | INFO     | app.services.ai_service:chat_completion:173 - 动态上下文优化 - 会话:00d03dd6-5742-4cdf-8f49-338ae5b990fc, 窗口:12, 策略:dynamic_optimization
+🤖 开始调用真实Claude AI服务，用户: 6, 内容: test...
+📡 调用AIService.chat_completion...
+2025-09-03 13:19:27 | app.services.claude_scheduler_service | INFO | Starting account selection with context: SchedulerContext(user_id=6, request_type='chat', model_name=None, session_id='00d03dd6-5742-4cdf-8f49-338ae5b990fc', min_quota=Decimal('0.02'), prefer_proxy=False, excluded_accounts=None, priority=100)
+2025-09-03 13:19:27 | app.services.claude_scheduler_service | INFO | Query returned 1 raw candidates
+2025-09-03 13:19:27 | app.services.claude_scheduler_service | INFO |   - claudetest: status=active, limit=100.00, usage=0.00, remaining=100.00
+2025-09-03 13:19:27 | app.services.claude_scheduler_service | INFO | Account claudetest suitable check: True
+2025-09-03 13:19:27 | app.services.claude_scheduler_service | INFO | Found 1 suitable candidate accounts after filtering
+2025-09-03 13:19:27 | app.services.claude_scheduler_service | INFO | Account selection decision: {
+  "timestamp": "2025-09-03T05:19:27.706826",
+  "selected_account_id": 1,
+  "selected_account_name": "claudetest",
+  "score": 89.70155393944444,
+  "reasons": [
+    "success_rate: 100.0%",
+    "remaining_quota: $100.00 (score: 100.0)",
+    "response_time: 1694ms (score: 73.5)",
+    "last_used_hours: 0.004110303055555556 (score: 0.1)"
+  ],
+  "context": {
+    "user_id": 6,
+    "request_type": "chat",
+    "model_name": null,
+    "session_id": "00d03dd6-5742-4cdf-8f49-338ae5b990fc",
+    "priority": 100
+  }
+}
+2025-09-03 13:19:27 | app.services.claude_scheduler_service | INFO | Selected account: claudetest (ID: 1, Score: 89.70)
+--- Logging error ---
+Traceback (most recent call last):
+  File "/root/trademe/backend/trading-service/app/security/crypto_manager.py", line 144, in decrypt_private_key
+    combined_data = base64.b64decode(encrypted_private_key.encode('utf-8'))
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/base64.py", line 88, in b64decode
+    return binascii.a2b_base64(s, strict_mode=validate)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+binascii.Error: Incorrect padding
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/__init__.py", line 464, in format
+    return self._format(record)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 460, in _format
+    return self._fmt % values
+           ~~~~~~~~~~^~~~~~~~
+KeyError: 'user_id'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/handlers.py", line 73, in emit
+    if self.shouldRollover(record):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/handlers.py", line 196, in shouldRollover
+    msg = "%s\n" % self.format(record)
+                   ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 999, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 706, in format
+    s = self.formatMessage(record)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 675, in formatMessage
+    return self._style.format(record)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 466, in format
+    raise ValueError('Formatting field not found in record: %s' % e)
+ValueError: Formatting field not found in record: 'user_id'
+Call stack:
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/server.py", line 67, in run
+    return asyncio.run(self.serve(sockets=sockets))
+  File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run
+    return runner.run(main)
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/protocols/websockets/websockets_impl.py", line 244, in run_asgi
+    result = await self.app(self.scope, self.asgi_receive, self.asgi_send)  # type: ignore[func-returns-value]
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 151, in __call__
+    await self.app(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 103, in __call__
+    await self.app(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 103, in __call__
+    await self.app(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 103, in __call__
+    await self.app(scope, receive, send)
+  [Previous line repeated 1 more time]
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 77, in __call__
+    await self.app(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/routing.py", line 364, in handle
+    await self.app(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/routing.py", line 97, in app
+    await wrap_app_handling_exceptions(app, session)(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/routing.py", line 95, in app
+    await func(session)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/fastapi/routing.py", line 384, in app
+    await dependant.call(**solved_result.values)
+  File "/root/trademe/backend/trading-service/app/main.py", line 561, in websocket_realtime_endpoint
+    result = await AIService.chat_completion(
+  File "/root/trademe/backend/trading-service/app/services/ai_service.py", line 202, in chat_completion
+    api_key = await claude_account_service.get_decrypted_api_key(selected_account.id)
+  File "/root/trademe/backend/trading-service/app/services/claude_account_service.py", line 201, in get_decrypted_api_key
+    return self._decrypt_sensitive_data(account.api_key)
+  File "/root/trademe/backend/trading-service/app/services/claude_account_service.py", line 81, in _decrypt_sensitive_data
+    return self.crypto_manager.decrypt_private_key(encrypted_data, additional_context)
+  File "/root/trademe/backend/trading-service/app/security/crypto_manager.py", line 172, in decrypt_private_key
+    logger.error(f"私钥解密失败: {e}")
+Message: '私钥解密失败: Incorrect padding'
+Arguments: ()
+2025-09-03 13:19:27 | app.services.claude_account_service | ERROR | Failed to decrypt data for : 私钥解密失败: Incorrect padding
+2025-09-03 13:19:27 | app.services.claude_account_service | WARNING | Using plaintext API key for account 1 - should be encrypted!
+2025-09-03 13:19:27.710 | INFO     | app.ai.core.claude_client:chat_completion:477 - 🔄 使用代理重试管理器处理请求
+2025-09-03 13:19:34 | app.services.proxy_retry_manager | INFO | ✅ Request successful via Custom Proxy (attempt 1/3)
+2025-09-03 13:19:34.854 | INFO     | app.ai.core.claude_client:_make_request_with_proxy_retry:217 - ✅ 请求成功通过 Custom Proxy (尝试 1次)
+2025-09-03 13:19:34.867 | DEBUG    | app.services.ai_service:_save_usage_stats:949 - AI使用统计 - 用户ID: 6, 实际API成本: $0.000000, 用户计费成本: $0.000000 (2倍计费)
+2025-09-03 13:19:42.557 | INFO     | app.services.dynamic_context_manager:calculate_optimal_context_window:95 - 动态上下文计算完成 - 会话:00d03dd6-5742-4cdf-8f49-338ae5b990fc, 窗口:12, 消息数:5
+2025-09-03 13:19:42.561 | INFO     | app.services.dynamic_context_manager:calculate_optimal_context_window:95 - 动态上下文计算完成 - 会话:00d03dd6-5742-4cdf-8f49-338ae5b990fc, 窗口:12, 消息数:5
+2025-09-03 13:19:42.561 | INFO     | app.services.ai_service:chat_completion:173 - 动态上下文优化 - 会话:00d03dd6-5742-4cdf-8f49-338ae5b990fc, 窗口:12, 策略:dynamic_optimization
+📨 AI服务返回结果: {"content": "\u6536\u5230\uff01\ud83d\udc4b\n\n\u770b\u8d77\u6765\u4f60\u5728\u6d4b\u8bd5\u6211\u7684\u54cd\u5e94\u3002\u6211\u5df2\u7ecf\u51c6\u5907\u597d\u4e3a\u4f60\u63d0\u4f9b\u4e13\u4e1a\u7684\u91cf\u5316\u4ea4\u6613\u670d\u52a1\u4e86\uff01\n\n## \ud83c\udfaf \u5feb\u901f\u5f00\u59cb\u5efa\u8bae\uff1a\n\n**\u65b0\u624b\u7528\u6237\u53ef\u4ee5\u5c1d\u8bd5\uff1a**\n- \"\u4ec0\u4e48\u662f\u91cf\u5316\u4ea4\u6613\uff1f\"\n- \"\u5e2e\u6211\u89e3\u91ca\u4e00\u4e0b\u79fb\u52a8\u5e73\u5747\u7ebf\u7
+📤 发送WebSocket响应: {"type": "ai_chat_success", "request_id": "nvxmvx1brncmf3j2dp9", "response": "\u6536\u5230\uff01\ud83d\udc4b\n\n\u770b\u8d77\u6765\u4f60\u5728\u6d4b\u8bd5\u6211\u7684\u54cd\u5e94\u3002\u6211\u5df2\u7ecf\u51c6\u5907\u597d\u4e3a\u4f60\u63d0\u4f9b\u4e13\u4e1a\u7684\u91cf\u5316\u4ea4\u6613\u670d\u52a1\u4e86\uff01\n\n## \ud83c\udfaf \u5feb\u901f\u5f00\u59cb\u5efa\u8bae\uff1a\n\n**\u65b0\u624b\u7528\u6237\u53ef\u4ee5\u5c1d\u8bd5\uff1a**\n- \"\u4ec0\u4e48\u662f\u91cf\u5316\u4ea4\u6613\uff1f\"\n- \"\u5e
+🤖 开始调用真实Claude AI服务，用户: 6, 内容: 我想开发一个macd背离策略...
+📡 调用AIService.chat_completion...
+2025-09-03 13:19:42 | app.services.claude_scheduler_service | INFO | Starting account selection with context: SchedulerContext(user_id=6, request_type='chat', model_name=None, session_id='00d03dd6-5742-4cdf-8f49-338ae5b990fc', min_quota=Decimal('0.02'), prefer_proxy=False, excluded_accounts=None, priority=100)
+2025-09-03 13:19:42 | app.services.claude_scheduler_service | INFO | Using sticky session account: 1
+--- Logging error ---
+Traceback (most recent call last):
+  File "/root/trademe/backend/trading-service/app/security/crypto_manager.py", line 144, in decrypt_private_key
+    combined_data = base64.b64decode(encrypted_private_key.encode('utf-8'))
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/base64.py", line 88, in b64decode
+    return binascii.a2b_base64(s, strict_mode=validate)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+binascii.Error: Incorrect padding
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/__init__.py", line 464, in format
+    return self._format(record)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 460, in _format
+    return self._fmt % values
+           ~~~~~~~~~~^~~~~~~~
+KeyError: 'user_id'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/handlers.py", line 73, in emit
+    if self.shouldRollover(record):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/handlers.py", line 196, in shouldRollover
+    msg = "%s\n" % self.format(record)
+                   ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 999, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 706, in format
+    s = self.formatMessage(record)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 675, in formatMessage
+    return self._style.format(record)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 466, in format
+    raise ValueError('Formatting field not found in record: %s' % e)
+ValueError: Formatting field not found in record: 'user_id'
+Call stack:
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/server.py", line 67, in run
+    return asyncio.run(self.serve(sockets=sockets))
+  File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run
+    return runner.run(main)
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/protocols/websockets/websockets_impl.py", line 244, in run_asgi
+    result = await self.app(self.scope, self.asgi_receive, self.asgi_send)  # type: ignore[func-returns-value]
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 151, in __call__
+    await self.app(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 103, in __call__
+    await self.app(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 103, in __call__
+    await self.app(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 103, in __call__
+    await self.app(scope, receive, send)
+  [Previous line repeated 1 more time]
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 77, in __call__
+    await self.app(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/routing.py", line 364, in handle
+    await self.app(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/routing.py", line 97, in app
+    await wrap_app_handling_exceptions(app, session)(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/routing.py", line 95, in app
+    await func(session)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/fastapi/routing.py", line 384, in app
+    await dependant.call(**solved_result.values)
+  File "/root/trademe/backend/trading-service/app/main.py", line 561, in websocket_realtime_endpoint
+    result = await AIService.chat_completion(
+  File "/root/trademe/backend/trading-service/app/services/ai_service.py", line 202, in chat_completion
+    api_key = await claude_account_service.get_decrypted_api_key(selected_account.id)
+  File "/root/trademe/backend/trading-service/app/services/claude_account_service.py", line 201, in get_decrypted_api_key
+    return self._decrypt_sensitive_data(account.api_key)
+  File "/root/trademe/backend/trading-service/app/services/claude_account_service.py", line 81, in _decrypt_sensitive_data
+    return self.crypto_manager.decrypt_private_key(encrypted_data, additional_context)
+  File "/root/trademe/backend/trading-service/app/security/crypto_manager.py", line 172, in decrypt_private_key
+    logger.error(f"私钥解密失败: {e}")
+Message: '私钥解密失败: Incorrect padding'
+Arguments: ()
+2025-09-03 13:19:42 | app.services.claude_account_service | ERROR | Failed to decrypt data for : 私钥解密失败: Incorrect padding
+2025-09-03 13:19:42 | app.services.claude_account_service | WARNING | Using plaintext API key for account 1 - should be encrypted!
+2025-09-03 13:19:42.574 | INFO     | app.ai.core.claude_client:chat_completion:477 - 🔄 使用代理重试管理器处理请求
+2025-09-03 13:19:50 | app.middleware.api_validation_middleware | INFO | API请求: {"method": "GET", "url": "http://43.167.***.***.***/api/v1/admin/claude/accounts", "path": "/api/v1/admin/claude/accounts", "client_ip": "167.234.***.***.***", "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.***.***.*** Safari/537.36", "timestamp": "2025-09-03T05:19:50.607052", "headers": {"host": "43.167.***.***.***", "x-real-ip": "167.234.***.***.***", "x-forwarded-for": "167.234.***.***.***", "x-forwarded-proto": "http", "connection": "close", "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.***.***.*** Safari/537.36", "accept": "*/*", "accept-encoding": "gzip, deflate", "accept-language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7", "authorization": "Bearer eyJhbGciOi...jfgiYc", "referer": "http://43.167.***.***.***/admin/claude"}, "query_params": {}}
+2025-09-03 13:19:50 | app.middleware.api_validation_middleware | ERROR | 安全检查失败: name 're' is not defined
+2025-09-03 13:19:50 | app.services.integrated_cache_manager | WARNING | 缓存管理器尚未初始化
+2025-09-03 13:19:50 | app.services.api_validation_service | WARNING | 端点验证配置不存在: /api/v1/admin/claude/accounts
+2025-09-03 13:19:50.608 | INFO     | app.middleware.structured_logging:log_request_start:139 - Request started
+2025-09-03 13:19:50 | app.middleware.api_validation_middleware | INFO | API请求: {"method": "GET", "url": "http://43.167.***.***.***/api/v1/admin/claude/proxies", "path": "/api/v1/admin/claude/proxies", "client_ip": "167.234.***.***.***", "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.***.***.*** Safari/537.36", "timestamp": "2025-09-03T05:19:50.608681", "headers": {"host": "43.167.***.***.***", "x-real-ip": "167.234.***.***.***", "x-forwarded-for": "167.234.***.***.***", "x-forwarded-proto": "http", "connection": "close", "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.***.***.*** Safari/537.36", "accept": "*/*", "accept-encoding": "gzip, deflate", "accept-language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7", "authorization": "Bearer eyJhbGciOi...jfgiYc", "referer": "http://43.167.***.***.***/admin/claude"}, "query_params": {}}
+2025-09-03 13:19:50 | app.middleware.api_validation_middleware | ERROR | 安全检查失败: name 're' is not defined
+2025-09-03 13:19:50 | app.services.integrated_cache_manager | WARNING | 缓存管理器尚未初始化
+2025-09-03 13:19:50 | app.services.api_validation_service | WARNING | 端点验证配置不存在: /api/v1/admin/claude/proxies
+2025-09-03 13:19:50.611 | INFO     | app.middleware.structured_logging:log_request_start:139 - Request started
+2025-09-03 13:19:50.618 | INFO     | app.middleware.structured_logging:log_request_end:181 - Request completed in 0.007s
+2025-09-03 13:19:50 | app.middleware.api_validation_middleware | INFO | API响应: {"method": "GET", "path": "/api/v1/admin/claude/proxies", "status_code": 200, "duration": 9.88, "timestamp": "2025-09-03T05:19:50.618544"}
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/__init__.py", line 464, in format
+    return self._format(record)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 460, in _format
+    return self._fmt % values
+           ~~~~~~~~~~^~~~~~~~
+KeyError: 'duration'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/handlers.py", line 73, in emit
+    if self.shouldRollover(record):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/handlers.py", line 196, in shouldRollover
+    msg = "%s\n" % self.format(record)
+                   ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 999, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 706, in format
+    s = self.formatMessage(record)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 675, in formatMessage
+    return self._style.format(record)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 466, in format
+    raise ValueError('Formatting field not found in record: %s' % e)
+ValueError: Formatting field not found in record: 'duration'
+Call stack:
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/server.py", line 67, in run
+    return asyncio.run(self.serve(sockets=sockets))
+  File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run
+    return runner.run(main)
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 185, in __call__
+    await response(scope, wrapped_receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 214, in __call__
+    await send(
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 161, in _send
+    await send(message)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 476, in send
+    self.access_logger.info(
+Message: '%s - "%s %s HTTP/%s" %d'
+Arguments: ('167.234.211.253:0', 'GET', '/api/v1/admin/claude/proxies', '1.0', 200)
+2025-09-03 13:19:50.621 | INFO     | app.middleware.structured_logging:log_request_end:181 - Request completed in 0.013s
+2025-09-03 13:19:50 | app.middleware.api_validation_middleware | INFO | API响应: {"method": "GET", "path": "/api/v1/admin/claude/accounts", "status_code": 200, "duration": 14.23, "timestamp": "2025-09-03T05:19:50.621255"}
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/__init__.py", line 464, in format
+    return self._format(record)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 460, in _format
+    return self._fmt % values
+           ~~~~~~~~~~^~~~~~~~
+KeyError: 'duration'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/handlers.py", line 73, in emit
+    if self.shouldRollover(record):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/handlers.py", line 196, in shouldRollover
+    msg = "%s\n" % self.format(record)
+                   ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 999, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 706, in format
+    s = self.formatMessage(record)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 675, in formatMessage
+    return self._style.format(record)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 466, in format
+    raise ValueError('Formatting field not found in record: %s' % e)
+ValueError: Formatting field not found in record: 'duration'
+Call stack:
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/server.py", line 67, in run
+    return asyncio.run(self.serve(sockets=sockets))
+  File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run
+    return runner.run(main)
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 185, in __call__
+    await response(scope, wrapped_receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 214, in __call__
+    await send(
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 161, in _send
+    await send(message)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 476, in send
+    self.access_logger.info(
+Message: '%s - "%s %s HTTP/%s" %d'
+Arguments: ('167.234.211.253:0', 'GET', '/api/v1/admin/claude/accounts', '1.0', 200)
+2025-09-03 13:19:50 | app.middleware.api_validation_middleware | INFO | API请求: {"method": "GET", "url": "http://43.167.***.***.***/api/v1/admin/claude/users-detailed-stats", "path": "/api/v1/admin/claude/users-detailed-stats", "client_ip": "167.234.***.***.***", "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.***.***.*** Safari/537.36", "timestamp": "2025-09-03T05:19:50.707477", "headers": {"host": "43.167.***.***.***", "x-real-ip": "167.234.***.***.***", "x-forwarded-for": "167.234.***.***.***", "x-forwarded-proto": "http", "connection": "close", "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.***.***.*** Safari/537.36", "accept": "*/*", "accept-encoding": "gzip, deflate", "accept-language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7", "authorization": "Bearer eyJhbGciOi...jfgiYc", "referer": "http://43.167.***.***.***/admin/claude"}, "query_params": {}}
+2025-09-03 13:19:50 | app.middleware.api_validation_middleware | ERROR | 安全检查失败: name 're' is not defined
+2025-09-03 13:19:50 | app.services.integrated_cache_manager | WARNING | 缓存管理器尚未初始化
+2025-09-03 13:19:50 | app.services.api_validation_service | WARNING | 端点验证配置不存在: /api/v1/admin/claude/users-detailed-stats
+2025-09-03 13:19:50.708 | INFO     | app.middleware.structured_logging:log_request_start:139 - Request started
+2025-09-03 13:19:50 | app.api.v1.admin.claude | ERROR | 获取用户详细统计失败: (sqlite3.OperationalError) no such column: cl.tokens_input
+[SQL: 
+            SELECT 
+                u.id as user_id,
+                u.username,
+                u.email,
+                u.membership_level,
+                u.is_active,
+                u.last_login_at,
+                COALESCE(SUM(cl.tokens_input + cl.tokens_output), 0) as total_tokens,
+                COALESCE(COUNT(cl.id), 0) as total_requests,
+                COALESCE(SUM(cl.api_cost), 0.0) as total_cost,
+                MAX(cl.request_date) as last_usage_date
+            FROM users u
+            LEFT JOIN claude_usage_logs cl ON u.id = cl.user_id
+            WHERE u.id IS NOT NULL
+            GROUP BY u.id, u.username, u.email, u.membership_level, u.is_active, u.last_login_at
+            ORDER BY total_cost DESC, total_requests DESC
+            LIMIT 50
+        ]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-09-03 13:19:50.715 | INFO     | app.middleware.structured_logging:log_request_end:181 - Request completed in 0.007s
+2025-09-03 13:19:50 | app.middleware.api_validation_middleware | INFO | API请求: {"method": "GET", "url": "http://43.167.***.***.***/api/v1/admin/claude/usage-stats?days=30", "path": "/api/v1/admin/claude/usage-stats", "client_ip": "167.234.***.***.***", "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.***.***.*** Safari/537.36", "timestamp": "2025-09-03T05:19:50.716115", "headers": {"host": "43.167.***.***.***", "x-real-ip": "167.234.***.***.***", "x-forwarded-for": "167.234.***.***.***", "x-forwarded-proto": "http", "connection": "close", "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.***.***.*** Safari/537.36", "accept": "*/*", "accept-encoding": "gzip, deflate", "accept-language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7", "authorization": "Bearer eyJhbGciOi...jfgiYc", "referer": "http://43.167.***.***.***/admin/claude"}, "query_params": {"days": "30"}}
+2025-09-03 13:19:50 | app.middleware.api_validation_middleware | ERROR | 安全检查失败: name 're' is not defined
+2025-09-03 13:19:50 | app.services.integrated_cache_manager | WARNING | 缓存管理器尚未初始化
+2025-09-03 13:19:50 | app.services.api_validation_service | WARNING | 端点验证配置不存在: /api/v1/admin/claude/usage-stats
+2025-09-03 13:19:50.717 | INFO     | app.middleware.structured_logging:log_request_start:139 - Request started
+2025-09-03 13:19:50 | app.middleware.api_validation_middleware | INFO | API响应: {"method": "GET", "path": "/api/v1/admin/claude/users-detailed-stats", "status_code": 200, "duration": 10.42, "timestamp": "2025-09-03T05:19:50.717870"}
+2025-09-03 13:19:50 | app.middleware.api_validation_middleware | INFO | API请求: {"method": "GET", "url": "http://43.167.***.***.***/api/v1/admin/users/", "path": "/api/v1/admin/users/", "client_ip": "167.234.***.***.***", "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.***.***.*** Safari/537.36", "timestamp": "2025-09-03T05:19:50.719560", "headers": {"host": "43.167.***.***.***", "x-real-ip": "167.234.***.***.***", "x-forwarded-for": "167.234.***.***.***", "x-forwarded-proto": "http", "connection": "close", "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.***.***.*** Safari/537.36", "accept": "*/*", "accept-encoding": "gzip, deflate", "accept-language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7", "authorization": "Bearer eyJhbGciOi...jfgiYc", "referer": "http://43.167.***.***.***/admin/claude"}, "query_params": {}}
+2025-09-03 13:19:50 | app.middleware.api_validation_middleware | ERROR | 安全检查失败: name 're' is not defined
+2025-09-03 13:19:50 | app.services.integrated_cache_manager | WARNING | 缓存管理器尚未初始化
+2025-09-03 13:19:50 | app.services.api_validation_service | WARNING | 端点验证配置不存在: /api/v1/admin/users/
+2025-09-03 13:19:50.720 | INFO     | app.middleware.structured_logging:log_request_start:139 - Request started
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/__init__.py", line 464, in format
+    return self._format(record)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 460, in _format
+    return self._fmt % values
+           ~~~~~~~~~~^~~~~~~~
+KeyError: 'duration'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/handlers.py", line 73, in emit
+    if self.shouldRollover(record):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/handlers.py", line 196, in shouldRollover
+    msg = "%s\n" % self.format(record)
+                   ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 999, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 706, in format
+    s = self.formatMessage(record)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 675, in formatMessage
+    return self._style.format(record)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 466, in format
+    raise ValueError('Formatting field not found in record: %s' % e)
+ValueError: Formatting field not found in record: 'duration'
+Call stack:
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/server.py", line 67, in run
+    return asyncio.run(self.serve(sockets=sockets))
+  File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run
+    return runner.run(main)
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 185, in __call__
+    await response(scope, wrapped_receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 214, in __call__
+    await send(
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 161, in _send
+    await send(message)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 476, in send
+    self.access_logger.info(
+Message: '%s - "%s %s HTTP/%s" %d'
+Arguments: ('167.234.211.253:0', 'GET', '/api/v1/admin/claude/users-detailed-stats', '1.0', 200)
+2025-09-03 13:19:50 | app.middleware.api_validation_middleware | INFO | API请求: {"method": "GET", "url": "http://43.167.***.***.***/api/v1/admin/claude/anomaly-detection", "path": "/api/v1/admin/claude/anomaly-detection", "client_ip": "167.234.***.***.***", "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.***.***.*** Safari/537.36", "timestamp": "2025-09-03T05:19:50.723240", "headers": {"host": "43.167.***.***.***", "x-real-ip": "167.234.***.***.***", "x-forwarded-for": "167.234.***.***.***", "x-forwarded-proto": "http", "connection": "close", "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.***.***.*** Safari/537.36", "accept": "*/*", "accept-encoding": "gzip, deflate", "accept-language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7", "authorization": "Bearer eyJhbGciOi...jfgiYc", "referer": "http://43.167.***.***.***/admin/claude"}, "query_params": {}}
+2025-09-03 13:19:50 | app.middleware.api_validation_middleware | ERROR | 安全检查失败: name 're' is not defined
+2025-09-03 13:19:50 | app.services.integrated_cache_manager | WARNING | 缓存管理器尚未初始化
+2025-09-03 13:19:50 | app.services.api_validation_service | WARNING | 端点验证配置不存在: /api/v1/admin/claude/anomaly-detection
+2025-09-03 13:19:50.724 | INFO     | app.middleware.structured_logging:log_request_start:139 - Request started
+2025-09-03 13:19:50.733 | INFO     | app.middleware.structured_logging:log_request_end:181 - Request completed in 0.013s
+2025-09-03 13:19:50 | app.middleware.api_validation_middleware | INFO | API响应: {"method": "GET", "path": "/api/v1/admin/users/", "status_code": 200, "duration": 15.29, "timestamp": "2025-09-03T05:19:50.734843"}
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/__init__.py", line 464, in format
+    return self._format(record)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 460, in _format
+    return self._fmt % values
+           ~~~~~~~~~~^~~~~~~~
+KeyError: 'duration'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/handlers.py", line 73, in emit
+    if self.shouldRollover(record):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/handlers.py", line 196, in shouldRollover
+    msg = "%s\n" % self.format(record)
+                   ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 999, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 706, in format
+    s = self.formatMessage(record)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 675, in formatMessage
+    return self._style.format(record)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 466, in format
+    raise ValueError('Formatting field not found in record: %s' % e)
+ValueError: Formatting field not found in record: 'duration'
+Call stack:
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/server.py", line 67, in run
+    return asyncio.run(self.serve(sockets=sockets))
+  File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run
+    return runner.run(main)
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 185, in __call__
+    await response(scope, wrapped_receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 214, in __call__
+    await send(
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 161, in _send
+    await send(message)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 476, in send
+    self.access_logger.info(
+Message: '%s - "%s %s HTTP/%s" %d'
+Arguments: ('167.234.211.253:0', 'GET', '/api/v1/admin/users/', '1.0', 200)
+2025-09-03 13:19:50.738 | INFO     | app.middleware.structured_logging:log_request_end:181 - Request completed in 0.014s
+2025-09-03 13:19:50 | app.middleware.api_validation_middleware | INFO | API响应: {"method": "GET", "path": "/api/v1/admin/claude/anomaly-detection", "status_code": 200, "duration": 15.78, "timestamp": "2025-09-03T05:19:50.739010"}
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/__init__.py", line 464, in format
+    return self._format(record)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 460, in _format
+    return self._fmt % values
+           ~~~~~~~~~~^~~~~~~~
+KeyError: 'duration'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/handlers.py", line 73, in emit
+    if self.shouldRollover(record):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/handlers.py", line 196, in shouldRollover
+    msg = "%s\n" % self.format(record)
+                   ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 999, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 706, in format
+    s = self.formatMessage(record)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 675, in formatMessage
+    return self._style.format(record)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 466, in format
+    raise ValueError('Formatting field not found in record: %s' % e)
+ValueError: Formatting field not found in record: 'duration'
+Call stack:
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/server.py", line 67, in run
+    return asyncio.run(self.serve(sockets=sockets))
+  File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run
+    return runner.run(main)
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 185, in __call__
+    await response(scope, wrapped_receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 214, in __call__
+    await send(
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 161, in _send
+    await send(message)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 476, in send
+    self.access_logger.info(
+Message: '%s - "%s %s HTTP/%s" %d'
+Arguments: ('167.234.211.253:0', 'GET', '/api/v1/admin/claude/anomaly-detection', '1.0', 200)
+2025-09-03 13:19:50.742 | INFO     | app.middleware.structured_logging:log_request_end:181 - Request completed in 0.025s
+2025-09-03 13:19:50 | app.middleware.api_validation_middleware | INFO | API响应: {"method": "GET", "path": "/api/v1/admin/claude/usage-stats", "status_code": 200, "duration": 27.0, "timestamp": "2025-09-03T05:19:50.742929"}
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/__init__.py", line 464, in format
+    return self._format(record)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 460, in _format
+    return self._fmt % values
+           ~~~~~~~~~~^~~~~~~~
+KeyError: 'duration'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/handlers.py", line 73, in emit
+    if self.shouldRollover(record):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/handlers.py", line 196, in shouldRollover
+    msg = "%s\n" % self.format(record)
+                   ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 999, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 706, in format
+    s = self.formatMessage(record)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 675, in formatMessage
+    return self._style.format(record)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 466, in format
+    raise ValueError('Formatting field not found in record: %s' % e)
+ValueError: Formatting field not found in record: 'duration'
+Call stack:
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/server.py", line 67, in run
+    return asyncio.run(self.serve(sockets=sockets))
+  File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run
+    return runner.run(main)
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 185, in __call__
+    await response(scope, wrapped_receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 214, in __call__
+    await send(
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 161, in _send
+    await send(message)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 476, in send
+    self.access_logger.info(
+Message: '%s - "%s %s HTTP/%s" %d'
+Arguments: ('167.234.211.253:0', 'GET', '/api/v1/admin/claude/usage-stats?days=30', '1.0', 200)
+2025-09-03 13:19:50 | app.middleware.api_validation_middleware | INFO | API请求: {"method": "GET", "url": "http://43.167.***.***.***/api/v1/anthropic-accounts/", "path": "/api/v1/anthropic-accounts/", "client_ip": "167.234.***.***.***", "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.***.***.*** Safari/537.36", "timestamp": "2025-09-03T05:19:50.900837", "headers": {"host": "43.167.***.***.***", "x-real-ip": "167.234.***.***.***", "x-forwarded-for": "167.234.***.***.***", "x-forwarded-proto": "http", "connection": "close", "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.***.***.*** Safari/537.36", "accept": "*/*", "accept-encoding": "gzip, deflate", "accept-language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7", "authorization": "Bearer eyJhbGciOi...jfgiYc", "referer": "http://43.167.***.***.***/admin/claude"}, "query_params": {}}
+2025-09-03 13:19:50 | app.middleware.api_validation_middleware | ERROR | 安全检查失败: name 're' is not defined
+2025-09-03 13:19:50 | app.services.integrated_cache_manager | WARNING | 缓存管理器尚未初始化
+2025-09-03 13:19:50 | app.services.api_validation_service | WARNING | 端点验证配置不存在: /api/v1/anthropic-accounts/
+2025-09-03 13:19:50.902 | INFO     | app.middleware.structured_logging:log_request_start:139 - Request started
+2025-09-03 13:19:50 | app.api.v1.anthropic_accounts | INFO | 📋 Listed 0 Anthropic Setup Token accounts
+2025-09-03 13:19:50.906 | INFO     | app.middleware.structured_logging:log_request_end:181 - Request completed in 0.005s
+2025-09-03 13:19:50 | app.middleware.api_validation_middleware | INFO | API响应: {"method": "GET", "path": "/api/v1/anthropic-accounts/", "status_code": 200, "duration": 5.95, "timestamp": "2025-09-03T05:19:50.906765"}
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/__init__.py", line 464, in format
+    return self._format(record)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 460, in _format
+    return self._fmt % values
+           ~~~~~~~~~~^~~~~~~~
+KeyError: 'duration'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/handlers.py", line 73, in emit
+    if self.shouldRollover(record):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/handlers.py", line 196, in shouldRollover
+    msg = "%s\n" % self.format(record)
+                   ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 999, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 706, in format
+    s = self.formatMessage(record)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 675, in formatMessage
+    return self._style.format(record)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 466, in format
+    raise ValueError('Formatting field not found in record: %s' % e)
+ValueError: Formatting field not found in record: 'duration'
+Call stack:
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/server.py", line 67, in run
+    return asyncio.run(self.serve(sockets=sockets))
+  File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run
+    return runner.run(main)
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 185, in __call__
+    await response(scope, wrapped_receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 214, in __call__
+    await send(
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 161, in _send
+    await send(message)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 476, in send
+    self.access_logger.info(
+Message: '%s - "%s %s HTTP/%s" %d'
+Arguments: ('167.234.211.253:0', 'GET', '/api/v1/anthropic-accounts/', '1.0', 200)
+2025-09-03 13:20:13 | anthropic._base_client | INFO | Retrying request to /v1/messages in 0.805582 seconds
+2025-09-03 13:20:42 | app.services.proxy_retry_manager | WARNING | ⏱️ Timeout on Custom Proxy (attempt 1/3)
+2025-09-03 13:20:42 | app.services.proxy_retry_manager | INFO | ⏳ Waiting 1.1s before retry...
+2025-09-03 13:21:14 | anthropic._base_client | INFO | Retrying request to /v1/messages in 0.775047 seconds
+2025-09-03 13:21:43 | app.services.proxy_retry_manager | WARNING | ⏱️ Timeout on Custom Proxy (attempt 2/3)
+2025-09-03 13:21:43 | app.services.proxy_retry_manager | INFO | ⏳ Waiting 1.7s before retry...
+2025-09-03 13:22:15 | anthropic._base_client | INFO | Retrying request to /v1/messages in 0.774217 seconds
+2025-09-03 13:22:18 | app.middleware.api_validation_middleware | INFO | API请求: {"method": "GET", "url": "http://43.167.***.***.***/api/v1/ai/sessions?ai_mode=trader", "path": "/api/v1/ai/sessions", "client_ip": "167.234.***.***.***", "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.***.***.*** Safari/537.36", "timestamp": "2025-09-03T05:22:18.684270", "headers": {"host": "43.167.***.***.***", "x-real-ip": "167.234.***.***.***", "x-forwarded-for": "167.234.***.***.***", "x-forwarded-proto": "http", "connection": "close", "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.***.***.*** Safari/537.36", "accept": "application/json, text/plain, */*", "accept-encoding": "gzip, deflate", "accept-language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7", "authorization": "Bearer eyJhbGciOi...jfgiYc", "referer": "http://43.167.***.***.***/ai-chat"}, "query_params": {"ai_mode": "trader"}}
+2025-09-03 13:22:18 | app.middleware.api_validation_middleware | ERROR | 安全检查失败: name 're' is not defined
+2025-09-03 13:22:18 | app.services.integrated_cache_manager | WARNING | 缓存管理器尚未初始化
+2025-09-03 13:22:18 | app.services.api_validation_service | WARNING | 端点验证配置不存在: /api/v1/ai/sessions
+2025-09-03 13:22:18.685 | INFO     | app.middleware.structured_logging:log_request_start:139 - Request started
+2025-09-03 13:22:18.688 | INFO     | app.middleware.structured_logging:log_request_end:181 - Request completed in 0.003s
+2025-09-03 13:22:18 | app.middleware.api_validation_middleware | INFO | API响应: {"method": "GET", "path": "/api/v1/ai/sessions", "status_code": 200, "duration": 4.92, "timestamp": "2025-09-03T05:22:18.689160"}
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/__init__.py", line 464, in format
+    return self._format(record)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 460, in _format
+    return self._fmt % values
+           ~~~~~~~~~~^~~~~~~~
+KeyError: 'duration'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/handlers.py", line 73, in emit
+    if self.shouldRollover(record):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/handlers.py", line 196, in shouldRollover
+    msg = "%s\n" % self.format(record)
+                   ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 999, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 706, in format
+    s = self.formatMessage(record)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 675, in formatMessage
+    return self._style.format(record)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 466, in format
+    raise ValueError('Formatting field not found in record: %s' % e)
+ValueError: Formatting field not found in record: 'duration'
+Call stack:
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/server.py", line 67, in run
+    return asyncio.run(self.serve(sockets=sockets))
+  File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run
+    return runner.run(main)
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 185, in __call__
+    await response(scope, wrapped_receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 214, in __call__
+    await send(
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 161, in _send
+    await send(message)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 476, in send
+    self.access_logger.info(
+Message: '%s - "%s %s HTTP/%s" %d'
+Arguments: ('167.234.211.253:0', 'GET', '/api/v1/ai/sessions?ai_mode=trader', '1.0', 200)
+2025-09-03 13:22:19 | app.middleware.api_validation_middleware | INFO | API请求: {"method": "GET", "url": "http://43.167.***.***.***/api/v1/ai/sessions?ai_mode=developer", "path": "/api/v1/ai/sessions", "client_ip": "167.234.***.***.***", "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.***.***.*** Safari/537.36", "timestamp": "2025-09-03T05:22:19.095814", "headers": {"host": "43.167.***.***.***", "x-real-ip": "167.234.***.***.***", "x-forwarded-for": "167.234.***.***.***", "x-forwarded-proto": "http", "connection": "close", "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.***.***.*** Safari/537.36", "accept": "application/json, text/plain, */*", "accept-encoding": "gzip, deflate", "accept-language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7", "authorization": "Bearer eyJhbGciOi...jfgiYc", "referer": "http://43.167.***.***.***/ai-chat"}, "query_params": {"ai_mode": "developer"}}
+2025-09-03 13:22:19 | app.middleware.api_validation_middleware | ERROR | 安全检查失败: name 're' is not defined
+2025-09-03 13:22:19 | app.services.integrated_cache_manager | WARNING | 缓存管理器尚未初始化
+2025-09-03 13:22:19 | app.services.api_validation_service | WARNING | 端点验证配置不存在: /api/v1/ai/sessions
+2025-09-03 13:22:19.097 | INFO     | app.middleware.structured_logging:log_request_start:139 - Request started
+2025-09-03 13:22:19.100 | INFO     | app.middleware.structured_logging:log_request_end:181 - Request completed in 0.003s
+2025-09-03 13:22:19 | app.middleware.api_validation_middleware | INFO | API响应: {"method": "GET", "path": "/api/v1/ai/sessions", "status_code": 200, "duration": 4.46, "timestamp": "2025-09-03T05:22:19.100248"}
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/__init__.py", line 464, in format
+    return self._format(record)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 460, in _format
+    return self._fmt % values
+           ~~~~~~~~~~^~~~~~~~
+KeyError: 'duration'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/handlers.py", line 73, in emit
+    if self.shouldRollover(record):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/handlers.py", line 196, in shouldRollover
+    msg = "%s\n" % self.format(record)
+                   ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 999, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 706, in format
+    s = self.formatMessage(record)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 675, in formatMessage
+    return self._style.format(record)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 466, in format
+    raise ValueError('Formatting field not found in record: %s' % e)
+ValueError: Formatting field not found in record: 'duration'
+Call stack:
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/server.py", line 67, in run
+    return asyncio.run(self.serve(sockets=sockets))
+  File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run
+    return runner.run(main)
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 185, in __call__
+    await response(scope, wrapped_receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 214, in __call__
+    await send(
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 161, in _send
+    await send(message)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 476, in send
+    self.access_logger.info(
+Message: '%s - "%s %s HTTP/%s" %d'
+Arguments: ('167.234.211.253:0', 'GET', '/api/v1/ai/sessions?ai_mode=developer', '1.0', 200)
+2025-09-03 13:22:19 | app.middleware.api_validation_middleware | INFO | API请求: {"method": "GET", "url": "http://43.167.***.***.***/api/v1/ai/chat/history?session_id=00d03dd6-5742-4cdf-8f49-338ae5b990fc&limit=20", "path": "/api/v1/ai/chat/history", "client_ip": "167.234.***.***.***", "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.***.***.*** Safari/537.36", "timestamp": "2025-09-03T05:22:19.944408", "headers": {"host": "43.167.***.***.***", "x-real-ip": "167.234.***.***.***", "x-forwarded-for": "167.234.***.***.***", "x-forwarded-proto": "http", "connection": "close", "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.***.***.*** Safari/537.36", "accept": "application/json, text/plain, */*", "accept-encoding": "gzip, deflate", "accept-language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7", "authorization": "Bearer eyJhbGciOi...jfgiYc", "referer": "http://43.167.***.***.***/ai-chat"}, "query_params": {"session_id": "00d03dd6-5742-4cdf-8f49-338ae5b990fc", "limit": "20"}}
+2025-09-03 13:22:19 | app.middleware.api_validation_middleware | ERROR | 安全检查失败: name 're' is not defined
+2025-09-03 13:22:19 | app.services.integrated_cache_manager | WARNING | 缓存管理器尚未初始化
+2025-09-03 13:22:19 | app.services.api_validation_service | WARNING | 端点验证配置不存在: /api/v1/ai/chat/history
+2025-09-03 13:22:19.946 | INFO     | app.middleware.structured_logging:log_request_start:139 - Request started
+2025-09-03 13:22:19.950 | INFO     | app.middleware.structured_logging:log_request_end:181 - Request completed in 0.003s
+2025-09-03 13:22:19 | app.middleware.api_validation_middleware | INFO | API响应: {"method": "GET", "path": "/api/v1/ai/chat/history", "status_code": 200, "duration": 5.9, "timestamp": "2025-09-03T05:22:19.950281"}
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/__init__.py", line 464, in format
+    return self._format(record)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 460, in _format
+    return self._fmt % values
+           ~~~~~~~~~~^~~~~~~~
+KeyError: 'duration'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/handlers.py", line 73, in emit
+    if self.shouldRollover(record):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/handlers.py", line 196, in shouldRollover
+    msg = "%s\n" % self.format(record)
+                   ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 999, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 706, in format
+    s = self.formatMessage(record)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 675, in formatMessage
+    return self._style.format(record)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 466, in format
+    raise ValueError('Formatting field not found in record: %s' % e)
+ValueError: Formatting field not found in record: 'duration'
+Call stack:
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/server.py", line 67, in run
+    return asyncio.run(self.serve(sockets=sockets))
+  File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run
+    return runner.run(main)
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 185, in __call__
+    await response(scope, wrapped_receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 214, in __call__
+    await send(
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 161, in _send
+    await send(message)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 476, in send
+    self.access_logger.info(
+Message: '%s - "%s %s HTTP/%s" %d'
+Arguments: ('167.234.211.253:0', 'GET', '/api/v1/ai/chat/history?session_id=00d03dd6-5742-4cdf-8f49-338ae5b990fc&limit=20', '1.0', 200)
+2025-09-03 13:22:45 | app.services.proxy_retry_manager | WARNING | ⏱️ Timeout on Custom Proxy (attempt 3/3)
+2025-09-03 13:23:15 | anthropic._base_client | INFO | Retrying request to /v1/messages in 0.896418 seconds
+2025-09-03 13:23:45 | app.services.proxy_retry_manager | WARNING | ⏱️ Timeout on Custom Proxy (attempt 1/3)
+2025-09-03 13:23:45 | app.services.proxy_retry_manager | INFO | ⏳ Waiting 0.8s before retry...
+2025-09-03 13:24:16 | anthropic._base_client | INFO | Retrying request to /v1/messages in 0.836490 seconds
+2025-09-03 13:24:45 | uvicorn.error | INFO | 127.0.***.***.***:59332 - "WebSocket /api/v1/ai/ws/chat" [accepted]
+2025-09-03 13:24:45 | uvicorn.error | INFO | connection open
+2025-09-03 13:24:46 | app.services.proxy_retry_manager | WARNING | ⏱️ Timeout on Custom Proxy (attempt 2/3)
+2025-09-03 13:24:46 | app.services.proxy_retry_manager | INFO | ⏳ Waiting 2.4s before retry...
+2025-09-03 13:25:19 | anthropic._base_client | INFO | Retrying request to /v1/messages in 0.753612 seconds
+2025-09-03 13:25:25 | app.api.v1.ai_websocket | INFO | WebSocket连接断开: None
+2025-09-03 13:25:25 | uvicorn.error | INFO | connection closed
+2025-09-03 13:25:48 | app.services.proxy_retry_manager | WARNING | ⏱️ Timeout on Custom Proxy (attempt 3/3)
+2025-09-03 13:25:48.632 | ERROR    | app.ai.core.claude_client:_make_request_with_proxy_retry:226 - ❌ 所有代理尝试失败: Timeout after 60s
+2025-09-03 13:25:48.632 | ERROR    | app.ai.core.claude_client:chat_completion:504 - 聊天完成失败: Claude API请求失败: Timeout after 60s
+📨 AI服务返回结果: {"content": "\u62b1\u6b49\uff0cAI\u670d\u52a1\u6682\u65f6\u4e0d\u53ef\u7528: Claude API\u8bf7\u6c42\u5931\u8d25: Timeout after 60s", "session_id": "00d03dd6-5742-4cdf-8f49-338ae5b990fc", "tokens_used": 0, "model": "claude-sonnet-4-20250514", "success": false, "requires_strategy_generation": false}
+❌ AI服务失败: 抱歉，AI服务暂时不可用: Claude API请求失败: Timeout after 60s
+WebSocket消息处理错误: (1001, '')
+❌ WebSocket连接已断开: conn_1756876765954 (用户: 6)
+2025-09-03 13:31:24 | uvicorn.error | INFO | connection closed
+2025-09-03 13:31:25 | app.middleware.api_validation_middleware | INFO | API请求: {"method": "GET", "url": "http://43.167.***.***.***/api/v1/ai/usage/stats?days=1", "path": "/api/v1/ai/usage/stats", "client_ip": "167.234.***.***.***", "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.***.***.*** Safari/537.36", "timestamp": "2025-09-03T05:31:25.158539", "headers": {"host": "43.167.***.***.***", "x-real-ip": "167.234.***.***.***", "x-forwarded-for": "167.234.***.***.***", "x-forwarded-proto": "http", "connection": "close", "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.***.***.*** Safari/537.36", "accept": "application/json, text/plain, */*", "accept-encoding": "gzip, deflate", "accept-language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7", "authorization": "Bearer eyJhbGciOi...jfgiYc", "referer": "http://43.167.***.***.***/ai-chat"}, "query_params": {"days": "1"}}
+2025-09-03 13:31:25 | app.middleware.api_validation_middleware | ERROR | 安全检查失败: name 're' is not defined
+2025-09-03 13:31:25 | app.services.integrated_cache_manager | WARNING | 缓存管理器尚未初始化
+2025-09-03 13:31:25 | app.services.api_validation_service | WARNING | 端点验证配置不存在: /api/v1/ai/usage/stats
+2025-09-03 13:31:25.160 | INFO     | app.middleware.structured_logging:log_request_start:139 - Request started
+2025-09-03 13:31:25.164 | INFO     | app.middleware.structured_logging:log_request_end:181 - Request completed in 0.004s
+2025-09-03 13:31:25 | app.middleware.api_validation_middleware | INFO | API响应: {"method": "GET", "path": "/api/v1/ai/usage/stats", "status_code": 200, "duration": 5.67, "timestamp": "2025-09-03T05:31:25.164178"}
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/__init__.py", line 464, in format
+    return self._format(record)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 460, in _format
+    return self._fmt % values
+           ~~~~~~~~~~^~~~~~~~
+KeyError: 'duration'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/handlers.py", line 73, in emit
+    if self.shouldRollover(record):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/handlers.py", line 196, in shouldRollover
+    msg = "%s\n" % self.format(record)
+                   ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 999, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 706, in format
+    s = self.formatMessage(record)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 675, in formatMessage
+    return self._style.format(record)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 466, in format
+    raise ValueError('Formatting field not found in record: %s' % e)
+ValueError: Formatting field not found in record: 'duration'
+Call stack:
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/server.py", line 67, in run
+    return asyncio.run(self.serve(sockets=sockets))
+  File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run
+    return runner.run(main)
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 185, in __call__
+    await response(scope, wrapped_receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 214, in __call__
+    await send(
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 161, in _send
+    await send(message)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 476, in send
+    self.access_logger.info(
+Message: '%s - "%s %s HTTP/%s" %d'
+Arguments: ('167.234.211.253:0', 'GET', '/api/v1/ai/usage/stats?days=1', '1.0', 200)
+2025-09-03 13:31:25 | app.middleware.api_validation_middleware | INFO | API请求: {"method": "GET", "url": "http://43.167.***.***.***/api/v1/ai/sessions?ai_mode=developer", "path": "/api/v1/ai/sessions", "client_ip": "167.234.***.***.***", "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.***.***.*** Safari/537.36", "timestamp": "2025-09-03T05:31:25.171357", "headers": {"host": "43.167.***.***.***", "x-real-ip": "167.234.***.***.***", "x-forwarded-for": "167.234.***.***.***", "x-forwarded-proto": "http", "connection": "close", "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.***.***.*** Safari/537.36", "accept": "application/json, text/plain, */*", "accept-encoding": "gzip, deflate", "accept-language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7", "authorization": "Bearer eyJhbGciOi...jfgiYc", "referer": "http://43.167.***.***.***/ai-chat"}, "query_params": {"ai_mode": "developer"}}
+2025-09-03 13:31:25 | app.middleware.api_validation_middleware | ERROR | 安全检查失败: name 're' is not defined
+2025-09-03 13:31:25 | app.services.integrated_cache_manager | WARNING | 缓存管理器尚未初始化
+2025-09-03 13:31:25 | app.services.api_validation_service | WARNING | 端点验证配置不存在: /api/v1/ai/sessions
+2025-09-03 13:31:25.172 | INFO     | app.middleware.structured_logging:log_request_start:139 - Request started
+2025-09-03 13:31:25.175 | INFO     | app.middleware.structured_logging:log_request_end:181 - Request completed in 0.003s
+2025-09-03 13:31:25 | app.middleware.api_validation_middleware | INFO | API响应: {"method": "GET", "path": "/api/v1/ai/sessions", "status_code": 200, "duration": 4.15, "timestamp": "2025-09-03T05:31:25.175481"}
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/__init__.py", line 464, in format
+    return self._format(record)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 460, in _format
+    return self._fmt % values
+           ~~~~~~~~~~^~~~~~~~
+KeyError: 'duration'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/handlers.py", line 73, in emit
+    if self.shouldRollover(record):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/handlers.py", line 196, in shouldRollover
+    msg = "%s\n" % self.format(record)
+                   ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 999, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 706, in format
+    s = self.formatMessage(record)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 675, in formatMessage
+    return self._style.format(record)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 466, in format
+    raise ValueError('Formatting field not found in record: %s' % e)
+ValueError: Formatting field not found in record: 'duration'
+Call stack:
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/server.py", line 67, in run
+    return asyncio.run(self.serve(sockets=sockets))
+  File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run
+    return runner.run(main)
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 185, in __call__
+    await response(scope, wrapped_receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 214, in __call__
+    await send(
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 161, in _send
+    await send(message)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 476, in send
+    self.access_logger.info(
+Message: '%s - "%s %s HTTP/%s" %d'
+Arguments: ('167.234.211.253:0', 'GET', '/api/v1/ai/sessions?ai_mode=developer', '1.0', 200)
+2025-09-03 13:31:39 | app.middleware.api_validation_middleware | INFO | API请求: {"method": "GET", "url": "http://43.167.***.***.***/api/v1/ai/sessions?ai_mode=developer", "path": "/api/v1/ai/sessions", "client_ip": "167.234.***.***.***", "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.***.***.*** Safari/537.36", "timestamp": "2025-09-03T05:31:39.543457", "headers": {"host": "43.167.***.***.***", "x-real-ip": "167.234.***.***.***", "x-forwarded-for": "167.234.***.***.***", "x-forwarded-proto": "http", "connection": "close", "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.***.***.*** Safari/537.36", "accept": "application/json, text/plain, */*", "accept-encoding": "gzip, deflate", "accept-language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7", "authorization": "Bearer eyJhbGciOi...3tQJ1M", "referer": "http://43.167.***.***.***/ai-chat"}, "query_params": {"ai_mode": "developer"}}
+2025-09-03 13:31:39 | app.middleware.api_validation_middleware | ERROR | 安全检查失败: name 're' is not defined
+2025-09-03 13:31:39 | app.services.integrated_cache_manager | WARNING | 缓存管理器尚未初始化
+2025-09-03 13:31:39 | app.services.api_validation_service | WARNING | 端点验证配置不存在: /api/v1/ai/sessions
+2025-09-03 13:31:39.544 | INFO     | app.middleware.structured_logging:log_request_start:139 - Request started
+2025-09-03 13:31:39.550 | INFO     | app.middleware.structured_logging:log_request_end:181 - Request completed in 0.006s
+2025-09-03 13:31:39 | app.middleware.api_validation_middleware | INFO | API响应: {"method": "GET", "path": "/api/v1/ai/sessions", "status_code": 200, "duration": 7.57, "timestamp": "2025-09-03T05:31:39.551045"}
+2025-09-03 13:31:39 | app.middleware.api_validation_middleware | INFO | API请求: {"method": "GET", "url": "http://43.167.***.***.***/api/v1/ai/usage/stats?days=1", "path": "/api/v1/ai/usage/stats", "client_ip": "167.234.***.***.***", "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.***.***.*** Safari/537.36", "timestamp": "2025-09-03T05:31:39.551555", "headers": {"host": "43.167.***.***.***", "x-real-ip": "167.234.***.***.***", "x-forwarded-for": "167.234.***.***.***", "x-forwarded-proto": "http", "connection": "close", "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.***.***.*** Safari/537.36", "accept": "application/json, text/plain, */*", "accept-encoding": "gzip, deflate", "accept-language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7", "authorization": "Bearer eyJhbGciOi...3tQJ1M", "referer": "http://43.167.***.***.***/ai-chat"}, "query_params": {"days": "1"}}
+2025-09-03 13:31:39 | app.middleware.api_validation_middleware | ERROR | 安全检查失败: name 're' is not defined
+2025-09-03 13:31:39 | app.services.integrated_cache_manager | WARNING | 缓存管理器尚未初始化
+2025-09-03 13:31:39 | app.services.api_validation_service | WARNING | 端点验证配置不存在: /api/v1/ai/usage/stats
+2025-09-03 13:31:39.552 | INFO     | app.middleware.structured_logging:log_request_start:139 - Request started
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/__init__.py", line 464, in format
+    return self._format(record)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 460, in _format
+    return self._fmt % values
+           ~~~~~~~~~~^~~~~~~~
+KeyError: 'duration'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/handlers.py", line 73, in emit
+    if self.shouldRollover(record):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/handlers.py", line 196, in shouldRollover
+    msg = "%s\n" % self.format(record)
+                   ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 999, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 706, in format
+    s = self.formatMessage(record)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 675, in formatMessage
+    return self._style.format(record)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 466, in format
+    raise ValueError('Formatting field not found in record: %s' % e)
+ValueError: Formatting field not found in record: 'duration'
+Call stack:
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/server.py", line 67, in run
+    return asyncio.run(self.serve(sockets=sockets))
+  File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run
+    return runner.run(main)
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 185, in __call__
+    await response(scope, wrapped_receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 214, in __call__
+    await send(
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 161, in _send
+    await send(message)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 476, in send
+    self.access_logger.info(
+Message: '%s - "%s %s HTTP/%s" %d'
+Arguments: ('167.234.211.253:0', 'GET', '/api/v1/ai/sessions?ai_mode=developer', '1.0', 200)
+2025-09-03 13:31:39.557 | INFO     | app.middleware.structured_logging:log_request_end:181 - Request completed in 0.005s
+2025-09-03 13:31:39 | app.middleware.api_validation_middleware | INFO | API响应: {"method": "GET", "path": "/api/v1/ai/usage/stats", "status_code": 200, "duration": 5.96, "timestamp": "2025-09-03T05:31:39.557495"}
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/__init__.py", line 464, in format
+    return self._format(record)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 460, in _format
+    return self._fmt % values
+           ~~~~~~~~~~^~~~~~~~
+KeyError: 'duration'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/handlers.py", line 73, in emit
+    if self.shouldRollover(record):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/handlers.py", line 196, in shouldRollover
+    msg = "%s\n" % self.format(record)
+                   ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 999, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 706, in format
+    s = self.formatMessage(record)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 675, in formatMessage
+    return self._style.format(record)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 466, in format
+    raise ValueError('Formatting field not found in record: %s' % e)
+ValueError: Formatting field not found in record: 'duration'
+Call stack:
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/server.py", line 67, in run
+    return asyncio.run(self.serve(sockets=sockets))
+  File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run
+    return runner.run(main)
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 185, in __call__
+    await response(scope, wrapped_receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 214, in __call__
+    await send(
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 161, in _send
+    await send(message)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 476, in send
+    self.access_logger.info(
+Message: '%s - "%s %s HTTP/%s" %d'
+Arguments: ('167.234.211.253:0', 'GET', '/api/v1/ai/usage/stats?days=1', '1.0', 200)
+2025-09-03 13:31:41 | app.middleware.api_validation_middleware | INFO | API请求: {"method": "GET", "url": "http://43.167.***.***.***/api/v1/ai/chat/history?session_id=00d03dd6-5742-4cdf-8f49-338ae5b990fc&limit=20", "path": "/api/v1/ai/chat/history", "client_ip": "167.234.***.***.***", "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.***.***.*** Safari/537.36", "timestamp": "2025-09-03T05:31:41.141685", "headers": {"host": "43.167.***.***.***", "x-real-ip": "167.234.***.***.***", "x-forwarded-for": "167.234.***.***.***", "x-forwarded-proto": "http", "connection": "close", "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.***.***.*** Safari/537.36", "accept": "application/json, text/plain, */*", "accept-encoding": "gzip, deflate", "accept-language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7", "authorization": "Bearer eyJhbGciOi...3tQJ1M", "referer": "http://43.167.***.***.***/ai-chat"}, "query_params": {"session_id": "00d03dd6-5742-4cdf-8f49-338ae5b990fc", "limit": "20"}}
+2025-09-03 13:31:41 | app.middleware.api_validation_middleware | ERROR | 安全检查失败: name 're' is not defined
+2025-09-03 13:31:41 | app.services.integrated_cache_manager | WARNING | 缓存管理器尚未初始化
+2025-09-03 13:31:41 | app.services.api_validation_service | WARNING | 端点验证配置不存在: /api/v1/ai/chat/history
+2025-09-03 13:31:41.143 | INFO     | app.middleware.structured_logging:log_request_start:139 - Request started
+2025-09-03 13:31:41.147 | INFO     | app.middleware.structured_logging:log_request_end:181 - Request completed in 0.004s
+2025-09-03 13:31:41 | app.middleware.api_validation_middleware | INFO | API响应: {"method": "GET", "path": "/api/v1/ai/chat/history", "status_code": 200, "duration": 5.89, "timestamp": "2025-09-03T05:31:41.147543"}
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/__init__.py", line 464, in format
+    return self._format(record)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 460, in _format
+    return self._fmt % values
+           ~~~~~~~~~~^~~~~~~~
+KeyError: 'duration'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/handlers.py", line 73, in emit
+    if self.shouldRollover(record):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/handlers.py", line 196, in shouldRollover
+    msg = "%s\n" % self.format(record)
+                   ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 999, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 706, in format
+    s = self.formatMessage(record)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 675, in formatMessage
+    return self._style.format(record)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 466, in format
+    raise ValueError('Formatting field not found in record: %s' % e)
+ValueError: Formatting field not found in record: 'duration'
+Call stack:
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/server.py", line 67, in run
+    return asyncio.run(self.serve(sockets=sockets))
+  File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run
+    return runner.run(main)
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 185, in __call__
+    await response(scope, wrapped_receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 214, in __call__
+    await send(
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 161, in _send
+    await send(message)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 476, in send
+    self.access_logger.info(
+Message: '%s - "%s %s HTTP/%s" %d'
+Arguments: ('167.234.211.253:0', 'GET', '/api/v1/ai/chat/history?session_id=00d03dd6-5742-4cdf-8f49-338ae5b990fc&limit=20', '1.0', 200)
+2025-09-03 13:31:42 | uvicorn.error | INFO | 167.234.***.***.***:0 - "WebSocket /ws/realtime" [accepted]
+🔌 WebSocket连接请求: conn_1756877502797
+2025-09-03 13:31:42 | uvicorn.error | INFO | connection open
+2025-09-03 13:31:53.426 | INFO     | app.services.dynamic_context_manager:calculate_optimal_context_window:95 - 动态上下文计算完成 - 会话:00d03dd6-5742-4cdf-8f49-338ae5b990fc, 窗口:12, 消息数:5
+2025-09-03 13:31:53.430 | INFO     | app.services.dynamic_context_manager:calculate_optimal_context_window:95 - 动态上下文计算完成 - 会话:00d03dd6-5742-4cdf-8f49-338ae5b990fc, 窗口:12, 消息数:5
+2025-09-03 13:31:53.430 | INFO     | app.services.ai_service:chat_completion:173 - 动态上下文优化 - 会话:00d03dd6-5742-4cdf-8f49-338ae5b990fc, 窗口:12, 策略:dynamic_optimization
+🤖 开始调用真实Claude AI服务，用户: 6, 内容: 我想开发一个macd背离策略...
+📡 调用AIService.chat_completion...
+2025-09-03 13:31:53 | app.services.claude_scheduler_service | INFO | Starting account selection with context: SchedulerContext(user_id=6, request_type='chat', model_name=None, session_id='00d03dd6-5742-4cdf-8f49-338ae5b990fc', min_quota=Decimal('0.02'), prefer_proxy=False, excluded_accounts=None, priority=100)
+2025-09-03 13:31:53 | app.services.claude_scheduler_service | INFO | Using sticky session account: 1
+--- Logging error ---
+Traceback (most recent call last):
+  File "/root/trademe/backend/trading-service/app/security/crypto_manager.py", line 144, in decrypt_private_key
+    combined_data = base64.b64decode(encrypted_private_key.encode('utf-8'))
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/base64.py", line 88, in b64decode
+    return binascii.a2b_base64(s, strict_mode=validate)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+binascii.Error: Incorrect padding
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/__init__.py", line 464, in format
+    return self._format(record)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 460, in _format
+    return self._fmt % values
+           ~~~~~~~~~~^~~~~~~~
+KeyError: 'user_id'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/handlers.py", line 73, in emit
+    if self.shouldRollover(record):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/handlers.py", line 196, in shouldRollover
+    msg = "%s\n" % self.format(record)
+                   ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 999, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 706, in format
+    s = self.formatMessage(record)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 675, in formatMessage
+    return self._style.format(record)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 466, in format
+    raise ValueError('Formatting field not found in record: %s' % e)
+ValueError: Formatting field not found in record: 'user_id'
+Call stack:
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/server.py", line 67, in run
+    return asyncio.run(self.serve(sockets=sockets))
+  File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run
+    return runner.run(main)
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/protocols/websockets/websockets_impl.py", line 244, in run_asgi
+    result = await self.app(self.scope, self.asgi_receive, self.asgi_send)  # type: ignore[func-returns-value]
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 151, in __call__
+    await self.app(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 103, in __call__
+    await self.app(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 103, in __call__
+    await self.app(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 103, in __call__
+    await self.app(scope, receive, send)
+  [Previous line repeated 1 more time]
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 77, in __call__
+    await self.app(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/routing.py", line 364, in handle
+    await self.app(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/routing.py", line 97, in app
+    await wrap_app_handling_exceptions(app, session)(scope, receive, send)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/starlette/routing.py", line 95, in app
+    await func(session)
+  File "/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/fastapi/routing.py", line 384, in app
+    await dependant.call(**solved_result.values)
+  File "/root/trademe/backend/trading-service/app/main.py", line 561, in websocket_realtime_endpoint
+    result = await AIService.chat_completion(
+  File "/root/trademe/backend/trading-service/app/services/ai_service.py", line 202, in chat_completion
+    api_key = await claude_account_service.get_decrypted_api_key(selected_account.id)
+  File "/root/trademe/backend/trading-service/app/services/claude_account_service.py", line 201, in get_decrypted_api_key
+    return self._decrypt_sensitive_data(account.api_key)
+  File "/root/trademe/backend/trading-service/app/services/claude_account_service.py", line 81, in _decrypt_sensitive_data
+    return self.crypto_manager.decrypt_private_key(encrypted_data, additional_context)
+  File "/root/trademe/backend/trading-service/app/security/crypto_manager.py", line 172, in decrypt_private_key
+    logger.error(f"私钥解密失败: {e}")
+Message: '私钥解密失败: Incorrect padding'
+Arguments: ()
+2025-09-03 13:31:53 | app.services.claude_account_service | ERROR | Failed to decrypt data for : 私钥解密失败: Incorrect padding
+2025-09-03 13:31:53 | app.services.claude_account_service | WARNING | Using plaintext API key for account 1 - should be encrypted!
+2025-09-03 13:31:53.441 | INFO     | app.ai.core.claude_client:chat_completion:477 - 🔄 使用代理重试管理器处理请求
+2025-09-03 13:32:23 | anthropic._base_client | INFO | Retrying request to /v1/messages in 0.899635 seconds
+2025-09-03 13:32:53 | app.services.proxy_retry_manager | WARNING | ⏱️ Timeout on Custom Proxy (attempt 1/3)
+2025-09-03 13:32:53 | app.services.proxy_retry_manager | INFO | ⏳ Waiting 1.0s before retry...
+2025-09-03 13:33:24 | anthropic._base_client | INFO | Retrying request to /v1/messages in 0.994530 seconds
+2025-09-03 13:33:54 | app.services.proxy_retry_manager | WARNING | ⏱️ Timeout on Custom Proxy (attempt 2/3)
+2025-09-03 13:33:54 | app.services.proxy_retry_manager | INFO | ⏳ Waiting 2.2s before retry...
+2025-09-03 13:34:27 | anthropic._base_client | INFO | Retrying request to /v1/messages in 0.934010 seconds
+2025-09-03 13:34:56 | app.services.proxy_retry_manager | WARNING | ⏱️ Timeout on Custom Proxy (attempt 3/3)
+2025-09-03 13:35:27 | anthropic._base_client | INFO | Retrying request to /v1/messages in 0.751630 seconds
+2025-09-03 13:35:56 | app.services.proxy_retry_manager | WARNING | ⏱️ Timeout on Custom Proxy (attempt 1/3)
+2025-09-03 13:35:56 | app.services.proxy_retry_manager | INFO | ⏳ Waiting 0.9s before retry...
+2025-09-03 13:36:28 | anthropic._base_client | INFO | Retrying request to /v1/messages in 0.781806 seconds
+2025-09-03 13:36:57 | app.services.proxy_retry_manager | WARNING | ⏱️ Timeout on Custom Proxy (attempt 2/3)
+2025-09-03 13:36:57 | app.services.proxy_retry_manager | INFO | ⏳ Waiting 2.0s before retry...
+2025-09-03 13:37:29 | anthropic._base_client | INFO | Retrying request to /v1/messages in 0.835116 seconds
+2025-09-03 13:37:59 | app.services.proxy_retry_manager | WARNING | ⏱️ Timeout on Custom Proxy (attempt 3/3)
+2025-09-03 13:37:59.629 | ERROR    | app.ai.core.claude_client:_make_request_with_proxy_retry:226 - ❌ 所有代理尝试失败: Timeout after 60s
+2025-09-03 13:37:59.629 | ERROR    | app.ai.core.claude_client:chat_completion:504 - 聊天完成失败: Claude API请求失败: Timeout after 60s
+WARNING:  WatchFiles detected changes in 'app/services/simplified_ai_service.py'. Reloading...
+📨 AI服务返回结果: {"content": "\u62b1\u6b49\uff0cAI\u670d\u52a1\u6682\u65f6\u4e0d\u53ef\u7528: Claude API\u8bf7\u6c42\u5931\u8d25: Timeout after 60s", "session_id": "00d03dd6-5742-4cdf-8f49-338ae5b990fc", "tokens_used": 0, "model": "claude-sonnet-4-20250514", "success": false, "requires_strategy_generation": false}
+❌ AI服务失败: 抱歉，AI服务暂时不可用: Claude API请求失败: Timeout after 60s
+2025-09-03 13:38:13 | uvicorn.error | INFO | Shutting down
+WebSocket消息处理错误: (1012, None)
+❌ WebSocket连接已断开: conn_1756877502797 (用户: 6)
+2025-09-03 13:38:13 | uvicorn.error | INFO | connection closed
+2025-09-03 13:38:13 | uvicorn.error | INFO | Waiting for application shutdown.
+✅ 数据库连接已关闭
+✅ Redis连接已关闭
+👋 Trading Service 已关闭
+2025-09-03 13:38:13 | uvicorn.error | INFO | Application shutdown complete.
+2025-09-03 13:38:13 | uvicorn.error | INFO | Finished server process [3235593]
+2025-09-03 13:38:15.804 | INFO     | app.ai.core.claude_client:__init__:114 - 使用自定义Claude API端点: https://claude.cloudcdn7.com/api
+2025-09-03 13:38:15.825 | INFO     | app.ai.core.claude_client:__init__:118 - Claude客户端初始化成功
+2025-09-03 13:38:15.825 | INFO     | app.ai.core.claude_client:_init_proxy_manager:156 - ✅ 代理重试管理器已初始化
+2025-09-03 13:38:15.825 | INFO     | app.ai.core.claude_client:__init__:138 - Claude客户端初始化完成 - 模型: claude-sonnet-4-20250514, 启用状态: True
+2025-09-03 13:38:16.375 | INFO     | app.services.okx_service:__init__:116 - 🚀 OKX交易服务初始化完成
+INFO:app.services.wallet_generator:多链钱包生成器初始化完成
+INFO:app.security.crypto_manager:加密管理器初始化完成
+✅ 使用logging.yaml配置文件
+✅ API验证中间件集成成功
+2025-09-03 13:38:16 | uvicorn.error | INFO | Started server process [3245474]
+2025-09-03 13:38:16 | uvicorn.error | INFO | Waiting for application startup.
+2025-09-03 13:38:16 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/auth/register, 字段数: 2
+2025-09-03 13:38:16 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/auth/login, 字段数: 2
+2025-09-03 13:38:16 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/trading/orders, 字段数: 5
+2025-09-03 13:38:16 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/strategies, 字段数: 3
+2025-09-03 13:38:16 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/ai/chat, 字段数: 3
+2025-09-03 13:38:16 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/market-data/klines, 字段数: 3
+2025-09-03 13:38:16 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/backtest, 字段数: 5
+2025-09-03 13:38:16 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/wallet/transfer, 字段数: 3
+2025-09-03 13:38:16 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/data/download, 字段数: 5
+✅ 数据库初始化成功
+📋 包含的表：用户、策略、回测、交易、API密钥、市场数据、Claude对话、交易心得
+📋 管理后台表：管理员、Claude代理池、USDT支付、数据采集
+✅ Redis连接成功
+🔑 OKX API认证成功，已连接到真实交易接口
+🚀 Trading Service 启动成功
+📊 环境: development
+🏠 Host: 0.0.0.0:8001
+2025-09-03 13:38:17 | uvicorn.error | INFO | Application startup complete.
+WARNING:  WatchFiles detected changes in 'app/api/v1/claude_compatible.py'. Reloading...
+2025-09-03 13:38:38 | uvicorn.error | INFO | Shutting down
+2025-09-03 13:38:38 | uvicorn.error | INFO | Waiting for application shutdown.
+✅ 数据库连接已关闭
+✅ Redis连接已关闭
+👋 Trading Service 已关闭
+2025-09-03 13:38:38 | uvicorn.error | INFO | Application shutdown complete.
+2025-09-03 13:38:38 | uvicorn.error | INFO | Finished server process [3245474]
+2025-09-03 13:38:40.845 | INFO     | app.ai.core.claude_client:__init__:114 - 使用自定义Claude API端点: https://claude.cloudcdn7.com/api
+2025-09-03 13:38:40.867 | INFO     | app.ai.core.claude_client:__init__:118 - Claude客户端初始化成功
+2025-09-03 13:38:40.867 | INFO     | app.ai.core.claude_client:_init_proxy_manager:156 - ✅ 代理重试管理器已初始化
+2025-09-03 13:38:40.867 | INFO     | app.ai.core.claude_client:__init__:138 - Claude客户端初始化完成 - 模型: claude-sonnet-4-20250514, 启用状态: True
+2025-09-03 13:38:41.366 | INFO     | app.services.okx_service:__init__:116 - 🚀 OKX交易服务初始化完成
+INFO:app.services.wallet_generator:多链钱包生成器初始化完成
+INFO:app.security.crypto_manager:加密管理器初始化完成
+✅ 使用logging.yaml配置文件
+✅ API验证中间件集成成功
+2025-09-03 13:38:41 | uvicorn.error | INFO | Started server process [3245652]
+2025-09-03 13:38:41 | uvicorn.error | INFO | Waiting for application startup.
+2025-09-03 13:38:41 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/auth/register, 字段数: 2
+2025-09-03 13:38:41 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/auth/login, 字段数: 2
+2025-09-03 13:38:41 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/trading/orders, 字段数: 5
+2025-09-03 13:38:41 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/strategies, 字段数: 3
+2025-09-03 13:38:41 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/ai/chat, 字段数: 3
+2025-09-03 13:38:41 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/market-data/klines, 字段数: 3
+2025-09-03 13:38:41 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/backtest, 字段数: 5
+2025-09-03 13:38:41 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/wallet/transfer, 字段数: 3
+2025-09-03 13:38:41 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/data/download, 字段数: 5
+✅ 数据库初始化成功
+📋 包含的表：用户、策略、回测、交易、API密钥、市场数据、Claude对话、交易心得
+📋 管理后台表：管理员、Claude代理池、USDT支付、数据采集
+✅ Redis连接成功
+🔑 OKX API认证成功，已连接到真实交易接口
+🚀 Trading Service 启动成功
+📊 环境: development
+🏠 Host: 0.0.0.0:8001
+2025-09-03 13:38:42 | uvicorn.error | INFO | Application startup complete.
+2025-09-03 13:38:42 | uvicorn.error | INFO | 167.234.***.***.***:0 - "WebSocket /ws/realtime" [accepted]
+🔌 WebSocket连接请求: conn_1756877922065
+2025-09-03 13:38:42 | uvicorn.error | INFO | connection open
+2025-09-03 13:38:52 | uvicorn.error | INFO | Shutting down
+WebSocket消息处理错误: (1012, None)
+❌ WebSocket连接已断开: conn_1756877922065 (用户: 6)
+2025-09-03 13:38:52 | uvicorn.error | INFO | connection closed
+2025-09-03 13:38:52 | uvicorn.error | INFO | Waiting for application shutdown.
+✅ 数据库连接已关闭
+✅ Redis连接已关闭
+👋 Trading Service 已关闭
+2025-09-03 13:38:52 | uvicorn.error | INFO | Application shutdown complete.
+2025-09-03 13:38:52 | uvicorn.error | INFO | Finished server process [3245652]
+INFO:     Stopping reloader process [3235580]

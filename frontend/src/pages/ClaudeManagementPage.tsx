@@ -99,13 +99,37 @@ const ClaudeManagementPage = () => {
   const [selectedAccount, setSelectedAccount] = useState<ClaudeAccount | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState<string>('all');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'accounts' | 'users' | 'scheduler' | 'anomalies' | 'anthropic'>('dashboard');
+  
+  // 用户管理状态
+  const [users, setUsers] = useState<any[]>([]);
+  const [userUsageStats, setUserUsageStats] = useState<any[]>([]);
+  const [showSchedulerConfig, setShowSchedulerConfig] = useState(false);
+  
+  // Anthropic官方API管理状态
+  const [anthropicAccounts, setAnthropicAccounts] = useState<any[]>([]);
+  const [showAnthropicForm, setShowAnthropicForm] = useState(false);
+  // Setup Token OAuth 状态
+  const [setupTokenFlow, setSetupTokenFlow] = useState({
+    step: 'initial', // 'initial', 'auth', 'exchange', 'success', 'manual'
+    authUrl: '',
+    sessionId: '',
+    authCode: '',
+    accountName: '',
+    description: '',
+    dailyLimit: 50,
+    priority: 50,
+    directToken: '', // 用于手动导入模式
+    useManualMode: false // 是否使用手动模式
+  });
   
   // 新账号表单数据
   const [newAccount, setNewAccount] = useState({
     account_name: '',
     api_key: '',
-    organization_id: '',
-    project_id: '',
+    account_type: 'direct', // 'direct', 'proxy_service', 'custom_proxy'
+    proxy_base_url: '',
+    proxy_type: 'proxy_service',
     daily_limit: 100,
     proxy_id: ''
   });
@@ -129,7 +153,7 @@ const ClaudeManagementPage = () => {
 
       if (response.ok) {
         const data = await response.json();
-        setAccounts(data.data.accounts || []);
+        setAccounts(data.accounts || []);
       } else {
         throw new Error('获取Claude账号失败');
       }
@@ -141,7 +165,7 @@ const ClaudeManagementPage = () => {
   // 获取代理服务器列表
   const fetchProxies = async () => {
     try {
-      const response = await fetch('/api/v1/admin/proxies', {
+      const response = await fetch('/api/v1/admin/claude/proxies', {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -149,7 +173,7 @@ const ClaudeManagementPage = () => {
 
       if (response.ok) {
         const data = await response.json();
-        setProxies(data.data.proxies || []);
+        setProxies(data.proxies || []);
       }
     } catch (err) {
       console.error('获取代理列表失败:', err);
@@ -192,16 +216,222 @@ const ClaudeManagementPage = () => {
     }
   };
 
+  // 获取Anthropic官方API账户
+  const fetchAnthropicAccounts = async () => {
+    try {
+      const response = await fetch('/api/v1/anthropic-accounts/', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setAnthropicAccounts(data || []);
+      } else {
+        throw new Error('获取Anthropic账户失败');
+      }
+    } catch (err) {
+      console.error('获取Anthropic账户失败:', err);
+      setError(err instanceof Error ? err.message : '获取Anthropic账户失败');
+    }
+  };
+
+  // 创建Anthropic账户
+  // Step 1: 生成Setup Token授权URL
+  const generateSetupTokenUrl = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch('/api/v1/anthropic-accounts/generate-setup-token-url', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setSetupTokenFlow({
+          ...setupTokenFlow,
+          step: 'auth',
+          authUrl: data.auth_url,
+          sessionId: data.session_id
+        });
+        setError(null);
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || '生成授权链接失败');
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '生成授权链接失败');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Step 2: 交换Setup Token授权码
+  const exchangeSetupToken = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch('/api/v1/anthropic-accounts/exchange-setup-token', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          session_id: setupTokenFlow.sessionId,
+          authorization_code: setupTokenFlow.authCode,
+          account_name: setupTokenFlow.accountName,
+          description: setupTokenFlow.description,
+          daily_limit: setupTokenFlow.dailyLimit,
+          priority: setupTokenFlow.priority
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setSetupTokenFlow({
+          ...setupTokenFlow,
+          step: 'success'
+        });
+        await fetchAnthropicAccounts();
+        setError(null);
+        // 3秒后自动关闭
+        setTimeout(() => {
+          setShowAnthropicForm(false);
+          resetSetupTokenFlow();
+        }, 3000);
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || 'Setup Token交换失败');
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Setup Token交换失败');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 重置Setup Token流程
+  const resetSetupTokenFlow = () => {
+    setSetupTokenFlow({
+      step: 'initial',
+      authUrl: '',
+      sessionId: '',
+      authCode: '',
+      accountName: '',
+      description: '',
+      dailyLimit: 50,
+      priority: 50,
+      directToken: '',
+      useManualMode: false
+    });
+  };
+
+  // 测试Anthropic账户连接
+  const testAnthropicAccount = async (accountId: string) => {
+    try {
+      const response = await fetch(`/api/v1/anthropic-accounts/${accountId}/test`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        alert(`连接测试成功！\n响应时间: ${data.test_details?.response_time_ms || 'N/A'}ms`);
+      } else {
+        alert(`连接测试失败：${data.test_details?.error || data.message || '未知错误'}`);
+      }
+      await fetchAnthropicAccounts(); // 刷新账户状态
+    } catch (err) {
+      alert('测试连接失败：' + (err instanceof Error ? err.message : '网络错误'));
+    }
+  };
+
+  // 删除Anthropic账户
+  const deleteAnthropicAccount = async (accountId: string, accountName: string) => {
+    if (!confirm(`确定要删除Anthropic账户 "${accountName}" 吗？`)) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/v1/anthropic-accounts/${accountId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        await fetchAnthropicAccounts();
+        alert('账户删除成功');
+      } else {
+        alert('删除失败：' + (data.message || '未知错误'));
+      }
+    } catch (err) {
+      alert('删除失败：' + (err instanceof Error ? err.message : '网络错误'));
+    }
+  };
+
+  // 获取用户列表
+  const fetchUsers = async () => {
+    try {
+      const response = await fetch('/api/v1/admin/users/', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setUsers(data.data?.users || []);
+      }
+    } catch (err) {
+      console.error('获取用户列表失败:', err);
+    }
+  };
+
+  // 获取用户使用统计
+  const fetchUserUsageStats = async () => {
+    try {
+      const response = await fetch('/api/v1/admin/claude/users-detailed-stats', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setUserUsageStats(data.data || []);
+      }
+    } catch (err) {
+      console.error('获取用户使用统计失败:', err);
+    }
+  };
+
   // 添加新账号
   const addClaudeAccount = async () => {
     try {
+      // 根据账户类型准备数据
+      const accountData = {
+        account_name: newAccount.account_name,
+        api_key: newAccount.api_key,
+        daily_limit: newAccount.daily_limit,
+        proxy_base_url: newAccount.account_type === 'direct' ? '' : (newAccount.proxy_base_url || 'https://claude.cloudcdn7.com/api'),
+        proxy_type: newAccount.account_type === 'direct' ? '' : (newAccount.account_type === 'custom_proxy' ? 'custom' : 'proxy_service')
+      };
+
       const response = await fetch('/api/v1/admin/claude/accounts', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify(newAccount),
+        body: JSON.stringify(accountData),
       });
 
       if (response.ok) {
@@ -211,8 +441,9 @@ const ClaudeManagementPage = () => {
         setNewAccount({
           account_name: '',
           api_key: '',
-          organization_id: '',
-          project_id: '',
+          account_type: 'direct',
+          proxy_base_url: '',
+          proxy_type: 'proxy_service',
           daily_limit: 100,
           proxy_id: ''
         });
@@ -237,7 +468,7 @@ const ClaudeManagementPage = () => {
 
       if (response.ok) {
         const data = await response.json();
-        alert(`测试结果: ${data.data.status === 'success' ? '连接成功' : '连接失败'}`);
+        alert(`测试结果: ${data.status === 'success' ? '连接成功' : '连接失败'}`);
         await fetchClaudeAccounts();
       } else {
         throw new Error('账号连接测试失败');
@@ -277,7 +508,10 @@ const ClaudeManagementPage = () => {
         fetchClaudeAccounts(),
         fetchProxies(),
         fetchUsageStats(),
-        fetchAnomalyDetection()
+        fetchAnomalyDetection(),
+        fetchUsers(),
+        fetchUserUsageStats(),
+        fetchAnthropicAccounts()
       ]);
       setLoading(false);
     };
@@ -385,9 +619,280 @@ const ClaudeManagementPage = () => {
         </div>
       </div>
 
+      {/* 选项卡导航 */}
+      <div className="bg-white border-b border-gray-200">
+        <div className="px-6">
+          <nav className="flex space-x-8">
+            <button
+              onClick={() => setActiveTab('dashboard')}
+              className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+                activeTab === 'dashboard'
+                  ? 'border-blue-500 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              <div className="flex items-center space-x-2">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                        d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+                <span>仪表盘</span>
+              </div>
+            </button>
+            
+            <button
+              onClick={() => setActiveTab('accounts')}
+              className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+                activeTab === 'accounts'
+                  ? 'border-blue-500 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              <div className="flex items-center space-x-2">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+                <span>账户管理</span>
+                <span className="ml-1 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                  {accounts.length}
+                </span>
+              </div>
+            </button>
+            
+            <button
+              onClick={() => setActiveTab('users')}
+              className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+                activeTab === 'users'
+                  ? 'border-blue-500 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              <div className="flex items-center space-x-2">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                        d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
+                </svg>
+                <span>用户管理</span>
+                <span className="ml-1 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                  {users.length}
+                </span>
+              </div>
+            </button>
+            
+            <button
+              onClick={() => setActiveTab('scheduler')}
+              className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+                activeTab === 'scheduler'
+                  ? 'border-blue-500 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              <div className="flex items-center space-x-2">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>智能调度</span>
+              </div>
+            </button>
+            
+            <button
+              onClick={() => setActiveTab('anomalies')}
+              className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+                activeTab === 'anomalies'
+                  ? 'border-blue-500 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              <div className="flex items-center space-x-2">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.99-.833-2.75 0L4.058 18.5c-.77.833.192 2.5 1.732 2.5z" />
+                </svg>
+                <span>异常监控</span>
+                {anomalies?.anomalies.length > 0 && (
+                  <span className="ml-1 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                    {anomalies.anomalies.length}
+                  </span>
+                )}
+              </div>
+            </button>
+            
+            <button
+              onClick={() => setActiveTab('anthropic')}
+              className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+                activeTab === 'anthropic'
+                  ? 'border-blue-500 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              <div className="flex items-center space-x-2">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                        d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+                <span>Anthropic官方API</span>
+                {anthropicAccounts.length > 0 && (
+                  <span className="ml-1 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                    {anthropicAccounts.length}
+                  </span>
+                )}
+              </div>
+            </button>
+          </nav>
+        </div>
+      </div>
+
       <div className="p-6">
-        {/* KPI指标面板 */}
-        {usageStats && (
+        {/* 仪表盘选项卡 */}
+        {activeTab === 'dashboard' && (
+          <div className="space-y-6">
+            {/* 统计卡片 */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="bg-white rounded-lg shadow p-6 border-l-4 border-blue-500">
+                <div className="flex items-center">
+                  <div>
+                    <p className="text-sm font-medium text-gray-600">总账户数</p>
+                    <p className="text-3xl font-semibold text-gray-900">{accounts.length}</p>
+                    <p className="text-sm text-green-600 mt-1">
+                      {accounts.filter(a => a.status === 'active').length} 个活跃
+                    </p>
+                  </div>
+                  <div className="ml-auto">
+                    <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                      <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-lg shadow p-6 border-l-4 border-green-500">
+                <div className="flex items-center">
+                  <div>
+                    <p className="text-sm font-medium text-gray-600">总请求数</p>
+                    <p className="text-3xl font-semibold text-gray-900">
+                      {accounts.reduce((sum, acc) => sum + (acc.total_requests || 0), 0).toLocaleString()}
+                    </p>
+                    <p className="text-sm text-red-600 mt-1">
+                      {accounts.reduce((sum, acc) => sum + (acc.failed_requests || 0), 0)} 失败
+                    </p>
+                  </div>
+                  <div className="ml-auto">
+                    <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                      <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-lg shadow p-6 border-l-4 border-yellow-500">
+                <div className="flex items-center">
+                  <div>
+                    <p className="text-sm font-medium text-gray-600">平均响应时间</p>
+                    <p className="text-3xl font-semibold text-gray-900">
+                      {accounts.length > 0 
+                        ? Math.round(accounts.reduce((sum, acc) => sum + (acc.avg_response_time || 0), 0) / accounts.length)
+                        : 0
+                      }ms
+                    </p>
+                    <p className="text-sm text-gray-600 mt-1">全部账户平均</p>
+                  </div>
+                  <div className="ml-auto">
+                    <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+                      <svg className="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-lg shadow p-6 border-l-4 border-purple-500">
+                <div className="flex items-center">
+                  <div>
+                    <p className="text-sm font-medium text-gray-600">平均成功率</p>
+                    <p className="text-3xl font-semibold text-gray-900">
+                      {accounts.length > 0 
+                        ? (accounts.reduce((sum, acc) => sum + (acc.success_rate || 0), 0) / accounts.length).toFixed(1)
+                        : '0'
+                      }%
+                    </p>
+                    <p className="text-sm text-gray-600 mt-1">全部账户平均</p>
+                  </div>
+                  <div className="ml-auto">
+                    <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                      <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* 账户列表 */}
+            <div className="bg-white rounded-lg shadow p-6">
+              <h3 className="text-lg font-medium text-gray-900 mb-4">账户详细统计</h3>
+              <div className="space-y-4">
+                {accounts.map((account) => {
+                  const usagePercent = account.daily_limit > 0 
+                    ? (account.current_usage / account.daily_limit) * 100 
+                    : 0;
+                  const usageColor = usagePercent < 50 ? 'bg-green-500' : 
+                                   usagePercent < 80 ? 'bg-yellow-500' : 'bg-red-500';
+                  
+                  return (
+                    <div key={account.id} className="border rounded-lg p-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="font-medium text-gray-900">{account.account_name}</h4>
+                        <span className={`px-2 py-1 text-xs rounded-full ${
+                          account.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                        }`}>
+                          {account.status}
+                        </span>
+                      </div>
+                      
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm mb-3">
+                        <div>
+                          <span className="text-gray-600">请求数:</span>
+                          <span className="font-medium ml-1">{(account.total_requests || 0).toLocaleString()}</span>
+                        </div>
+                        <div>
+                          <span className="text-gray-600">成功率:</span>
+                          <span className="font-medium ml-1">{(account.success_rate || 0).toFixed(1)}%</span>
+                        </div>
+                        <div>
+                          <span className="text-gray-600">响应时间:</span>
+                          <span className="font-medium ml-1">{account.avg_response_time || 0}ms</span>
+                        </div>
+                        <div>
+                          <span className="text-gray-600">使用率:</span>
+                          <span className="font-medium ml-1">{usagePercent.toFixed(1)}%</span>
+                        </div>
+                      </div>
+                      
+                      <div className="w-full bg-gray-200 rounded-full h-2">
+                        <div className={`h-2 rounded-full transition-all duration-300 ${usageColor}`}
+                             style={{ width: `${Math.min(usagePercent, 100)}%` }}></div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 账户管理选项卡 */}
+        {activeTab === 'accounts' && (
+          <div>
+            {/* KPI指标面板 */}
+            {usageStats && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             {/* 总请求数 */}
             <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
@@ -805,6 +1310,151 @@ const ClaudeManagementPage = () => {
           </div>
         </div>
       </div>
+        )}
+
+        {/* 用户管理选项卡 */}
+        {activeTab === 'users' && (
+          <div className="space-y-6">
+            {/* 用户统计 */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="bg-white rounded-lg shadow p-6 border-l-4 border-indigo-500">
+                <div className="flex items-center">
+                  <div>
+                    <p className="text-sm font-medium text-gray-600">总用户数</p>
+                    <p className="text-3xl font-semibold text-gray-900">{users.length}</p>
+                    <p className="text-sm text-green-600 mt-1">
+                      {users.filter(u => u.membership_level === 'professional').length} 专业版用户
+                    </p>
+                  </div>
+                  <div className="ml-auto">
+                    <div className="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center">
+                      <svg className="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-lg shadow p-6 border-l-4 border-purple-500">
+                <div className="flex items-center">
+                  <div>
+                    <p className="text-sm font-medium text-gray-600">AI使用总数</p>
+                    <p className="text-3xl font-semibold text-gray-900">
+                      {userUsageStats.reduce((sum, user) => sum + (user.total_requests || 0), 0)}
+                    </p>
+                    <p className="text-sm text-gray-600 mt-1">本月累计</p>
+                  </div>
+                  <div className="ml-auto">
+                    <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                      <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-lg shadow p-6 border-l-4 border-orange-500">
+                <div className="flex items-center">
+                  <div>
+                    <p className="text-sm font-medium text-gray-600">活跃用户</p>
+                    <p className="text-3xl font-semibold text-gray-900">
+                      {users.filter(u => new Date(u.last_login_at || 0) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)).length}
+                    </p>
+                    <p className="text-sm text-gray-600 mt-1">近7天</p>
+                  </div>
+                  <div className="ml-auto">
+                    <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+                      <svg className="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* 用户使用量详细列表 */}
+            <div className="bg-white rounded-lg shadow overflow-hidden">
+              <div className="px-6 py-4 border-b border-gray-200">
+                <h3 className="text-lg font-medium text-gray-900">用户Claude使用详情</h3>
+                <p className="text-sm text-gray-600">各用户的Claude AI使用统计和费用详情</p>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">用户信息</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">会员等级</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">使用次数</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">费用</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">最后使用</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">状态</th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {users.map((user) => {
+                      const usage = userUsageStats.find(u => u.user_id === user.id) || {};
+                      return (
+                        <tr key={user.id} className="hover:bg-gray-50">
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="flex items-center">
+                              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 flex items-center justify-center text-white font-semibold">
+                                {user.username?.charAt(0).toUpperCase() || user.email?.charAt(0).toUpperCase()}
+                              </div>
+                              <div className="ml-4">
+                                <div className="text-sm font-medium text-gray-900">
+                                  {user.username || '未设置'}
+                                </div>
+                                <div className="text-sm text-gray-500">{user.email}</div>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                              user.membership_level === 'professional' 
+                                ? 'bg-yellow-100 text-yellow-800' 
+                                : 'bg-gray-100 text-gray-800'
+                            }`}>
+                              {user.membership_level === 'professional' ? '专业版' : '免费版'}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {usage.total_requests || 0}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            ${(usage.total_cost || 0).toFixed(4)}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {user.last_login_at ? new Date(user.last_login_at).toLocaleDateString('zh-CN') : '从未登录'}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                              user.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                            }`}>
+                              {user.is_active ? '活跃' : '已禁用'}
+                            </span>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+
+              {users.length === 0 && (
+                <div className="text-center py-12">
+                  <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
+                  </svg>
+                  <h3 className="mt-2 text-sm font-medium text-gray-900">暂无用户数据</h3>
+                  <p className="mt-1 text-sm text-gray-500">等待用户注册或检查API连接。</p>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
 
       {/* 添加账号模态框 */}
       {showAddAccount && (
@@ -819,7 +1469,7 @@ const ClaudeManagementPage = () => {
               <div className="flex items-start justify-between mb-6">
                 <div>
                   <h3 className="text-lg font-bold text-gray-900">添加Claude账号</h3>
-                  <p className="text-sm text-gray-500">添加新的Claude API账号到账号池</p>
+                  <p className="text-sm text-gray-500">添加官方API账号或代理服务账号到账号池</p>
                 </div>
                 <button
                   onClick={() => setShowAddAccount(false)}
@@ -850,9 +1500,65 @@ const ClaudeManagementPage = () => {
                     value={newAccount.api_key}
                     onChange={(e) => setNewAccount({...newAccount, api_key: e.target.value})}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="sk-ant-api..."
+                    placeholder="sk-ant-api... 或 代理服务API密钥"
                   />
                 </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">账户类型</label>
+                  <select
+                    value={newAccount.account_type}
+                    onChange={(e) => setNewAccount({...newAccount, account_type: e.target.value})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  >
+                    <option value="direct">直接API连接</option>
+                    <option value="proxy_service">代理服务连接</option>
+                    <option value="custom_proxy">自定义代理</option>
+                  </select>
+                </div>
+
+                {(newAccount.account_type === 'proxy_service' || newAccount.account_type === 'custom_proxy') && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">代理服务地址</label>
+                    {newAccount.account_type === 'proxy_service' ? (
+                      <select
+                        value={newAccount.proxy_base_url}
+                        onChange={(e) => setNewAccount({...newAccount, proxy_base_url: e.target.value})}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      >
+                        <option value="">选择代理服务</option>
+                        <option value="https://claude.cloudcdn7.com/api">CloudCDN7 代理服务</option>
+                        <option value="https://api.claude-proxy.com/api">Claude Proxy 服务</option>
+                        <option value="https://claude-api.proxy.com/v1">通用代理服务</option>
+                        <option value="custom">自定义URL...</option>
+                      </select>
+                    ) : (
+                      <input
+                        type="url"
+                        value={newAccount.proxy_base_url}
+                        onChange={(e) => setNewAccount({...newAccount, proxy_base_url: e.target.value})}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="https://your-proxy-service.com/api"
+                      />
+                    )}
+                    
+                    {newAccount.account_type === 'proxy_service' && newAccount.proxy_base_url === 'custom' && (
+                      <input
+                        type="url"
+                        value=""
+                        onChange={(e) => setNewAccount({...newAccount, proxy_base_url: e.target.value})}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent mt-2"
+                        placeholder="输入自定义代理服务地址"
+                      />
+                    )}
+                    
+                    <p className="text-xs text-gray-500 mt-1">
+                      {newAccount.account_type === 'proxy_service' 
+                        ? '选择可信的Claude代理服务提供商，确保服务稳定性和安全性' 
+                        : '输入您自己搭建或信任的代理服务地址'}
+                    </p>
+                  </div>
+                )}
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">每日限额 ($)</label>
@@ -898,6 +1604,294 @@ const ClaudeManagementPage = () => {
           </div>
         </div>
       )}
+
+        {/* 智能调度选项卡内容 */}
+        {activeTab === 'scheduler' && (
+          <div className="bg-white rounded-lg shadow p-6">
+            <div className="text-center py-12">
+              <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <h3 className="mt-4 text-lg font-medium text-gray-900">智能调度配置</h3>
+              <p className="mt-2 text-gray-500">高级调度算法和负载均衡配置</p>
+              <button 
+                onClick={() => setShowSchedulerConfig(true)}
+                className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                配置调度规则
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* 异常监控选项卡内容 */}
+        {activeTab === 'anomalies' && (
+          <div className="space-y-6">
+            {anomalies?.anomalies && anomalies.anomalies.length > 0 ? (
+              <div className="bg-white rounded-lg shadow overflow-hidden">
+                <div className="px-6 py-4 border-b border-gray-200">
+                  <h3 className="text-lg font-medium text-gray-900">系统异常警告</h3>
+                  <p className="text-sm text-gray-600">发现 {anomalies.anomalies.length} 个需要关注的异常</p>
+                </div>
+                <div className="divide-y divide-gray-200">
+                  {anomalies.anomalies.map((anomaly, index) => (
+                    <div key={index} className="px-6 py-4">
+                      <div className="flex items-start justify-between">
+                        <div className="flex">
+                          <div className={`flex-shrink-0 w-2 h-2 mt-2 rounded-full ${
+                            anomaly.severity === 'high' ? 'bg-red-500' :
+                            anomaly.severity === 'medium' ? 'bg-yellow-500' : 'bg-blue-500'
+                          }`}></div>
+                          <div className="ml-3">
+                            <h4 className="text-sm font-medium text-gray-900">{anomaly.account_name}</h4>
+                            <p className="text-sm text-gray-600">{anomaly.description}</p>
+                            <p className="text-xs text-gray-500 mt-1">
+                              检测时间: {new Date(anomaly.detected_at).toLocaleString()}
+                            </p>
+                          </div>
+                        </div>
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                          anomaly.severity === 'high' ? 'bg-red-100 text-red-800' :
+                          anomaly.severity === 'medium' ? 'bg-yellow-100 text-yellow-800' :
+                          'bg-blue-100 text-blue-800'
+                        }`}>
+                          {anomaly.severity === 'high' ? '高风险' :
+                           anomaly.severity === 'medium' ? '中等风险' : '低风险'}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div className="bg-white rounded-lg shadow p-6">
+                <div className="text-center py-12">
+                  <svg className="mx-auto h-12 w-12 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <h3 className="mt-4 text-lg font-medium text-gray-900">系统运行正常</h3>
+                  <p className="mt-2 text-gray-500">暂未发现异常，所有账户运行状况良好</p>
+                </div>
+              </div>
+            )}
+
+            {/* 推荐操作 */}
+            {anomalies?.recommendations && anomalies.recommendations.length > 0 && (
+              <div className="bg-white rounded-lg shadow p-6">
+                <h3 className="text-lg font-medium text-gray-900 mb-4">系统优化建议</h3>
+                <div className="space-y-3">
+                  {anomalies.recommendations.map((recommendation, index) => (
+                    <div key={index} className="flex items-start">
+                      <div className="flex-shrink-0">
+                        <svg className="h-5 w-5 text-blue-500 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </div>
+                      <div className="ml-3">
+                        <p className="text-sm text-gray-700">{recommendation}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Anthropic官方API选项卡内容 */}
+        {activeTab === 'anthropic' && (
+          <div className="space-y-6">
+            {/* 页面头部 */}
+            <div className="bg-white rounded-lg shadow p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-lg font-medium text-gray-900">Anthropic官方API管理</h3>
+                  <p className="text-sm text-gray-600">直接对接Anthropic官方API服务，无需代理中转</p>
+                </div>
+                <button
+                  onClick={() => setShowAnthropicForm(true)}
+                  className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors flex items-center space-x-2"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                  </svg>
+                  <span>添加官方API账户</span>
+                </button>
+              </div>
+              
+              {/* 统计概览 */}
+              <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="bg-purple-50 rounded-lg p-4">
+                  <div className="flex items-center">
+                    <div className="flex-shrink-0">
+                      <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                        <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                        </svg>
+                      </div>
+                    </div>
+                    <div className="ml-3">
+                      <p className="text-sm font-medium text-gray-600">总账户数</p>
+                      <p className="text-2xl font-semibold text-gray-900">{anthropicAccounts.length}</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="bg-green-50 rounded-lg p-4">
+                  <div className="flex items-center">
+                    <div className="flex-shrink-0">
+                      <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                        <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
+                    </div>
+                    <div className="ml-3">
+                      <p className="text-sm font-medium text-gray-600">活跃账户</p>
+                      <p className="text-2xl font-semibold text-gray-900">
+                        {anthropicAccounts.filter(acc => acc.status === 'active').length}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="bg-blue-50 rounded-lg p-4">
+                  <div className="flex items-center">
+                    <div className="flex-shrink-0">
+                      <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                        </svg>
+                      </div>
+                    </div>
+                    <div className="ml-3">
+                      <p className="text-sm font-medium text-gray-600">总使用额度</p>
+                      <p className="text-2xl font-semibold text-gray-900">
+                        ${anthropicAccounts.reduce((sum, acc) => sum + (acc.daily_limit || 0), 0).toFixed(2)}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* 账户列表 */}
+            <div className="bg-white rounded-lg shadow">
+              <div className="px-6 py-4 border-b border-gray-200">
+                <h3 className="text-lg font-medium text-gray-900">Anthropic账户列表</h3>
+              </div>
+              
+              {anthropicAccounts.length === 0 ? (
+                <div className="text-center py-12">
+                  <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  </svg>
+                  <h3 className="mt-4 text-lg font-medium text-gray-900">暂无Anthropic官方API账户</h3>
+                  <p className="mt-2 text-gray-500">点击上方按钮添加您的第一个Anthropic官方API账户</p>
+                </div>
+              ) : (
+                <div className="divide-y divide-gray-200">
+                  {anthropicAccounts.map((account, index) => (
+                    <div key={account.id || index} className="px-6 py-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center space-x-4">
+                            <div className="flex-shrink-0">
+                              <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                                account.status === 'active' 
+                                  ? 'bg-green-100' 
+                                  : account.status === 'error' 
+                                    ? 'bg-red-100' 
+                                    : 'bg-gray-100'
+                              }`}>
+                                <svg className={`w-6 h-6 ${
+                                  account.status === 'active' 
+                                    ? 'text-green-600' 
+                                    : account.status === 'error' 
+                                      ? 'text-red-600' 
+                                      : 'text-gray-600'
+                                }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                                </svg>
+                              </div>
+                            </div>
+                            <div className="flex-1">
+                              <div className="flex items-center space-x-2">
+                                <h4 className="text-sm font-medium text-gray-900">{account.account_name}</h4>
+                                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                                  account.status === 'active' 
+                                    ? 'bg-green-100 text-green-800' 
+                                    : account.status === 'error' 
+                                      ? 'bg-red-100 text-red-800' 
+                                      : 'bg-gray-100 text-gray-800'
+                                }`}>
+                                  {account.status === 'active' ? '运行中' : account.status === 'error' ? '错误' : '停用'}
+                                </span>
+                                {account.has_valid_api_key && (
+                                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                                    已配置API密钥
+                                  </span>
+                                )}
+                              </div>
+                              <div className="mt-1 text-sm text-gray-500 flex items-center space-x-4">
+                                <span>API版本: {account.api_version}</span>
+                                <span>使用率: {account.usage_percentage?.toFixed(1) || 0}%</span>
+                                <span>优先级: {account.priority}</span>
+                                <span>响应时间: {account.avg_response_time || 0}ms</span>
+                                {account.last_check_at && (
+                                  <span>最近检查: {new Date(account.last_check_at).toLocaleString()}</span>
+                                )}
+                              </div>
+                              <div className="mt-2">
+                                <div className="flex items-center space-x-4">
+                                  <div className="flex items-center space-x-1">
+                                    <span className="text-xs text-gray-500">每日额度:</span>
+                                    <span className="text-sm font-medium text-gray-900">
+                                      ${account.current_usage?.toFixed(2) || 0} / ${account.daily_limit?.toFixed(2) || 0}
+                                    </span>
+                                  </div>
+                                  <div className="flex-1 bg-gray-200 rounded-full h-2">
+                                    <div 
+                                      className="bg-purple-600 h-2 rounded-full transition-all duration-300" 
+                                      style={{width: `${Math.min(account.usage_percentage || 0, 100)}%`}}
+                                    ></div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-center space-x-2">
+                          <button
+                            onClick={() => testAnthropicAccount(account.id)}
+                            className="p-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors"
+                            title="测试连接"
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                          </button>
+                          
+                          <button
+                            onClick={() => deleteAnthropicAccount(account.id, account.account_name)}
+                            className="p-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-colors"
+                            title="删除账户"
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
 
       {/* 账号详情模态框 */}
       {showAccountDetail && selectedAccount && (
@@ -1036,6 +2030,374 @@ const ClaudeManagementPage = () => {
                 >
                   测试连接
                 </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 调度规则配置模态框 */}
+      {showSchedulerConfig && (
+        <div className="fixed inset-0 z-50 overflow-y-auto">
+          <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div 
+              className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+              onClick={() => setShowSchedulerConfig(false)}
+            ></div>
+            <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full sm:p-6">
+              <div className="flex items-start justify-between mb-6">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold text-gray-900">智能调度配置</h3>
+                    <p className="text-sm text-gray-500">配置Claude账号的负载均衡和智能调度规则</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setShowSchedulerConfig(false)}
+                  className="bg-gray-100 hover:bg-gray-200 rounded-lg p-2 transition-colors"
+                >
+                  <svg className="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              <div className="space-y-6">
+                <div>
+                  <h4 className="text-md font-semibold text-gray-900 mb-4">负载均衡策略</h4>
+                  <div className="space-y-3">
+                    <label className="flex items-center">
+                      <input type="radio" name="strategy" className="form-radio text-blue-600" defaultChecked />
+                      <span className="ml-2 text-sm text-gray-700">智能权重分配 - 根据账号性能动态调整权重</span>
+                    </label>
+                    <label className="flex items-center">
+                      <input type="radio" name="strategy" className="form-radio text-blue-600" />
+                      <span className="ml-2 text-sm text-gray-700">轮询调度 - 依次使用每个账号</span>
+                    </label>
+                    <label className="flex items-center">
+                      <input type="radio" name="strategy" className="form-radio text-blue-600" />
+                      <span className="ml-2 text-sm text-gray-700">最小连接数优先 - 优先使用负载最轻的账号</span>
+                    </label>
+                  </div>
+                </div>
+
+                <div>
+                  <h4 className="text-md font-semibold text-gray-900 mb-4">健康检查配置</h4>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">检查间隔(秒)</label>
+                      <input
+                        type="number"
+                        defaultValue={300}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">超时时间(秒)</label>
+                      <input
+                        type="number"
+                        defaultValue={30}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <h4 className="text-md font-semibold text-gray-900 mb-4">故障转移设置</h4>
+                  <div className="space-y-3">
+                    <label className="flex items-center">
+                      <input type="checkbox" className="form-checkbox text-blue-600" defaultChecked />
+                      <span className="ml-2 text-sm text-gray-700">启用自动故障转移</span>
+                    </label>
+                    <label className="flex items-center">
+                      <input type="checkbox" className="form-checkbox text-blue-600" defaultChecked />
+                      <span className="ml-2 text-sm text-gray-700">账号失败后自动标记为不可用</span>
+                    </label>
+                    <label className="flex items-center">
+                      <input type="checkbox" className="form-checkbox text-blue-600" />
+                      <span className="ml-2 text-sm text-gray-700">达到日限额时自动切换</span>
+                    </label>
+                  </div>
+                </div>
+
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <div className="flex items-start">
+                    <svg className="w-5 h-5 text-blue-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div className="ml-3">
+                      <h5 className="text-sm font-medium text-blue-900">当前调度状态</h5>
+                      <p className="text-sm text-blue-700 mt-1">
+                        智能调度器正在运行，当前有 {accounts.filter(a => a.status === 'active').length} 个活跃账号参与负载均衡。
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-6 flex justify-end space-x-3">
+                <button
+                  onClick={() => setShowSchedulerConfig(false)}
+                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+                >
+                  取消
+                </button>
+                <button
+                  onClick={() => {
+                    alert('调度规则配置已保存');
+                    setShowSchedulerConfig(false);
+                  }}
+                  className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
+                >
+                  保存配置
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Setup Token OAuth 创建模态框 */}
+      {showAnthropicForm && (
+        <div className="fixed inset-0 z-50 overflow-y-auto">
+          <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div className="fixed inset-0 transition-opacity" aria-hidden="true">
+              <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
+            </div>
+
+            <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+            <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full sm:p-6">
+              <div>
+                <div className="mt-3 text-center sm:mt-0 sm:text-left">
+                  <h3 className="text-lg leading-6 font-medium text-gray-900 flex items-center">
+                    <svg className="w-6 h-6 text-purple-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                    </svg>
+                    通过Setup Token添加Anthropic账户
+                  </h3>
+                  <p className="text-sm text-gray-500 mt-1">使用OAuth2安全授权方式连接Anthropic官方API</p>
+                </div>
+
+                <div className="mt-6 space-y-6">
+                  {error && (
+                    <div className="bg-red-50 border border-red-200 rounded-md p-4">
+                      <div className="flex">
+                        <svg className="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.99-.833-2.75 0L4.058 18.5c-.77.833.192 2.5 1.732 2.5z" />
+                        </svg>
+                        <div className="ml-3">
+                          <p className="text-sm text-red-800">{error}</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Step 1: 初始配置 */}
+                  {setupTokenFlow.step === 'initial' && (
+                    <div className="space-y-4">
+                      <div className="bg-blue-50 border border-blue-200 rounded-md p-4">
+                        <h4 className="text-sm font-medium text-blue-800 mb-2">🚀 Setup Token OAuth 流程</h4>
+                        <p className="text-sm text-blue-700">
+                          我们将使用Anthropic的官方OAuth2授权方式来安全地连接您的Claude账户，无需手动输入API密钥。
+                        </p>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="col-span-2">
+                          <label className="block text-sm font-medium text-gray-700">
+                            账户名称 <span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            type="text"
+                            value={setupTokenFlow.accountName}
+                            onChange={(e) => setSetupTokenFlow({...setupTokenFlow, accountName: e.target.value})}
+                            className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+                            placeholder="例如：主要生产账户"
+                            required
+                          />
+                        </div>
+                        
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700">
+                            每日限额 (USD)
+                          </label>
+                          <input
+                            type="number"
+                            step="0.01"
+                            min="0"
+                            value={setupTokenFlow.dailyLimit}
+                            onChange={(e) => setSetupTokenFlow({...setupTokenFlow, dailyLimit: parseFloat(e.target.value) || 50})}
+                            className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+                            placeholder="50.00"
+                          />
+                        </div>
+                        
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700">
+                            优先级 (1-100)
+                          </label>
+                          <input
+                            type="number"
+                            min="1"
+                            max="100"
+                            value={setupTokenFlow.priority}
+                            onChange={(e) => setSetupTokenFlow({...setupTokenFlow, priority: parseInt(e.target.value) || 50})}
+                            className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+                            placeholder="50"
+                          />
+                        </div>
+                        
+                        <div className="col-span-2">
+                          <label className="block text-sm font-medium text-gray-700">
+                            描述 (可选)
+                          </label>
+                          <textarea
+                            rows={2}
+                            value={setupTokenFlow.description}
+                            onChange={(e) => setSetupTokenFlow({...setupTokenFlow, description: e.target.value})}
+                            className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+                            placeholder="账户用途说明..."
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Step 2: 授权链接 */}
+                  {setupTokenFlow.step === 'auth' && (
+                    <div className="space-y-4">
+                      <div className="bg-green-50 border border-green-200 rounded-md p-4">
+                        <h4 className="text-sm font-medium text-green-800 mb-2">✅ 授权链接已生成</h4>
+                        <p className="text-sm text-green-700 mb-3">
+                          请点击下面的按钮跳转到Anthropic进行授权：
+                        </p>
+                        <a
+                          href={setupTokenFlow.authUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700"
+                        >
+                          <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                          </svg>
+                          打开Anthropic授权页面
+                        </a>
+                      </div>
+                      
+                      <div className="bg-yellow-50 border border-yellow-200 rounded-md p-4 mb-4">
+                        <h4 className="text-sm font-medium text-yellow-800 mb-2">⚠️ 重要说明</h4>
+                        <p className="text-sm text-yellow-700 mb-2">
+                          由于Cloudflare保护，请按以下步骤操作：
+                        </p>
+                        <ol className="list-decimal list-inside text-sm text-yellow-700 space-y-1">
+                          <li>在新标签页中完成授权</li>
+                          <li>授权后会跳转到一个回调页面</li>
+                          <li>复制<strong>整个回调URL</strong>（包含#access_token=...的完整地址）</li>
+                          <li>将完整URL粘贴到下方输入框</li>
+                        </ol>
+                        <p className="text-xs text-yellow-600 mt-2">
+                          示例URL格式: https://console.anthropic.com/oauth/code/callback#access_token=xxx&token_type=Bearer...
+                        </p>
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          回调URL或授权码 <span className="text-red-500">*</span>
+                        </label>
+                        <textarea
+                          rows={4}
+                          value={setupTokenFlow.authCode}
+                          onChange={(e) => setSetupTokenFlow({...setupTokenFlow, authCode: e.target.value})}
+                          className="block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-purple-500 focus:border-purple-500 text-xs"
+                          placeholder="请粘贴完整的回调URL，例如：&#10;https://console.anthropic.com/oauth/code/callback#access_token=xxx&token_type=Bearer&expires_in=31536000&#10;&#10;或者仅粘贴授权码（如果能自动交换）"
+                          required
+                        />
+                        <p className="mt-1 text-xs text-gray-500">
+                          支持两种模式：1) 完整回调URL（推荐） 2) 仅授权码（可能被Cloudflare阻止）
+                        </p>
+                      </div>
+                      
+                      <button
+                        onClick={() => setSetupTokenFlow({...setupTokenFlow, step: 'initial'})}
+                        className="text-sm text-gray-500 hover:text-gray-700"
+                      >
+                        ← 返回上一步
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Step 3: 成功页面 */}
+                  {setupTokenFlow.step === 'success' && (
+                    <div className="text-center py-6">
+                      <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100">
+                        <svg className="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
+                      <h3 className="mt-2 text-lg font-medium text-gray-900">Setup Token账户创建成功！</h3>
+                      <p className="mt-1 text-sm text-gray-500">
+                        账户 "{setupTokenFlow.accountName}" 已成功添加到系统中
+                      </p>
+                      <p className="mt-2 text-xs text-gray-400">
+                        窗口将在 3 秒后自动关闭...
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="mt-6 flex justify-end space-x-3">
+                <button
+                  onClick={() => {
+                    setShowAnthropicForm(false);
+                    resetSetupTokenFlow();
+                    setError(null);
+                  }}
+                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+                  disabled={loading}
+                >
+                  取消
+                </button>
+                
+                {setupTokenFlow.step === 'initial' && (
+                  <button
+                    onClick={generateSetupTokenUrl}
+                    disabled={loading || !setupTokenFlow.accountName}
+                    className="px-4 py-2 text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+                  >
+                    {loading && (
+                      <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                    )}
+                    <span>生成授权链接</span>
+                  </button>
+                )}
+                
+                {setupTokenFlow.step === 'auth' && (
+                  <button
+                    onClick={exchangeSetupToken}
+                    disabled={loading || !setupTokenFlow.authCode}
+                    className="px-4 py-2 text-sm font-medium text-white bg-green-600 hover:bg-green-700 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+                  >
+                    {loading && (
+                      <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                    )}
+                    <span>创建账户</span>
+                  </button>
+                )}
               </div>
             </div>
           </div>

@@ -1,0 +1,951 @@
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuthStore } from '@/store/authStore';
+import LoadingSpinner from '@/components/common/LoadingSpinner';
+import { Line } from 'react-chartjs-2';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
+
+// 新的数据结构定义
+interface DataOverview {
+  exchanges: {
+    [exchange: string]: {
+      spot: {
+        kline: { symbols: string[], date_ranges: DateRange[], total_records: number }
+        tick: { symbols: string[], date_ranges: DateRange[], total_records: number }
+      }
+      futures: {
+        kline: { symbols: string[], date_ranges: DateRange[], total_records: number }
+        tick: { symbols: string[], date_ranges: DateRange[], total_records: number }
+      }
+    }
+  }
+}
+
+interface DateRange {
+  symbol: string
+  start_date: string
+  end_date: string
+  missing_dates: string[] // 缺失的日期
+}
+
+interface DataStats {
+  kline_statistics: Array<{
+    exchange: string;
+    symbol_count: number;
+    timeframe_count: number;
+    total_records: number;
+  }>;
+}
+
+interface DownloadRequest {
+  exchange: string;
+  symbol: string;
+  timeframe: string;
+  start_date: string;
+  end_date: string;
+}
+
+interface OKXTickDownloadRequest {
+  symbols: string[];
+  start_date: string;
+  end_date: string;
+}
+
+interface OKXDownloadRequest {
+  data_type: 'kline' | 'tick';
+  market_type: 'spot' | 'futures';
+  symbols: string[];
+  timeframes: string[];
+  start_date: string;
+  end_date: string;
+  custom_symbol?: string;
+}
+
+interface OKXKlineDownloadRequest {
+  symbols: string[];
+  timeframes: string[];
+  start_date: string;
+  end_date: string;
+}
+
+interface OKXDownloadTask {
+  task_id: string;
+  data_type: 'tick' | 'kline';
+  exchange: string;
+  symbols: string[];
+  date_range: string;
+  status: 'pending' | 'running' | 'completed' | 'failed';
+  progress: number;
+  total_files: number;
+  processed_files: number;
+  downloaded_records: number;
+  created_at: string;
+  started_at: string | null;
+  completed_at: string | null;
+  error_message: string;
+  timeframes?: string[];
+}
+
+const DataManagementPage = () => {
+  const navigate = useNavigate();
+  const { token, user } = useAuthStore();
+  const [stats, setStats] = useState<DataStats | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [downloading, setDownloading] = useState(false);
+  const [activeTab, setActiveTab] = useState<'overview' | 'okx-download' | 'quality'>('overview');
+  
+  // 下载表单状态
+  const [downloadForm, setDownloadForm] = useState<DownloadRequest>({
+    exchange: 'binance',
+    symbol: 'BTC/USDT',
+    timeframe: '1h',
+    start_date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    end_date: new Date().toISOString().split('T')[0]
+  });
+
+  // OKX数据下载状态
+  const [okxDownloadType, setOkxDownloadType] = useState<'tick' | 'kline'>('kline');
+  const [marketType, setMarketType] = useState<'spot' | 'futures'>('spot');
+  const [customSymbol, setCustomSymbol] = useState('');
+  const [selectedSymbols, setSelectedSymbols] = useState<string[]>(['BTC/USDT']);
+  const [okxTickForm, setOkxTickForm] = useState<OKXTickDownloadRequest>({
+    symbols: ['BTC'],
+    start_date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10).replace(/-/g, ''),
+    end_date: new Date().toISOString().slice(0, 10).replace(/-/g, '')
+  });
+  
+  const [okxKlineForm, setOkxKlineForm] = useState<OKXKlineDownloadRequest>({
+    symbols: ['BTC/USDT'],
+    timeframes: ['1h'],
+    start_date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10).replace(/-/g, ''),
+    end_date: new Date().toISOString().slice(0, 10).replace(/-/g, '')
+  });
+
+  const [okxTasks, setOkxTasks] = useState<OKXDownloadTask[]>([]);
+  const [okxDownloading, setOkxDownloading] = useState(false);
+
+  const exchanges = ['binance', 'okx', 'huobi', 'bybit'];
+  const symbols = ['BTC/USDT', 'ETH/USDT', 'BNB/USDT', 'ADA/USDT', 'SOL/USDT'];
+  const timeframes = ['1m', '5m', '15m', '1h', '4h', '1d'];
+  
+  // OKX支持的交易对
+  const okxTickSymbols = ['BTC', 'ETH', 'LTC', 'XRP', 'BCH', 'SOL', 'BSV', 'TRB', 'AIDOGE', 'STARL', '1INCH', 'AAVE', 'ADA', 'AGLD', 'ALGO', 'ALPHA', 'ANT', 'APE', 'API3', 'APT', 'AR', 'ARB', 'ATOM', 'AVAX', 'AXS', 'BADGER', 'BAL', 'BAND', 'BAT', 'BICO', 'BIGTIME', 'BLUR', 'BNB', 'BNT', 'CELO', 'CEL', 'CETUS', 'CFX', 'CHZ', 'COMP', 'CORE', 'CRO', 'CRV'];
+  const okxKlineSymbols = ['BTC/USDT', 'ETH/USDT', 'SOL/USDT', 'ADA/USDT', 'DOT/USDT', 'LINK/USDT', 'MATIC/USDT', 'AVAX/USDT', 'XRP/USDT', 'DOGE/USDT'];
+  const okxTimeframes = ['1m', '5m', '15m', '30m', '1h', '2h', '4h', '1d', '1w'];
+
+  // 检查管理员权限
+  useEffect(() => {
+    if (!user) {
+      navigate('/');
+      return;
+    }
+    const isAdmin = user.email === 'admin@trademe.com' || 
+                   user.username === 'admin' || 
+                   user.email?.includes('admin');
+    
+    if (!isAdmin) {
+      setError('您没有访问数据管理系统的权限');
+      return;
+    }
+  }, [user, navigate]);
+
+  // 获取数据统计
+  const fetchDataStats = async () => {
+    try {
+      const response = await fetch('/api/v1/data/storage/stats', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const result = await response.json();
+      
+      if (result.success) {
+        setStats(result.data);
+      } else {
+        throw new Error(result.message || '获取数据统计失败');
+      }
+    } catch (error) {
+      console.error('获取数据统计失败:', error);
+      setError(error instanceof Error ? error.message : '获取数据统计失败');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 启动历史数据下载
+  const startDataDownload = async () => {
+    setDownloading(true);
+    try {
+      const response = await fetch('/api/v1/data/download/historical', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          exchange: downloadForm.exchange,
+          symbol: downloadForm.symbol,
+          timeframe: downloadForm.timeframe,
+          start_date: new Date(downloadForm.start_date).toISOString(),
+          end_date: new Date(downloadForm.end_date).toISOString()
+        })
+      });
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        alert(`下载任务已启动: ${result.message}`);
+        // 刷新统计数据
+        setTimeout(fetchDataStats, 3000);
+      } else {
+        throw new Error(result.message || '下载启动失败');
+      }
+    } catch (error) {
+      alert(error instanceof Error ? error.message : '下载启动失败');
+    } finally {
+      setDownloading(false);
+    }
+  };
+
+  // 获取OKX下载任务列表
+  const fetchOkxTasks = async () => {
+    try {
+      const response = await fetch('/api/v1/data/okx/tasks', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const result = await response.json();
+      
+      if (result.success) {
+        setOkxTasks(result.data.tasks);
+      }
+    } catch (error) {
+      console.error('获取OKX任务列表失败:', error);
+    }
+  };
+
+  // 启动OKX Tick数据下载
+  const startOkxTickDownload = async () => {
+    setOkxDownloading(true);
+    try {
+      const response = await fetch('/api/v1/data/okx/tick/download', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(okxTickForm)
+      });
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        alert(`OKX Tick数据下载任务已启动！任务ID: ${result.data.task_id}`);
+        await fetchOkxTasks(); // 刷新任务列表
+      } else {
+        throw new Error(result.detail || '下载启动失败');
+      }
+    } catch (error) {
+      alert(error instanceof Error ? error.message : 'OKX Tick下载启动失败');
+    } finally {
+      setOkxDownloading(false);
+    }
+  };
+
+  // 启动OKX K线数据下载
+  const startOkxKlineDownload = async () => {
+    setOkxDownloading(true);
+    try {
+      const response = await fetch('/api/v1/data/okx/kline/download', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(okxKlineForm)
+      });
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        alert(`OKX K线数据下载任务已启动！任务ID: ${result.data.task_id}`);
+        await fetchOkxTasks(); // 刷新任务列表
+      } else {
+        throw new Error(result.detail || '下载启动失败');
+      }
+    } catch (error) {
+      alert(error instanceof Error ? error.message : 'OKX K线下载启动失败');
+    } finally {
+      setOkxDownloading(false);
+    }
+  };
+
+  // 组件挂载时获取数据
+  useEffect(() => {
+    if (token && user) {
+      fetchDataStats();
+      fetchOkxTasks();
+    }
+  }, [token, user]);
+
+  // 定期刷新OKX任务状态
+  useEffect(() => {
+    if (activeTab === 'okx-download') {
+      const interval = setInterval(fetchOkxTasks, 3000); // 每3秒刷新
+      return () => clearInterval(interval);
+    }
+  }, [activeTab, token]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <LoadingSpinner size="lg" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="text-red-600 text-lg mb-4">⚠️ {error}</div>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          >
+            重新加载
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* 顶部导航栏 */}
+      <div className="bg-white shadow-sm border-b border-gray-200">
+        <div className="px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 flex items-center justify-center shadow-lg">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4" />
+                </svg>
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">数据管理中心</h1>
+                <p className="text-sm text-gray-600">K线数据和Tick数据下载管理系统</p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-3 px-4 py-2 bg-blue-50 rounded-lg border border-blue-200">
+                <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                  <span className="text-blue-700 text-sm font-semibold">{user?.username?.charAt(0).toUpperCase()}</span>
+                </div>
+                <span className="text-sm font-medium text-blue-700">管理员: {user?.username}</span>
+              </div>
+              <button
+                onClick={() => navigate('/admin')}
+                className="px-4 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all duration-200 flex items-center space-x-2"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                <span>返回控制台</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* 标签导航 */}
+      <div className="bg-white border-b border-gray-200">
+        <div className="px-6">
+          <nav className="flex space-x-8">
+            {[
+              { id: 'overview', name: '数据概览', icon: '📊' },
+              { id: 'download', name: '数据下载', icon: '📥' },
+              { id: 'okx-download', name: 'OKX数据下载', icon: '🚀' },
+              { id: 'quality', name: '质量监控', icon: '🔍' },
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id as any)}
+                className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-200 ${
+                  activeTab === tab.id
+                    ? 'border-blue-500 text-blue-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                <span className="mr-2">{tab.icon}</span>
+                {tab.name}
+              </button>
+            ))}
+          </nav>
+        </div>
+      </div>
+
+      {/* 主要内容 */}
+      <div className="p-6">
+        {/* 数据概览 */}
+        {activeTab === 'overview' && stats && (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-semibold text-gray-900">数据统计概览</h2>
+              <button
+                onClick={fetchDataStats}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 flex items-center space-x-2"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                <span>刷新数据</span>
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {stats.kline_statistics.map((stat, index) => (
+                <div key={index} className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="w-12 h-12 rounded-lg bg-green-100 flex items-center justify-center">
+                      <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                      </svg>
+                    </div>
+                    <div className="text-right">
+                      <h3 className="text-lg font-bold text-gray-900">{stat.exchange.toUpperCase()}</h3>
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span className="text-sm text-gray-600">交易对数量:</span>
+                      <span className="font-semibold text-gray-900">{stat.symbol_count}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm text-gray-600">时间框架:</span>
+                      <span className="font-semibold text-gray-900">{stat.timeframe_count}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm text-gray-600">K线记录:</span>
+                      <span className="font-semibold text-blue-600">{stat.total_records.toLocaleString()}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* 数据下载 */}
+        {activeTab === 'download' && (
+          <div className="space-y-6">
+            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+              <h2 className="text-xl font-semibold text-gray-900 mb-6">历史数据下载</h2>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">交易所</label>
+                  <select
+                    value={downloadForm.exchange}
+                    onChange={(e) => setDownloadForm(prev => ({ ...prev, exchange: e.target.value }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    {exchanges.map(exchange => (
+                      <option key={exchange} value={exchange}>
+                        {exchange.toUpperCase()}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">交易对</label>
+                  <select
+                    value={downloadForm.symbol}
+                    onChange={(e) => setDownloadForm(prev => ({ ...prev, symbol: e.target.value }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    {symbols.map(symbol => (
+                      <option key={symbol} value={symbol}>
+                        {symbol}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">时间框架</label>
+                  <select
+                    value={downloadForm.timeframe}
+                    onChange={(e) => setDownloadForm(prev => ({ ...prev, timeframe: e.target.value }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    {timeframes.map(tf => (
+                      <option key={tf} value={tf}>
+                        {tf}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">开始日期</label>
+                  <input
+                    type="date"
+                    value={downloadForm.start_date}
+                    onChange={(e) => setDownloadForm(prev => ({ ...prev, start_date: e.target.value }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">结束日期</label>
+                  <input
+                    type="date"
+                    value={downloadForm.end_date}
+                    onChange={(e) => setDownloadForm(prev => ({ ...prev, end_date: e.target.value }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+              </div>
+
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                <div className="flex items-start">
+                  <svg className="w-5 h-5 text-blue-400 mt-0.5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                  </svg>
+                  <div>
+                    <h4 className="text-sm font-medium text-blue-800">下载说明</h4>
+                    <div className="mt-2 text-sm text-blue-700">
+                      <ul className="list-disc list-inside space-y-1">
+                        <li>系统将从指定交易所下载历史K线数据</li>
+                        <li>下载任务将在后台异步执行</li>
+                        <li>请合理设置时间范围，避免下载量过大</li>
+                        <li>下载完成后数据将自动存储到数据库</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <button
+                onClick={startDataDownload}
+                disabled={downloading}
+                className="w-full px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 font-medium"
+              >
+                {downloading ? (
+                  <div className="flex items-center justify-center space-x-2">
+                    <svg className="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                    </svg>
+                    <span>启动下载任务中...</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-center space-x-2">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
+                    </svg>
+                    <span>开始数据下载</span>
+                  </div>
+                )}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* OKX数据下载 */}
+        {activeTab === 'okx-download' && (
+          <div className="space-y-6">
+            {/* 数据类型选择 */}
+            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-semibold text-gray-900">OKX数据下载系统</h2>
+                <div className="flex items-center space-x-4">
+                  <div className="text-sm text-gray-500">
+                    基于真实OKX官方数据源
+                  </div>
+                  <button
+                    onClick={fetchOkxTasks}
+                    className="px-3 py-1 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-all duration-200 text-sm"
+                  >
+                    刷新任务列表
+                  </button>
+                </div>
+              </div>
+
+              {/* 数据类型选择器 */}
+              <div className="flex space-x-1 p-1 bg-gray-100 rounded-lg mb-6">
+                <button
+                  onClick={() => setOkxDownloadType('kline')}
+                  className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all duration-200 ${
+                    okxDownloadType === 'kline'
+                      ? 'bg-white text-gray-900 shadow-sm'
+                      : 'text-gray-600 hover:text-gray-900'
+                  }`}
+                >
+                  K线数据下载
+                </button>
+                <button
+                  onClick={() => setOkxDownloadType('tick')}
+                  className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all duration-200 ${
+                    okxDownloadType === 'tick'
+                      ? 'bg-white text-gray-900 shadow-sm'
+                      : 'text-gray-600 hover:text-gray-900'
+                  }`}
+                >
+                  Tick数据下载
+                </button>
+              </div>
+
+              {/* K线数据下载表单 */}
+              {okxDownloadType === 'kline' && (
+                <div className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">交易对选择</label>
+                      <div className="space-y-2 max-h-48 overflow-y-auto border border-gray-200 rounded-lg p-3">
+                        {okxKlineSymbols.map(symbol => (
+                          <label key={symbol} className="flex items-center space-x-2 cursor-pointer hover:bg-gray-50 p-1 rounded">
+                            <input
+                              type="checkbox"
+                              checked={okxKlineForm.symbols.includes(symbol)}
+                              onChange={(e) => {
+                                if (e.target.checked) {
+                                  setOkxKlineForm(prev => ({
+                                    ...prev,
+                                    symbols: [...prev.symbols, symbol]
+                                  }));
+                                } else {
+                                  setOkxKlineForm(prev => ({
+                                    ...prev,
+                                    symbols: prev.symbols.filter(s => s !== symbol)
+                                  }));
+                                }
+                              }}
+                              className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                            />
+                            <span className="text-sm">{symbol}</span>
+                          </label>
+                        ))}
+                      </div>
+                      <div className="mt-2 text-xs text-gray-500">
+                        已选择 {okxKlineForm.symbols.length} 个交易对
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">时间框架选择</label>
+                      <div className="space-y-2 max-h-48 overflow-y-auto border border-gray-200 rounded-lg p-3">
+                        {okxTimeframes.map(tf => (
+                          <label key={tf} className="flex items-center space-x-2 cursor-pointer hover:bg-gray-50 p-1 rounded">
+                            <input
+                              type="checkbox"
+                              checked={okxKlineForm.timeframes.includes(tf)}
+                              onChange={(e) => {
+                                if (e.target.checked) {
+                                  setOkxKlineForm(prev => ({
+                                    ...prev,
+                                    timeframes: [...prev.timeframes, tf]
+                                  }));
+                                } else {
+                                  setOkxKlineForm(prev => ({
+                                    ...prev,
+                                    timeframes: prev.timeframes.filter(t => t !== tf)
+                                  }));
+                                }
+                              }}
+                              className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                            />
+                            <span className="text-sm">{tf}</span>
+                          </label>
+                        ))}
+                      </div>
+                      <div className="mt-2 text-xs text-gray-500">
+                        已选择 {okxKlineForm.timeframes.length} 个时间框架
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">开始日期 (YYYYMMDD)</label>
+                      <input
+                        type="text"
+                        value={okxKlineForm.start_date}
+                        onChange={(e) => setOkxKlineForm(prev => ({ ...prev, start_date: e.target.value }))}
+                        placeholder="20240101"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">结束日期 (YYYYMMDD)</label>
+                      <input
+                        type="text"
+                        value={okxKlineForm.end_date}
+                        onChange={(e) => setOkxKlineForm(prev => ({ ...prev, end_date: e.target.value }))}
+                        placeholder="20240131"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={startOkxKlineDownload}
+                    disabled={okxDownloading || okxKlineForm.symbols.length === 0 || okxKlineForm.timeframes.length === 0}
+                    className="w-full px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 font-medium"
+                  >
+                    {okxDownloading ? (
+                      <div className="flex items-center justify-center space-x-2">
+                        <svg className="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                        </svg>
+                        <span>启动K线下载任务中...</span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-center space-x-2">
+                        <span>🚀</span>
+                        <span>启动OKX K线数据下载</span>
+                      </div>
+                    )}
+                  </button>
+                </div>
+              )}
+
+              {/* Tick数据下载表单 */}
+              {okxDownloadType === 'tick' && (
+                <div className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">交易对选择</label>
+                      <div className="space-y-2 max-h-48 overflow-y-auto border border-gray-200 rounded-lg p-3">
+                        {okxTickSymbols.map(symbol => (
+                          <label key={symbol} className="flex items-center space-x-2 cursor-pointer hover:bg-gray-50 p-1 rounded">
+                            <input
+                              type="checkbox"
+                              checked={okxTickForm.symbols.includes(symbol)}
+                              onChange={(e) => {
+                                if (e.target.checked) {
+                                  setOkxTickForm(prev => ({
+                                    ...prev,
+                                    symbols: [...prev.symbols, symbol]
+                                  }));
+                                } else {
+                                  setOkxTickForm(prev => ({
+                                    ...prev,
+                                    symbols: prev.symbols.filter(s => s !== symbol)
+                                  }));
+                                }
+                              }}
+                              className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                            />
+                            <span className="text-sm">{symbol}</span>
+                          </label>
+                        ))}
+                      </div>
+                      <div className="mt-2 text-xs text-gray-500">
+                        已选择 {okxTickForm.symbols.length} 个交易对
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col justify-center">
+                      <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                        <div className="flex items-start">
+                          <svg className="w-5 h-5 text-yellow-400 mt-0.5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                          </svg>
+                          <div>
+                            <h4 className="text-sm font-medium text-yellow-800">Tick数据说明</h4>
+                            <div className="mt-2 text-sm text-yellow-700">
+                              <ul className="list-disc list-inside space-y-1">
+                                <li>下载OKX官方历史交易数据</li>
+                                <li>数据量较大，请合理选择时间范围</li>
+                                <li>支持多交易对并行下载</li>
+                                <li>自动解压和数据去重处理</li>
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">开始日期 (YYYYMMDD)</label>
+                      <input
+                        type="text"
+                        value={okxTickForm.start_date}
+                        onChange={(e) => setOkxTickForm(prev => ({ ...prev, start_date: e.target.value }))}
+                        placeholder="20240101"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">结束日期 (YYYYMMDD)</label>
+                      <input
+                        type="text"
+                        value={okxTickForm.end_date}
+                        onChange={(e) => setOkxTickForm(prev => ({ ...prev, end_date: e.target.value }))}
+                        placeholder="20240131"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={startOkxTickDownload}
+                    disabled={okxDownloading || okxTickForm.symbols.length === 0}
+                    className="w-full px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 font-medium"
+                  >
+                    {okxDownloading ? (
+                      <div className="flex items-center justify-center space-x-2">
+                        <svg className="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                        </svg>
+                        <span>启动Tick下载任务中...</span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-center space-x-2">
+                        <span>📊</span>
+                        <span>启动OKX Tick数据下载</span>
+                      </div>
+                    )}
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* 任务列表 */}
+            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-lg font-semibold text-gray-900">下载任务列表</h3>
+                <div className="text-sm text-gray-500">
+                  共 {okxTasks.length} 个任务
+                </div>
+              </div>
+
+              {okxTasks.length === 0 ? (
+                <div className="text-center py-8">
+                  <div className="text-gray-400 mb-2">
+                    <svg className="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                  </div>
+                  <p className="text-gray-600">暂无下载任务</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {okxTasks.map(task => (
+                    <div key={task.task_id} className="border border-gray-200 rounded-lg p-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center space-x-3">
+                          <div className={`w-3 h-3 rounded-full ${
+                            task.status === 'completed' ? 'bg-green-500' :
+                            task.status === 'running' ? 'bg-blue-500 animate-pulse' :
+                            task.status === 'failed' ? 'bg-red-500' :
+                            'bg-gray-400'
+                          }`} />
+                          <span className="font-medium text-gray-900">
+                            {task.data_type === 'tick' ? '📊' : '📈'} {task.data_type.toUpperCase()} - {task.task_id.slice(-8)}
+                          </span>
+                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                            task.status === 'completed' ? 'bg-green-100 text-green-800' :
+                            task.status === 'running' ? 'bg-blue-100 text-blue-800' :
+                            task.status === 'failed' ? 'bg-red-100 text-red-800' :
+                            'bg-gray-100 text-gray-800'
+                          }`}>
+                            {task.status}
+                          </span>
+                        </div>
+                        <div className="text-right text-sm text-gray-600">
+                          {task.progress}% 完成
+                        </div>
+                      </div>
+                      
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                        <div>
+                          <span className="text-gray-500">交易对: </span>
+                          <span className="font-medium">{task.symbols.slice(0, 2).join(', ')}{task.symbols.length > 2 ? '...' : ''}</span>
+                        </div>
+                        <div>
+                          <span className="text-gray-500">日期: </span>
+                          <span className="font-medium">{task.date_range}</span>
+                        </div>
+                        <div>
+                          <span className="text-gray-500">进度: </span>
+                          <span className="font-medium">{task.processed_files}/{task.total_files} 文件</span>
+                        </div>
+                        <div>
+                          <span className="text-gray-500">下载: </span>
+                          <span className="font-medium">{task.downloaded_records.toLocaleString()} 条</span>
+                        </div>
+                      </div>
+                      
+                      {task.progress > 0 && task.progress < 100 && (
+                        <div className="mt-3">
+                          <div className="w-full bg-gray-200 rounded-full h-2">
+                            <div 
+                              className="bg-blue-600 h-2 rounded-full transition-all duration-300" 
+                              style={{ width: `${task.progress}%` }}
+                            />
+                          </div>
+                        </div>
+                      )}
+                      
+                      {task.error_message && (
+                        <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
+                          <div className="text-red-700 text-sm">
+                            <strong>错误:</strong> {task.error_message}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* 质量监控 */}
+        {activeTab === 'quality' && (
+          <div className="space-y-6">
+            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+              <h2 className="text-xl font-semibold text-gray-900 mb-6">数据质量监控</h2>
+              <div className="text-center py-12">
+                <div className="text-gray-400 mb-4">
+                  <svg className="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  </svg>
+                </div>
+                <p className="text-gray-600 text-lg">数据质量监控功能开发中</p>
+                <p className="text-gray-500 text-sm mt-2">将提供数据完整性检查、异常检测等功能</p>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default DataManagementPage;

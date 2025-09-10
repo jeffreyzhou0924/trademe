@@ -33,11 +33,11 @@ class Settings(BaseSettings):
     
     # JWT配置 (与用户服务一致，支持多种环境变量名)
     jwt_secret_key: str = Field(
-        default="your_super_secret_jwt_key_here",
+        default="trademe_super_secret_jwt_key_for_development_only_32_chars",
         alias="JWT_SECRET_KEY"
     )
     jwt_secret: str = Field(
-        default="your_super_secret_jwt_key_here", 
+        default="trademe_super_secret_jwt_key_for_development_only_32_chars", 
         alias="JWT_SECRET"
     )
     jwt_algorithm: str = Field(default="HS256", alias="JWT_ALGORITHM")
@@ -46,11 +46,17 @@ class Settings(BaseSettings):
     
     # CORS配置
     cors_origins: List[str] = Field(
-        default=["http://localhost:3000", "http://localhost:3001"],
+        default=[
+            "http://localhost:3000", 
+            "http://localhost:3001",
+            "http://43.167.252.120",
+            "http://43.167.252.120:3000",
+            "http://43.167.252.120:80"
+        ],
         alias="CORS_ORIGINS"
     )
     allowed_hosts: List[str] = Field(
-        default=["localhost", "127.0.0.1"],
+        default=["localhost", "127.0.0.1", "43.167.252.120"],
         alias="ALLOWED_HOSTS"
     )
     
@@ -66,11 +72,17 @@ class Settings(BaseSettings):
     anthropic_base_url: str = Field(default="", alias="ANTHROPIC_BASE_URL")  # 支持ANTHROPIC_BASE_URL
     claude_model: str = Field(default="claude-sonnet-4-20250514", alias="CLAUDE_MODEL")  # 升级到Claude 4 Sonnet！
     claude_max_tokens: int = Field(default=4096, alias="CLAUDE_MAX_TOKENS")
-    claude_timeout: int = Field(default=60, alias="CLAUDE_TIMEOUT")  # 60秒超时
+    claude_timeout: int = Field(default=180, alias="CLAUDE_TIMEOUT")  # 180秒超时，适应第三方代理延迟
     
     # 交易所配置
     ccxt_timeout: int = Field(default=30000, alias="CCXT_TIMEOUT")  # 30秒
     max_concurrent_requests: int = Field(default=10, alias="MAX_CONCURRENT_REQUESTS")
+    
+    # 🆕 OKX API配置
+    okx_api_key: str = Field(default="76ba9b3a-38b6-4ed3-9ce7-44d603188b13", alias="OKX_API_KEY")
+    okx_secret_key: str = Field(default="4021858325F5A3BEC3F64B6D0533E412", alias="OKX_SECRET_KEY")
+    okx_passphrase: str = Field(default="Woaiziji..123", alias="OKX_PASSPHRASE")
+    okx_sandbox: bool = Field(default=False, alias="OKX_SANDBOX")  # 是否使用沙盒环境
     
     # WebSocket配置
     websocket_max_connections: int = Field(default=100, alias="WS_MAX_CONNECTIONS")
@@ -100,6 +112,9 @@ class Settings(BaseSettings):
     max_position_size: float = Field(default=0.1, alias="MAX_POSITION_SIZE")  # 最大10%仓位
     max_daily_loss: float = Field(default=0.05, alias="MAX_DAILY_LOSS")  # 最大5%日亏损
     
+    # 加密配置
+    wallet_master_key: str = Field(default="", alias="WALLET_MASTER_KEY")
+    
     # 区块链监控配置
     # TRON网络配置
     tron_api_url: str = Field(default="https://api.trongrid.io", alias="TRON_API_URL")
@@ -126,6 +141,7 @@ class Settings(BaseSettings):
         env_file = ".env"
         env_file_encoding = "utf-8"
         case_sensitive = False
+        extra = "ignore"
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -145,8 +161,29 @@ def validate_settings():
     
     # 检查JWT密钥 (支持多种字段名)
     jwt_key = settings.jwt_secret_key or settings.jwt_secret
-    if not jwt_key or jwt_key == "your-secret-key-here":
+    unsafe_keys = [
+        "your-secret-key-here",
+        "your_super_secret_jwt_key_here",
+        "trademe_super_secret_jwt_key_for_development_only_32_chars",
+        "TrademeSecure2024!@#$%^&*()_+{}|:<>?[];',./`~abcdefghijklmnop",
+        "Mt#HHq9rTDDWn38pEFxPtS6PiF{Noz[s=[IHMNZGRq@j*W1JWA*RPgufyrrZWhXH"
+    ]
+    if not jwt_key or jwt_key in unsafe_keys:
         errors.append("JWT密钥 (JWT_SECRET_KEY或JWT_SECRET) 必须设置且不能为默认值")
+    elif len(jwt_key) < 32:
+        errors.append("JWT密钥长度必须至少32字符以确保安全性")
+    elif settings.environment == "production" and len(jwt_key) < 64:
+        errors.append("生产环境JWT密钥长度必须至少64字符")
+    
+    # 检查JWT密钥复杂度（生产环境）
+    if settings.environment == "production":
+        has_upper = any(c.isupper() for c in jwt_key)
+        has_lower = any(c.islower() for c in jwt_key)
+        has_digit = any(c.isdigit() for c in jwt_key)
+        has_special = any(c in "!@#$%^&*()_+-=[]{}|;:,.<>?" for c in jwt_key)
+        
+        if not (has_upper and has_lower and has_digit and has_special):
+            errors.append("生产环境JWT密钥必须包含大小写字母、数字和特殊字符")
     
     if settings.environment == "production":
         if settings.debug:

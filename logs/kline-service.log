@@ -1,0 +1,588 @@
+127.0.0.1 - - [06/Sep/2025 13:00:00] "GET /klines/BTC/USDT?timeframe=1h&limit=500 HTTP/1.0" 200 -
+2025-09-06 13:00:02.178 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-06 13:00:02.426 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 1h K线数据成功: 300条
+2025-09-06 13:00:02.427 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [06/Sep/2025 13:00:13] "GET /klines/BTC/USDT?timeframe=1h&limit=500 HTTP/1.0" 200 -
+2025-09-06 13:00:14.493 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-06 13:00:14.678 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 1h K线数据成功: 300条
+2025-09-06 13:00:14.678 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [06/Sep/2025 13:04:46] "GET /klines/BTC/USDT?timeframe=1h&limit=500 HTTP/1.0" 200 -
+2025-09-06 13:04:47.835 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-06 13:04:48.031 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 1h K线数据成功: 300条
+2025-09-06 13:04:48.031 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [06/Sep/2025 23:57:19] "GET /klines/BTC/USDT?timeframe=1h&limit=500 HTTP/1.0" 200 -
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x75385a935310>, 822719.356148597), (<aiohttp.client_proto.ResponseHandler object at 0x75385a935730>, 822720.434348771)])']
+connector: <aiohttp.connector.TCPConnector object at 0x75385b3cc4d0>
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x75385a935190>, 822731.870207124), (<aiohttp.client_proto.ResponseHandler object at 0x75385a935eb0>, 822732.702348183)])']
+connector: <aiohttp.connector.TCPConnector object at 0x7538593f8d40>
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x75385a9363f0>, 823005.409976838), (<aiohttp.client_proto.ResponseHandler object at 0x75385a935fd0>, 823006.040044926)])']
+connector: <aiohttp.connector.TCPConnector object at 0x75385925ad80>
+2025-09-06 23:57:22.951 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-06 23:57:23.144 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 1h K线数据成功: 300条
+2025-09-06 23:57:23.144 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [06/Sep/2025 23:58:03] "GET /klines/BTC/USDT?timeframe=1h&limit=500 HTTP/1.0" 200 -
+2025-09-06 23:58:03.756 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-06 23:58:03.942 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 1h K线数据成功: 300条
+2025-09-06 23:58:03.942 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [06/Sep/2025 23:58:24] "GET /klines/BTC/USDT?timeframe=1h&limit=500 HTTP/1.0" 200 -
+2025-09-06 23:58:24.963 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-06 23:58:25.159 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 1h K线数据成功: 300条
+2025-09-06 23:58:25.159 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [06/Sep/2025 23:59:41] "GET /klines/BTC/USDT?timeframe=1h&limit=500 HTTP/1.0" 200 -
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x75385a936510>, 862157.630234702), (<aiohttp.client_proto.ResponseHandler object at 0x75385a936930>, 862161.162363748)])']
+connector: <aiohttp.connector.TCPConnector object at 0x75385bbff470>
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x75385a936330>, 862201.558252198), (<aiohttp.client_proto.ResponseHandler object at 0x75385a935130>, 862201.966849597)])']
+connector: <aiohttp.connector.TCPConnector object at 0x753851d43980>
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x75385a935eb0>, 862222.769645446), (<aiohttp.client_proto.ResponseHandler object at 0x75385a935250>, 862223.183535428)])']
+connector: <aiohttp.connector.TCPConnector object at 0x7538585a4980>
+2025-09-06 23:59:42.031 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-06 23:59:42.229 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 1h K线数据成功: 300条
+2025-09-06 23:59:42.229 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [07/Sep/2025 00:01:08] "GET /klines/BTC/USDT?timeframe=1h&limit=500 HTTP/1.0" 200 -
+2025-09-07 00:01:08.999 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-07 00:01:09.173 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 1h K线数据成功: 300条
+2025-09-07 00:01:09.173 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [07/Sep/2025 00:01:29] "GET /klines/BTC/USDT?timeframe=1h&limit=500 HTTP/1.0" 200 -
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x75385a935f70>, 862299.67026909), (<aiohttp.client_proto.ResponseHandler object at 0x75385a936cf0>, 862300.253656659)])']
+connector: <aiohttp.connector.TCPConnector object at 0x75385a99ee40>
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x75385a935550>, 862386.812545219), (<aiohttp.client_proto.ResponseHandler object at 0x75385a935b50>, 862387.197624146)])']
+connector: <aiohttp.connector.TCPConnector object at 0x7538582ce930>
+2025-09-07 00:01:30.301 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-07 00:01:30.493 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 1h K线数据成功: 300条
+2025-09-07 00:01:30.493 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [07/Sep/2025 00:01:31] "GET /klines/BTC/USDT?timeframe=1h&limit=500 HTTP/1.0" 200 -
+2025-09-07 00:01:32.662 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-07 00:01:32.852 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 1h K线数据成功: 300条
+2025-09-07 00:01:32.852 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [07/Sep/2025 00:01:51] "GET /klines/BTC/USDT?timeframe=1h&limit=500 HTTP/1.0" 200 -
+2025-09-07 00:01:51.929 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-07 00:01:52.106 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 1h K线数据成功: 300条
+2025-09-07 00:01:52.106 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [07/Sep/2025 00:04:36] "GET /klines/BTC/USDT?timeframe=1h&limit=500 HTTP/1.0" 200 -
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x75385a935eb0>, 862407.95957361), (<aiohttp.client_proto.ResponseHandler object at 0x75385a9346b0>, 862408.517347088)])']
+connector: <aiohttp.connector.TCPConnector object at 0x7538589255b0>
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x75385a935a30>, 862410.469105627), (<aiohttp.client_proto.ResponseHandler object at 0x75385a936630>, 862410.876977193)])']
+connector: <aiohttp.connector.TCPConnector object at 0x753852310ef0>
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x75385a935190>, 862429.739362696), (<aiohttp.client_proto.ResponseHandler object at 0x75385a935730>, 862430.130762934)])']
+connector: <aiohttp.connector.TCPConnector object at 0x753853498b30>
+2025-09-07 00:04:37.147 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-07 00:04:37.334 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 1h K线数据成功: 300条
+2025-09-07 00:04:37.334 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [07/Sep/2025 00:04:49] "GET /klines/BTC/USDT?timeframe=1h&limit=500 HTTP/1.0" 200 -
+2025-09-07 00:04:50.001 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-07 00:04:50.186 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 1h K线数据成功: 300条
+2025-09-07 00:04:50.186 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [07/Sep/2025 00:05:38] "GET /klines/BTC/USDT?timeframe=1h&limit=500 HTTP/1.0" 200 -
+2025-09-07 00:05:39.656 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-07 00:05:39.854 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 1h K线数据成功: 300条
+2025-09-07 00:05:39.854 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [07/Sep/2025 00:06:20] "GET /klines/BTC/USDT?timeframe=1h&limit=500 HTTP/1.0" 200 -
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x75385a935bb0>, 862594.756164207), (<aiohttp.client_proto.ResponseHandler object at 0x75385a936f30>, 862595.3582806)])']
+connector: <aiohttp.connector.TCPConnector object at 0x7538513f6660>
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x75385a935130>, 862607.810148383), (<aiohttp.client_proto.ResponseHandler object at 0x75385a935a30>, 862608.210769511)])']
+connector: <aiohttp.connector.TCPConnector object at 0x753858f58470>
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x75385a935370>, 862657.46669285), (<aiohttp.client_proto.ResponseHandler object at 0x75385a936b10>, 862657.878449758)])']
+connector: <aiohttp.connector.TCPConnector object at 0x753858e472c0>
+2025-09-07 00:06:21.832 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-07 00:06:22.021 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 1h K线数据成功: 300条
+2025-09-07 00:06:22.022 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [07/Sep/2025 00:06:28] "GET /klines/BTC/USDT?timeframe=1h&limit=500 HTTP/1.0" 200 -
+2025-09-07 00:06:28.981 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-07 00:06:29.176 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 1h K线数据成功: 300条
+2025-09-07 00:06:29.176 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [07/Sep/2025 00:06:30] "GET /klines/BTC/USDT?timeframe=1h&limit=500 HTTP/1.0" 200 -
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x75385a9370b0>, 862699.637385407), (<aiohttp.client_proto.ResponseHandler object at 0x75385a936d50>, 862700.046177365)])']
+connector: <aiohttp.connector.TCPConnector object at 0x7538534e7890>
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x75385a935370>, 862706.791260699), (<aiohttp.client_proto.ResponseHandler object at 0x75385a936330>, 862707.200892687)])']
+connector: <aiohttp.connector.TCPConnector object at 0x75385a963da0>
+2025-09-07 00:06:31.883 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-07 00:06:32.066 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 1h K线数据成功: 300条
+2025-09-07 00:06:32.067 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [07/Sep/2025 00:07:28] "GET /klines/BTC/USDT?timeframe=1h&limit=500 HTTP/1.0" 200 -
+2025-09-07 00:07:29.604 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-07 00:07:29.788 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 1h K线数据成功: 300条
+2025-09-07 00:07:29.789 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [07/Sep/2025 00:07:35] "GET /klines/BTC/USDT?timeframe=1h&limit=500 HTTP/1.0" 200 -
+2025-09-07 00:07:36.215 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-07 00:07:36.411 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 1h K线数据成功: 300条
+2025-09-07 00:07:36.411 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [07/Sep/2025 00:07:40] "GET /klines/BTC/USDT?timeframe=1h&limit=500 HTTP/1.0" 200 -
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x75385a9359d0>, 862709.53399331), (<aiohttp.client_proto.ResponseHandler object at 0x75385a9355b0>, 862710.090964149)])']
+connector: <aiohttp.connector.TCPConnector object at 0x75385891d460>
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x75385a936090>, 862767.410071741), (<aiohttp.client_proto.ResponseHandler object at 0x75385a935cd0>, 862767.813123295)])']
+connector: <aiohttp.connector.TCPConnector object at 0x7538583f5a60>
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x75385a935df0>, 862774.025323756), (<aiohttp.client_proto.ResponseHandler object at 0x75385a936bd0>, 862774.435614147)])']
+connector: <aiohttp.connector.TCPConnector object at 0x75385228cbc0>
+2025-09-07 00:07:41.354 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-07 00:07:41.531 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 1h K线数据成功: 300条
+2025-09-07 00:07:41.531 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [07/Sep/2025 00:26:07] "GET /klines/BTC/USDT?timeframe=1h&limit=500 HTTP/1.0" 200 -
+2025-09-07 00:26:08.171 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-07 00:26:08.359 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 1h K线数据成功: 300条
+2025-09-07 00:26:08.360 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [07/Sep/2025 00:26:16] "GET /klines/BTC/USDT?timeframe=1h&limit=500 HTTP/1.0" 200 -
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x75385a936e70>, 862778.941447965), (<aiohttp.client_proto.ResponseHandler object at 0x75385a937410>, 862779.555667842)])']
+connector: <aiohttp.connector.TCPConnector object at 0x753858ee7f20>
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x75385a935970>, 863885.975309753), (<aiohttp.client_proto.ResponseHandler object at 0x75385a935790>, 863886.384340797)])']
+connector: <aiohttp.connector.TCPConnector object at 0x75385827b170>
+2025-09-07 00:26:16.949 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-07 00:26:17.141 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 1h K线数据成功: 300条
+2025-09-07 00:26:17.141 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [07/Sep/2025 00:26:42] "GET /klines/BTC/USDT?timeframe=1h&limit=500 HTTP/1.0" 200 -
+2025-09-07 00:26:43.002 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-07 00:26:43.181 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 1h K线数据成功: 300条
+2025-09-07 00:26:43.181 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [07/Sep/2025 00:27:15] "GET /klines/BTC/USDT?timeframe=1h&limit=500 HTTP/1.0" 200 -
+2025-09-07 00:27:16.099 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-07 00:27:16.301 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 1h K线数据成功: 300条
+2025-09-07 00:27:16.301 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [07/Sep/2025 00:27:22] "GET /klines/BTC/USDT?timeframe=1h&limit=500 HTTP/1.0" 200 -
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x75385a9355b0>, 863894.596263996), (<aiohttp.client_proto.ResponseHandler object at 0x75385a935e50>, 863895.16574422)])']
+connector: <aiohttp.connector.TCPConnector object at 0x753851220320>
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x75385a935cd0>, 863920.804052892), (<aiohttp.client_proto.ResponseHandler object at 0x75385a935f70>, 863921.205527364)])']
+connector: <aiohttp.connector.TCPConnector object at 0x753853307860>
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x75385a936ff0>, 863953.912486927), (<aiohttp.client_proto.ResponseHandler object at 0x75385a935d90>, 863954.325981084)])']
+connector: <aiohttp.connector.TCPConnector object at 0x75385237b1a0>
+2025-09-07 00:27:23.395 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-07 00:27:23.578 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 1h K线数据成功: 300条
+2025-09-07 00:27:23.578 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [07/Sep/2025 00:27:24] "GET /klines/BTC/USDT?timeframe=1h&limit=500 HTTP/1.0" 200 -
+2025-09-07 00:27:25.537 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-07 00:27:25.717 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 1h K线数据成功: 300条
+2025-09-07 00:27:25.718 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [07/Sep/2025 00:27:46] "GET /klines/BTC/USDT?timeframe=1h&limit=500 HTTP/1.0" 200 -
+2025-09-07 00:27:46.762 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-07 00:27:46.947 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 1h K线数据成功: 300条
+2025-09-07 00:27:46.947 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [07/Sep/2025 00:28:03] "GET /klines/BTC/USDT?timeframe=1h&limit=500 HTTP/1.0" 200 -
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x75385a936450>, 863961.02152801), (<aiohttp.client_proto.ResponseHandler object at 0x75385a9377d0>, 863961.602605627)])']
+connector: <aiohttp.connector.TCPConnector object at 0x75385917d8b0>
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x75385a9374d0>, 863963.342799212), (<aiohttp.client_proto.ResponseHandler object at 0x75385a9368d0>, 863963.742066168)])']
+connector: <aiohttp.connector.TCPConnector object at 0x753858e9f3e0>
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x75385a9367b0>, 863984.565897322), (<aiohttp.client_proto.ResponseHandler object at 0x75385a935550>, 863984.971829218)])']
+connector: <aiohttp.connector.TCPConnector object at 0x753858e4ffe0>
+2025-09-07 00:28:04.467 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-07 00:28:04.658 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 1h K线数据成功: 300条
+2025-09-07 00:28:04.658 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [07/Sep/2025 00:28:06] "GET /klines/BTC/USDT?timeframe=1h&limit=500 HTTP/1.0" 200 -
+2025-09-07 00:28:07.028 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-07 00:28:07.210 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 1h K线数据成功: 300条
+2025-09-07 00:28:07.210 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [07/Sep/2025 00:28:24] "GET /klines/BTC/USDT?timeframe=1h&limit=500 HTTP/1.0" 200 -
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x75385a934890>, 864002.2733612), (<aiohttp.client_proto.ResponseHandler object at 0x75385a9348f0>, 864002.682398411)])']
+connector: <aiohttp.connector.TCPConnector object at 0x7538527ec2c0>
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x75385a9371d0>, 864004.836823404), (<aiohttp.client_proto.ResponseHandler object at 0x75385a936990>, 864005.234634005)])']
+connector: <aiohttp.connector.TCPConnector object at 0x753858c4f3b0>
+2025-09-07 00:28:25.150 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-07 00:28:25.328 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 1h K线数据成功: 300条
+2025-09-07 00:28:25.328 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [07/Sep/2025 00:28:29] "GET /klines/BTC/USDT?timeframe=1h&limit=500 HTTP/1.0" 200 -
+2025-09-07 00:28:30.019 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-07 00:28:30.195 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 1h K线数据成功: 300条
+2025-09-07 00:28:30.195 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [07/Sep/2025 00:28:33] "GET /klines/BTC/USDT?timeframe=1h&limit=500 HTTP/1.0" 200 -
+2025-09-07 00:28:34.139 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-07 00:28:34.324 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 1h K线数据成功: 300条
+2025-09-07 00:28:34.325 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [07/Sep/2025 00:28:38] "GET /klines/BTC/USDT?timeframe=1h&limit=500 HTTP/1.0" 200 -
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x75385a937470>, 864022.801842113), (<aiohttp.client_proto.ResponseHandler object at 0x75385a936930>, 864023.352618521)])']
+connector: <aiohttp.connector.TCPConnector object at 0x75385235be00>
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x75385a936090>, 864027.822537925), (<aiohttp.client_proto.ResponseHandler object at 0x75385a9379b0>, 864028.219928024)])']
+connector: <aiohttp.connector.TCPConnector object at 0x7538594971a0>
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x75385a9342f0>, 864031.952323413), (<aiohttp.client_proto.ResponseHandler object at 0x75385a937b90>, 864032.349310612)])']
+connector: <aiohttp.connector.TCPConnector object at 0x753853f6c5f0>
+2025-09-07 00:28:39.297 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-07 00:28:39.480 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 1h K线数据成功: 300条
+2025-09-07 00:28:39.480 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [07/Sep/2025 00:28:40] "GET /klines/BTC/USDT?timeframe=1h&limit=500 HTTP/1.0" 200 -
+2025-09-07 00:28:41.579 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-07 00:28:41.764 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 1h K线数据成功: 300条
+2025-09-07 00:28:41.764 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [07/Sep/2025 00:28:54] "GET /klines/BTC/USDT?timeframe=1h&limit=500 HTTP/1.0" 200 -
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x75385a937950>, 864037.100532823), (<aiohttp.client_proto.ResponseHandler object at 0x75385a937dd0>, 864037.504579175)])']
+connector: <aiohttp.connector.TCPConnector object at 0x75385268c800>
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x75385a936870>, 864039.385807011), (<aiohttp.client_proto.ResponseHandler object at 0x75385a935df0>, 864039.788602312)])']
+connector: <aiohttp.connector.TCPConnector object at 0x753852626cc0>
+2025-09-07 00:28:55.428 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-07 00:28:55.611 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 1h K线数据成功: 300条
+2025-09-07 00:28:55.611 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [07/Sep/2025 00:28:59] "GET /klines/BTC/USDT?timeframe=1h&limit=500 HTTP/1.0" 200 -
+2025-09-07 00:29:00.517 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-07 00:29:00.696 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 1h K线数据成功: 300条
+2025-09-07 00:29:00.696 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [07/Sep/2025 00:29:13] "GET /klines/BTC/USDT?timeframe=1h&limit=500 HTTP/1.0" 200 -
+2025-09-07 00:29:13.750 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-07 00:29:13.934 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 1h K线数据成功: 300条
+2025-09-07 00:29:13.934 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [07/Sep/2025 00:29:20] "GET /klines/BTC/USDT?timeframe=1h&limit=500 HTTP/1.0" 200 -
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x75385a936d50>, 864053.086795659), (<aiohttp.client_proto.ResponseHandler object at 0x75385a9355b0>, 864053.63580833)])']
+connector: <aiohttp.connector.TCPConnector object at 0x753858d94080>
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x75385a937ad0>, 864058.32204974), (<aiohttp.client_proto.ResponseHandler object at 0x75385a937e30>, 864058.718325056)])']
+connector: <aiohttp.connector.TCPConnector object at 0x753851e7ffe0>
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x75385a9370b0>, 864071.562317986), (<aiohttp.client_proto.ResponseHandler object at 0x75385a937830>, 864071.95869125)])']
+connector: <aiohttp.connector.TCPConnector object at 0x7538588a31a0>
+2025-09-07 00:29:21.112 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-07 00:29:21.291 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 1h K线数据成功: 300条
+2025-09-07 00:29:21.291 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [07/Sep/2025 00:29:27] "GET /klines/BTC/USDT?timeframe=1h&limit=500 HTTP/1.0" 200 -
+2025-09-07 00:29:28.521 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-07 00:29:28.708 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 1h K线数据成功: 300条
+2025-09-07 00:29:28.708 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [07/Sep/2025 00:31:56] "GET /klines/BTC/USDT?timeframe=1h&limit=500 HTTP/1.0" 200 -
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x753858fdc170>, 864078.915291554), (<aiohttp.client_proto.ResponseHandler object at 0x75385a936b70>, 864079.315227773)])']
+connector: <aiohttp.connector.TCPConnector object at 0x753858fcffe0>
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x75385a934890>, 864086.328683432), (<aiohttp.client_proto.ResponseHandler object at 0x75385a936bd0>, 864086.732665395)])']
+connector: <aiohttp.connector.TCPConnector object at 0x753853511d60>
+2025-09-07 00:31:57.328 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-07 00:31:57.508 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 1h K线数据成功: 300条
+2025-09-07 00:31:57.509 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [07/Sep/2025 00:42:07] "GET /klines/BTC/USDT?timeframe=1h&limit=500 HTTP/1.0" 200 -
+2025-09-07 00:42:08.647 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-07 00:42:08.824 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 1h K线数据成功: 300条
+2025-09-07 00:42:08.824 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [08/Sep/2025 14:39:54] "GET /klines/BTC/USDT?timeframe=1h&limit=500 HTTP/1.0" 200 -
+2025-09-08 14:39:54.980 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-08 14:39:55.165 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 1h K线数据成功: 300条
+2025-09-08 14:39:55.166 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [08/Sep/2025 14:40:00] "GET /klines/BTC/USDT?timeframe=1h&limit=500 HTTP/1.0" 200 -
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x75385a9355b0>, 864234.983898609), (<aiohttp.client_proto.ResponseHandler object at 0x75385a935970>, 864235.532814792)])']
+connector: <aiohttp.connector.TCPConnector object at 0x7538535802c0>
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x75385a936870>, 864846.44539795), (<aiohttp.client_proto.ResponseHandler object at 0x75385a935f70>, 864846.848736738)])']
+connector: <aiohttp.connector.TCPConnector object at 0x7538582dc5f0>
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x75385a9353d0>, 1001512.705405715), (<aiohttp.client_proto.ResponseHandler object at 0x75385a937890>, 1001512.763875299), (<aiohttp.client_proto.ResponseHandler object at 0x7538587901d0>, 1001513.181898288)])']
+connector: <aiohttp.connector.TCPConnector object at 0x75385ac63500>
+2025-09-08 14:40:02.672 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-08 14:40:02.901 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 1h K线数据成功: 300条
+2025-09-08 14:40:02.902 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [08/Sep/2025 15:24:24] "GET /klines/BTC/USDT?timeframe=1h&limit=500 HTTP/1.0" 200 -
+2025-09-08 15:24:25.160 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-08 15:24:25.333 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 1h K线数据成功: 300条
+2025-09-08 15:24:25.333 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [08/Sep/2025 15:29:03] "GET /klines/BTC/USDT?timeframe=1h&limit=500 HTTP/1.0" 200 -
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x7538587907d0>, 1001520.391741977), (<aiohttp.client_proto.ResponseHandler object at 0x75385a937710>, 1001520.476783721), (<aiohttp.client_proto.ResponseHandler object at 0x7538587903b0>, 1001520.925858223)])']
+connector: <aiohttp.connector.TCPConnector object at 0x7538582464b0>
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x75385a937890>, 1004182.963765418), (<aiohttp.client_proto.ResponseHandler object at 0x75385a937d10>, 1004183.357832459)])']
+connector: <aiohttp.connector.TCPConnector object at 0x753859117bc0>
+2025-09-08 15:29:04.750 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-08 15:29:04.939 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 1h K线数据成功: 300条
+2025-09-08 15:29:04.939 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [08/Sep/2025 15:41:35] "GET /klines/BTC/USDT?timeframe=15m&limit=500 HTTP/1.0" 200 -
+2025-09-08 15:41:36.439 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-08 15:41:36.638 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 15m K线数据成功: 300条
+2025-09-08 15:41:36.638 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [08/Sep/2025 15:41:49] "GET /klines/BTC/ETH?timeframe=15m&limit=500 HTTP/1.0" 200 -
+2025-09-08 15:41:50.345 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-08 15:41:50.347 | ERROR    | app.core.market_data_collector:get_historical_klines:188 - 获取历史K线失败: okx does not have market symbol BTC/ETH
+2025-09-08 15:41:50.347 | ERROR    | app.services.market_service:get_historical_klines:207 - 获取历史K线失败: okx does not have market symbol BTC/ETH
+2025-09-08 15:41:50.347 | ERROR    | app.services.market_service:get_klines:356 - 获取K线数据失败: okx does not have market symbol BTC/ETH
+127.0.0.1 - - [08/Sep/2025 15:41:50] "GET /klines/BTC/ETH?timeframe=15m&limit=500 HTTP/1.0" 500 -
+127.0.0.1 - - [08/Sep/2025 15:41:50] "GET /klines/BTC/USDT?timeframe=15m&limit=500 HTTP/1.0" 200 -
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x75385a9359d0>, 1004462.334114521), (<aiohttp.client_proto.ResponseHandler object at 0x75385a935d90>, 1004462.963140619)])']
+connector: <aiohttp.connector.TCPConnector object at 0x753858c9d310>
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x75385a937530>, 1005214.241105092), (<aiohttp.client_proto.ResponseHandler object at 0x75385a937a10>, 1005214.66264843)])']
+connector: <aiohttp.connector.TCPConnector object at 0x753852646840>
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x753858790410>, 1005228.067703923), (<aiohttp.client_proto.ResponseHandler object at 0x75385a937fb0>, 1005228.158610767)])']
+connector: <aiohttp.connector.TCPConnector object at 0x7538533e06e0>
+2025-09-08 15:41:51.530 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-08 15:41:51.713 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 15m K线数据成功: 300条
+2025-09-08 15:41:51.713 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [08/Sep/2025 15:41:51] "GET /klines/BTC/ETH?timeframe=15m&limit=500 HTTP/1.0" 200 -
+2025-09-08 15:41:52.475 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-08 15:41:52.476 | ERROR    | app.core.market_data_collector:get_historical_klines:188 - 获取历史K线失败: okx does not have market symbol BTC/ETH
+2025-09-08 15:41:52.476 | ERROR    | app.services.market_service:get_historical_klines:207 - 获取历史K线失败: okx does not have market symbol BTC/ETH
+2025-09-08 15:41:52.476 | ERROR    | app.services.market_service:get_klines:356 - 获取K线数据失败: okx does not have market symbol BTC/ETH
+127.0.0.1 - - [08/Sep/2025 15:41:52] "GET /klines/BTC/ETH?timeframe=15m&limit=500 HTTP/1.0" 500 -
+127.0.0.1 - - [08/Sep/2025 15:41:52] "GET /klines/ETH/USDT?timeframe=15m&limit=500 HTTP/1.0" 200 -
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x753858790470>, 1005229.044295181), (<aiohttp.client_proto.ResponseHandler object at 0x753858790d70>, 1005229.737365615)])']
+connector: <aiohttp.connector.TCPConnector object at 0x753858d93f20>
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x75385a935d90>, 1005230.142763156), (<aiohttp.client_proto.ResponseHandler object at 0x75385a935130>, 1005230.270151433)])']
+connector: <aiohttp.connector.TCPConnector object at 0x753851f8c5f0>
+2025-09-08 15:41:53.370 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-08 15:41:53.554 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取ETH/USDT 15m K线数据成功: 300条
+2025-09-08 15:41:53.554 | INFO     | app.services.market_service:get_klines:349 - 成功获取ETH/USDT真实K线数据: 300条
+127.0.0.1 - - [08/Sep/2025 15:58:06] "GET /klines/BTC/USDT?timeframe=15m&limit=500 HTTP/1.0" 200 -
+2025-09-08 15:58:06.893 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-08 15:58:07.107 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 15m K线数据成功: 300条
+2025-09-08 15:58:07.108 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [08/Sep/2025 15:58:26] "GET /klines/BTC/USDT?timeframe=15m&limit=500 HTTP/1.0" 200 -
+2025-09-08 15:58:27.190 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-08 15:58:27.374 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 15m K线数据成功: 300条
+2025-09-08 15:58:27.374 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [08/Sep/2025 16:12:07] "GET /klines/BTC/USDT?timeframe=15m&limit=500 HTTP/1.0" 200 -
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x75385a935d30>, 1005231.014638037), (<aiohttp.client_proto.ResponseHandler object at 0x753858790050>, 1005231.578481299)])']
+connector: <aiohttp.connector.TCPConnector object at 0x7538586dbe30>
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x75385a937530>, 1006204.66828455), (<aiohttp.client_proto.ResponseHandler object at 0x75385a9372f0>, 1006205.131972201)])']
+connector: <aiohttp.connector.TCPConnector object at 0x753853535a30>
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x753858790f50>, 1006225.00360025), (<aiohttp.client_proto.ResponseHandler object at 0x753858790a70>, 1006225.398439174)])']
+connector: <aiohttp.connector.TCPConnector object at 0x753851d918b0>
+2025-09-08 16:12:08.168 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-08 16:12:08.346 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 15m K线数据成功: 300条
+2025-09-08 16:12:08.346 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [08/Sep/2025 16:12:16] "GET /klines/BTC/USDT?timeframe=15m&limit=500 HTTP/1.0" 200 -
+2025-09-08 16:12:16.828 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-08 16:12:17.058 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 15m K线数据成功: 300条
+2025-09-08 16:12:17.058 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [08/Sep/2025 16:26:14] "GET /klines/BTC/USDT?timeframe=15m&limit=500 HTTP/1.0" 200 -
+2025-09-08 16:26:15.451 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-08 16:26:15.634 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 15m K线数据成功: 300条
+2025-09-08 16:26:15.635 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [08/Sep/2025 16:32:14] "GET /klines/BTC/USDT?timeframe=15m&limit=500 HTTP/1.0" 200 -
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x7538587910d0>, 1007045.642578484), (<aiohttp.client_proto.ResponseHandler object at 0x753858790b90>, 1007046.370479509)])']
+connector: <aiohttp.connector.TCPConnector object at 0x7538525ffc80>
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x75385a936bd0>, 1007054.637483417), (<aiohttp.client_proto.ResponseHandler object at 0x75385a935f70>, 1007055.082804811)])']
+connector: <aiohttp.connector.TCPConnector object at 0x75385824d760>
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x753858790d70>, 1007893.270283145), (<aiohttp.client_proto.ResponseHandler object at 0x753858791010>, 1007893.658993958)])']
+connector: <aiohttp.connector.TCPConnector object at 0x753858f71370>
+2025-09-08 16:32:15.844 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-08 16:32:16.034 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 15m K线数据成功: 300条
+2025-09-08 16:32:16.035 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [08/Sep/2025 16:41:53] "GET /klines/BTC/USDT?timeframe=15m&limit=500 HTTP/1.0" 200 -
+2025-09-08 16:41:54.701 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-08 16:41:54.895 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 15m K线数据成功: 300条
+2025-09-08 16:41:54.895 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [08/Sep/2025 16:42:07] "GET /klines/BTC/ETH?timeframe=15m&limit=500 HTTP/1.0" 200 -
+2025-09-08 16:42:08.367 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-08 16:42:08.367 | ERROR    | app.core.market_data_collector:get_historical_klines:188 - 获取历史K线失败: okx does not have market symbol BTC/ETH
+2025-09-08 16:42:08.367 | ERROR    | app.services.market_service:get_historical_klines:207 - 获取历史K线失败: okx does not have market symbol BTC/ETH
+2025-09-08 16:42:08.367 | ERROR    | app.services.market_service:get_klines:356 - 获取K线数据失败: okx does not have market symbol BTC/ETH
+127.0.0.1 - - [08/Sep/2025 16:42:08] "GET /klines/BTC/ETH?timeframe=15m&limit=500 HTTP/1.0" 500 -
+127.0.0.1 - - [08/Sep/2025 16:42:08] "GET /klines/BTC/USDT?timeframe=15m&limit=500 HTTP/1.0" 200 -
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x753858790650>, 1008253.35860313), (<aiohttp.client_proto.ResponseHandler object at 0x753858791310>, 1008253.475184366), (<aiohttp.client_proto.ResponseHandler object at 0x753858791670>, 1008254.058798119)])']
+connector: <aiohttp.connector.TCPConnector object at 0x75385207f380>
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x75385a936e70>, 1008832.515495834), (<aiohttp.client_proto.ResponseHandler object at 0x753858791010>, 1008832.918192757)])']
+connector: <aiohttp.connector.TCPConnector object at 0x753858d1bfe0>
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x753858790770>, 1008845.980485689), (<aiohttp.client_proto.ResponseHandler object at 0x753858790710>, 1008846.094705571), (<aiohttp.client_proto.ResponseHandler object at 0x753858790950>, 1008846.185771481)])']
+connector: <aiohttp.connector.TCPConnector object at 0x753851f95dc0>
+2025-09-08 16:42:09.458 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-08 16:42:09.682 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 15m K线数据成功: 300条
+2025-09-08 16:42:09.682 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [08/Sep/2025 16:42:10] "GET /klines/BTC/ETH?timeframe=15m&limit=500 HTTP/1.0" 200 -
+2025-09-08 16:42:10.896 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-08 16:42:10.896 | ERROR    | app.core.market_data_collector:get_historical_klines:188 - 获取历史K线失败: okx does not have market symbol BTC/ETH
+2025-09-08 16:42:10.896 | ERROR    | app.services.market_service:get_historical_klines:207 - 获取历史K线失败: okx does not have market symbol BTC/ETH
+2025-09-08 16:42:10.896 | ERROR    | app.services.market_service:get_klines:356 - 获取K线数据失败: okx does not have market symbol BTC/ETH
+127.0.0.1 - - [08/Sep/2025 16:42:10] "GET /klines/BTC/ETH?timeframe=15m&limit=500 HTTP/1.0" 500 -
+127.0.0.1 - - [08/Sep/2025 16:46:52] "GET /klines/BTC/USDT?timeframe=15m&limit=500 HTTP/1.0" 200 -
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x753858791b50>, 1008847.311137031), (<aiohttp.client_proto.ResponseHandler object at 0x753858792090>, 1008847.312367042), (<aiohttp.client_proto.ResponseHandler object at 0x753858791850>, 1008847.705463952)])']
+connector: <aiohttp.connector.TCPConnector object at 0x75385d322b40>
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x75385a936ab0>, 1008848.619829935), (<aiohttp.client_proto.ResponseHandler object at 0x75385a937470>, 1008848.714830892)])']
+connector: <aiohttp.connector.TCPConnector object at 0x7538520b5c40>
+2025-09-08 16:46:53.648 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-08 16:46:53.836 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 15m K线数据成功: 300条
+2025-09-08 16:46:53.836 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [08/Sep/2025 16:51:38] "GET /klines/BTC/USDT?timeframe=15m&limit=500 HTTP/1.0" 200 -
+2025-09-08 16:51:39.633 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-08 16:51:39.841 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 15m K线数据成功: 300条
+2025-09-08 16:51:39.841 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [08/Sep/2025 17:03:55] "GET /klines/BTC/USDT?timeframe=15m&limit=500 HTTP/1.0" 200 -
+2025-09-08 17:03:55.887 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-08 17:03:56.085 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 15m K线数据成功: 300条
+2025-09-08 17:03:56.085 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [08/Sep/2025 17:05:23] "GET /klines/BTC/USDT?timeframe=15m&limit=500 HTTP/1.0" 200 -
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x753858791610>, 1009131.229106218), (<aiohttp.client_proto.ResponseHandler object at 0x753858790710>, 1009131.274895693), (<aiohttp.client_proto.ResponseHandler object at 0x7538587905f0>, 1009131.348331662), (<aiohttp.client_proto.ResponseHandler object at 0x753858790fb0>, 1009131.860660521)])']
+connector: <aiohttp.connector.TCPConnector object at 0x753852626540>
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x753858790c50>, 1009417.44558447), (<aiohttp.client_proto.ResponseHandler object at 0x75385d8c5eb0>, 1009417.838545587)])']
+connector: <aiohttp.connector.TCPConnector object at 0x7538585b83b0>
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x753858792210>, 1010153.712745338), (<aiohttp.client_proto.ResponseHandler object at 0x7538587911f0>, 1010154.109431439)])']
+connector: <aiohttp.connector.TCPConnector object at 0x7538512ad820>
+2025-09-08 17:05:23.964 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-08 17:05:24.145 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 15m K线数据成功: 300条
+2025-09-08 17:05:24.145 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [08/Sep/2025 17:07:15] "GET /klines/BTC/USDT?timeframe=15m&limit=500 HTTP/1.0" 200 -
+2025-09-08 17:07:15.892 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-08 17:07:16.071 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 15m K线数据成功: 300条
+2025-09-08 17:07:16.071 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [08/Sep/2025 17:07:21] "GET /klines/BTC/USDT?timeframe=15m&limit=500 HTTP/1.0" 200 -
+2025-09-08 17:07:22.592 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-08 17:07:22.773 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 15m K线数据成功: 300条
+2025-09-08 17:07:22.773 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [08/Sep/2025 17:14:58] "GET /klines/BTC/USDT?timeframe=15m&limit=500 HTTP/1.0" 200 -
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x753858790ad0>, 1010241.548920469), (<aiohttp.client_proto.ResponseHandler object at 0x753858791430>, 1010242.168925909)])']
+connector: <aiohttp.connector.TCPConnector object at 0x753851e97800>
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x7538587920f0>, 1010353.705348615), (<aiohttp.client_proto.ResponseHandler object at 0x753858792150>, 1010354.091641641)])']
+connector: <aiohttp.connector.TCPConnector object at 0x75385833ab40>
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x753858790dd0>, 1010360.408603683), (<aiohttp.client_proto.ResponseHandler object at 0x753858790530>, 1010360.797361092)])']
+connector: <aiohttp.connector.TCPConnector object at 0x753858903fb0>
+2025-09-08 17:14:59.443 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-08 17:14:59.615 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 15m K线数据成功: 300条
+2025-09-08 17:14:59.616 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [08/Sep/2025 17:25:07] "GET /klines/BTC/USDT?timeframe=15m&limit=500 HTTP/1.0" 200 -
+2025-09-08 17:25:08.206 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-08 17:25:08.537 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 15m K线数据成功: 300条
+2025-09-08 17:25:08.537 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [08/Sep/2025 17:25:32] "GET /klines/BTC/USDT?timeframe=15m&limit=500 HTTP/1.0" 200 -
+2025-09-08 17:25:33.604 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-08 17:25:33.781 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 15m K线数据成功: 300条
+2025-09-08 17:25:33.782 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [08/Sep/2025 17:37:21] "GET /klines/BTC/USDT?timeframe=15m&limit=500 HTTP/1.0" 200 -
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x753858790fb0>, 1010817.032271583), (<aiohttp.client_proto.ResponseHandler object at 0x7538587921b0>, 1010817.639937466)])']
+connector: <aiohttp.connector.TCPConnector object at 0x753858935970>
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x753858790230>, 1011426.015683355), (<aiohttp.client_proto.ResponseHandler object at 0x753858791a90>, 1011426.541017752)])']
+connector: <aiohttp.connector.TCPConnector object at 0x7538533b45f0>
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x753858791490>, 1011451.424851096), (<aiohttp.client_proto.ResponseHandler object at 0x753858790f50>, 1011451.805988609)])']
+connector: <aiohttp.connector.TCPConnector object at 0x753859144c20>
+2025-09-08 17:37:22.095 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-08 17:37:22.348 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 15m K线数据成功: 300条
+2025-09-08 17:37:22.349 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [08/Sep/2025 17:46:26] "GET /klines/BTC/USDT?timeframe=15m&limit=500 HTTP/1.0" 200 -
+2025-09-08 17:46:27.303 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-08 17:46:27.493 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 15m K线数据成功: 300条
+2025-09-08 17:46:27.493 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [08/Sep/2025 17:57:50] "GET /klines/BTC/USDT?timeframe=15m&limit=500 HTTP/1.0" 200 -
+2025-09-08 17:57:50.907 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-08 17:57:51.100 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 15m K线数据成功: 300条
+2025-09-08 17:57:51.100 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条
+127.0.0.1 - - [08/Sep/2025 18:06:30] "GET /klines/BTC/USDT?timeframe=15m&limit=500 HTTP/1.0" 200 -
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x753858790c50>, 1012159.684283689), (<aiohttp.client_proto.ResponseHandler object at 0x753858791b50>, 1012160.327738164)])']
+connector: <aiohttp.connector.TCPConnector object at 0x753851f5fbf0>
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x753858790a10>, 1012705.117438069), (<aiohttp.client_proto.ResponseHandler object at 0x753858790230>, 1012705.517702736)])']
+connector: <aiohttp.connector.TCPConnector object at 0x7538593a4080>
+okx requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x753858791fd0>, 1013388.729992102), (<aiohttp.client_proto.ResponseHandler object at 0x7538587915b0>, 1013389.124411856)])']
+connector: <aiohttp.connector.TCPConnector object at 0x75385318c5f0>
+2025-09-08 18:06:31.324 | INFO     | app.core.market_data_collector:initialize:122 - OKX交易所连接成功
+2025-09-08 18:06:31.505 | INFO     | app.core.market_data_collector:get_historical_klines:184 - 获取BTC/USDT 15m K线数据成功: 300条
+2025-09-08 18:06:31.505 | INFO     | app.services.market_service:get_klines:349 - 成功获取BTC/USDT真实K线数据: 300条

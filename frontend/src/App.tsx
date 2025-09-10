@@ -25,6 +25,7 @@ import AdminDashboardPage from './pages/AdminDashboardPage'
 import UserManagementPage from './pages/UserManagementPage'
 import ClaudeManagementPage from './pages/ClaudeManagementPage'
 import WalletManagementPage from './pages/WalletManagementPage'
+import DataManagementPageReal from './pages/DataManagementPageReal'
 import NotFoundPage from './pages/NotFoundPage'
 
 // 布局组件
@@ -139,9 +140,7 @@ function App() {
 
       <Route path="/trading" element={
         <ProtectedRoute>
-          <MainLayout>
-            <TradingPage />
-          </MainLayout>
+          <TradingPage />
         </ProtectedRoute>
       } />
 
@@ -211,6 +210,13 @@ function App() {
       <Route path="/admin/wallets" element={
         <ProtectedRoute>
           <WalletManagementPage />
+        </ProtectedRoute>
+      } />
+      
+      {/* 数据管理页面 */}
+      <Route path="/admin/data" element={
+        <ProtectedRoute>
+          <DataManagementPageReal />
         </ProtectedRoute>
       } />
 

@@ -357,14 +357,14 @@ async def get_blockchain_statistics(
     """获取区块链监控统计信息"""
     try:
         from app.models.payment import BlockchainTransaction, USDTWallet
-        from sqlalchemy import select, func, and_
+        from sqlalchemy import select, func, and_, case
         from datetime import datetime, timedelta
         
         # 交易统计
         tx_stats_query = select(
             func.count().label('total_transactions'),
-            func.sum(func.case((BlockchainTransaction.status == 'confirmed', 1), else_=0)).label('confirmed'),
-            func.sum(func.case((BlockchainTransaction.status == 'pending', 1), else_=0)).label('pending'),
+            func.sum(case((BlockchainTransaction.status == 'confirmed', 1), else_=0)).label('confirmed'),
+            func.sum(case((BlockchainTransaction.status == 'pending', 1), else_=0)).label('pending'),
             func.sum(BlockchainTransaction.amount).label('total_volume')
         ).select_from(BlockchainTransaction)
         

@@ -8,7 +8,8 @@ import re
 from typing import Dict, List, Any, Optional
 from loguru import logger
 
-from app.ai.core.claude_client import claude_client
+from app.core.claude_client import ClaudeClient
+from app.services.claude_account_service import claude_account_service
 from app.services.strategy_template_validator import StrategyTemplateValidator
 
 
@@ -37,6 +38,30 @@ class StrategyAutoFixService:
     MAX_FIX_ATTEMPTS = 3
     
     @staticmethod
+    async def _get_claude_client() -> Optional[ClaudeClient]:
+        """获取Claude客户端实例"""
+        try:
+            account = await claude_account_service.select_best_account()
+            if not account:
+                logger.error("没有可用的Claude账号")
+                return None
+            
+            decrypted_api_key = await claude_account_service.get_decrypted_api_key(account.id)
+            if not decrypted_api_key:
+                logger.error("无法获取解密的API密钥")
+                return None
+            
+            return ClaudeClient(
+                api_key=decrypted_api_key,
+                base_url=account.proxy_base_url,
+                timeout=120,
+                max_retries=2
+            )
+        except Exception as e:
+            logger.error(f"获取Claude客户端失败: {e}")
+            return None
+    
+    @staticmethod
     async def auto_fix_strategy(
         code: str,
         validation_errors: List[str],
@@ -62,12 +87,21 @@ class StrategyAutoFixService:
             )
             
             # 调用Claude进行修复
-            response = await claude_client.chat_completion(
+            claude_client = await StrategyAutoFixService._get_claude_client()
+            if not claude_client:
+                return {
+                    "success": False,
+                    "fixed_code": code,
+                    "error": "无法获取Claude客户端",
+                    "attempts_used": attempt
+                }
+                
+            response = await claude_client.create_message(
                 messages=[{
                     "role": "user",
                     "content": fix_prompt
                 }],
-                system_prompt="你是专业的Python代码修复专家，精通量化交易策略开发，严格按照模板要求修复代码。",
+                system="你是专业的Python代码修复专家，精通量化交易策略开发，严格按照模板要求修复代码。",
                 temperature=0.3
             )
             
@@ -80,7 +114,17 @@ class StrategyAutoFixService:
                 }
             
             # 提取修复后的代码
-            fixed_code = extract_python_code(response["content"])
+            content = response["content"]
+            if isinstance(content, list) and len(content) > 0:
+                # Anthropic原始格式
+                content = content[0].get("text", "")
+            elif isinstance(content, str):
+                # 包装格式
+                pass
+            else:
+                content = str(content)
+                
+            fixed_code = extract_python_code(content)
             
             # 验证修复结果
             validation_result = await StrategyTemplateValidator.validate_strategy(fixed_code)
@@ -90,7 +134,7 @@ class StrategyAutoFixService:
                 return {
                     "success": True,
                     "fixed_code": fixed_code,
-                    "fix_explanation": response["content"],
+                    "fix_explanation": content,
                     "validation_result": validation_result,
                     "attempts_used": attempt
                 }
@@ -270,9 +314,16 @@ class UserStrategy(EnhancedBaseStrategy):
 }}
 """
             
-            response = await claude_client.chat_completion(
+            claude_client = await StrategyAutoFixService._get_claude_client()
+            if not claude_client:
+                return {
+                    "success": False,
+                    "error": "无法获取Claude客户端"
+                }
+                
+            response = await claude_client.create_message(
                 messages=[{"role": "user", "content": improvement_prompt}],
-                system_prompt="你是资深的量化策略代码审查专家，提供专业的改进建议。",
+                system="你是资深的量化策略代码审查专家，提供专业的改进建议。",
                 temperature=0.4
             )
             
@@ -280,7 +331,16 @@ class UserStrategy(EnhancedBaseStrategy):
                 try:
                     # 尝试解析JSON响应
                     import json
-                    content = response["content"].strip()
+                    content = response["content"]
+                    if isinstance(content, list) and len(content) > 0:
+                        # Anthropic原始格式
+                        content = content[0].get("text", "")
+                    elif isinstance(content, str):
+                        # 包装格式
+                        pass
+                    else:
+                        content = str(content)
+                    content = content.strip()
                     if "```json" in content:
                         content = content.split("```json")[1].split("```")[0].strip()
                     elif "```" in content:
@@ -296,7 +356,7 @@ class UserStrategy(EnhancedBaseStrategy):
                     return {
                         "success": True,
                         "suggestions": {
-                            "general_advice": response["content"],
+                            "general_advice": content,
                             "overall_score": 7.0
                         }
                     }

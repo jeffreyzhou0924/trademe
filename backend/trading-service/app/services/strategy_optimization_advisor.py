@@ -9,11 +9,36 @@ from typing import Dict, List, Any, Optional
 from datetime import datetime
 from loguru import logger
 
-from app.ai.core.claude_client import claude_client
+from app.core.claude_client import ClaudeClient
+from app.services.claude_account_service import claude_account_service
 
 
 class StrategyOptimizationAdvisor:
     """策略优化顾问"""
+    
+    @staticmethod
+    async def _get_claude_client() -> Optional[ClaudeClient]:
+        """获取Claude客户端实例"""
+        try:
+            account = await claude_account_service.select_best_account()
+            if not account:
+                logger.error("没有可用的Claude账号")
+                return None
+            
+            decrypted_api_key = await claude_account_service.get_decrypted_api_key(account.id)
+            if not decrypted_api_key:
+                logger.error("无法获取解密的API密钥")
+                return None
+            
+            return ClaudeClient(
+                api_key=decrypted_api_key,
+                base_url=account.proxy_base_url,
+                timeout=120,
+                max_retries=2
+            )
+        except Exception as e:
+            logger.error(f"获取Claude客户端失败: {e}")
+            return None
     
     PERFORMANCE_THRESHOLDS = {
         "excellent": {"return": 0.3, "sharpe": 2.0, "drawdown": 0.1},
@@ -324,15 +349,31 @@ class StrategyOptimizationAdvisor:
 }}
 """
             
-            response = await claude_client.chat_completion(
+            claude_client = await StrategyOptimizationAdvisor._get_claude_client()
+            if not claude_client:
+                return {
+                    "success": False,
+                    "error": "无法获取Claude客户端"
+                }
+                
+            response = await claude_client.create_message(
                 messages=[{"role": "user", "content": analysis_prompt}],
-                system_prompt="你是专业的量化策略分析师，具有丰富的策略优化经验。",
+                system="你是专业的量化策略分析师，具有丰富的策略优化经验。",
                 temperature=0.4
             )
             
             if response["success"]:
                 try:
-                    content = response["content"].strip()
+                    content = response["content"]
+                    if isinstance(content, list) and len(content) > 0:
+                        # Anthropic原始格式
+                        content = content[0].get("text", "")
+                    elif isinstance(content, str):
+                        # 包装格式
+                        pass
+                    else:
+                        content = str(content)
+                    content = content.strip()
                     if "```json" in content:
                         content = content.split("```json")[1].split("```")[0].strip()
                     elif "```" in content:
@@ -347,7 +388,7 @@ class StrategyOptimizationAdvisor:
                     logger.error(f"AI分析JSON解析失败: {e}")
                     return {
                         "success": False,
-                        "raw_response": response["content"],
+                        "raw_response": content,
                         "error": "JSON解析失败"
                     }
             else:

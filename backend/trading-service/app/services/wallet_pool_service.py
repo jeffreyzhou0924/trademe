@@ -4,7 +4,7 @@
 
 import asyncio
 import secrets
-from typing import List, Optional, Dict, Tuple
+from typing import List, Optional, Dict, Tuple, Any
 from decimal import Decimal
 from datetime import datetime, timedelta
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -14,7 +14,8 @@ from sqlalchemy.orm import selectinload
 from app.database import get_db
 from app.models.payment import USDTWallet, USDTPaymentOrder, WalletBalance
 from app.models.admin import AdminOperationLog
-from app.services.wallet_encryption import wallet_encryption
+from app.services.wallet_generator import MultiChainWalletGenerator, WalletInfo as GeneratorWalletInfo
+from app.security.crypto_manager import get_security_manager
 from app.core.exceptions import WalletError, SecurityError, ValidationError
 import logging
 
@@ -53,7 +54,9 @@ class WalletPoolService:
     
     def __init__(self, db: AsyncSession):
         self.db = db
-        self.encryption = wallet_encryption
+        self.wallet_generator = MultiChainWalletGenerator()
+        self.security_manager = get_security_manager()
+        logger.info("WalletPoolService初始化完成")
     
     async def generate_wallets(
         self, 
@@ -86,28 +89,34 @@ class WalletPoolService:
         failed_count = 0
         
         try:
-            # 批量生成钱包
-            for i in range(count):
+            # 使用新的钱包生成器批量生成
+            generator_wallets = self.wallet_generator.batch_generate_wallets(
+                network=network,
+                count=count,
+                name_prefix=name_prefix
+            )
+            
+            # 处理生成的钱包
+            for i, gen_wallet in enumerate(generator_wallets):
                 try:
-                    # 生成钱包密钥对
-                    private_key, address = self._generate_wallet_keypair(network)
-                    
-                    # 加密私钥
-                    encrypted_private_key = self.encryption.encrypt_private_key(
-                        private_key, address
+                    # 安全存储私钥
+                    wallet_id_temp = f"temp_{i}_{secrets.token_hex(4)}"
+                    storage_result = self.security_manager.secure_store_private_key(
+                        wallet_id=wallet_id_temp,
+                        private_key=gen_wallet.private_key,
+                        network=network
                     )
                     
-                    # 验证私钥正确性
-                    if not self.encryption.verify_private_key(private_key, address, network):
-                        raise WalletError(f"生成的私钥验证失败: {address}")
+                    if not storage_result['success']:
+                        raise SecurityError(f"私钥加密失败: {storage_result.get('error')}")
                     
-                    # 创建钱包记录
-                    wallet_name = f"{name_prefix}_{i+1:04d}"
+                    # 创建数据库记录
                     wallet = USDTWallet(
-                        wallet_name=wallet_name,
-                        network=network,
-                        address=address,
-                        private_key=encrypted_private_key,
+                        wallet_name=gen_wallet.name,
+                        network=gen_wallet.network,
+                        address=gen_wallet.address,
+                        private_key=storage_result['encrypted_private_key'],
+                        public_key=gen_wallet.public_key,
                         balance=Decimal('0'),
                         status=self.STATUS_AVAILABLE,
                         total_received=Decimal('0'),
@@ -120,9 +129,9 @@ class WalletPoolService:
                     
                     generated_wallets.append(WalletInfo(
                         id=wallet.id,
-                        name=wallet_name,
-                        network=network,
-                        address=address,
+                        name=gen_wallet.name,
+                        network=gen_wallet.network,
+                        address=gen_wallet.address,
                         balance=Decimal('0'),
                         status=self.STATUS_AVAILABLE,
                         created_at=wallet.created_at
@@ -185,29 +194,37 @@ class WalletPoolService:
             raise ValidationError(f"不支持的网络类型: {network}")
         
         try:
-            # 从私钥计算地址
-            address = self._get_address_from_private_key(private_key, network)
-            
-            # 验证私钥正确性
-            if not self.encryption.verify_private_key(private_key, address, network):
-                raise SecurityError("私钥验证失败")
+            # 使用钱包生成器导入钱包
+            imported_wallet = self.wallet_generator.import_wallet(
+                network=network,
+                private_key=private_key,
+                wallet_name=wallet_name
+            )
             
             # 检查地址是否已存在
             existing_wallet = await self.db.execute(
-                select(USDTWallet).where(USDTWallet.address == address)
+                select(USDTWallet).where(USDTWallet.address == imported_wallet.address)
             )
             if existing_wallet.scalar_one_or_none():
-                raise ValidationError(f"钱包地址已存在: {address}")
+                raise ValidationError(f"钱包地址已存在: {imported_wallet.address}")
             
-            # 加密私钥
-            encrypted_private_key = self.encryption.encrypt_private_key(private_key, address)
+            # 安全存储私钥
+            storage_result = self.security_manager.secure_store_private_key(
+                wallet_id=f"import_{secrets.token_hex(8)}",
+                private_key=imported_wallet.private_key,
+                network=network
+            )
+            
+            if not storage_result['success']:
+                raise SecurityError(f"私钥加密失败: {storage_result.get('error')}")
             
             # 创建钱包记录
             wallet = USDTWallet(
                 wallet_name=wallet_name,
-                network=network,
-                address=address,
-                private_key=encrypted_private_key,
+                network=imported_wallet.network,
+                address=imported_wallet.address,
+                private_key=storage_result['encrypted_private_key'],
+                public_key=imported_wallet.public_key,
                 balance=Decimal('0'),
                 status=self.STATUS_AVAILABLE,
                 total_received=Decimal('0'),
@@ -225,19 +242,19 @@ class WalletPoolService:
                     operation="IMPORT_WALLET",
                     resource_id=wallet.id,
                     details={
-                        "network": network,
+                        "network": imported_wallet.network,
                         "wallet_name": wallet_name,
-                        "address": address
+                        "address": imported_wallet.address
                     }
                 )
             
-            logger.info(f"成功导入钱包: {wallet_name} ({address})")
+            logger.info(f"成功导入钱包: {wallet_name} ({imported_wallet.address})")
             
             return WalletInfo(
                 id=wallet.id,
                 name=wallet_name,
-                network=network,
-                address=address,
+                network=imported_wallet.network,
+                address=imported_wallet.address,
                 balance=Decimal('0'),
                 status=self.STATUS_AVAILABLE,
                 created_at=wallet.created_at
@@ -496,97 +513,143 @@ class WalletPoolService:
             logger.error(f"获取钱包池统计失败: {e}")
             raise WalletError(f"统计信息获取失败: {str(e)}")
     
-    def _generate_wallet_keypair(self, network: str) -> Tuple[str, str]:
-        """生成钱包密钥对"""
-        if network == self.NETWORK_TRC20:
-            return self._generate_tron_wallet()
-        elif network in [self.NETWORK_ERC20, self.NETWORK_BEP20]:
-            return self._generate_ethereum_wallet()
-        else:
-            raise ValidationError(f"不支持的网络类型: {network}")
-    
-    def _generate_tron_wallet(self) -> Tuple[str, str]:
-        """生成TRON钱包"""
-        try:
-            from tronpy.keys import PrivateKey
-            
-            # 生成私钥
-            private_key = PrivateKey.random()
-            # 获取地址
-            address = private_key.public_key.to_base58check_address()
-            
-            return private_key.hex(), address
-        except ImportError:
-            # 如果没有安装tronpy，使用备用方案
-            logger.warning("tronpy not available, using fallback method")
-            return self._generate_tron_wallet_fallback()
-    
-    def _generate_ethereum_wallet(self) -> Tuple[str, str]:
-        """生成Ethereum/BSC钱包"""
-        try:
-            from eth_account import Account
-            
-            # 生成账户
-            account = Account.create()
-            
-            return account.key.hex(), account.address
-        except ImportError:
-            # 如果没有安装eth_account，使用备用方案
-            logger.warning("eth_account not available, using fallback method")
-            return self._generate_ethereum_wallet_fallback()
-    
-    def _generate_tron_wallet_fallback(self) -> Tuple[str, str]:
-        """TRON钱包生成备用方案"""
-        # 生成32字节随机私钥
-        private_key_bytes = secrets.randbits(256).to_bytes(32, 'big')
-        private_key = private_key_bytes.hex()
+    async def get_private_key(self, wallet_id: int, network: str) -> str:
+        """
+        安全获取钱包私钥 (仅供内部服务使用)
         
-        # 简化的地址生成（实际应用中需要完整实现）
-        address = f"T{secrets.token_hex(16)}"
-        
-        logger.warning("Using fallback TRON wallet generation - not for production")
-        return private_key, address
-    
-    def _generate_ethereum_wallet_fallback(self) -> Tuple[str, str]:
-        """Ethereum钱包生成备用方案"""
-        # 生成32字节随机私钥
-        private_key_bytes = secrets.randbits(256).to_bytes(32, 'big')
-        private_key = private_key_bytes.hex()
-        
-        # 简化的地址生成（实际应用中需要完整实现）
-        address = f"0x{secrets.token_hex(20)}"
-        
-        logger.warning("Using fallback Ethereum wallet generation - not for production")
-        return private_key, address
-    
-    def _get_address_from_private_key(self, private_key: str, network: str) -> str:
-        """从私钥计算地址"""
-        if network == self.NETWORK_TRC20:
-            return self._get_tron_address_from_private_key(private_key)
-        elif network in [self.NETWORK_ERC20, self.NETWORK_BEP20]:
-            return self._get_ethereum_address_from_private_key(private_key)
-        else:
-            raise ValidationError(f"不支持的网络类型: {network}")
-    
-    def _get_tron_address_from_private_key(self, private_key: str) -> str:
-        """从TRON私钥计算地址"""
-        try:
-            from tronpy.keys import PrivateKey
+        Args:
+            wallet_id: 钱包ID
+            network: 网络类型
             
-            pk = PrivateKey(bytes.fromhex(private_key))
-            return pk.public_key.to_base58check_address()
-        except ImportError:
-            raise WalletError("TRON库未安装，无法验证私钥")
-    
-    def _get_ethereum_address_from_private_key(self, private_key: str) -> str:
-        """从Ethereum私钥计算地址"""
-        try:
-            from eth_account import Account
+        Returns:
+            解密后的私钥
             
-            account = Account.from_key(private_key)
-            return account.address
-        except ImportError:
-            raise WalletError("Ethereum库未安装，无法验证私钥")
+        Raises:
+            SecurityError: 私钥解密失败
+        """
+        try:
+            # 查询钱包
+            wallet_query = select(USDTWallet).where(USDTWallet.id == wallet_id)
+            result = await self.db.execute(wallet_query)
+            wallet = result.scalar_one_or_none()
+            
+            if not wallet:
+                raise ValidationError(f"钱包不存在: {wallet_id}")
+            
+            if wallet.network != network:
+                raise ValidationError(f"网络类型不匹配: 期望{network}, 实际{wallet.network}")
+            
+            # 安全获取私钥
+            retrieval_result = self.security_manager.secure_retrieve_private_key(
+                wallet_id=str(wallet_id),
+                encrypted_key=wallet.private_key,
+                network=network
+            )
+            
+            if not retrieval_result['success']:
+                raise SecurityError(f"私钥解密失败: {retrieval_result.get('error')}")
+            
+            return retrieval_result['private_key']
+            
+        except Exception as e:
+            logger.error(f"获取钱包私钥失败 - 钱包ID: {wallet_id}, 错误: {e}")
+            raise SecurityError(f"私钥获取失败: {str(e)}")
+    
+    async def validate_wallet_integrity(self, wallet_id: int) -> Dict[str, Any]:
+        """
+        验证钱包完整性
+        
+        Args:
+            wallet_id: 钱包ID
+            
+        Returns:
+            验证结果字典
+        """
+        try:
+            # 查询钱包
+            wallet_query = select(USDTWallet).where(USDTWallet.id == wallet_id)
+            result = await self.db.execute(wallet_query)
+            wallet = result.scalar_one_or_none()
+            
+            if not wallet:
+                return {"valid": False, "error": "钱包不存在"}
+            
+            try:
+                # 获取私钥
+                private_key = await self.get_private_key(wallet_id, wallet.network)
+                
+                # 使用钱包生成器验证地址
+                is_valid = self.wallet_generator.validate_address(wallet.address, wallet.network)
+                
+                # 验证私钥和地址的匹配性
+                imported_test = self.wallet_generator.import_wallet(
+                    network=wallet.network,
+                    private_key=private_key,
+                    wallet_name="test"
+                )
+                
+                address_match = imported_test.address == wallet.address
+                
+                return {
+                    "valid": is_valid and address_match,
+                    "address_valid": is_valid,
+                    "address_match": address_match,
+                    "wallet_id": wallet_id,
+                    "network": wallet.network,
+                    "address": wallet.address
+                }
+                
+            except Exception as e:
+                return {
+                    "valid": False,
+                    "error": f"验证过程失败: {str(e)}",
+                    "wallet_id": wallet_id
+                }
+            
+        except Exception as e:
+            logger.error(f"钱包完整性验证失败: {e}")
+            return {"valid": False, "error": str(e)}
+    
+    def get_supported_networks(self) -> List[str]:
+        """获取支持的网络类型"""
+        return self.SUPPORTED_NETWORKS.copy()
+    
+    async def get_wallet_by_address(self, address: str, network: Optional[str] = None) -> Optional[WalletInfo]:
+        """
+        根据地址查找钱包
+        
+        Args:
+            address: 钱包地址
+            network: 网络类型 (可选)
+            
+        Returns:
+            钱包信息或None
+        """
+        try:
+            query = select(USDTWallet).where(USDTWallet.address == address)
+            
+            if network:
+                query = query.where(USDTWallet.network == network)
+            
+            result = await self.db.execute(query)
+            wallet = result.scalar_one_or_none()
+            
+            if not wallet:
+                return None
+            
+            return WalletInfo(
+                id=wallet.id,
+                name=wallet.wallet_name,
+                network=wallet.network,
+                address=wallet.address,
+                balance=wallet.balance,
+                status=wallet.status,
+                created_at=wallet.created_at
+            )
+            
+        except Exception as e:
+            logger.error(f"根据地址查找钱包失败: {e}")
+            return None
     
     async def _log_operation(
         self, 

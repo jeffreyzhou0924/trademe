@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>回测结果卡片解析测试</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; margin: 20px; }
+        .test-case { border: 1px solid #ddd; margin: 10px 0; padding: 15px; border-radius: 8px; }
+        .test-title { font-weight: bold; color: #2563eb; margin-bottom: 10px; }
+        .ai-response { background: #f3f4f6; padding: 10px; border-radius: 4px; margin-bottom: 10px; }
+        .result { background: #dcfce7; padding: 10px; border-radius: 4px; }
+        .no-result { background: #fef2f2; padding: 10px; border-radius: 4px; }
+        .extracted-data { background: #eff6ff; padding: 10px; border-radius: 4px; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <h1>📊 BacktestResultCard 解析功能测试</h1>
+    <p>测试AI回复中回测结果的提取和解析逻辑</p>
+
+    <div class="test-case">
+        <div class="test-title">测试案例1: 标准回测结果格式</div>
+        <div class="ai-response" id="response1">
+            回测完成！📊 策略性能分析结果如下：
+
+            📈 **收益表现**
+            - 总收益率：25.5%
+            - 年化收益率：15.2% 
+            - 最大回撤：-8.3%
+            - 夏普比率：1.65
+
+            📊 **交易统计**
+            - 交易次数：45次
+            - 胜率：62.2%
+            - 盈亏比：1.8
+            - 平均盈利：3.2%
+
+            🎯 **风险分析**
+            - 风险等级：Medium
+            - 波动率：12.5%
+            - VaR(95%)：-2.1%
+
+            💡 **优化建议**
+            - 考虑增加止损设置
+            - 优化仓位管理
+            - 关注市场波动性
+
+            策略表现良好，建议进一步优化后可考虑实盘交易。
+        </div>
+        <div class="result" id="result1"></div>
+    </div>
+
+    <div class="test-case">
+        <div class="test-title">测试案例2: 简化回测结果格式</div>
+        <div class="ai-response" id="response2">
+            策略回测结果：收益率 15.8%，最大回撤 -5.2%，夏普比率 1.32，胜率 58%，表现优秀。
+        </div>
+        <div class="result" id="result2"></div>
+    </div>
+
+    <div class="test-case">
+        <div class="test-title">测试案例3: 包含策略代码的回复（不应提取）</div>
+        <div class="ai-response" id="response3">
+            这是一个移动平均策略的实现代码：
+
+            ```python
+            def strategy():
+                return "这只是代码示例"
+            ```
+
+            暂未进行回测，需要用户确认参数后执行。
+        </div>
+        <div class="result" id="result3"></div>
+    </div>
+
+    <script>
+        // 模拟 BacktestResultCard 中的提取逻辑
+        function extractBacktestResult(content) {
+            try {
+                const backtestKeywords = ['回测结果', '回测完成', '策略性能', '收益率', '夏普比率', '最大回撤'];
+                const hasBacktestContent = backtestKeywords.some(keyword => content.includes(keyword));
+                
+                if (!hasBacktestContent) {
+                    return null;
+                }
+
+                // 提取各种指标
+                const returnMatch = content.match(/收益率[：:]?\s*([+-]?\d+\.?\d*)%/);
+                const sharpeMatch = content.match(/夏普比率[：:]?\s*([+-]?\d+\.?\d*)/);
+                const drawdownMatch = content.match(/最大回撤[：:]?\s*-?([+-]?\d+\.?\d*)%/);
+                const winRateMatch = content.match(/胜率[：:]?\s*(\d+\.?\d*)%/);
+                const tradesMatch = content.match(/交易次数[：:]?\s*(\d+)/);
+                const riskMatch = content.match(/风险等级[：:]?\s*(\w+)/);
+                const volatilityMatch = content.match(/波动率[：:]?\s*(\d+\.?\d*)%/);
+                const varMatch = content.match(/VaR\(95%\)[：:]?\s*-?([+-]?\d+\.?\d*)%/);
+
+                if (!returnMatch && !sharpeMatch && !drawdownMatch) {
+                    return null; // 没有足够的关键指标
+                }
+
+                const totalReturn = returnMatch ? parseFloat(returnMatch[1]) : 0;
+                const initialCapital = 10000; // 默认值
+                const finalValue = initialCapital * (1 + totalReturn / 100);
+
+                const backtestResult = {
+                    strategy_name: "EMA双均线策略",
+                    symbol: "BTC/USDT",
+                    timeframe: "1h",
+                    initial_capital: initialCapital,
+                    final_value: finalValue,
+                    total_return: totalReturn,
+                    sharpe_ratio: sharpeMatch ? parseFloat(sharpeMatch[1]) : null,
+                    max_drawdown: drawdownMatch ? parseFloat(drawdownMatch[1]) : null,
+                    win_rate: winRateMatch ? parseFloat(winRateMatch[1]) : null,
+                    total_trades: tradesMatch ? parseInt(tradesMatch[1]) : null,
+                    risk_level: riskMatch ? riskMatch[1] : null,
+                    volatility: volatilityMatch ? parseFloat(volatilityMatch[1]) : null,
+                    var_95: varMatch ? parseFloat(varMatch[1]) : null,
+                    meets_expectations: totalReturn > 10,
+                    performance_grade: totalReturn > 20 ? 'A' : totalReturn > 10 ? 'B' : totalReturn > 0 ? 'C' : 'D',
+                    optimization_suggestions: [
+                        "考虑增加止损设置",
+                        "优化仓位管理", 
+                        "关注市场波动性"
+                    ]
+                };
+
+                return backtestResult;
+            } catch (error) {
+                console.warn('提取回测结果失败:', error);
+                return null;
+            }
+        }
+
+        // 测试所有案例
+        for (let i = 1; i <= 3; i++) {
+            const responseText = document.getElementById(`response${i}`).textContent;
+            const result = extractBacktestResult(responseText);
+            const resultDiv = document.getElementById(`result${i}`);
+            
+            if (result) {
+                resultDiv.className = 'result';
+                resultDiv.innerHTML = `
+                    <strong>✅ 成功提取回测结果：</strong>
+                    <div class="extracted-data">
+                        <strong>基本信息：</strong><br>
+                        • 策略：${result.strategy_name}<br>
+                        • 交易对：${result.symbol}<br>
+                        • 等级：${result.performance_grade}<br><br>
+                        
+                        <strong>财务指标：</strong><br>
+                        • 总收益率：${result.total_return}%<br>
+                        • 最终价值：$${result.final_value.toLocaleString()}<br>
+                        • 夏普比率：${result.sharpe_ratio || 'N/A'}<br>
+                        • 最大回撤：${result.max_drawdown ? '-' + result.max_drawdown + '%' : 'N/A'}<br><br>
+                        
+                        <strong>交易统计：</strong><br>
+                        • 胜率：${result.win_rate || 'N/A'}%<br>
+                        • 交易次数：${result.total_trades || 'N/A'}<br><br>
+                        
+                        <strong>风险分析：</strong><br>
+                        • 风险等级：${result.risk_level || 'N/A'}<br>
+                        • 波动率：${result.volatility || 'N/A'}%<br>
+                        • VaR(95%)：${result.var_95 ? result.var_95 + '%' : 'N/A'}<br><br>
+                        
+                        <strong>评估：</strong><br>
+                        • 达到预期：${result.meets_expectations ? '✅ 是' : '❌ 否'}<br>
+                        • 优化建议：${result.optimization_suggestions.slice(0,2).join('，')}
+                    </div>
+                `;
+            } else {
+                resultDiv.className = 'no-result';
+                resultDiv.innerHTML = '<strong>❌ 未检测到有效回测结果</strong>';
+            }
+        }
+    </script>
+</body>
+</html>

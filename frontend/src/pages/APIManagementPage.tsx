@@ -245,7 +245,7 @@ const APIManagementPage: React.FC = () => {
       secret_key: '4021858325F5A3BEC3F64B6D0533E412',
       passphrase: 'Woaiziji..123'
     })
-    toast.info('已填充OKX测试数据')
+    toast('已填充OKX测试数据')
   }
 
   useEffect(() => {

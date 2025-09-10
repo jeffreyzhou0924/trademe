@@ -17,7 +17,7 @@ class SessionType(str, Enum):
     """会话类型枚举"""
     STRATEGY = "strategy"    # 策略开发
     INDICATOR = "indicator"  # 指标开发
-    GENERAL = "general"      # 通用对话
+    TRADING_SYSTEM = "trading_system"  # 交易系统搭建
 
 
 class SessionStatus(str, Enum):
@@ -32,7 +32,7 @@ class ChatMessage(BaseModel):
     context: Optional[Dict[str, Any]] = Field(default_factory=dict, description="上下文信息")
     session_id: Optional[str] = Field(None, description="会话ID")
     ai_mode: Optional[AIMode] = Field(AIMode.DEVELOPER, description="AI模式")
-    session_type: Optional[SessionType] = Field(SessionType.GENERAL, description="会话类型")
+    session_type: Optional[SessionType] = Field(SessionType.STRATEGY, description="会话类型")
 
 
 class ChatResponse(BaseModel):

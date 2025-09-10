@@ -6,8 +6,8 @@ Trademe Trading Service - API v1
 
 from fastapi import APIRouter
 from .strategies import router as strategies_router
-# 策略模板功能暂时隐藏 - 项目初期未考虑此功能
-# from .strategy_templates import router as strategy_templates_router
+# 策略模板功能已恢复 - 前端功能完整，需要后端支持
+from .strategy_templates import router as strategy_templates_router
 from .backtests import router as backtests_router
 from .trades import router as trades_router
 from .trading import router as trading_router
@@ -24,20 +24,38 @@ from .admin.users import router as admin_users_router
 from .admin_simple import router as admin_simple_router
 # 钱包管理功能已验证，重新启用
 from .admin.usdt_wallets import router as admin_usdt_wallets_router
-# 区块链监控功能
-from .blockchain_monitor import router as blockchain_monitor_router
-# 支付订单管理API
-from .payments import router as payments_router
-# from .admin.blockchain import router as admin_blockchain_router
+# 区块链监控功能 - 暂时禁用(缺少依赖)
+# from .blockchain_monitor import router as blockchain_monitor_router
+# 支付订单管理API - 暂时禁用(依赖复杂服务)
+# from .payment_orders import router as payment_orders_router
+# 管理员支付API暂时禁用 - 依赖复杂
+# from .admin.payment_orders import router as admin_payment_orders_router
 # from .admin.payment_automation import router as admin_payment_automation_router
+# 资金归集API
+from .fund_consolidation import router as fund_consolidation_router
+# 数据管理API
+from .data_management import router as data_management_router
+from .user_claude_keys import router as user_claude_keys_router
+from .market_data import router as market_data_router
+from .okx_api_keys import router as okx_api_keys_router
+# 用户钱包管理API
+from .user_wallets import router as user_wallets_router
+# Claude API兼容端点 - 用于直接访问Claude服务
+from .claude_compatible import router as claude_compatible_router
+# AI WebSocket实时对话端点
+from .ai_websocket import router as ai_websocket_router
+# Anthropic官方API账户管理
+from .anthropic_accounts import router as anthropic_accounts_router
+# 实时回测API - AI对话中的即时回测功能
+from .realtime_backtest import router as realtime_backtest_router
 
 # 创建API路由器
 api_router = APIRouter()
 
 # 注册子路由
 api_router.include_router(strategies_router, prefix="/strategies", tags=["策略管理"])
-# 策略模板功能暂时隐藏 - 项目初期未考虑此功能
-# api_router.include_router(strategy_templates_router, prefix="/strategy-templates", tags=["策略模板"])
+# 策略模板功能已恢复 - 前端功能完整，需要后端支持
+api_router.include_router(strategy_templates_router, prefix="/strategy-templates", tags=["策略模板"])
 api_router.include_router(backtests_router, prefix="/backtests", tags=["回测分析"])
 api_router.include_router(tiered_backtests_router, prefix="/tiered-backtests", tags=["分层回测"])
 api_router.include_router(trades_router, prefix="/trades", tags=["交易管理"])
@@ -50,13 +68,39 @@ api_router.include_router(trading_notes_router, tags=["交易心得"])  # prefix
 api_router.include_router(membership_router, tags=["会员管理"])  # prefix已在router定义中设置
 api_router.include_router(enhanced_trading_router, tags=["增强版实盘交易"])  # 注意：prefix已在router定义中设置
 api_router.include_router(admin_claude_router, tags=["Claude AI管理"])  # prefix已在router定义中设置
-api_router.include_router(admin_users_router, tags=["用户管理"])  # prefix已在router定义中设置
-api_router.include_router(admin_simple_router, tags=["简单管理员API"])  # prefix已在router定义中设置
+api_router.include_router(admin_users_router, tags=["高级用户管理"])  # 企业级高级用户管理系统 - /admin/users
+api_router.include_router(admin_simple_router, tags=["简单管理员API"])  # 重新启用简单管理系统用于前端集成
 # 钱包管理路由已验证，重新启用
 api_router.include_router(admin_usdt_wallets_router, tags=["USDT钱包管理"])  # prefix已在router定义中设置
-# 区块链监控路由
-api_router.include_router(blockchain_monitor_router, tags=["区块链监控"])  # prefix已在router定义中设置
-# 支付订单管理路由
-api_router.include_router(payments_router, tags=["支付管理"])  # prefix已在router定义中设置  
-# api_router.include_router(admin_blockchain_router, tags=["区块链监控管理"])  # prefix已在router定义中设置
+# 资金归集路由
+api_router.include_router(fund_consolidation_router, tags=["资金归集"])  # prefix已在router定义中设置
+# 数据管理路由
+api_router.include_router(data_management_router, tags=["数据管理"])  # prefix已在router定义中设置
+# 用户Claude Key管理路由  
+api_router.include_router(user_claude_keys_router, prefix="/user-claude-keys", tags=["用户Claude密钥管理"])
+# 用户钱包管理路由
+api_router.include_router(user_wallets_router, prefix="/user-wallets", tags=["用户钱包管理"])
+# 区块链监控路由 - 暂时禁用(缺少依赖)
+# api_router.include_router(blockchain_monitor_router, tags=["区块链监控"])  # prefix已在router定义中设置
+# 支付订单管理路由 - 暂时禁用(依赖复杂服务)
+# api_router.include_router(payment_orders_router, tags=["支付订单管理"])  # prefix已在router定义中设置
+# 管理员支付路由暂时禁用 - 依赖复杂
+# api_router.include_router(admin_payment_orders_router, tags=["管理员支付订单"])  # prefix已在router定义中设置  
 # api_router.include_router(admin_payment_automation_router, tags=["支付自动化管理"])  # prefix已在router定义中设置
+
+# Claude API兼容端点已在main.py根级别注册，此处不再重复注册
+
+# AI WebSocket实时对话路由 - 解决HTTP超时问题的实时通信方案
+api_router.include_router(ai_websocket_router, tags=["AI WebSocket"])  # prefix已在router定义中设置
+
+# 市场数据路由 - OKX真实数据获取
+api_router.include_router(market_data_router, prefix="/market-data", tags=["市场数据"])
+
+# OKX API密钥管理路由
+api_router.include_router(okx_api_keys_router, prefix="/okx-api-keys", tags=["OKX API管理"])
+
+# Anthropic官方API账户管理路由
+api_router.include_router(anthropic_accounts_router, tags=["Anthropic官方API"])  # prefix已在router定义中设置
+
+# 实时回测路由 - AI对话中的即时回测功能
+api_router.include_router(realtime_backtest_router, tags=["实时回测"])  # prefix已在router定义中设置

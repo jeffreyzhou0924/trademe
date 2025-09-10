@@ -2,30 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useUserInfo, useWebSocketStatus, useGlobalLoading } from '../store'
 import { strategyApi } from '../services/api/strategy'
+import { Strategy, StrategyWithDisplayInfo } from '../types/strategy'
 import toast from 'react-hot-toast'
-
-interface Strategy {
-  id: number
-  name: string
-  description: string
-  code: string
-  parameters: {
-    symbol?: string
-    timeframe?: string
-    [key: string]: any
-  }
-  is_active: boolean
-  user_id: number
-  created_at: string
-  // 派生属性（用于显示）
-  status?: 'running' | 'stopped' | 'paused'
-  profit?: string
-  profitPercent?: number
-  lastUpdate?: string
-  runningTime?: string
-  totalTrades?: number
-  winRate?: number
-}
 
 const StrategiesPage: React.FC = () => {
   const navigate = useNavigate()
@@ -39,7 +17,7 @@ const StrategiesPage: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState<'all' | 'running' | 'stopped' | 'paused'>('all')
   
   // 真实策略数据
-  const [strategies, setStrategies] = useState<Strategy[]>([])
+  const [strategies, setStrategies] = useState<StrategyWithDisplayInfo[]>([])
   const [loading, setLoading] = useState(false)
 
   // 加载策略数据
@@ -59,7 +37,7 @@ const StrategiesPage: React.FC = () => {
       // 为每个策略添加显示状态（从is_active派生）
       const processedStrategies = strategiesList.map(strategy => ({
         ...strategy,
-        status: strategy.is_active ? 'running' : 'stopped' as const,
+        status: strategy.is_active ? ('running' as const) : ('stopped' as const),
         profit: '+0.00', // 暂时使用模拟数据，后续可以添加真实盈亏计算
         profitPercent: 0,
         lastUpdate: strategy.created_at,
@@ -159,7 +137,13 @@ const StrategiesPage: React.FC = () => {
 
   // 新增处理函数
   const handleEditParameters = (strategy: Strategy) => {
-    toast.info(`编辑策略参数功能开发中... (策略: ${strategy.name})`)
+    toast(`编辑策略参数功能开发中... (策略: ${strategy.name})`, {
+      icon: 'ℹ️',
+      style: {
+        background: '#3b82f6',
+        color: 'white',
+      },
+    })
   }
 
   const handleCreateLive = (strategy: Strategy) => {
@@ -167,7 +151,13 @@ const StrategiesPage: React.FC = () => {
       toast.error('创建实盘需要高级版本')
       return
     }
-    toast.info(`基于策略"${strategy.name}"创建实盘功能开发中...`)
+    toast(`基于策略"${strategy.name}"创建实盘功能开发中...`, {
+      icon: 'ℹ️',
+      style: {
+        background: '#3b82f6',
+        color: 'white',
+      },
+    })
   }
 
   const handleViewLiveDetails = (strategy: Strategy) => {
@@ -176,16 +166,17 @@ const StrategiesPage: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6">
-      {/* 统计卡片 */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl p-4 border border-blue-200">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="space-y-8">
+        {/* 统计卡片 */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+        <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl p-4 sm:p-6 border border-blue-200">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-blue-600">策略总数</p>
-              <p className="text-2xl font-bold text-blue-900">{stats.total}</p>
+              <p className="text-xl sm:text-2xl font-bold text-blue-900">{stats.total}</p>
             </div>
-            <div className="w-10 h-10 rounded-full bg-blue-200 flex items-center justify-center">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-blue-200 flex items-center justify-center">
               <svg className="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z" clipRule="evenodd" />
                 <path d="M2 13.692V16a2 2 0 002 2h12a2 2 0 002-2v-2.308A24.974 24.974 0 0110 15c-2.796 0-5.487-.46-8-1.308z" />
@@ -194,13 +185,13 @@ const StrategiesPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-gradient-to-r from-green-50 to-green-100 rounded-xl p-4 border border-green-200">
+        <div className="bg-gradient-to-r from-green-50 to-green-100 rounded-xl p-4 sm:p-6 border border-green-200">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-green-600">运行中</p>
-              <p className="text-2xl font-bold text-green-900">{stats.running}</p>
+              <p className="text-xl sm:text-2xl font-bold text-green-900">{stats.running}</p>
             </div>
-            <div className="w-10 h-10 rounded-full bg-green-200 flex items-center justify-center">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-green-200 flex items-center justify-center">
               <svg className="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
               </svg>
@@ -208,13 +199,13 @@ const StrategiesPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-gradient-to-r from-yellow-50 to-yellow-100 rounded-xl p-4 border border-yellow-200">
+        <div className="bg-gradient-to-r from-yellow-50 to-yellow-100 rounded-xl p-4 sm:p-6 border border-yellow-200">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-yellow-600">已暂停</p>
-              <p className="text-2xl font-bold text-yellow-900">{stats.paused}</p>
+              <p className="text-xl sm:text-2xl font-bold text-yellow-900">{stats.paused}</p>
             </div>
-            <div className="w-10 h-10 rounded-full bg-yellow-200 flex items-center justify-center">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-yellow-200 flex items-center justify-center">
               <svg className="w-5 h-5 text-yellow-600" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
               </svg>
@@ -222,13 +213,13 @@ const StrategiesPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-gradient-to-r from-red-50 to-red-100 rounded-xl p-4 border border-red-200">
+        <div className="bg-gradient-to-r from-red-50 to-red-100 rounded-xl p-4 sm:p-6 border border-red-200">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-red-600">已停止</p>
-              <p className="text-2xl font-bold text-red-900">{stats.stopped}</p>
+              <p className="text-xl sm:text-2xl font-bold text-red-900">{stats.stopped}</p>
             </div>
-            <div className="w-10 h-10 rounded-full bg-red-200 flex items-center justify-center">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-red-200 flex items-center justify-center">
               <svg className="w-5 h-5 text-red-600" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1V8a1 1 0 00-1-1H8z" clipRule="evenodd" />
               </svg>
@@ -239,14 +230,14 @@ const StrategiesPage: React.FC = () => {
 
       {/* 工具栏 */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div className="flex items-center space-x-4">
+        <div className="flex flex-col sm:flex-row sm:items-center space-y-3 sm:space-y-0 sm:space-x-4">
           <div className="relative">
             <input
               type="text"
               placeholder="搜索策略名称、描述或交易对..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent w-80"
+              className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent w-full sm:w-80"
             />
             <svg className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -256,7 +247,7 @@ const StrategiesPage: React.FC = () => {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value as any)}
-            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent"
+            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent w-full sm:w-auto"
           >
             <option value="all">全部状态</option>
             <option value="running">运行中</option>
@@ -267,7 +258,7 @@ const StrategiesPage: React.FC = () => {
 
         <button
           onClick={handleCreateStrategy}
-          className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+          className={`px-4 py-2 rounded-lg font-medium transition-colors w-full sm:w-auto ${
             isPremium
               ? 'bg-brand-500 text-white hover:bg-brand-600'
               : 'bg-gray-300 text-gray-500 cursor-not-allowed'
@@ -321,11 +312,11 @@ const StrategiesPage: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {filteredStrategies.map((strategy) => (
               <div key={strategy.id} className="bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-shadow">
-                <div className="p-6">
+                <div className="p-4 sm:p-6">
                   <div className="flex items-start justify-between mb-4">
-                    <div className="flex-1">
-                      <div className="flex items-center space-x-3 mb-2">
-                        <h3 className="text-lg font-semibold text-gray-900">{strategy.name}</h3>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center space-x-3 mb-2 flex-wrap">
+                        <h3 className="text-base sm:text-lg font-semibold text-gray-900 truncate">{strategy.name}</h3>
                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                           strategy.status === 'running' ? 'bg-green-100 text-green-800' :
                           strategy.status === 'paused' ? 'bg-yellow-100 text-yellow-800' :
@@ -334,42 +325,36 @@ const StrategiesPage: React.FC = () => {
                           {getStatusText(strategy.status)}
                         </span>
                       </div>
-                      <p className="text-gray-600 text-sm mb-3">{strategy.description}</p>
+                      <p className="text-gray-600 text-xs sm:text-sm mb-3 line-clamp-2">{strategy.description}</p>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4 mb-4">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 gap-3 sm:gap-4 mb-4">
                     <div>
                       <p className="text-xs text-gray-500 mb-1">交易对</p>
                       <p className="font-medium">{strategy.parameters?.symbol || 'N/A'}</p>
                     </div>
                     <div>
                       <p className="text-xs text-gray-500 mb-1">收益</p>
-                      <p className={`font-medium ${strategy.profitPercent >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                        {strategy.profit} ({strategy.profitPercent >= 0 ? '+' : ''}{strategy.profitPercent}%)
+                      <p className={`font-medium ${(strategy.total_return || 0) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                        {(strategy.total_return || 0) >= 0 ? '+' : ''}{((strategy.total_return || 0) * 100).toFixed(2)}%
                       </p>
                     </div>
-                    {strategy.runningTime && (
-                      <div>
-                        <p className="text-xs text-gray-500 mb-1">运行时长</p>
-                        <p className="font-medium">{strategy.runningTime}</p>
-                      </div>
-                    )}
-                    {strategy.totalTrades && (
+                    {strategy.total_trades && (
                       <div>
                         <p className="text-xs text-gray-500 mb-1">交易次数</p>
-                        <p className="font-medium">{strategy.totalTrades}次</p>
+                        <p className="font-medium">{strategy.total_trades}次</p>
                       </div>
                     )}
                   </div>
 
-                  <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                    <div className="flex items-center space-x-2">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0 pt-4 border-t border-gray-100">
+                    <div className="flex items-center space-x-2 flex-wrap">
                       {strategy.status === 'stopped' ? (
                         <button
                           onClick={() => handleStartStrategy(strategy)}
                           disabled={!isPremium}
-                          className={`px-3 py-1.5 rounded text-sm font-medium transition-colors ${
+                          className={`px-3 py-1.5 rounded text-xs sm:text-sm font-medium transition-colors ${
                             isPremium
                               ? 'bg-green-100 text-green-700 hover:bg-green-200'
                               : 'bg-gray-100 text-gray-400 cursor-not-allowed'
@@ -381,14 +366,14 @@ const StrategiesPage: React.FC = () => {
                         <>
                           <button
                             onClick={() => handleStopStrategy(strategy)}
-                            className="px-3 py-1.5 bg-red-100 text-red-700 rounded text-sm font-medium hover:bg-red-200 transition-colors"
+                            className="px-3 py-1.5 bg-red-100 text-red-700 rounded text-xs sm:text-sm font-medium hover:bg-red-200 transition-colors"
                           >
                             停止
                           </button>
                           {strategy.status === 'running' && (
                             <button
                               onClick={() => handlePauseStrategy(strategy)}
-                              className="px-3 py-1.5 bg-yellow-100 text-yellow-700 rounded text-sm font-medium hover:bg-yellow-200 transition-colors"
+                              className="px-3 py-1.5 bg-yellow-100 text-yellow-700 rounded text-xs sm:text-sm font-medium hover:bg-yellow-200 transition-colors"
                             >
                               暂停
                             </button>
@@ -397,7 +382,7 @@ const StrategiesPage: React.FC = () => {
                             <button
                               onClick={() => handleStartStrategy(strategy)}
                               disabled={!isPremium}
-                              className={`px-3 py-1.5 rounded text-sm font-medium transition-colors ${
+                              className={`px-3 py-1.5 rounded text-xs sm:text-sm font-medium transition-colors ${
                                 isPremium
                                   ? 'bg-green-100 text-green-700 hover:bg-green-200'
                                   : 'bg-gray-100 text-gray-400 cursor-not-allowed'
@@ -409,7 +394,7 @@ const StrategiesPage: React.FC = () => {
                         </>
                       )}
                     </div>
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-2 justify-end">
                       <button
                         onClick={() => setSelectedStrategy(strategy)}
                         className="text-gray-500 hover:text-gray-700 transition-colors"
@@ -436,6 +421,7 @@ const StrategiesPage: React.FC = () => {
             ))}
           </div>
         )}
+      </div>
       </div>
     </div>
   )

@@ -10,13 +10,14 @@ from .market_data import MarketData
 from .strategy import Strategy
 from .trade import Trade
 from .user import User
-from .claude_conversation import ClaudeConversation, ClaudeUsage, GeneratedStrategy
+from .claude_conversation import ClaudeConversation, GeneratedStrategy
 from .trading_note import TradingNote, TradingNoteLike, TradingNoteComment
 
 # 管理后台模型
 from .admin import Admin, AdminRole, AdminOperationLog, AdminSession
 from .claude_proxy import (
-    ClaudeAccount, Proxy, ClaudeUsageLog, ClaudeSchedulerConfig, ProxyHealthCheck
+    ClaudeAccount, Proxy, ClaudeUsageLog, ClaudeSchedulerConfig, 
+    ProxyHealthCheck, UserClaudeKey
 )
 from .payment import (
     USDTWallet, USDTPaymentOrder, BlockchainTransaction, PaymentWebhook, 
@@ -25,6 +26,10 @@ from .payment import (
 from .data_collection import (
     DataCollectionTask, DataQualityMetric, ExchangeAPIConfig, 
     DataCollectionLog, DataStorageUsage, DataCleanupJob
+)
+from .data_management import (
+    TickData, DataExportTask, UserDataAccess, DataPartition,
+    DataPipelineConfig, DataQualityRule, DataAccessAudit
 )
 from .membership import MembershipPlan
 
@@ -44,7 +49,6 @@ __all__ = [
     "Trade",
     "User",
     "ClaudeConversation",
-    "ClaudeUsage",
     "GeneratedStrategy",
     "TradingNote",
     "TradingNoteLike", 
@@ -62,6 +66,7 @@ __all__ = [
     "ClaudeUsageLog",
     "ClaudeSchedulerConfig", 
     "ProxyHealthCheck",
+    "UserClaudeKey",
     
     # 支付系统模型
     "USDTWallet",
@@ -78,6 +83,15 @@ __all__ = [
     "DataCollectionLog",
     "DataStorageUsage",
     "DataCleanupJob",
+    
+    # 数据管理扩展模型
+    "TickData",
+    "DataExportTask",
+    "UserDataAccess",
+    "DataPartition",
+    "DataPipelineConfig",
+    "DataQualityRule",
+    "DataAccessAudit",
     
     # 会员计划模型
     "MembershipPlan",

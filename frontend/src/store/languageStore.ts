@@ -98,7 +98,6 @@ const translations = {
     startAutomatedTrading: '开始实盘自动化交易',
     strategyBacktest: '策略回测',
     testStrategyPerformance: '测试策略历史表现',
-    aiAssistant: 'AI助手',
     getIntelligentTradingAdvice: '获取智能交易建议',
     recentStrategies: '最近策略',
     viewAll: '查看全部',
@@ -114,7 +113,6 @@ const translations = {
     timeframe: '周期',
     
     // 策略页面
-    liveTrading: '实盘交易',
     monitorRunningStrategies: '监控运行中的实盘交易，查看收益和交易详情',
     totalLiveStrategies: '总实盘数',
     runningLive: '运行中',
@@ -132,7 +130,6 @@ const translations = {
     stop: '停止',
     pause: '暂停',
     delete: '删除',
-    viewDetails: '查看详情',
     confirmDelete: '确定要删除策略',
     strategyDeleted: '策略已删除',
     strategyStarted: '已启动',
@@ -157,7 +154,6 @@ const translations = {
     newChat: '新对话',
     
     // 回测页面
-    strategyBacktest: '策略回测',
     verifyTradingStrategy: '验证您的交易策略，优化投资决策',
     totalBacktests: '总回测数',
     completedSuccessfully: '成功完成',
@@ -179,7 +175,6 @@ const translations = {
     optional: '可选项',
     
     // 交易心得页面
-    tradingNotes: '交易心得',
     shareTradeThoughts: '分享交易心得，学习交流经验',
     totalNotes: '心得总数',
     publicNotes: '公开心得',
@@ -218,7 +213,6 @@ const translations = {
     createFirstNote: '写下您的第一篇交易心得',
     
     // API管理页面
-    apiManagement: 'API管理',
     manageExchangeConnections: '管理交易所连接，配置API密钥',
     totalAPIs: 'API总数',
     activeAPIs: '活跃API',
@@ -238,7 +232,6 @@ const translations = {
     confirmDeleteAPI: '确定要删除这个API配置吗？',
     
     // 账户中心页面  
-    accountCenter: '账户中心',
     manageAccountAndSettings: '管理账户信息和系统设置',
     accountInfo: '账户信息',
     membershipInfo: '会员信息',
@@ -369,7 +362,6 @@ const translations = {
     startAutomatedTrading: 'Start automated live trading',
     strategyBacktest: 'Strategy Backtest',
     testStrategyPerformance: 'Test strategy historical performance',
-    aiAssistant: 'AI Assistant',
     getIntelligentTradingAdvice: 'Get intelligent trading advice',
     recentStrategies: 'Recent Strategies',
     viewAll: 'View All',
@@ -385,7 +377,6 @@ const translations = {
     timeframe: 'Timeframe',
     
     // Strategy page
-    liveTrading: 'Live Trading',
     monitorRunningStrategies: 'Monitor running live strategies, view profits and trading details',
     totalLiveStrategies: 'Total Live Strategies',
     runningLive: 'Running',
@@ -403,7 +394,6 @@ const translations = {
     stop: 'Stop',
     pause: 'Pause',
     delete: 'Delete',
-    viewDetails: 'View Details',
     confirmDelete: 'Are you sure you want to delete strategy',
     strategyDeleted: 'Strategy deleted',
     strategyStarted: 'started',
@@ -428,7 +418,6 @@ const translations = {
     newChat: 'New Chat',
     
     // Backtest page
-    strategyBacktest: 'Strategy Backtest',
     verifyTradingStrategy: 'Verify your trading strategies and optimize investment decisions',
     totalBacktests: 'Total Backtests',
     completedSuccessfully: 'Completed Successfully',
@@ -450,7 +439,6 @@ const translations = {
     optional: 'Optional',
     
     // Trading Notes page
-    tradingNotes: 'Trading Notes',
     shareTradeThoughts: 'Share trading insights and learn from experiences',
     totalNotes: 'Total Notes',
     publicNotes: 'Public Notes',
@@ -489,7 +477,6 @@ const translations = {
     createFirstNote: 'Write your first trading note',
     
     // API Management page
-    apiManagement: 'API Management',
     manageExchangeConnections: 'Manage exchange connections and configure API keys',
     totalAPIs: 'Total APIs',
     activeAPIs: 'Active APIs',
@@ -509,7 +496,6 @@ const translations = {
     confirmDeleteAPI: 'Are you sure you want to delete this API configuration?',
     
     // Account Center page
-    accountCenter: 'Account Center',
     manageAccountAndSettings: 'Manage account information and system settings',
     accountInfo: 'Account Information',
     membershipInfo: 'Membership Information',

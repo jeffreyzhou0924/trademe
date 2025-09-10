@@ -27,6 +27,7 @@ from app.models.api_key import ApiKey
 from app.models.claude_conversation import ClaudeUsage
 from app.services.user_management_service import UserManagementService
 from app.core.exceptions import UserManagementError
+from app.utils.data_validation import DataValidator
 
 logger = logging.getLogger(__name__)
 
@@ -422,14 +423,14 @@ class SmartTaggingService:
             reasons.append(f"执行了 {characteristics.total_trades} 笔交易")
         elif tag_name == "AI用户":
             reasons.append(f"使用AI功能 {characteristics.total_ai_usage} 次")
-            reasons.append(f"AI使用频率 {characteristics.ai_usage_frequency:.2f} 次/天")
+            reasons.append(f"AI使用频率 {DataValidator.safe_format_decimal(characteristics.ai_usage_frequency, decimals=2)} 次/天")
         elif tag_name == "高级会员":
             reasons.append(f"会员等级: {characteristics.membership_level}")
         elif tag_name == "沉睡用户":
             reasons.append(f"最后登录 {characteristics.last_login_days_ago} 天前")
         elif tag_name == "重度用户":
-            reasons.append(f"参与度评分: {characteristics.engagement_level:.2f}")
-            reasons.append(f"活动多样性: {characteristics.activity_diversity:.2f}")
+            reasons.append(f"参与度评分: {DataValidator.safe_format_decimal(characteristics.engagement_level, decimals=2)}")
+            reasons.append(f"活动多样性: {DataValidator.safe_format_decimal(characteristics.activity_diversity, decimals=2)}")
         
         return "; ".join(reasons)
     
@@ -493,7 +494,7 @@ class SmartTaggingService:
                         user_id=user_id,
                         tag_id=tag.id,
                         assigned_by=admin_id,
-                        assigned_reason=f"智能分析自动分配 (置信度: {rec.confidence_score:.2f}): {rec.reason}"
+                        assigned_reason=f"智能分析自动分配 (置信度: {DataValidator.safe_format_decimal(rec.confidence_score, decimals=2)}): {rec.reason}"
                     )
                     
                     if success:

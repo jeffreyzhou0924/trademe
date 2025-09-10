@@ -64,6 +64,12 @@ class USDTPaymentOrder(Base):
     confirmations = Column(Integer, default=0)
     required_confirmations = Column(Integer, default=1)
     
+    # 业务信息
+    payment_type = Column(String(20), default="membership", index=True)  # membership, deposit, withdrawal, service
+    description = Column(String(200), nullable=True)  # 订单描述
+    callback_url = Column(String(500), nullable=True)  # 回调URL
+    order_metadata = Column(Text, nullable=True)  # 扩展元数据(JSON)
+    
     # 时间信息
     expires_at = Column(DateTime, nullable=False, index=True)
     confirmed_at = Column(DateTime, nullable=True)
@@ -125,8 +131,10 @@ class WalletBalance(Base):
     id = Column(Integer, primary_key=True, index=True)
     wallet_id = Column(Integer, ForeignKey("usdt_wallets.id"), nullable=False, index=True)
     balance = Column(DECIMAL(18, 8), nullable=False)
+    balance_change = Column(DECIMAL(18, 8), default=0)  # 余额变化
     pending_balance = Column(DECIMAL(18, 8), default=0)  # 待确认余额
     block_height = Column(Integer, nullable=True)
+    change_reason = Column(String(200), nullable=True)  # 变更原因
     snapshot_time = Column(DateTime, nullable=False, default=func.now(), index=True)
     sync_source = Column(String(50), nullable=True)  # api, webhook, manual
     created_at = Column(DateTime(timezone=True), server_default=func.now())
@@ -148,3 +156,25 @@ class PaymentNotification(Base):
     email_sent_at = Column(DateTime, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     read_at = Column(DateTime, nullable=True)
+
+
+class WebhookLog(Base):
+    """Webhook事件日志模型"""
+    __tablename__ = "webhook_logs"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    event_id = Column(String(100), nullable=False, unique=True, index=True)
+    webhook_type = Column(String(50), nullable=False, index=True)  # tron_transaction, ethereum_transaction, etc.
+    source = Column(String(100), nullable=True)  # 请求来源
+    status = Column(String(20), default="received", index=True)  # received, processing, processed, failed, ignored
+    message = Column(Text, nullable=True)  # 处理消息
+    payload = Column(Text, nullable=False)  # 原始请求数据
+    headers = Column(Text, nullable=True)  # 请求头
+    signature = Column(String(255), nullable=True)  # 签名
+    processing_time = Column(DECIMAL(10, 4), nullable=True)  # 处理时间(秒)
+    result_data = Column(Text, nullable=True)  # 处理结果数据
+    error = Column(Text, nullable=True)  # 错误信息
+    retry_count = Column(Integer, default=0)  # 重试次数
+    processed_at = Column(DateTime, nullable=True)  # 处理完成时间
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())

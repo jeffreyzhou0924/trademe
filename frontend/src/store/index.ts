@@ -85,7 +85,7 @@ export const useAppInitialization = () => {
         if (isAuthenticated) {
           // 并行加载用户数据
           await Promise.allSettled([
-            loadChatSessions(),
+            loadChatSessions('developer'),
             fetchStrategies(),
             loadSupportedExchanges(), // 加载支持的交易所
             fetchBacktests({ page: 1, per_page: 10 }) // 加载回测历史
@@ -236,7 +236,7 @@ export const useAIStatus = () => {
   
   return {
     hasActiveSession: !!currentSession,
-    currentSessionId: currentSession?.id,
+    currentSessionId: currentSession?.session_id,
     isTyping,
     isGenerating,
     messagesCount,

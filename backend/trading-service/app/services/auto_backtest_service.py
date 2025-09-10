@@ -226,29 +226,61 @@ class AutoBacktestService:
     ) -> Dict[str, Any]:
         """执行增强版回测"""
         
-        # 模拟策略对象
-        mock_strategy = type('Strategy', (), {
-            'id': 999999,
-            'user_id': user_id,
-            'code': strategy_code,
-            'parameters': '{}',
-            'name': 'AI生成策略'
-        })()
+        from app.models.strategy import Strategy
+        from sqlalchemy import select, delete
+        import uuid
         
-        # 运行回测
-        results = await engine.run_backtest(
-            strategy_id=999999,
+        # 生成唯一的临时策略ID
+        temp_strategy_id = int(str(uuid.uuid4().int)[-9:])  # 使用UUID后9位作为ID
+        
+        # 创建临时策略记录
+        temp_strategy = Strategy(
+            id=temp_strategy_id,
             user_id=user_id,
-            start_date=start_date,
-            end_date=end_date,
-            initial_capital=initial_capital,
-            symbol=symbol,
-            exchange=exchange,
-            timeframe=timeframe,
-            db=db
+            name=f'AI生成策略-临时-{temp_strategy_id}',
+            description='临时回测策略，将在回测完成后删除',
+            code=strategy_code,
+            parameters='{}',
+            strategy_type='strategy',
+            ai_session_id=f'temp_backtest_{temp_strategy_id}',
+            is_active=True
         )
         
-        return results
+        try:
+            # 保存临时策略到数据库
+            db.add(temp_strategy)
+            await db.commit()
+            await db.refresh(temp_strategy)
+            
+            # 运行回测
+            results = await engine.run_backtest(
+                strategy_id=temp_strategy_id,
+                user_id=user_id,
+                start_date=start_date,
+                end_date=end_date,
+                initial_capital=initial_capital,
+                symbol=symbol,
+                exchange=exchange,
+                timeframe=timeframe,
+                db=db
+            )
+            
+            return results
+            
+        except Exception as e:
+            logger.error(f"增强回测执行失败: {e}")
+            raise
+            
+        finally:
+            # 清理临时策略记录
+            try:
+                # 删除临时策略
+                delete_stmt = delete(Strategy).where(Strategy.id == temp_strategy_id)
+                await db.execute(delete_stmt)
+                await db.commit()
+                logger.info(f"已清理临时策略记录 {temp_strategy_id}")
+            except Exception as cleanup_error:
+                logger.warning(f"清理临时策略记录失败: {cleanup_error}")
     
     @staticmethod
     async def _generate_backtest_report(

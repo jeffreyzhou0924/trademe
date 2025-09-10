@@ -41,8 +41,8 @@ export const useStrategyStore = create<StrategyState>((set, get) => ({
   fetchStrategies: async () => {
     set({ isLoading: true })
     try {
-      const strategies = await strategyApi.getStrategies()
-      set({ strategies, isLoading: false })
+      const response = await strategyApi.getStrategies()
+      set({ strategies: response.strategies, isLoading: false })
     } catch (error: any) {
       set({ isLoading: false })
       const message = error.response?.data?.message || '获取策略列表失败'

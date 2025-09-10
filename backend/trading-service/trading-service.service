@@ -1,0 +1,24 @@
+[Unit]
+Description=Trademe Trading Service
+After=network.target
+
+[Service]
+Type=exec
+User=root
+WorkingDirectory=/root/trademe/backend/trading-service
+Environment="PATH=/root/trademe/backend/trading-service/venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+Environment="PYTHONPATH=/root/trademe/backend/trading-service"
+ExecStart=/root/trademe/backend/trading-service/venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8001 --workers 4 --log-config=logging.yaml
+Restart=always
+RestartSec=10
+
+# 日志管理
+StandardOutput=journal
+StandardError=journal
+
+# 资源限制
+LimitNOFILE=65536
+LimitNPROC=4096
+
+[Install]
+WantedBy=multi-user.target

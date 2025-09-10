@@ -174,13 +174,21 @@ class ClaudeSchedulerService:
             result = await session.execute(query)
             candidates = result.scalars().all()
             
+            logger.info(f"Query returned {len(candidates)} raw candidates")
+            for c in candidates:
+                logger.info(f"  - {c.account_name}: status={c.status}, limit={c.daily_limit}, usage={c.current_usage}, remaining={c.daily_limit - c.current_usage}")
+            
             # 过滤不适合的账号
             suitable_candidates = []
             for account in candidates:
-                if await self._is_account_suitable(account, context):
+                is_suitable = await self._is_account_suitable(account, context)
+                logger.info(f"Account {account.account_name} suitable check: {is_suitable}")
+                if is_suitable:
                     suitable_candidates.append(account)
+                else:
+                    logger.info(f"  Rejected {account.account_name}: not suitable")
             
-            logger.info(f"Found {len(suitable_candidates)} suitable candidate accounts")
+            logger.info(f"Found {len(suitable_candidates)} suitable candidate accounts after filtering")
             return suitable_candidates
     
     async def _is_account_suitable(
@@ -191,7 +199,9 @@ class ClaudeSchedulerService:
         """检查账号是否适合当前请求"""
         
         # 基本可用性检查
-        if not await claude_account_service._is_account_available(account):
+        is_available = await claude_account_service._is_account_available(account)
+        if not is_available:
+            logger.info(f"Account {account.account_name} not available from claude_account_service")
             return False
         
         # 模型支持检查（如果需要特定模型）
@@ -253,7 +263,7 @@ class ClaudeSchedulerService:
         reasons.append(f"remaining_quota: ${remaining_quota:.2f} (score: {quota_score:.1f})")
         
         # 3. 响应时间得分 (0-100，响应时间越低得分越高)
-        if account.avg_response_time > 0:
+        if account.avg_response_time is not None and account.avg_response_time > 0:
             # 假设5秒为最差，500ms为最佳
             time_score = max(0, 100 - (account.avg_response_time - 500) / 45)
         else:

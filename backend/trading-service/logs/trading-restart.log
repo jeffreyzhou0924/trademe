@@ -1,0 +1,1385 @@
+2025-08-31 18:15:34.041 | INFO     | app.ai.core.claude_client:__init__:113 - 使用自定义Claude API端点: https://claude.cloudcdn7.com/api
+2025-08-31 18:15:34.064 | INFO     | app.ai.core.claude_client:__init__:117 - Claude客户端初始化成功
+2025-08-31 18:15:34.064 | INFO     | app.ai.core.claude_client:__init__:134 - Claude客户端初始化完成 - 模型: claude-sonnet-4-20250514, 启用状态: True
+未配置主密钥，将生成临时密钥
+未配置主密钥，将生成临时密钥
+2025-08-31 18:15:34.570 | INFO     | app.services.okx_service:__init__:116 - 🚀 OKX交易服务初始化完成
+INFO:     Started server process [1890263]
+INFO:     Waiting for application startup.
+2025-08-31 18:15:34,984 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-08-31 18:15:34,984 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("api_keys")
+2025-08-31 18:15:34,984 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-08-31 18:15:34,986 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("backtests")
+2025-08-31 18:15:34,986 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-08-31 18:15:34,986 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("market_data")
+2025-08-31 18:15:34,986 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-08-31 18:15:34,987 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("strategies")
+2025-08-31 18:15:34,987 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-08-31 18:15:34,987 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("trades")
+2025-08-31 18:15:34,987 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-08-31 18:15:34,987 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("users")
+2025-08-31 18:15:34,987 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-08-31 18:15:34,988 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("claude_conversations")
+2025-08-31 18:15:34,988 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-08-31 18:15:34,988 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("claude_usage_stats")
+2025-08-31 18:15:34,988 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-08-31 18:15:34,988 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("generated_strategies")
+2025-08-31 18:15:34,988 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-08-31 18:15:34,988 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("ai_chat_sessions")
+2025-08-31 18:15:34,988 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-08-31 18:15:34,989 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("trading_notes")
+2025-08-31 18:15:34,989 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-08-31 18:15:34,989 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("trading_note_likes")
+2025-08-31 18:15:34,989 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-08-31 18:15:34,989 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("trading_note_comments")
+2025-08-31 18:15:34,989 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-08-31 18:15:34,990 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("admins")
+2025-08-31 18:15:34,990 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-08-31 18:15:34,990 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("admin_roles")
+2025-08-31 18:15:34,990 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-08-31 18:15:34,990 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("admin_operation_logs")
+2025-08-31 18:15:34,990 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-08-31 18:15:34,990 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("admin_sessions")
+2025-08-31 18:15:34,991 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-08-31 18:15:34,991 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("claude_accounts")
+2025-08-31 18:15:34,991 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-08-31 18:15:34,991 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("proxies")
+2025-08-31 18:15:34,991 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-08-31 18:15:34,991 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("claude_usage_logs")
+2025-08-31 18:15:34,991 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-08-31 18:15:34,992 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("claude_scheduler_configs")
+2025-08-31 18:15:34,992 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-08-31 18:15:34,992 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("user_claude_keys")
+2025-08-31 18:15:34,992 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-08-31 18:15:34,993 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("user_claude_usage")
+2025-08-31 18:15:34,993 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-08-31 18:15:34,993 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("proxy_health_checks")
+2025-08-31 18:15:34,993 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-08-31 18:15:34,993 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("usdt_wallets")
+2025-08-31 18:15:34,993 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-08-31 18:15:34,993 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("usdt_payment_orders")
+2025-08-31 18:15:34,993 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-08-31 18:15:34,994 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("blockchain_transactions")
+2025-08-31 18:15:34,994 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-08-31 18:15:34,994 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("payment_webhooks")
+2025-08-31 18:15:34,994 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-08-31 18:15:34,994 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("wallet_balances")
+2025-08-31 18:15:34,994 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-08-31 18:15:34,995 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("payment_notifications")
+2025-08-31 18:15:34,995 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-08-31 18:15:34,995 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("webhook_logs")
+2025-08-31 18:15:34,995 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-08-31 18:15:34,995 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("data_collection_tasks")
+2025-08-31 18:15:34,995 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-08-31 18:15:34,996 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("data_quality_metrics")
+2025-08-31 18:15:34,996 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-08-31 18:15:34,996 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("exchange_api_configs")
+2025-08-31 18:15:34,996 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-08-31 18:15:34,996 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("data_collection_logs")
+2025-08-31 18:15:34,996 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-08-31 18:15:34,996 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("data_storage_usage")
+2025-08-31 18:15:34,996 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-08-31 18:15:34,997 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("data_cleanup_jobs")
+2025-08-31 18:15:34,997 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-08-31 18:15:34,997 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("tick_data")
+2025-08-31 18:15:34,997 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-08-31 18:15:34,997 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("data_export_tasks")
+2025-08-31 18:15:34,997 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-08-31 18:15:34,998 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("user_data_access")
+2025-08-31 18:15:34,998 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-08-31 18:15:34,998 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("data_partitions")
+2025-08-31 18:15:34,998 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-08-31 18:15:34,998 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("data_pipeline_configs")
+2025-08-31 18:15:34,998 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-08-31 18:15:34,998 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("data_quality_rules")
+2025-08-31 18:15:34,999 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-08-31 18:15:34,999 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("data_access_audit")
+2025-08-31 18:15:34,999 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-08-31 18:15:34,999 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("membership_plans")
+2025-08-31 18:15:34,999 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-08-31 18:15:34,999 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("user_tags")
+2025-08-31 18:15:34,999 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-08-31 18:15:35,000 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("user_tag_assignments")
+2025-08-31 18:15:35,000 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-08-31 18:15:35,000 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("user_activity_logs")
+2025-08-31 18:15:35,000 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-08-31 18:15:35,000 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("user_statistics_snapshots")
+2025-08-31 18:15:35,000 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-08-31 18:15:35,001 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("user_notifications")
+2025-08-31 18:15:35,001 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-08-31 18:15:35,001 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("user_behavior_profiles")
+2025-08-31 18:15:35,001 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-08-31 18:15:35,002 INFO sqlalchemy.engine.Engine COMMIT
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+✅ 数据库初始化成功
+📋 包含的表：用户、策略、回测、交易、API密钥、市场数据、Claude对话、交易心得
+📋 管理后台表：管理员、Claude代理池、USDT支付、数据采集
+✅ Redis连接成功
+🚀 Trading Service 启动成功
+📊 环境: development
+🏠 Host: 0.0.0.0:8001
+2025-08-31 18:16:00.061 | INFO     | app.middleware.structured_logging:log_request_start:111 | 514cd9ed-f6e1-4c35-8003-761b9c168985 | Request started
+2025-08-31 18:16:00.062 | INFO     | app.middleware.structured_logging:log_request_end:153 | 514cd9ed-f6e1-4c35-8003-761b9c168985 | Request completed in 0.001s
+INFO:     43.167.252.120:51676 - "GET /api/v1/health HTTP/1.1" 200 OK
+2025-08-31 18:16:49.697 | INFO     | app.middleware.structured_logging:log_request_start:111 | 397205ad-644b-4a92-8c5d-3455417e48b8 | Request started
+2025-08-31 18:16:49,704 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-08-31 18:16:49,704 INFO sqlalchemy.engine.Engine 
+            SELECT id, username, email, membership_level, is_active, email_verified, 
+                   created_at, last_login_at 
+            FROM users 
+            ORDER BY created_at DESC 
+            LIMIT ?
+        
+2025-08-31 18:16:49,705 INFO sqlalchemy.engine.Engine [generated in 0.00014s] (5,)
+2025-08-31 18:16:49.705 | INFO     | app.middleware.structured_logging:log_request_start:111 | 7f16f741-fa74-4f1a-b9ff-a01b62a4a5f3 | Request started
+2025-08-31 18:16:49,707 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-08-31 18:16:49,746 INFO sqlalchemy.engine.Engine SELECT count(users.id) AS total_users, sum(CASE WHEN (users.is_active = 1) THEN ? ELSE ? END) AS active_users, sum(CASE WHEN (users.email_verified = 1) THEN ? ELSE ? END) AS verified_users, sum(CASE WHEN (users.membership_level = ?) THEN ? ELSE ? END) AS basic_users, sum(CASE WHEN (users.membership_level = ?) THEN ? ELSE ? END) AS premium_users, sum(CASE WHEN (users.membership_level = ?) THEN ? ELSE ? END) AS professional_users 
+FROM users
+2025-08-31 18:16:49,746 INFO sqlalchemy.engine.Engine [generated in 0.00027s] (1, 0, 1, 0, 'basic', 1, 0, 'premium', 1, 0, 'professional', 1, 0)
+2025-08-31 18:16:49,747 INFO sqlalchemy.engine.Engine ROLLBACK
+2025-08-31 18:16:49.748 | INFO     | app.middleware.structured_logging:log_request_end:153 | 397205ad-644b-4a92-8c5d-3455417e48b8 | Request completed in 0.052s
+INFO:     64.181.232.23:0 - "GET /api/v1/admin/users?limit=5 HTTP/1.0" 200 OK
+2025-08-31 18:16:49,750 INFO sqlalchemy.engine.Engine SELECT COUNT(*) FROM users WHERE created_at >= ?
+2025-08-31 18:16:49,750 INFO sqlalchemy.engine.Engine [generated in 0.00012s] (1756001809706.291,)
+2025-08-31 18:16:49,751 INFO sqlalchemy.engine.Engine ROLLBACK
+2025-08-31 18:16:49.751 | INFO     | app.middleware.structured_logging:log_request_end:153 | 7f16f741-fa74-4f1a-b9ff-a01b62a4a5f3 | Request completed in 0.046s
+INFO:     64.181.232.23:0 - "GET /api/v1/admin/stats/system HTTP/1.0" 200 OK
+2025-08-31 18:16:53.389 | INFO     | app.middleware.structured_logging:log_request_start:111 | a3aa6256-8957-45a8-b35a-343cf46c7a92 | Request started
+2025-08-31 18:16:53.390 | INFO     | app.middleware.structured_logging:log_request_end:153 | a3aa6256-8957-45a8-b35a-343cf46c7a92 | Request completed in 0.001s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 18:16:53.391 | INFO     | app.middleware.structured_logging:log_request_start:111 | 614aa06e-4f62-44f0-84ea-75c76ea9db1f | Request started
+2025-08-31 18:16:53,393 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-08-31 18:16:53,393 INFO sqlalchemy.engine.Engine 
+        SELECT 
+            exchange,
+            COUNT(DISTINCT symbol) as symbol_count,
+            COUNT(DISTINCT timeframe) as timeframe_count,
+            COUNT(*) as total_records
+        FROM market_data
+        GROUP BY exchange
+        
+2025-08-31 18:16:53,393 INFO sqlalchemy.engine.Engine [generated in 0.00009s] ()
+2025-08-31 18:16:53,394 INFO sqlalchemy.engine.Engine ROLLBACK
+2025-08-31 18:16:53.395 | INFO     | app.middleware.structured_logging:log_request_end:153 | 614aa06e-4f62-44f0-84ea-75c76ea9db1f | Request completed in 0.003s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/storage/stats HTTP/1.0" 200 OK
+2025-08-31 18:19:59.155 | INFO     | app.middleware.structured_logging:log_request_start:111 | c8a0d331-aa9c-477c-a5d3-2874d8c773ae | Request started
+2025-08-31 18:19:59.156 | INFO     | app.middleware.structured_logging:log_request_end:153 | c8a0d331-aa9c-477c-a5d3-2874d8c773ae | Request completed in 0.001s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 18:20:02.033 | INFO     | app.middleware.structured_logging:log_request_start:111 | 3330f4c7-c9b5-4c49-ba75-695473871991 | Request started
+2025-08-31 18:20:02.034 | INFO     | app.middleware.structured_logging:log_request_end:153 | 3330f4c7-c9b5-4c49-ba75-695473871991 | Request completed in 0.001s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 18:20:04.408 | INFO     | app.middleware.structured_logging:log_request_start:111 | 96e03022-bcb9-4fdd-8d01-9d08388418b8 | Request started
+2025-08-31 18:20:04.409 | INFO     | app.middleware.structured_logging:log_request_end:153 | 96e03022-bcb9-4fdd-8d01-9d08388418b8 | Request completed in 0.001s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 18:20:07.416 | INFO     | app.middleware.structured_logging:log_request_start:111 | d13bb92b-1819-4937-b69f-f17cb639ed80 | Request started
+2025-08-31 18:20:07.418 | INFO     | app.middleware.structured_logging:log_request_end:153 | d13bb92b-1819-4937-b69f-f17cb639ed80 | Request completed in 0.002s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 18:20:10.407 | INFO     | app.middleware.structured_logging:log_request_start:111 | e04e5d52-214a-4bf0-8e04-1eadf4638696 | Request started
+2025-08-31 18:20:10.408 | INFO     | app.middleware.structured_logging:log_request_end:153 | e04e5d52-214a-4bf0-8e04-1eadf4638696 | Request completed in 0.001s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 18:20:13.415 | INFO     | app.middleware.structured_logging:log_request_start:111 | 86bfd725-91dd-40a4-bbc5-c64f44e075ee | Request started
+2025-08-31 18:20:13.416 | INFO     | app.middleware.structured_logging:log_request_end:153 | 86bfd725-91dd-40a4-bbc5-c64f44e075ee | Request completed in 0.001s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 18:20:17.032 | INFO     | app.middleware.structured_logging:log_request_start:111 | 4163feb8-4d53-4375-8a08-aefba3ce2925 | Request started
+2025-08-31 18:20:17.033 | INFO     | app.middleware.structured_logging:log_request_end:153 | 4163feb8-4d53-4375-8a08-aefba3ce2925 | Request completed in 0.001s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 18:20:20.040 | INFO     | app.middleware.structured_logging:log_request_start:111 | 9312e49c-2a3f-4af1-ad33-8c71b285ee0f | Request started
+2025-08-31 18:20:20.041 | INFO     | app.middleware.structured_logging:log_request_end:153 | 9312e49c-2a3f-4af1-ad33-8c71b285ee0f | Request completed in 0.001s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 18:20:23.043 | INFO     | app.middleware.structured_logging:log_request_start:111 | 4413bbaf-b401-4f51-98ce-9eb52de22aba | Request started
+2025-08-31 18:20:23.045 | INFO     | app.middleware.structured_logging:log_request_end:153 | 4413bbaf-b401-4f51-98ce-9eb52de22aba | Request completed in 0.002s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 18:20:26.043 | INFO     | app.middleware.structured_logging:log_request_start:111 | 29b2b797-37ea-49fc-8851-96152986557f | Request started
+2025-08-31 18:20:26.044 | INFO     | app.middleware.structured_logging:log_request_end:153 | 29b2b797-37ea-49fc-8851-96152986557f | Request completed in 0.001s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 18:20:29.043 | INFO     | app.middleware.structured_logging:log_request_start:111 | ef4e76bb-654a-496f-a084-9f0b30a1592e | Request started
+2025-08-31 18:20:29.044 | INFO     | app.middleware.structured_logging:log_request_end:153 | ef4e76bb-654a-496f-a084-9f0b30a1592e | Request completed in 0.001s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 18:20:32.049 | INFO     | app.middleware.structured_logging:log_request_start:111 | 33cf01e3-74eb-4648-8f04-b3c9a1ca6c6b | Request started
+2025-08-31 18:20:32.052 | INFO     | app.middleware.structured_logging:log_request_end:153 | 33cf01e3-74eb-4648-8f04-b3c9a1ca6c6b | Request completed in 0.003s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 18:20:35.042 | INFO     | app.middleware.structured_logging:log_request_start:111 | ff000c42-6f80-4fc1-a65a-e724162cb362 | Request started
+2025-08-31 18:20:35.043 | INFO     | app.middleware.structured_logging:log_request_end:153 | ff000c42-6f80-4fc1-a65a-e724162cb362 | Request completed in 0.001s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 18:20:38.046 | INFO     | app.middleware.structured_logging:log_request_start:111 | 83d24b06-9009-4611-9348-d6926d56a008 | Request started
+2025-08-31 18:20:38.048 | INFO     | app.middleware.structured_logging:log_request_end:153 | 83d24b06-9009-4611-9348-d6926d56a008 | Request completed in 0.002s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 18:20:41.050 | INFO     | app.middleware.structured_logging:log_request_start:111 | be7f6a14-ddb5-4a1a-b034-6f1d2db07889 | Request started
+2025-08-31 18:20:41.051 | INFO     | app.middleware.structured_logging:log_request_end:153 | be7f6a14-ddb5-4a1a-b034-6f1d2db07889 | Request completed in 0.001s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 18:20:43.417 | INFO     | app.middleware.structured_logging:log_request_start:111 | cd72f22e-67dc-4782-a1d5-a45a740ebb7f | Request started
+2025-08-31 18:20:43.418 | INFO     | app.middleware.structured_logging:log_request_end:153 | cd72f22e-67dc-4782-a1d5-a45a740ebb7f | Request completed in 0.001s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 18:20:46.417 | INFO     | app.middleware.structured_logging:log_request_start:111 | 30b71886-3769-4efd-82cc-73f6b5e1f634 | Request started
+2025-08-31 18:20:46.418 | INFO     | app.middleware.structured_logging:log_request_end:153 | 30b71886-3769-4efd-82cc-73f6b5e1f634 | Request completed in 0.001s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 18:20:50.044 | INFO     | app.middleware.structured_logging:log_request_start:111 | 4b50b714-7848-410c-955d-2e84bdbc35a5 | Request started
+2025-08-31 18:20:50.045 | INFO     | app.middleware.structured_logging:log_request_end:153 | 4b50b714-7848-410c-955d-2e84bdbc35a5 | Request completed in 0.001s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 18:20:53.044 | INFO     | app.middleware.structured_logging:log_request_start:111 | 0ea7fc98-ade7-4f72-bb75-a15173fd36b8 | Request started
+2025-08-31 18:20:53.045 | INFO     | app.middleware.structured_logging:log_request_end:153 | 0ea7fc98-ade7-4f72-bb75-a15173fd36b8 | Request completed in 0.001s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 18:20:56.042 | INFO     | app.middleware.structured_logging:log_request_start:111 | e61c2f7f-ce84-462e-a276-0a495f7077ee | Request started
+2025-08-31 18:20:56.043 | INFO     | app.middleware.structured_logging:log_request_end:153 | e61c2f7f-ce84-462e-a276-0a495f7077ee | Request completed in 0.001s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 18:20:59.045 | INFO     | app.middleware.structured_logging:log_request_start:111 | 55b63301-f63b-45ed-94c8-60dcd5269147 | Request started
+2025-08-31 18:20:59.212 | INFO     | app.middleware.structured_logging:log_request_end:153 | 55b63301-f63b-45ed-94c8-60dcd5269147 | Request completed in 0.167s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 18:21:02.043 | INFO     | app.middleware.structured_logging:log_request_start:111 | 076c0898-5ab6-44a7-a2a6-29d6ad22cc64 | Request started
+2025-08-31 18:21:02.044 | INFO     | app.middleware.structured_logging:log_request_end:153 | 076c0898-5ab6-44a7-a2a6-29d6ad22cc64 | Request completed in 0.001s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 18:21:05.043 | INFO     | app.middleware.structured_logging:log_request_start:111 | a7a1f3cd-d9d1-46df-848f-cbae7ce330b4 | Request started
+2025-08-31 18:21:05.044 | INFO     | app.middleware.structured_logging:log_request_end:153 | a7a1f3cd-d9d1-46df-848f-cbae7ce330b4 | Request completed in 0.001s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 18:21:07.420 | INFO     | app.middleware.structured_logging:log_request_start:111 | 73da0a2f-c878-4322-8cdd-d130036aa49e | Request started
+2025-08-31 18:21:07.421 | INFO     | app.middleware.structured_logging:log_request_end:153 | 73da0a2f-c878-4322-8cdd-d130036aa49e | Request completed in 0.001s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 18:21:11.048 | INFO     | app.middleware.structured_logging:log_request_start:111 | 69b27a05-cdf0-44af-af69-26f15a313257 | Request started
+2025-08-31 18:21:11.049 | INFO     | app.middleware.structured_logging:log_request_end:153 | 69b27a05-cdf0-44af-af69-26f15a313257 | Request completed in 0.001s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 18:21:14.047 | INFO     | app.middleware.structured_logging:log_request_start:111 | fe35bdd9-46fd-462a-bf59-383e8f9d65fe | Request started
+2025-08-31 18:21:14.048 | INFO     | app.middleware.structured_logging:log_request_end:153 | fe35bdd9-46fd-462a-bf59-383e8f9d65fe | Request completed in 0.001s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 18:21:17.042 | INFO     | app.middleware.structured_logging:log_request_start:111 | fcc76bb6-9565-4e88-ab8d-05f36749acdc | Request started
+2025-08-31 18:21:17.043 | INFO     | app.middleware.structured_logging:log_request_end:153 | fcc76bb6-9565-4e88-ab8d-05f36749acdc | Request completed in 0.001s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 18:21:20.048 | INFO     | app.middleware.structured_logging:log_request_start:111 | 200930eb-7d56-47c5-960c-518c60a1114e | Request started
+2025-08-31 18:21:20.051 | INFO     | app.middleware.structured_logging:log_request_end:153 | 200930eb-7d56-47c5-960c-518c60a1114e | Request completed in 0.002s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 18:21:23.044 | INFO     | app.middleware.structured_logging:log_request_start:111 | adeb4daf-6155-414f-afb0-53efcc4846e3 | Request started
+2025-08-31 18:21:23.046 | INFO     | app.middleware.structured_logging:log_request_end:153 | adeb4daf-6155-414f-afb0-53efcc4846e3 | Request completed in 0.001s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 18:21:26.039 | INFO     | app.middleware.structured_logging:log_request_start:111 | bededbf0-fe35-49b7-890f-2e7123ce9427 | Request started
+2025-08-31 18:21:26.041 | INFO     | app.middleware.structured_logging:log_request_end:153 | bededbf0-fe35-49b7-890f-2e7123ce9427 | Request completed in 0.001s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 18:21:29.047 | INFO     | app.middleware.structured_logging:log_request_start:111 | a74cc459-ac54-4e97-9f2f-191d692315ee | Request started
+2025-08-31 18:21:29.048 | INFO     | app.middleware.structured_logging:log_request_end:153 | a74cc459-ac54-4e97-9f2f-191d692315ee | Request completed in 0.001s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 18:21:32.044 | INFO     | app.middleware.structured_logging:log_request_start:111 | bb0cf7f1-efd7-4754-923e-0ba91caf6a38 | Request started
+2025-08-31 18:21:32.046 | INFO     | app.middleware.structured_logging:log_request_end:153 | bb0cf7f1-efd7-4754-923e-0ba91caf6a38 | Request completed in 0.001s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 18:21:35.041 | INFO     | app.middleware.structured_logging:log_request_start:111 | dc5c8d4a-8722-4fa5-a608-9fbf28feb516 | Request started
+2025-08-31 18:21:35.043 | INFO     | app.middleware.structured_logging:log_request_end:153 | dc5c8d4a-8722-4fa5-a608-9fbf28feb516 | Request completed in 0.001s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 18:21:38.043 | INFO     | app.middleware.structured_logging:log_request_start:111 | b27988cf-43bb-4832-b1ca-58e597b913dd | Request started
+2025-08-31 18:21:38.044 | INFO     | app.middleware.structured_logging:log_request_end:153 | b27988cf-43bb-4832-b1ca-58e597b913dd | Request completed in 0.002s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 18:21:41.050 | INFO     | app.middleware.structured_logging:log_request_start:111 | c3224a1d-1775-44bd-aa9d-383bc06a1463 | Request started
+2025-08-31 18:21:41.051 | INFO     | app.middleware.structured_logging:log_request_end:153 | c3224a1d-1775-44bd-aa9d-383bc06a1463 | Request completed in 0.002s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 18:21:43.417 | INFO     | app.middleware.structured_logging:log_request_start:111 | 0a38b2e6-4fd0-4498-ba1a-9be18d756cb7 | Request started
+2025-08-31 18:21:43.418 | INFO     | app.middleware.structured_logging:log_request_end:153 | 0a38b2e6-4fd0-4498-ba1a-9be18d756cb7 | Request completed in 0.001s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 18:21:46.417 | INFO     | app.middleware.structured_logging:log_request_start:111 | cb04544b-01c0-452d-8411-e098e5068758 | Request started
+2025-08-31 18:21:46.418 | INFO     | app.middleware.structured_logging:log_request_end:153 | cb04544b-01c0-452d-8411-e098e5068758 | Request completed in 0.001s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 18:21:50.034 | INFO     | app.middleware.structured_logging:log_request_start:111 | 1e7c276f-e3bb-4bbd-b067-49c9fc1fdf8b | Request started
+2025-08-31 18:21:50.035 | INFO     | app.middleware.structured_logging:log_request_end:153 | 1e7c276f-e3bb-4bbd-b067-49c9fc1fdf8b | Request completed in 0.001s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 18:21:53.032 | INFO     | app.middleware.structured_logging:log_request_start:111 | b8feaa8b-527f-4cb0-b016-b8338eac021d | Request started
+2025-08-31 18:21:53.033 | INFO     | app.middleware.structured_logging:log_request_end:153 | b8feaa8b-527f-4cb0-b016-b8338eac021d | Request completed in 0.001s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 18:21:56.045 | INFO     | app.middleware.structured_logging:log_request_start:111 | cfdc6f54-4839-4478-b786-2527e9463104 | Request started
+2025-08-31 18:21:56.046 | INFO     | app.middleware.structured_logging:log_request_end:153 | cfdc6f54-4839-4478-b786-2527e9463104 | Request completed in 0.001s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 18:21:59.034 | INFO     | app.middleware.structured_logging:log_request_start:111 | e01155f7-28ca-4752-aa8d-a33a5f14f9b9 | Request started
+2025-08-31 18:21:59.035 | INFO     | app.middleware.structured_logging:log_request_end:153 | e01155f7-28ca-4752-aa8d-a33a5f14f9b9 | Request completed in 0.001s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 18:22:02.035 | INFO     | app.middleware.structured_logging:log_request_start:111 | 1ed333e4-e4af-47da-98a7-432d858fd069 | Request started
+2025-08-31 18:22:02.037 | INFO     | app.middleware.structured_logging:log_request_end:153 | 1ed333e4-e4af-47da-98a7-432d858fd069 | Request completed in 0.002s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 18:22:05.033 | INFO     | app.middleware.structured_logging:log_request_start:111 | af4d7a71-a6a0-4547-92cd-c35748c19069 | Request started
+2025-08-31 18:22:05.034 | INFO     | app.middleware.structured_logging:log_request_end:153 | af4d7a71-a6a0-4547-92cd-c35748c19069 | Request completed in 0.001s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 18:22:07.406 | INFO     | app.middleware.structured_logging:log_request_start:111 | 54e46441-67b4-45d5-bf7a-307729286d01 | Request started
+2025-08-31 18:22:07.407 | INFO     | app.middleware.structured_logging:log_request_end:153 | 54e46441-67b4-45d5-bf7a-307729286d01 | Request completed in 0.001s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 18:22:10.410 | INFO     | app.middleware.structured_logging:log_request_start:111 | 07a56dd7-7286-4d91-aa60-de87d8a66f02 | Request started
+2025-08-31 18:22:10.411 | INFO     | app.middleware.structured_logging:log_request_end:153 | 07a56dd7-7286-4d91-aa60-de87d8a66f02 | Request completed in 0.001s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 18:22:13.408 | INFO     | app.middleware.structured_logging:log_request_start:111 | 8cd06114-4937-4ba5-beec-b02948f04eac | Request started
+2025-08-31 18:22:13.409 | INFO     | app.middleware.structured_logging:log_request_end:153 | 8cd06114-4937-4ba5-beec-b02948f04eac | Request completed in 0.001s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 18:22:16.407 | INFO     | app.middleware.structured_logging:log_request_start:111 | e23587b7-c9e7-4dce-9770-aaab198a0578 | Request started
+2025-08-31 18:22:16.408 | INFO     | app.middleware.structured_logging:log_request_end:153 | e23587b7-c9e7-4dce-9770-aaab198a0578 | Request completed in 0.001s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 18:22:19.410 | INFO     | app.middleware.structured_logging:log_request_start:111 | dc888568-c3f3-4d3c-b619-8583bc8037d1 | Request started
+2025-08-31 18:22:19.411 | INFO     | app.middleware.structured_logging:log_request_end:153 | dc888568-c3f3-4d3c-b619-8583bc8037d1 | Request completed in 0.001s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 18:34:48.011 | INFO     | app.middleware.structured_logging:log_request_start:111 | 6018e034-25b4-40ac-9c13-ef96d3f79068 | Request started
+2025-08-31 18:34:48,013 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-08-31 18:34:48,013 INFO sqlalchemy.engine.Engine 
+        SELECT 
+            exchange,
+            COUNT(DISTINCT symbol) as symbol_count,
+            COUNT(DISTINCT timeframe) as timeframe_count,
+            COUNT(*) as total_records
+        FROM market_data
+        GROUP BY exchange
+        
+2025-08-31 18:34:48,013 INFO sqlalchemy.engine.Engine [cached since 1075s ago] ()
+2025-08-31 18:34:48,014 INFO sqlalchemy.engine.Engine ROLLBACK
+2025-08-31 18:34:48.015 | INFO     | app.middleware.structured_logging:log_request_end:153 | 6018e034-25b4-40ac-9c13-ef96d3f79068 | Request completed in 0.004s
+INFO:     43.167.252.120:51220 - "GET /api/v1/data/storage/stats HTTP/1.1" 200 OK
+2025-08-31 18:34:55.595 | INFO     | app.middleware.structured_logging:log_request_start:111 | 12dd8faa-b7b7-4116-9bc1-2c2be6fa7f60 | Request started
+2025-08-31 18:34:55,597 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-08-31 18:34:55,597 INFO sqlalchemy.engine.Engine 
+        SELECT 
+            exchange,
+            COUNT(DISTINCT symbol) as symbol_count,
+            COUNT(DISTINCT timeframe) as timeframe_count,
+            COUNT(*) as total_records
+        FROM market_data
+        GROUP BY exchange
+        
+2025-08-31 18:34:55,597 INFO sqlalchemy.engine.Engine [cached since 1082s ago] ()
+2025-08-31 18:34:55,598 INFO sqlalchemy.engine.Engine ROLLBACK
+2025-08-31 18:34:55.598 | INFO     | app.middleware.structured_logging:log_request_end:153 | 12dd8faa-b7b7-4116-9bc1-2c2be6fa7f60 | Request completed in 0.003s
+INFO:     43.167.252.120:41526 - "GET /api/v1/data/storage/stats HTTP/1.1" 200 OK
+2025-08-31 18:35:43.774 | INFO     | app.middleware.structured_logging:log_request_start:111 | 3f9ea3d7-8af9-498e-a117-1c81010051e6 | Request started
+2025-08-31 18:35:43,776 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-08-31 18:35:43,776 INFO sqlalchemy.engine.Engine 
+        SELECT 
+            exchange,
+            COUNT(DISTINCT symbol) as symbol_count,
+            COUNT(DISTINCT timeframe) as timeframe_count,
+            COUNT(*) as total_records
+        FROM market_data
+        GROUP BY exchange
+        
+2025-08-31 18:35:43,776 INFO sqlalchemy.engine.Engine [cached since 1130s ago] ()
+2025-08-31 18:35:43,777 INFO sqlalchemy.engine.Engine ROLLBACK
+2025-08-31 18:35:43.777 | INFO     | app.middleware.structured_logging:log_request_end:153 | 3f9ea3d7-8af9-498e-a117-1c81010051e6 | Request completed in 0.003s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/storage/stats HTTP/1.0" 200 OK
+2025-08-31 18:35:43.779 | INFO     | app.middleware.structured_logging:log_request_start:111 | 19b7b141-e86a-47fd-8e23-59272118396c | Request started
+2025-08-31 18:35:43.780 | INFO     | app.middleware.structured_logging:log_request_end:153 | 19b7b141-e86a-47fd-8e23-59272118396c | Request completed in 0.001s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 18:36:44.230 | INFO     | app.middleware.structured_logging:log_request_start:111 | c35e5736-8462-42f7-a511-68bd6ad53e12 | Request started
+2025-08-31 18:36:44.234 | INFO     | app.middleware.structured_logging:log_request_start:111 | 2ba33a75-03c6-482c-9fa2-6dcd45afe6c2 | Request started
+2025-08-31 18:36:44,235 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-08-31 18:36:44,235 INFO sqlalchemy.engine.Engine SELECT count(users.id) AS total_users, sum(CASE WHEN (users.is_active = 1) THEN ? ELSE ? END) AS active_users, sum(CASE WHEN (users.email_verified = 1) THEN ? ELSE ? END) AS verified_users, sum(CASE WHEN (users.membership_level = ?) THEN ? ELSE ? END) AS basic_users, sum(CASE WHEN (users.membership_level = ?) THEN ? ELSE ? END) AS premium_users, sum(CASE WHEN (users.membership_level = ?) THEN ? ELSE ? END) AS professional_users 
+FROM users
+2025-08-31 18:36:44,235 INFO sqlalchemy.engine.Engine [cached since 1194s ago] (1, 0, 1, 0, 'basic', 1, 0, 'premium', 1, 0, 'professional', 1, 0)
+2025-08-31 18:36:44,236 INFO sqlalchemy.engine.Engine SELECT COUNT(*) FROM users WHERE created_at >= ?
+2025-08-31 18:36:44,236 INFO sqlalchemy.engine.Engine [cached since 1194s ago] (1756003004232.0918,)
+2025-08-31 18:36:44,236 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-08-31 18:36:44,236 INFO sqlalchemy.engine.Engine 
+            SELECT id, username, email, membership_level, is_active, email_verified, 
+                   created_at, last_login_at 
+            FROM users 
+            ORDER BY created_at DESC 
+            LIMIT ?
+        
+2025-08-31 18:36:44,236 INFO sqlalchemy.engine.Engine [cached since 1195s ago] (5,)
+2025-08-31 18:36:44,237 INFO sqlalchemy.engine.Engine ROLLBACK
+2025-08-31 18:36:44,238 INFO sqlalchemy.engine.Engine ROLLBACK
+2025-08-31 18:36:44.238 | INFO     | app.middleware.structured_logging:log_request_end:153 | c35e5736-8462-42f7-a511-68bd6ad53e12 | Request completed in 0.007s
+INFO:     64.181.232.23:0 - "GET /api/v1/admin/stats/system HTTP/1.0" 200 OK
+2025-08-31 18:36:44.239 | INFO     | app.middleware.structured_logging:log_request_end:153 | 2ba33a75-03c6-482c-9fa2-6dcd45afe6c2 | Request completed in 0.005s
+INFO:     64.181.232.23:0 - "GET /api/v1/admin/users?limit=5 HTTP/1.0" 200 OK
+2025-08-31 18:36:47.089 | INFO     | app.middleware.structured_logging:log_request_start:111 | c5cca252-005f-4dc1-94ff-49b8486e7e77 | Request started
+2025-08-31 18:36:47.090 | INFO     | app.middleware.structured_logging:log_request_start:111 | 9ba12ea6-677c-4bfd-8181-fcb4160def2f | Request started
+2025-08-31 18:36:47.091 | INFO     | app.middleware.structured_logging:log_request_end:153 | c5cca252-005f-4dc1-94ff-49b8486e7e77 | Request completed in 0.003s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 18:36:47,092 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-08-31 18:36:47,092 INFO sqlalchemy.engine.Engine 
+        SELECT 
+            exchange,
+            COUNT(DISTINCT symbol) as symbol_count,
+            COUNT(DISTINCT timeframe) as timeframe_count,
+            COUNT(*) as total_records
+        FROM market_data
+        GROUP BY exchange
+        
+2025-08-31 18:36:47,092 INFO sqlalchemy.engine.Engine [cached since 1194s ago] ()
+2025-08-31 18:36:47,093 INFO sqlalchemy.engine.Engine ROLLBACK
+2025-08-31 18:36:47.094 | INFO     | app.middleware.structured_logging:log_request_end:153 | 9ba12ea6-677c-4bfd-8181-fcb4160def2f | Request completed in 0.004s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/storage/stats HTTP/1.0" 200 OK
+2025-08-31 18:47:45.959 | INFO     | app.middleware.structured_logging:log_request_start:111 | 52a4dced-9e1c-417a-98ea-537a8f41288a | Request started
+2025-08-31 18:47:45,960 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-08-31 18:47:45,960 INFO sqlalchemy.engine.Engine 
+        SELECT 
+            exchange,
+            COUNT(DISTINCT symbol) as symbol_count,
+            COUNT(DISTINCT timeframe) as timeframe_count,
+            COUNT(*) as total_records
+        FROM market_data
+        GROUP BY exchange
+        
+2025-08-31 18:47:45,960 INFO sqlalchemy.engine.Engine [cached since 1853s ago] ()
+2025-08-31 18:47:45,961 INFO sqlalchemy.engine.Engine ROLLBACK
+2025-08-31 18:47:45.961 | INFO     | app.middleware.structured_logging:log_request_end:153 | 52a4dced-9e1c-417a-98ea-537a8f41288a | Request completed in 0.003s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/storage/stats HTTP/1.0" 200 OK
+2025-08-31 18:47:45.963 | INFO     | app.middleware.structured_logging:log_request_start:111 | ba14ef4d-b30d-4d76-a0ad-02e6b561fd6c | Request started
+2025-08-31 18:47:45.964 | INFO     | app.middleware.structured_logging:log_request_end:153 | ba14ef4d-b30d-4d76-a0ad-02e6b561fd6c | Request completed in 0.001s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 18:48:25.329 | INFO     | app.middleware.structured_logging:log_request_start:111 | 9e6a9757-063c-4bc4-9961-a49c180315d9 | Request started
+2025-08-31 18:48:25.331 | INFO     | app.middleware.structured_logging:log_request_start:111 | 6e593156-d273-4f22-a8cb-cfc206304633 | Request started
+2025-08-31 18:48:25,333 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-08-31 18:48:25,333 INFO sqlalchemy.engine.Engine 
+            SELECT id, username, email, membership_level, is_active, email_verified, 
+                   created_at, last_login_at 
+            FROM users 
+            ORDER BY created_at DESC 
+            LIMIT ?
+        
+2025-08-31 18:48:25,333 INFO sqlalchemy.engine.Engine [cached since 1896s ago] (5,)
+2025-08-31 18:48:25,333 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-08-31 18:48:25,334 INFO sqlalchemy.engine.Engine SELECT count(users.id) AS total_users, sum(CASE WHEN (users.is_active = 1) THEN ? ELSE ? END) AS active_users, sum(CASE WHEN (users.email_verified = 1) THEN ? ELSE ? END) AS verified_users, sum(CASE WHEN (users.membership_level = ?) THEN ? ELSE ? END) AS basic_users, sum(CASE WHEN (users.membership_level = ?) THEN ? ELSE ? END) AS premium_users, sum(CASE WHEN (users.membership_level = ?) THEN ? ELSE ? END) AS professional_users 
+FROM users
+2025-08-31 18:48:25,334 INFO sqlalchemy.engine.Engine [cached since 1896s ago] (1, 0, 1, 0, 'basic', 1, 0, 'premium', 1, 0, 'professional', 1, 0)
+2025-08-31 18:48:25,334 INFO sqlalchemy.engine.Engine ROLLBACK
+2025-08-31 18:48:25.335 | INFO     | app.middleware.structured_logging:log_request_end:153 | 9e6a9757-063c-4bc4-9961-a49c180315d9 | Request completed in 0.006s
+INFO:     64.181.232.23:0 - "GET /api/v1/admin/users?limit=5 HTTP/1.0" 200 OK
+2025-08-31 18:48:25,336 INFO sqlalchemy.engine.Engine SELECT COUNT(*) FROM users WHERE created_at >= ?
+2025-08-31 18:48:25,336 INFO sqlalchemy.engine.Engine [cached since 1896s ago] (1756003705332.644,)
+2025-08-31 18:48:25,336 INFO sqlalchemy.engine.Engine ROLLBACK
+2025-08-31 18:48:25.337 | INFO     | app.middleware.structured_logging:log_request_end:153 | 6e593156-d273-4f22-a8cb-cfc206304633 | Request completed in 0.005s
+INFO:     64.181.232.23:0 - "GET /api/v1/admin/stats/system HTTP/1.0" 200 OK
+2025-08-31 18:48:28.341 | INFO     | app.middleware.structured_logging:log_request_start:111 | e93828e4-d135-4133-8261-af6978fdacc2 | Request started
+2025-08-31 18:48:28,343 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-08-31 18:48:28,343 INFO sqlalchemy.engine.Engine 
+        SELECT 
+            exchange,
+            COUNT(DISTINCT symbol) as symbol_count,
+            COUNT(DISTINCT timeframe) as timeframe_count,
+            COUNT(*) as total_records
+        FROM market_data
+        GROUP BY exchange
+        
+2025-08-31 18:48:28,343 INFO sqlalchemy.engine.Engine [cached since 1895s ago] ()
+2025-08-31 18:48:28,344 INFO sqlalchemy.engine.Engine ROLLBACK
+2025-08-31 18:48:28.344 | INFO     | app.middleware.structured_logging:log_request_end:153 | e93828e4-d135-4133-8261-af6978fdacc2 | Request completed in 0.003s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/storage/stats HTTP/1.0" 200 OK
+2025-08-31 18:48:28.346 | INFO     | app.middleware.structured_logging:log_request_start:111 | ef224070-9cda-4cc3-8733-bab6a30387e5 | Request started
+2025-08-31 18:48:28.347 | INFO     | app.middleware.structured_logging:log_request_end:153 | ef224070-9cda-4cc3-8733-bab6a30387e5 | Request completed in 0.001s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 18:52:36.051 | INFO     | app.middleware.structured_logging:log_request_start:111 | c935b893-72c3-4f31-a9df-0c284374e752 | Request started
+2025-08-31 18:52:36,052 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-08-31 18:52:36,052 INFO sqlalchemy.engine.Engine 
+        SELECT 
+            exchange,
+            COUNT(DISTINCT symbol) as symbol_count,
+            COUNT(DISTINCT timeframe) as timeframe_count,
+            COUNT(*) as total_records
+        FROM market_data
+        GROUP BY exchange
+        
+2025-08-31 18:52:36,052 INFO sqlalchemy.engine.Engine [cached since 2143s ago] ()
+2025-08-31 18:52:36,053 INFO sqlalchemy.engine.Engine ROLLBACK
+2025-08-31 18:52:36.054 | INFO     | app.middleware.structured_logging:log_request_end:153 | c935b893-72c3-4f31-a9df-0c284374e752 | Request completed in 0.003s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/storage/stats HTTP/1.0" 200 OK
+2025-08-31 18:52:36.059 | INFO     | app.middleware.structured_logging:log_request_start:111 | 247a4033-a7cd-4526-9a47-22ee62173f43 | Request started
+2025-08-31 18:52:36.059 | INFO     | app.middleware.structured_logging:log_request_end:153 | 247a4033-a7cd-4526-9a47-22ee62173f43 | Request completed in 0.001s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 18:57:25.327 | INFO     | app.middleware.structured_logging:log_request_start:111 | 8b310dfc-4a00-449a-9884-2a249bb1c403 | Request started
+2025-08-31 18:57:25,328 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-08-31 18:57:25,328 INFO sqlalchemy.engine.Engine 
+        SELECT 
+            exchange,
+            COUNT(DISTINCT symbol) as symbol_count,
+            COUNT(DISTINCT timeframe) as timeframe_count,
+            COUNT(*) as total_records
+        FROM market_data
+        GROUP BY exchange
+        
+2025-08-31 18:57:25,328 INFO sqlalchemy.engine.Engine [cached since 2432s ago] ()
+2025-08-31 18:57:25,329 INFO sqlalchemy.engine.Engine ROLLBACK
+2025-08-31 18:57:25.330 | INFO     | app.middleware.structured_logging:log_request_end:153 | 8b310dfc-4a00-449a-9884-2a249bb1c403 | Request completed in 0.003s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/storage/stats HTTP/1.0" 200 OK
+2025-08-31 18:57:25.339 | INFO     | app.middleware.structured_logging:log_request_start:111 | 7fc5d259-7bb8-4821-8b0e-9a6bed6f2e52 | Request started
+2025-08-31 18:57:25.340 | INFO     | app.middleware.structured_logging:log_request_end:153 | 7fc5d259-7bb8-4821-8b0e-9a6bed6f2e52 | Request completed in 0.001s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 18:57:35.494 | INFO     | app.middleware.structured_logging:log_request_start:111 | 2446e1e5-406c-466d-89a6-2d3e0e76947f | Request started
+2025-08-31 18:57:35.495 | INFO     | app.middleware.structured_logging:log_request_end:153 | 2446e1e5-406c-466d-89a6-2d3e0e76947f | Request completed in 0.001s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 18:57:38.500 | INFO     | app.middleware.structured_logging:log_request_start:111 | c7c01927-983a-4a41-8cfe-1807cf209d6d | Request started
+2025-08-31 18:57:38.501 | INFO     | app.middleware.structured_logging:log_request_end:153 | c7c01927-983a-4a41-8cfe-1807cf209d6d | Request completed in 0.001s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 18:57:41.492 | INFO     | app.middleware.structured_logging:log_request_start:111 | fa791682-7c9f-44ef-8282-7ef37e65308c | Request started
+2025-08-31 18:57:41.493 | INFO     | app.middleware.structured_logging:log_request_end:153 | fa791682-7c9f-44ef-8282-7ef37e65308c | Request completed in 0.001s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+WARNING:  Invalid HTTP request received.
+2025-08-31 19:07:49.656 | INFO     | app.middleware.structured_logging:log_request_start:111 | ddd59519-d566-4290-8049-b39bbde632fb | Request started
+2025-08-31 19:07:49,658 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-08-31 19:07:49,658 INFO sqlalchemy.engine.Engine 
+        SELECT 
+            exchange,
+            COUNT(DISTINCT symbol) as symbol_count,
+            COUNT(DISTINCT timeframe) as timeframe_count,
+            COUNT(*) as total_records
+        FROM market_data
+        GROUP BY exchange
+        
+2025-08-31 19:07:49,658 INFO sqlalchemy.engine.Engine [cached since 3056s ago] ()
+2025-08-31 19:07:49,659 INFO sqlalchemy.engine.Engine ROLLBACK
+2025-08-31 19:07:49.659 | INFO     | app.middleware.structured_logging:log_request_end:153 | ddd59519-d566-4290-8049-b39bbde632fb | Request completed in 0.003s
+INFO:     43.167.252.120:36350 - "GET /api/v1/data/storage/stats HTTP/1.1" 200 OK
+2025-08-31 19:07:56.052 | INFO     | app.middleware.structured_logging:log_request_start:111 | 026cdf9f-5931-4c3e-8f68-ded2d083a1d1 | Request started
+2025-08-31 19:07:56,054 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-08-31 19:07:56,056 INFO sqlalchemy.engine.Engine SELECT data_collection_tasks.id, data_collection_tasks.task_name, data_collection_tasks.exchange, data_collection_tasks.data_type, data_collection_tasks.symbols, data_collection_tasks.timeframes, data_collection_tasks.status, data_collection_tasks.schedule_type, data_collection_tasks.schedule_config, data_collection_tasks.retry_config, data_collection_tasks.last_run_at, data_collection_tasks.next_run_at, data_collection_tasks.success_count, data_collection_tasks.error_count, data_collection_tasks.total_records, data_collection_tasks.config, data_collection_tasks.rate_limit, data_collection_tasks.timeout, data_collection_tasks.priority, data_collection_tasks.created_at, data_collection_tasks.updated_at, data_collection_tasks.last_error_at, data_collection_tasks.last_error_message 
+FROM data_collection_tasks
+2025-08-31 19:07:56,057 INFO sqlalchemy.engine.Engine [generated in 0.00026s] ()
+2025-08-31 19:07:56,060 INFO sqlalchemy.engine.Engine SELECT tick_data.id, tick_data.exchange, tick_data.symbol, tick_data.price, tick_data.volume, tick_data.side, tick_data.trade_id, tick_data.timestamp, tick_data.best_bid, tick_data.best_ask, tick_data.bid_size, tick_data.ask_size, tick_data.is_validated, tick_data.data_source, tick_data.sequence_number, tick_data.created_at 
+FROM tick_data
+2025-08-31 19:07:56,060 INFO sqlalchemy.engine.Engine [generated in 0.00019s] ()
+2025-08-31 19:07:56,101 INFO sqlalchemy.engine.Engine ROLLBACK
+2025-08-31 19:07:56.102 | INFO     | app.middleware.structured_logging:log_request_end:153 | 026cdf9f-5931-4c3e-8f68-ded2d083a1d1 | Request completed in 0.050s
+INFO:     43.167.252.120:47506 - "GET /api/v1/data/okx/statistics HTTP/1.1" 200 OK
+2025-08-31 19:11:07.868 | INFO     | app.middleware.structured_logging:log_request_start:111 | 8f1219c0-67db-4a69-9155-f88e56bdf4da | Request started
+2025-08-31 19:11:07.869 | INFO     | app.middleware.structured_logging:log_request_start:111 | fc53205a-9dc0-4297-bd09-505d0d8955a4 | Request started
+2025-08-31 19:11:07.870 | WARNING  | app.middleware.structured_logging:log_request_end:153 | 8f1219c0-67db-4a69-9155-f88e56bdf4da | Client error: 404
+INFO:     64.181.232.23:0 - "GET /api/v1/data/availability/okx/ETH/USDT/1h?start_date=2025-01-01T00:00:00Z&end_date=2025-08-31T23:59:59Z HTTP/1.0" 404 Not Found
+2025-08-31 19:11:07.872 | INFO     | app.middleware.structured_logging:log_request_start:111 | a125f8a6-6cca-47af-86c0-d1ee5a917e76 | Request started
+2025-08-31 19:11:07.874 | INFO     | app.middleware.structured_logging:log_request_start:111 | 54df99a9-799f-4ca4-950a-04169ecc0226 | Request started
+2025-08-31 19:11:07,875 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-08-31 19:11:07,875 INFO sqlalchemy.engine.Engine SELECT data_collection_tasks.id, data_collection_tasks.task_name, data_collection_tasks.exchange, data_collection_tasks.data_type, data_collection_tasks.symbols, data_collection_tasks.timeframes, data_collection_tasks.status, data_collection_tasks.schedule_type, data_collection_tasks.schedule_config, data_collection_tasks.retry_config, data_collection_tasks.last_run_at, data_collection_tasks.next_run_at, data_collection_tasks.success_count, data_collection_tasks.error_count, data_collection_tasks.total_records, data_collection_tasks.config, data_collection_tasks.rate_limit, data_collection_tasks.timeout, data_collection_tasks.priority, data_collection_tasks.created_at, data_collection_tasks.updated_at, data_collection_tasks.last_error_at, data_collection_tasks.last_error_message 
+FROM data_collection_tasks
+2025-08-31 19:11:07,876 INFO sqlalchemy.engine.Engine [cached since 191.8s ago] ()
+2025-08-31 19:11:07,876 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-08-31 19:11:07,876 INFO sqlalchemy.engine.Engine 
+        SELECT 
+            MIN(open_time) as first_timestamp,
+            MAX(open_time) as last_timestamp,
+            COUNT(*) as total_records
+        FROM kline_data 
+        WHERE exchange = ? 
+          AND symbol = ? 
+          AND timeframe = ?
+        
+2025-08-31 19:11:07,876 INFO sqlalchemy.engine.Engine [generated in 0.00012s] ('okx', 'ETH-USDT-SWAP', '1h')
+2025-08-31 19:11:07,876 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-08-31 19:11:07,877 INFO sqlalchemy.engine.Engine 
+        SELECT 
+            MIN(open_time) as first_timestamp,
+            MAX(open_time) as last_timestamp,
+            COUNT(*) as total_records
+        FROM kline_data 
+        WHERE exchange = ? 
+          AND symbol = ? 
+          AND timeframe = ?
+        
+2025-08-31 19:11:07,877 INFO sqlalchemy.engine.Engine [cached since 0.0007689s ago] ('okx', 'BTC-USDT-SWAP', '1h')
+数据可用性检查失败: (sqlite3.OperationalError) no such table: kline_data
+[SQL: 
+        SELECT 
+            MIN(open_time) as first_timestamp,
+            MAX(open_time) as last_timestamp,
+            COUNT(*) as total_records
+        FROM kline_data 
+        WHERE exchange = ? 
+          AND symbol = ? 
+          AND timeframe = ?
+        ]
+[parameters: ('okx', 'ETH-USDT-SWAP', '1h')]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-08-31 19:11:07,877 INFO sqlalchemy.engine.Engine ROLLBACK
+2025-08-31 19:11:07.878 | WARNING  | app.middleware.structured_logging:log_request_end:153 | fc53205a-9dc0-4297-bd09-505d0d8955a4 | Client error: 400
+数据可用性检查失败: (sqlite3.OperationalError) no such table: kline_data
+[SQL: 
+        SELECT 
+            MIN(open_time) as first_timestamp,
+            MAX(open_time) as last_timestamp,
+            COUNT(*) as total_records
+        FROM kline_data 
+        WHERE exchange = ? 
+          AND symbol = ? 
+          AND timeframe = ?
+        ]
+[parameters: ('okx', 'BTC-USDT-SWAP', '1h')]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-08-31 19:11:07,879 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:     64.181.232.23:0 - "GET /api/v1/data/availability/okx/ETH-USDT-SWAP/1h?start_date=2025-01-01T00:00:00Z&end_date=2025-08-31T23:59:59Z HTTP/1.0" 400 Bad Request
+2025-08-31 19:11:07.880 | WARNING  | app.middleware.structured_logging:log_request_end:153 | 54df99a9-799f-4ca4-950a-04169ecc0226 | Client error: 400
+INFO:     64.181.232.23:0 - "GET /api/v1/data/availability/okx/BTC-USDT-SWAP/1h?start_date=2025-01-01T00:00:00Z&end_date=2025-08-31T23:59:59Z HTTP/1.0" 400 Bad Request
+2025-08-31 19:11:07,881 INFO sqlalchemy.engine.Engine SELECT tick_data.id, tick_data.exchange, tick_data.symbol, tick_data.price, tick_data.volume, tick_data.side, tick_data.trade_id, tick_data.timestamp, tick_data.best_bid, tick_data.best_ask, tick_data.bid_size, tick_data.ask_size, tick_data.is_validated, tick_data.data_source, tick_data.sequence_number, tick_data.created_at 
+FROM tick_data
+2025-08-31 19:11:07,881 INFO sqlalchemy.engine.Engine [cached since 191.8s ago] ()
+2025-08-31 19:11:07,916 INFO sqlalchemy.engine.Engine ROLLBACK
+2025-08-31 19:11:07.917 | INFO     | app.middleware.structured_logging:log_request_end:153 | a125f8a6-6cca-47af-86c0-d1ee5a917e76 | Request completed in 0.044s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/okx/statistics HTTP/1.0" 200 OK
+2025-08-31 19:11:07.988 | INFO     | app.middleware.structured_logging:log_request_start:111 | 3bfaf907-206b-4c4a-8efb-1e17e6a1b1cc | Request started
+2025-08-31 19:11:07.989 | WARNING  | app.middleware.structured_logging:log_request_end:153 | 3bfaf907-206b-4c4a-8efb-1e17e6a1b1cc | Client error: 404
+INFO:     64.181.232.23:0 - "GET /api/v1/data/availability/okx/BTC/USDT/1h?start_date=2025-01-01T00:00:00Z&end_date=2025-08-31T23:59:59Z HTTP/1.0" 404 Not Found
+2025-08-31 19:11:07.990 | INFO     | app.middleware.structured_logging:log_request_start:111 | a2172b0a-3403-4c24-a4a4-9db3b93b1e0c | Request started
+2025-08-31 19:11:07,991 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-08-31 19:11:07,991 INFO sqlalchemy.engine.Engine 
+        SELECT 
+            exchange,
+            COUNT(DISTINCT symbol) as symbol_count,
+            COUNT(DISTINCT timeframe) as timeframe_count,
+            COUNT(*) as total_records
+        FROM market_data
+        GROUP BY exchange
+        
+2025-08-31 19:11:07,991 INFO sqlalchemy.engine.Engine [cached since 3255s ago] ()
+2025-08-31 19:11:07,992 INFO sqlalchemy.engine.Engine ROLLBACK
+2025-08-31 19:11:07.993 | INFO     | app.middleware.structured_logging:log_request_end:153 | a2172b0a-3403-4c24-a4a4-9db3b93b1e0c | Request completed in 0.003s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/storage/stats HTTP/1.0" 200 OK
+2025-08-31 19:11:08.147 | INFO     | app.middleware.structured_logging:log_request_start:111 | a04ccf2e-98f2-4e79-b612-745b900208a2 | Request started
+2025-08-31 19:11:08.148 | INFO     | app.middleware.structured_logging:log_request_end:153 | a04ccf2e-98f2-4e79-b612-745b900208a2 | Request completed in 0.001s
+INFO:     64.181.232.23:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+WARNING:  Invalid HTTP request received.
+2025-08-31 21:19:04.862 | INFO     | app.middleware.structured_logging:log_request_start:111 | 4fd8ba76-050f-4310-801c-2dca090590a9 | Request started
+2025-08-31 21:19:04.863 | INFO     | app.middleware.structured_logging:log_request_end:153 | 4fd8ba76-050f-4310-801c-2dca090590a9 | Request completed in 0.001s
+INFO:     206.168.34.93:44936 - "GET / HTTP/1.1" 200 OK
+2025-08-31 21:19:05.127 | INFO     | app.middleware.structured_logging:log_request_start:111 | bd619ce7-ea00-401d-a10e-09218cb73a09 | Request started
+2025-08-31 21:19:05.127 | WARNING  | app.middleware.structured_logging:log_request_end:153 | bd619ce7-ea00-401d-a10e-09218cb73a09 | Client error: 404
+INFO:     206.168.34.93:44948 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+WARNING:  Invalid HTTP request received.
+2025-08-31 21:19:09.014 | INFO     | app.middleware.structured_logging:log_request_start:111 | 2d01a47b-25f2-4426-9912-aacf650f2dee | Request started
+2025-08-31 21:19:09.015 | INFO     | app.middleware.structured_logging:log_request_end:153 | 2d01a47b-25f2-4426-9912-aacf650f2dee | Request completed in 0.001s
+INFO:     206.168.34.93:44980 - "GET / HTTP/1.1" 200 OK
+2025-08-31 21:47:12.449 | INFO     | app.middleware.structured_logging:log_request_start:111 | 5850c462-bbf6-4fc3-85d1-e595d9aac48b | Request started
+2025-08-31 21:47:12.451 | INFO     | app.middleware.structured_logging:log_request_end:153 | 5850c462-bbf6-4fc3-85d1-e595d9aac48b | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:47:14.958 | INFO     | app.middleware.structured_logging:log_request_start:111 | 0e8dcc0b-768e-4e18-a4a0-2cd3bd2917ae | Request started
+2025-08-31 21:47:14.959 | INFO     | app.middleware.structured_logging:log_request_end:153 | 0e8dcc0b-768e-4e18-a4a0-2cd3bd2917ae | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:47:49.719 | INFO     | app.middleware.structured_logging:log_request_start:111 | 050f8b6f-562b-44ad-9b94-d2baf41356b0 | Request started
+2025-08-31 21:47:49.720 | INFO     | app.middleware.structured_logging:log_request_end:153 | 050f8b6f-562b-44ad-9b94-d2baf41356b0 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:48:49.562 | INFO     | app.middleware.structured_logging:log_request_start:111 | 4806b6a7-d69f-4e99-b99d-35a90bcfbd89 | Request started
+2025-08-31 21:48:49.563 | INFO     | app.middleware.structured_logging:log_request_end:153 | 4806b6a7-d69f-4e99-b99d-35a90bcfbd89 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:49:49.709 | INFO     | app.middleware.structured_logging:log_request_start:111 | 09f7a822-3616-42e3-aa8e-5f57550aa421 | Request started
+2025-08-31 21:49:49.710 | INFO     | app.middleware.structured_logging:log_request_end:153 | 09f7a822-3616-42e3-aa8e-5f57550aa421 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:50:12.550 | INFO     | app.middleware.structured_logging:log_request_start:111 | 41b1469c-ab23-43ad-9920-78942a497351 | Request started
+2025-08-31 21:50:12.552 | INFO     | app.middleware.structured_logging:log_request_end:153 | 41b1469c-ab23-43ad-9920-78942a497351 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:50:15.251 | INFO     | app.middleware.structured_logging:log_request_start:111 | 4b0f0f20-0a45-43bb-9261-3fccd89934a9 | Request started
+2025-08-31 21:50:15.254 | INFO     | app.middleware.structured_logging:log_request_start:111 | 94f72d10-c07f-4890-b181-1d67399e1ffc | Request started
+2025-08-31 21:50:15.255 | WARNING  | app.middleware.structured_logging:log_request_end:153 | 94f72d10-c07f-4890-b181-1d67399e1ffc | Client error: 404
+INFO:     114.105.192.135:0 - "GET /api/v1/data/availability/okx/BTC/USDT/1h?start_date=2025-01-01T00:00:00Z&end_date=2025-08-31T23:59:59Z HTTP/1.0" 404 Not Found
+2025-08-31 21:50:15,256 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-08-31 21:50:15,256 INFO sqlalchemy.engine.Engine SELECT data_collection_tasks.id, data_collection_tasks.task_name, data_collection_tasks.exchange, data_collection_tasks.data_type, data_collection_tasks.symbols, data_collection_tasks.timeframes, data_collection_tasks.status, data_collection_tasks.schedule_type, data_collection_tasks.schedule_config, data_collection_tasks.retry_config, data_collection_tasks.last_run_at, data_collection_tasks.next_run_at, data_collection_tasks.success_count, data_collection_tasks.error_count, data_collection_tasks.total_records, data_collection_tasks.config, data_collection_tasks.rate_limit, data_collection_tasks.timeout, data_collection_tasks.priority, data_collection_tasks.created_at, data_collection_tasks.updated_at, data_collection_tasks.last_error_at, data_collection_tasks.last_error_message 
+FROM data_collection_tasks
+2025-08-31 21:50:15,256 INFO sqlalchemy.engine.Engine [cached since 9739s ago] ()
+2025-08-31 21:50:15,258 INFO sqlalchemy.engine.Engine SELECT tick_data.id, tick_data.exchange, tick_data.symbol, tick_data.price, tick_data.volume, tick_data.side, tick_data.trade_id, tick_data.timestamp, tick_data.best_bid, tick_data.best_ask, tick_data.bid_size, tick_data.ask_size, tick_data.is_validated, tick_data.data_source, tick_data.sequence_number, tick_data.created_at 
+FROM tick_data
+2025-08-31 21:50:15,258 INFO sqlalchemy.engine.Engine [cached since 9739s ago] ()
+2025-08-31 21:50:15,293 INFO sqlalchemy.engine.Engine ROLLBACK
+2025-08-31 21:50:15.294 | INFO     | app.middleware.structured_logging:log_request_end:153 | 4b0f0f20-0a45-43bb-9261-3fccd89934a9 | Request completed in 0.043s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/statistics HTTP/1.0" 200 OK
+2025-08-31 21:50:15.329 | INFO     | app.middleware.structured_logging:log_request_start:111 | 6838a64b-bf73-4f77-aa9c-4df7d1cb7674 | Request started
+2025-08-31 21:50:15.330 | WARNING  | app.middleware.structured_logging:log_request_end:153 | 6838a64b-bf73-4f77-aa9c-4df7d1cb7674 | Client error: 404
+INFO:     114.105.192.135:0 - "GET /api/v1/data/availability/okx/ETH/USDT/1h?start_date=2025-01-01T00:00:00Z&end_date=2025-08-31T23:59:59Z HTTP/1.0" 404 Not Found
+2025-08-31 21:50:15.370 | INFO     | app.middleware.structured_logging:log_request_start:111 | 95745428-a234-4023-9023-b2a8ab2e1baf | Request started
+2025-08-31 21:50:15,373 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-08-31 21:50:15,373 INFO sqlalchemy.engine.Engine 
+        SELECT 
+            MIN(open_time) as first_timestamp,
+            MAX(open_time) as last_timestamp,
+            COUNT(*) as total_records
+        FROM kline_data 
+        WHERE exchange = ? 
+          AND symbol = ? 
+          AND timeframe = ?
+        
+2025-08-31 21:50:15,373 INFO sqlalchemy.engine.Engine [cached since 9547s ago] ('okx', 'BTC-USDT-SWAP', '1h')
+数据可用性检查失败: (sqlite3.OperationalError) no such table: kline_data
+[SQL: 
+        SELECT 
+            MIN(open_time) as first_timestamp,
+            MAX(open_time) as last_timestamp,
+            COUNT(*) as total_records
+        FROM kline_data 
+        WHERE exchange = ? 
+          AND symbol = ? 
+          AND timeframe = ?
+        ]
+[parameters: ('okx', 'BTC-USDT-SWAP', '1h')]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-08-31 21:50:15,374 INFO sqlalchemy.engine.Engine ROLLBACK
+2025-08-31 21:50:15.375 | WARNING  | app.middleware.structured_logging:log_request_end:153 | 95745428-a234-4023-9023-b2a8ab2e1baf | Client error: 400
+INFO:     114.105.192.135:0 - "GET /api/v1/data/availability/okx/BTC-USDT-SWAP/1h?start_date=2025-01-01T00:00:00Z&end_date=2025-08-31T23:59:59Z HTTP/1.0" 400 Bad Request
+2025-08-31 21:50:15.405 | INFO     | app.middleware.structured_logging:log_request_start:111 | 9ff4e10b-3222-47d0-8a80-4e7ed8b63e64 | Request started
+2025-08-31 21:50:15,407 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-08-31 21:50:15,407 INFO sqlalchemy.engine.Engine 
+        SELECT 
+            MIN(open_time) as first_timestamp,
+            MAX(open_time) as last_timestamp,
+            COUNT(*) as total_records
+        FROM kline_data 
+        WHERE exchange = ? 
+          AND symbol = ? 
+          AND timeframe = ?
+        
+2025-08-31 21:50:15,407 INFO sqlalchemy.engine.Engine [cached since 9548s ago] ('okx', 'ETH-USDT-SWAP', '1h')
+数据可用性检查失败: (sqlite3.OperationalError) no such table: kline_data
+[SQL: 
+        SELECT 
+            MIN(open_time) as first_timestamp,
+            MAX(open_time) as last_timestamp,
+            COUNT(*) as total_records
+        FROM kline_data 
+        WHERE exchange = ? 
+          AND symbol = ? 
+          AND timeframe = ?
+        ]
+[parameters: ('okx', 'ETH-USDT-SWAP', '1h')]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-08-31 21:50:15,408 INFO sqlalchemy.engine.Engine ROLLBACK
+2025-08-31 21:50:15.409 | WARNING  | app.middleware.structured_logging:log_request_end:153 | 9ff4e10b-3222-47d0-8a80-4e7ed8b63e64 | Client error: 400
+INFO:     114.105.192.135:0 - "GET /api/v1/data/availability/okx/ETH-USDT-SWAP/1h?start_date=2025-01-01T00:00:00Z&end_date=2025-08-31T23:59:59Z HTTP/1.0" 400 Bad Request
+2025-08-31 21:50:15.450 | INFO     | app.middleware.structured_logging:log_request_start:111 | 9b120354-d505-4884-92b2-24a0cfadc084 | Request started
+2025-08-31 21:50:15.452 | INFO     | app.middleware.structured_logging:log_request_end:153 | 9b120354-d505-4884-92b2-24a0cfadc084 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:50:15.461 | INFO     | app.middleware.structured_logging:log_request_start:111 | bf2c49e8-f642-49ca-a9b9-86aba4131a1f | Request started
+2025-08-31 21:50:15,463 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-08-31 21:50:15,463 INFO sqlalchemy.engine.Engine 
+        SELECT 
+            exchange,
+            COUNT(DISTINCT symbol) as symbol_count,
+            COUNT(DISTINCT timeframe) as timeframe_count,
+            COUNT(*) as total_records
+        FROM market_data
+        GROUP BY exchange
+        
+2025-08-31 21:50:15,463 INFO sqlalchemy.engine.Engine [cached since 1.28e+04s ago] ()
+2025-08-31 21:50:15,464 INFO sqlalchemy.engine.Engine ROLLBACK
+2025-08-31 21:50:15.465 | INFO     | app.middleware.structured_logging:log_request_end:153 | bf2c49e8-f642-49ca-a9b9-86aba4131a1f | Request completed in 0.003s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/storage/stats HTTP/1.0" 200 OK
+2025-08-31 21:51:48.108 | INFO     | app.middleware.structured_logging:log_request_start:111 | ff5fedbd-4448-4846-a688-637a6cf65468 | Request started
+2025-08-31 21:51:48.109 | INFO     | app.middleware.structured_logging:log_request_start:111 | 353b6d14-5f81-48bc-a03d-c55c39ce17c2 | Request started
+2025-08-31 21:51:48.111 | WARNING  | app.middleware.structured_logging:log_request_end:153 | 353b6d14-5f81-48bc-a03d-c55c39ce17c2 | Client error: 404
+INFO:     114.105.192.135:0 - "GET /api/v1/data/availability/okx/BTC/USDT/1h?start_date=2025-01-01T00:00:00Z&end_date=2025-08-31T23:59:59Z HTTP/1.0" 404 Not Found
+2025-08-31 21:51:48,112 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-08-31 21:51:48,112 INFO sqlalchemy.engine.Engine SELECT data_collection_tasks.id, data_collection_tasks.task_name, data_collection_tasks.exchange, data_collection_tasks.data_type, data_collection_tasks.symbols, data_collection_tasks.timeframes, data_collection_tasks.status, data_collection_tasks.schedule_type, data_collection_tasks.schedule_config, data_collection_tasks.retry_config, data_collection_tasks.last_run_at, data_collection_tasks.next_run_at, data_collection_tasks.success_count, data_collection_tasks.error_count, data_collection_tasks.total_records, data_collection_tasks.config, data_collection_tasks.rate_limit, data_collection_tasks.timeout, data_collection_tasks.priority, data_collection_tasks.created_at, data_collection_tasks.updated_at, data_collection_tasks.last_error_at, data_collection_tasks.last_error_message 
+FROM data_collection_tasks
+2025-08-31 21:51:48,112 INFO sqlalchemy.engine.Engine [cached since 9832s ago] ()
+2025-08-31 21:51:48,113 INFO sqlalchemy.engine.Engine SELECT tick_data.id, tick_data.exchange, tick_data.symbol, tick_data.price, tick_data.volume, tick_data.side, tick_data.trade_id, tick_data.timestamp, tick_data.best_bid, tick_data.best_ask, tick_data.bid_size, tick_data.ask_size, tick_data.is_validated, tick_data.data_source, tick_data.sequence_number, tick_data.created_at 
+FROM tick_data
+2025-08-31 21:51:48,113 INFO sqlalchemy.engine.Engine [cached since 9832s ago] ()
+2025-08-31 21:51:48,113 INFO sqlalchemy.engine.Engine ROLLBACK
+2025-08-31 21:51:48.114 | INFO     | app.middleware.structured_logging:log_request_end:153 | ff5fedbd-4448-4846-a688-637a6cf65468 | Request completed in 0.005s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/statistics HTTP/1.0" 200 OK
+2025-08-31 21:51:48.177 | INFO     | app.middleware.structured_logging:log_request_start:111 | 8008c800-ad40-40e3-bf6b-cb1d7ae9db33 | Request started
+2025-08-31 21:51:48.179 | WARNING  | app.middleware.structured_logging:log_request_end:153 | 8008c800-ad40-40e3-bf6b-cb1d7ae9db33 | Client error: 404
+INFO:     114.105.192.135:0 - "GET /api/v1/data/availability/okx/ETH/USDT/1h?start_date=2025-01-01T00:00:00Z&end_date=2025-08-31T23:59:59Z HTTP/1.0" 404 Not Found
+2025-08-31 21:51:48.251 | INFO     | app.middleware.structured_logging:log_request_start:111 | 2c4ec0b8-d412-421a-8654-8c768ae799ec | Request started
+2025-08-31 21:51:48,253 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-08-31 21:51:48,254 INFO sqlalchemy.engine.Engine 
+        SELECT 
+            MIN(open_time) as first_timestamp,
+            MAX(open_time) as last_timestamp,
+            COUNT(*) as total_records
+        FROM kline_data 
+        WHERE exchange = ? 
+          AND symbol = ? 
+          AND timeframe = ?
+        
+2025-08-31 21:51:48,254 INFO sqlalchemy.engine.Engine [cached since 9640s ago] ('okx', 'BTC-USDT-SWAP', '1h')
+数据可用性检查失败: (sqlite3.OperationalError) no such table: kline_data
+[SQL: 
+        SELECT 
+            MIN(open_time) as first_timestamp,
+            MAX(open_time) as last_timestamp,
+            COUNT(*) as total_records
+        FROM kline_data 
+        WHERE exchange = ? 
+          AND symbol = ? 
+          AND timeframe = ?
+        ]
+[parameters: ('okx', 'BTC-USDT-SWAP', '1h')]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-08-31 21:51:48,254 INFO sqlalchemy.engine.Engine ROLLBACK
+2025-08-31 21:51:48.255 | WARNING  | app.middleware.structured_logging:log_request_end:153 | 2c4ec0b8-d412-421a-8654-8c768ae799ec | Client error: 400
+INFO:     114.105.192.135:0 - "GET /api/v1/data/availability/okx/BTC-USDT-SWAP/1h?start_date=2025-01-01T00:00:00Z&end_date=2025-08-31T23:59:59Z HTTP/1.0" 400 Bad Request
+2025-08-31 21:51:48.262 | INFO     | app.middleware.structured_logging:log_request_start:111 | eb704818-35d8-411a-ab28-ee2f8598ccdf | Request started
+2025-08-31 21:51:48.262 | INFO     | app.middleware.structured_logging:log_request_start:111 | 4005588e-d05e-481a-9143-9ebd71ac947c | Request started
+2025-08-31 21:51:48.265 | INFO     | app.middleware.structured_logging:log_request_start:111 | c6108213-8a93-4dbe-8458-aeccae4da158 | Request started
+2025-08-31 21:51:48.266 | INFO     | app.middleware.structured_logging:log_request_end:153 | c6108213-8a93-4dbe-8458-aeccae4da158 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:51:48,267 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-08-31 21:51:48,267 INFO sqlalchemy.engine.Engine 
+        SELECT 
+            exchange,
+            COUNT(DISTINCT symbol) as symbol_count,
+            COUNT(DISTINCT timeframe) as timeframe_count,
+            COUNT(*) as total_records
+        FROM market_data
+        GROUP BY exchange
+        
+2025-08-31 21:51:48,267 INFO sqlalchemy.engine.Engine [cached since 1.289e+04s ago] ()
+2025-08-31 21:51:48,268 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-08-31 21:51:48,268 INFO sqlalchemy.engine.Engine 
+        SELECT 
+            MIN(open_time) as first_timestamp,
+            MAX(open_time) as last_timestamp,
+            COUNT(*) as total_records
+        FROM kline_data 
+        WHERE exchange = ? 
+          AND symbol = ? 
+          AND timeframe = ?
+        
+2025-08-31 21:51:48,268 INFO sqlalchemy.engine.Engine [cached since 9640s ago] ('okx', 'ETH-USDT-SWAP', '1h')
+数据可用性检查失败: (sqlite3.OperationalError) no such table: kline_data
+[SQL: 
+        SELECT 
+            MIN(open_time) as first_timestamp,
+            MAX(open_time) as last_timestamp,
+            COUNT(*) as total_records
+        FROM kline_data 
+        WHERE exchange = ? 
+          AND symbol = ? 
+          AND timeframe = ?
+        ]
+[parameters: ('okx', 'ETH-USDT-SWAP', '1h')]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-08-31 21:51:48,269 INFO sqlalchemy.engine.Engine ROLLBACK
+2025-08-31 21:51:48,269 INFO sqlalchemy.engine.Engine ROLLBACK
+2025-08-31 21:51:48.270 | WARNING  | app.middleware.structured_logging:log_request_end:153 | eb704818-35d8-411a-ab28-ee2f8598ccdf | Client error: 400
+2025-08-31 21:51:48.270 | INFO     | app.middleware.structured_logging:log_request_end:153 | 4005588e-d05e-481a-9143-9ebd71ac947c | Request completed in 0.008s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/availability/okx/ETH-USDT-SWAP/1h?start_date=2025-01-01T00:00:00Z&end_date=2025-08-31T23:59:59Z HTTP/1.0" 400 Bad Request
+INFO:     114.105.192.135:0 - "GET /api/v1/data/storage/stats HTTP/1.0" 200 OK
+2025-08-31 21:51:53.994 | INFO     | app.middleware.structured_logging:log_request_start:111 | d2ecb6b7-e353-4245-aedd-7321552d4c6e | Request started
+2025-08-31 21:51:53.997 | INFO     | app.middleware.structured_logging:log_request_start:111 | 1d165e7f-561b-4325-ab5a-2cdff4bcdda3 | Request started
+2025-08-31 21:51:53.998 | WARNING  | app.middleware.structured_logging:log_request_end:153 | 1d165e7f-561b-4325-ab5a-2cdff4bcdda3 | Client error: 404
+INFO:     114.105.192.135:0 - "GET /api/v1/data/availability/okx/ETH/USDT/1h?start_date=2025-01-01T00:00:00Z&end_date=2025-08-31T23:59:59Z HTTP/1.0" 404 Not Found
+2025-08-31 21:51:54.000 | INFO     | app.middleware.structured_logging:log_request_start:111 | 44a81b88-c08f-4cd2-b275-d9dc9e02d497 | Request started
+2025-08-31 21:51:54.001 | INFO     | app.middleware.structured_logging:log_request_start:111 | 3d129573-b679-43e1-a4ca-90b3b8b1c15b | Request started
+2025-08-31 21:51:54.003 | INFO     | app.middleware.structured_logging:log_request_start:111 | de6ee2ed-179d-49f3-8978-6747dd277965 | Request started
+2025-08-31 21:51:54.003 | WARNING  | app.middleware.structured_logging:log_request_end:153 | 3d129573-b679-43e1-a4ca-90b3b8b1c15b | Client error: 404
+2025-08-31 21:51:54.004 | INFO     | app.middleware.structured_logging:log_request_start:111 | 3b2e2f78-763a-456c-bca9-83944fcee117 | Request started
+INFO:     114.105.192.135:0 - "GET /api/v1/data/availability/okx/BTC/USDT/1h?start_date=2025-01-01T00:00:00Z&end_date=2025-08-31T23:59:59Z HTTP/1.0" 404 Not Found
+2025-08-31 21:51:54,006 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-08-31 21:51:54,006 INFO sqlalchemy.engine.Engine 
+        SELECT 
+            exchange,
+            COUNT(DISTINCT symbol) as symbol_count,
+            COUNT(DISTINCT timeframe) as timeframe_count,
+            COUNT(*) as total_records
+        FROM market_data
+        GROUP BY exchange
+        
+2025-08-31 21:51:54,006 INFO sqlalchemy.engine.Engine [cached since 1.29e+04s ago] ()
+2025-08-31 21:51:54,007 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-08-31 21:51:54,007 INFO sqlalchemy.engine.Engine SELECT data_collection_tasks.id, data_collection_tasks.task_name, data_collection_tasks.exchange, data_collection_tasks.data_type, data_collection_tasks.symbols, data_collection_tasks.timeframes, data_collection_tasks.status, data_collection_tasks.schedule_type, data_collection_tasks.schedule_config, data_collection_tasks.retry_config, data_collection_tasks.last_run_at, data_collection_tasks.next_run_at, data_collection_tasks.success_count, data_collection_tasks.error_count, data_collection_tasks.total_records, data_collection_tasks.config, data_collection_tasks.rate_limit, data_collection_tasks.timeout, data_collection_tasks.priority, data_collection_tasks.created_at, data_collection_tasks.updated_at, data_collection_tasks.last_error_at, data_collection_tasks.last_error_message 
+FROM data_collection_tasks
+2025-08-31 21:51:54,007 INFO sqlalchemy.engine.Engine [cached since 9838s ago] ()
+2025-08-31 21:51:54,007 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-08-31 21:51:54,007 INFO sqlalchemy.engine.Engine 
+        SELECT 
+            MIN(open_time) as first_timestamp,
+            MAX(open_time) as last_timestamp,
+            COUNT(*) as total_records
+        FROM kline_data 
+        WHERE exchange = ? 
+          AND symbol = ? 
+          AND timeframe = ?
+        
+2025-08-31 21:51:54,007 INFO sqlalchemy.engine.Engine [cached since 9646s ago] ('okx', 'ETH-USDT-SWAP', '1h')
+2025-08-31 21:51:54,008 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-08-31 21:51:54,008 INFO sqlalchemy.engine.Engine 
+        SELECT 
+            MIN(open_time) as first_timestamp,
+            MAX(open_time) as last_timestamp,
+            COUNT(*) as total_records
+        FROM kline_data 
+        WHERE exchange = ? 
+          AND symbol = ? 
+          AND timeframe = ?
+        
+2025-08-31 21:51:54,008 INFO sqlalchemy.engine.Engine [cached since 9646s ago] ('okx', 'BTC-USDT-SWAP', '1h')
+2025-08-31 21:51:54,008 INFO sqlalchemy.engine.Engine ROLLBACK
+2025-08-31 21:51:54,009 INFO sqlalchemy.engine.Engine SELECT tick_data.id, tick_data.exchange, tick_data.symbol, tick_data.price, tick_data.volume, tick_data.side, tick_data.trade_id, tick_data.timestamp, tick_data.best_bid, tick_data.best_ask, tick_data.bid_size, tick_data.ask_size, tick_data.is_validated, tick_data.data_source, tick_data.sequence_number, tick_data.created_at 
+FROM tick_data
+2025-08-31 21:51:54,009 INFO sqlalchemy.engine.Engine [cached since 9838s ago] ()
+2025-08-31 21:51:54.009 | INFO     | app.middleware.structured_logging:log_request_end:153 | d2ecb6b7-e353-4245-aedd-7321552d4c6e | Request completed in 0.015s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/storage/stats HTTP/1.0" 200 OK
+数据可用性检查失败: (sqlite3.OperationalError) no such table: kline_data
+[SQL: 
+        SELECT 
+            MIN(open_time) as first_timestamp,
+            MAX(open_time) as last_timestamp,
+            COUNT(*) as total_records
+        FROM kline_data 
+        WHERE exchange = ? 
+          AND symbol = ? 
+          AND timeframe = ?
+        ]
+[parameters: ('okx', 'ETH-USDT-SWAP', '1h')]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-08-31 21:51:54,010 INFO sqlalchemy.engine.Engine ROLLBACK
+数据可用性检查失败: (sqlite3.OperationalError) no such table: kline_data
+[SQL: 
+        SELECT 
+            MIN(open_time) as first_timestamp,
+            MAX(open_time) as last_timestamp,
+            COUNT(*) as total_records
+        FROM kline_data 
+        WHERE exchange = ? 
+          AND symbol = ? 
+          AND timeframe = ?
+        ]
+[parameters: ('okx', 'BTC-USDT-SWAP', '1h')]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-08-31 21:51:54,011 INFO sqlalchemy.engine.Engine ROLLBACK
+2025-08-31 21:51:54.011 | WARNING  | app.middleware.structured_logging:log_request_end:153 | 3b2e2f78-763a-456c-bca9-83944fcee117 | Client error: 400
+2025-08-31 21:51:54.012 | WARNING  | app.middleware.structured_logging:log_request_end:153 | de6ee2ed-179d-49f3-8978-6747dd277965 | Client error: 400
+INFO:     114.105.192.135:0 - "GET /api/v1/data/availability/okx/ETH-USDT-SWAP/1h?start_date=2025-01-01T00:00:00Z&end_date=2025-08-31T23:59:59Z HTTP/1.0" 400 Bad Request
+INFO:     114.105.192.135:0 - "GET /api/v1/data/availability/okx/BTC-USDT-SWAP/1h?start_date=2025-01-01T00:00:00Z&end_date=2025-08-31T23:59:59Z HTTP/1.0" 400 Bad Request
+2025-08-31 21:51:54,013 INFO sqlalchemy.engine.Engine ROLLBACK
+2025-08-31 21:51:54.013 | INFO     | app.middleware.structured_logging:log_request_end:153 | 44a81b88-c08f-4cd2-b275-d9dc9e02d497 | Request completed in 0.013s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/statistics HTTP/1.0" 200 OK
+2025-08-31 21:52:01.910 | INFO     | app.middleware.structured_logging:log_request_start:111 | 6c7c5242-0909-42f8-b442-f0a39396126a | Request started
+2025-08-31 21:52:01.912 | WARNING  | app.middleware.structured_logging:log_request_end:153 | 6c7c5242-0909-42f8-b442-f0a39396126a | Client error: 404
+2025-08-31 21:52:01.913 | INFO     | app.middleware.structured_logging:log_request_start:111 | 5b6ffb9f-9e46-4a16-9741-728a0242a44b | Request started
+2025-08-31 21:52:01.914 | INFO     | app.middleware.structured_logging:log_request_start:111 | 55050b7f-3774-45b8-88ca-d69cfd98985b | Request started
+INFO:     114.105.192.135:0 - "GET /api/v1/data/quality/check/okx/BTC/USDT/1h?check_days=7 HTTP/1.0" 404 Not Found
+2025-08-31 21:52:01.915 | WARNING  | app.middleware.structured_logging:log_request_end:153 | 5b6ffb9f-9e46-4a16-9741-728a0242a44b | Client error: 404
+2025-08-31 21:52:01.916 | WARNING  | app.middleware.structured_logging:log_request_end:153 | 55050b7f-3774-45b8-88ca-d69cfd98985b | Client error: 404
+INFO:     114.105.192.135:0 - "GET /api/v1/data/quality/check/okx/BTC/USDT/1d?check_days=7 HTTP/1.0" 404 Not Found
+INFO:     114.105.192.135:0 - "GET /api/v1/data/quality/check/okx/ETH/USDT/1h?check_days=7 HTTP/1.0" 404 Not Found
+2025-08-31 21:52:01.917 | INFO     | app.middleware.structured_logging:log_request_start:111 | a9f665fe-b5b7-4d9a-90f7-57a9f61c0f0e | Request started
+2025-08-31 21:52:01.917 | INFO     | app.middleware.structured_logging:log_request_start:111 | 9cf675eb-30dc-4b62-98c5-1054421ae08d | Request started
+2025-08-31 21:52:01.919 | INFO     | app.middleware.structured_logging:log_request_start:111 | 52b51358-4f1e-40b8-a52e-56b3ff0aaacc | Request started
+2025-08-31 21:52:01.919 | WARNING  | app.middleware.structured_logging:log_request_end:153 | a9f665fe-b5b7-4d9a-90f7-57a9f61c0f0e | Client error: 404
+2025-08-31 21:52:01.920 | WARNING  | app.middleware.structured_logging:log_request_end:153 | 9cf675eb-30dc-4b62-98c5-1054421ae08d | Client error: 404
+2025-08-31 21:52:01.920 | WARNING  | app.middleware.structured_logging:log_request_end:153 | 52b51358-4f1e-40b8-a52e-56b3ff0aaacc | Client error: 404
+INFO:     114.105.192.135:0 - "GET /api/v1/data/quality/check/okx/SOL/USDT/1h?check_days=7 HTTP/1.0" 404 Not Found
+INFO:     114.105.192.135:0 - "GET /api/v1/data/quality/check/okx/ETH/USDT/1d?check_days=7 HTTP/1.0" 404 Not Found
+INFO:     114.105.192.135:0 - "GET /api/v1/data/quality/check/okx/SOL/USDT/1d?check_days=7 HTTP/1.0" 404 Not Found
+2025-08-31 21:52:13.659 | INFO     | app.middleware.structured_logging:log_request_start:111 | 51bd8c74-f90b-41e9-81a7-4c447a638e0a | Request started
+2025-08-31 21:52:13.661 | INFO     | app.middleware.structured_logging:log_request_end:153 | 51bd8c74-f90b-41e9-81a7-4c447a638e0a | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:52:16.660 | INFO     | app.middleware.structured_logging:log_request_start:111 | 4632def3-a936-4d5a-b9ac-c2d30ffa3e8e | Request started
+2025-08-31 21:52:16.661 | INFO     | app.middleware.structured_logging:log_request_end:153 | 4632def3-a936-4d5a-b9ac-c2d30ffa3e8e | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:52:19.663 | INFO     | app.middleware.structured_logging:log_request_start:111 | ff3fce24-4ca1-4c07-a0bf-2bfc66fa4f27 | Request started
+2025-08-31 21:52:19.664 | INFO     | app.middleware.structured_logging:log_request_end:153 | ff3fce24-4ca1-4c07-a0bf-2bfc66fa4f27 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:52:22.658 | INFO     | app.middleware.structured_logging:log_request_start:111 | 267c3403-812b-4e65-90d1-80a7a04793ab | Request started
+2025-08-31 21:52:22.659 | INFO     | app.middleware.structured_logging:log_request_end:153 | 267c3403-812b-4e65-90d1-80a7a04793ab | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:52:25.666 | INFO     | app.middleware.structured_logging:log_request_start:111 | 1e66c3db-2c7d-492d-936d-f3e3ecea8287 | Request started
+2025-08-31 21:52:25.667 | INFO     | app.middleware.structured_logging:log_request_end:153 | 1e66c3db-2c7d-492d-936d-f3e3ecea8287 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:52:28.665 | INFO     | app.middleware.structured_logging:log_request_start:111 | 3af1b04d-8844-44cd-a70e-c28fa6563d3c | Request started
+2025-08-31 21:52:28.666 | INFO     | app.middleware.structured_logging:log_request_end:153 | 3af1b04d-8844-44cd-a70e-c28fa6563d3c | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:52:30.518 | INFO     | app.middleware.structured_logging:log_request_start:111 | db1afd38-1162-46b7-a925-6d64a3711251 | Request started
+启动OKX K线数据下载失败: 不支持的交易对: ['BTC-USDT-SWAP']
+2025-08-31 21:52:31.520 | WARNING  | app.middleware.structured_logging:log_request_end:153 | db1afd38-1162-46b7-a925-6d64a3711251 | Client error: 400
+INFO:     114.105.192.135:0 - "POST /api/v1/data/okx/kline/download HTTP/1.0" 400 Bad Request
+2025-08-31 21:52:31.666 | INFO     | app.middleware.structured_logging:log_request_start:111 | 486893a2-e7ea-4c94-a42c-5f80acf168a7 | Request started
+2025-08-31 21:52:31.667 | INFO     | app.middleware.structured_logging:log_request_end:153 | 486893a2-e7ea-4c94-a42c-5f80acf168a7 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:52:34.655 | INFO     | app.middleware.structured_logging:log_request_start:111 | 534778b8-b092-4ef8-b5f6-b45b7d27de66 | Request started
+2025-08-31 21:52:34.656 | INFO     | app.middleware.structured_logging:log_request_end:153 | 534778b8-b092-4ef8-b5f6-b45b7d27de66 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:52:37.663 | INFO     | app.middleware.structured_logging:log_request_start:111 | c49e420f-c8b3-481c-8af5-0218d2446bb8 | Request started
+2025-08-31 21:52:37.664 | INFO     | app.middleware.structured_logging:log_request_end:153 | c49e420f-c8b3-481c-8af5-0218d2446bb8 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:52:40.661 | INFO     | app.middleware.structured_logging:log_request_start:111 | b851671d-18a5-461c-a77d-21cc655db00a | Request started
+2025-08-31 21:52:40.662 | INFO     | app.middleware.structured_logging:log_request_end:153 | b851671d-18a5-461c-a77d-21cc655db00a | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:52:43.658 | INFO     | app.middleware.structured_logging:log_request_start:111 | fa9e8d45-9676-4c03-931e-f5d0335afd25 | Request started
+2025-08-31 21:52:43.659 | INFO     | app.middleware.structured_logging:log_request_end:153 | fa9e8d45-9676-4c03-931e-f5d0335afd25 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:52:46.658 | INFO     | app.middleware.structured_logging:log_request_start:111 | 707dd5de-6abb-4156-b4b8-d9449a40a4cb | Request started
+2025-08-31 21:52:46.659 | INFO     | app.middleware.structured_logging:log_request_end:153 | 707dd5de-6abb-4156-b4b8-d9449a40a4cb | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:52:49.660 | INFO     | app.middleware.structured_logging:log_request_start:111 | 0b2936e2-2f96-4140-b16c-ce3683d75670 | Request started
+2025-08-31 21:52:49.661 | INFO     | app.middleware.structured_logging:log_request_end:153 | 0b2936e2-2f96-4140-b16c-ce3683d75670 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:52:52.656 | INFO     | app.middleware.structured_logging:log_request_start:111 | fd76218f-52ab-4109-81d6-b6bc6b8f97eb | Request started
+2025-08-31 21:52:52.657 | INFO     | app.middleware.structured_logging:log_request_end:153 | fd76218f-52ab-4109-81d6-b6bc6b8f97eb | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:52:55.664 | INFO     | app.middleware.structured_logging:log_request_start:111 | 6987d2bd-05f4-4f6b-81ac-7819d6abc81f | Request started
+2025-08-31 21:52:55.666 | INFO     | app.middleware.structured_logging:log_request_end:153 | 6987d2bd-05f4-4f6b-81ac-7819d6abc81f | Request completed in 0.002s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:52:58.671 | INFO     | app.middleware.structured_logging:log_request_start:111 | eff3f7f5-2c5f-417d-bb63-d51a7122bf28 | Request started
+2025-08-31 21:52:58.672 | INFO     | app.middleware.structured_logging:log_request_end:153 | eff3f7f5-2c5f-417d-bb63-d51a7122bf28 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:53:01.658 | INFO     | app.middleware.structured_logging:log_request_start:111 | bdbb1b46-5254-402d-93e3-254fe94be10b | Request started
+2025-08-31 21:53:01.659 | INFO     | app.middleware.structured_logging:log_request_end:153 | bdbb1b46-5254-402d-93e3-254fe94be10b | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:53:04.662 | INFO     | app.middleware.structured_logging:log_request_start:111 | 17d469a3-a7d1-4ac1-8f36-82efab73f31c | Request started
+2025-08-31 21:53:04.663 | INFO     | app.middleware.structured_logging:log_request_end:153 | 17d469a3-a7d1-4ac1-8f36-82efab73f31c | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:53:07.663 | INFO     | app.middleware.structured_logging:log_request_start:111 | 193311ab-24ac-4922-bc07-ae574f700215 | Request started
+2025-08-31 21:53:07.664 | INFO     | app.middleware.structured_logging:log_request_end:153 | 193311ab-24ac-4922-bc07-ae574f700215 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:53:10.657 | INFO     | app.middleware.structured_logging:log_request_start:111 | 8aa27729-bfaa-40ac-9b20-feca370e07a7 | Request started
+2025-08-31 21:53:10.658 | INFO     | app.middleware.structured_logging:log_request_end:153 | 8aa27729-bfaa-40ac-9b20-feca370e07a7 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:53:13.659 | INFO     | app.middleware.structured_logging:log_request_start:111 | 5606f4d8-1208-4a54-868c-abac9f03dc98 | Request started
+2025-08-31 21:53:13.660 | INFO     | app.middleware.structured_logging:log_request_end:153 | 5606f4d8-1208-4a54-868c-abac9f03dc98 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:53:16.658 | INFO     | app.middleware.structured_logging:log_request_start:111 | be1bb914-a7cd-44b4-a63c-9d926052a0b1 | Request started
+2025-08-31 21:53:16.659 | INFO     | app.middleware.structured_logging:log_request_end:153 | be1bb914-a7cd-44b4-a63c-9d926052a0b1 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:53:19.669 | INFO     | app.middleware.structured_logging:log_request_start:111 | 9924242a-ec5f-47be-b33c-2c5131233214 | Request started
+2025-08-31 21:53:19.670 | INFO     | app.middleware.structured_logging:log_request_end:153 | 9924242a-ec5f-47be-b33c-2c5131233214 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:53:22.660 | INFO     | app.middleware.structured_logging:log_request_start:111 | d12e507b-4f1f-4432-b1bd-4791dbee59e6 | Request started
+2025-08-31 21:53:22.661 | INFO     | app.middleware.structured_logging:log_request_end:153 | d12e507b-4f1f-4432-b1bd-4791dbee59e6 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:53:26.549 | INFO     | app.middleware.structured_logging:log_request_start:111 | 4bfca33c-3b9d-4da5-8fa9-147af55c4344 | Request started
+2025-08-31 21:53:26.550 | INFO     | app.middleware.structured_logging:log_request_end:153 | 4bfca33c-3b9d-4da5-8fa9-147af55c4344 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:53:29.552 | INFO     | app.middleware.structured_logging:log_request_start:111 | 9a690a85-28f8-4779-9481-86c704fe73fb | Request started
+2025-08-31 21:53:29.553 | INFO     | app.middleware.structured_logging:log_request_end:153 | 9a690a85-28f8-4779-9481-86c704fe73fb | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:53:32.556 | INFO     | app.middleware.structured_logging:log_request_start:111 | 55799ccf-36f0-43fc-a548-b3449385dc17 | Request started
+2025-08-31 21:53:32.557 | INFO     | app.middleware.structured_logging:log_request_end:153 | 55799ccf-36f0-43fc-a548-b3449385dc17 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:53:35.554 | INFO     | app.middleware.structured_logging:log_request_start:111 | 163f8b0b-ab36-42fa-a5f2-a4c783ff2c32 | Request started
+2025-08-31 21:53:35.555 | INFO     | app.middleware.structured_logging:log_request_end:153 | 163f8b0b-ab36-42fa-a5f2-a4c783ff2c32 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:53:38.554 | INFO     | app.middleware.structured_logging:log_request_start:111 | 92bf7f0a-c846-4ee8-9576-251fc5061ee3 | Request started
+2025-08-31 21:53:38.555 | INFO     | app.middleware.structured_logging:log_request_end:153 | 92bf7f0a-c846-4ee8-9576-251fc5061ee3 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:53:41.555 | INFO     | app.middleware.structured_logging:log_request_start:111 | 990dc134-4744-41e5-92ac-53d55e70b353 | Request started
+2025-08-31 21:53:41.557 | INFO     | app.middleware.structured_logging:log_request_end:153 | 990dc134-4744-41e5-92ac-53d55e70b353 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:53:44.565 | INFO     | app.middleware.structured_logging:log_request_start:111 | 282e1d60-edfe-405a-9d97-0aaaa2c5582d | Request started
+2025-08-31 21:53:44.566 | INFO     | app.middleware.structured_logging:log_request_end:153 | 282e1d60-edfe-405a-9d97-0aaaa2c5582d | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:53:47.550 | INFO     | app.middleware.structured_logging:log_request_start:111 | 606e5e1e-bb48-4bd8-9278-cca63ee5e878 | Request started
+2025-08-31 21:53:47.551 | INFO     | app.middleware.structured_logging:log_request_end:153 | 606e5e1e-bb48-4bd8-9278-cca63ee5e878 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:53:50.552 | INFO     | app.middleware.structured_logging:log_request_start:111 | 84854e2b-3532-4218-89c1-c7dfdb731dce | Request started
+2025-08-31 21:53:50.553 | INFO     | app.middleware.structured_logging:log_request_end:153 | 84854e2b-3532-4218-89c1-c7dfdb731dce | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:53:53.561 | INFO     | app.middleware.structured_logging:log_request_start:111 | 5b1858ed-4e05-4460-8745-4a2f652f6302 | Request started
+2025-08-31 21:53:53.562 | INFO     | app.middleware.structured_logging:log_request_end:153 | 5b1858ed-4e05-4460-8745-4a2f652f6302 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:53:56.561 | INFO     | app.middleware.structured_logging:log_request_start:111 | 10647f72-9791-42d6-8a96-f85b43090c2e | Request started
+2025-08-31 21:53:56.562 | INFO     | app.middleware.structured_logging:log_request_end:153 | 10647f72-9791-42d6-8a96-f85b43090c2e | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:53:58.662 | INFO     | app.middleware.structured_logging:log_request_start:111 | 7b2dc10e-852c-45c0-83e6-9c75822b753c | Request started
+2025-08-31 21:53:58.663 | INFO     | app.middleware.structured_logging:log_request_end:153 | 7b2dc10e-852c-45c0-83e6-9c75822b753c | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:54:02.546 | INFO     | app.middleware.structured_logging:log_request_start:111 | b89bb0eb-0f3c-4786-948f-bf786d5635fa | Request started
+2025-08-31 21:54:02.547 | INFO     | app.middleware.structured_logging:log_request_end:153 | b89bb0eb-0f3c-4786-948f-bf786d5635fa | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:54:05.547 | INFO     | app.middleware.structured_logging:log_request_start:111 | 4ac78f5b-073a-47a8-b4a6-458a35a97fb9 | Request started
+2025-08-31 21:54:05.548 | INFO     | app.middleware.structured_logging:log_request_end:153 | 4ac78f5b-073a-47a8-b4a6-458a35a97fb9 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:54:08.559 | INFO     | app.middleware.structured_logging:log_request_start:111 | e0197a6c-db17-4d07-86bd-78664fde3427 | Request started
+2025-08-31 21:54:08.560 | INFO     | app.middleware.structured_logging:log_request_end:153 | e0197a6c-db17-4d07-86bd-78664fde3427 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:54:11.549 | INFO     | app.middleware.structured_logging:log_request_start:111 | 905ef222-9a2a-41c9-89e2-33eb2975c263 | Request started
+2025-08-31 21:54:11.550 | INFO     | app.middleware.structured_logging:log_request_end:153 | 905ef222-9a2a-41c9-89e2-33eb2975c263 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:54:14.561 | INFO     | app.middleware.structured_logging:log_request_start:111 | e9b34638-afb9-4e8c-8f2f-090520c16ea8 | Request started
+2025-08-31 21:54:14.562 | INFO     | app.middleware.structured_logging:log_request_end:153 | e9b34638-afb9-4e8c-8f2f-090520c16ea8 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:54:17.546 | INFO     | app.middleware.structured_logging:log_request_start:111 | c3bfd586-382b-4a52-9fab-e9564d1d80a8 | Request started
+2025-08-31 21:54:17.548 | INFO     | app.middleware.structured_logging:log_request_end:153 | c3bfd586-382b-4a52-9fab-e9564d1d80a8 | Request completed in 0.002s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:54:20.549 | INFO     | app.middleware.structured_logging:log_request_start:111 | 684a493b-6d1b-41eb-b5b0-c1d077d379ef | Request started
+2025-08-31 21:54:20.550 | INFO     | app.middleware.structured_logging:log_request_end:153 | 684a493b-6d1b-41eb-b5b0-c1d077d379ef | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:54:23.554 | INFO     | app.middleware.structured_logging:log_request_start:111 | 445af040-0033-44fa-b8d0-6b504329ecd2 | Request started
+2025-08-31 21:54:23.555 | INFO     | app.middleware.structured_logging:log_request_end:153 | 445af040-0033-44fa-b8d0-6b504329ecd2 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:54:26.558 | INFO     | app.middleware.structured_logging:log_request_start:111 | bc0f9210-c6bf-4565-8f8a-a7e67a19fdf2 | Request started
+2025-08-31 21:54:26.559 | INFO     | app.middleware.structured_logging:log_request_end:153 | bc0f9210-c6bf-4565-8f8a-a7e67a19fdf2 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:54:29.549 | INFO     | app.middleware.structured_logging:log_request_start:111 | 8e739e36-0769-4deb-87d5-e68702db96a1 | Request started
+2025-08-31 21:54:29.551 | INFO     | app.middleware.structured_logging:log_request_end:153 | 8e739e36-0769-4deb-87d5-e68702db96a1 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:54:32.568 | INFO     | app.middleware.structured_logging:log_request_start:111 | b9ef3917-2c8b-4322-b428-41e4ba9f30ca | Request started
+2025-08-31 21:54:32.569 | INFO     | app.middleware.structured_logging:log_request_end:153 | b9ef3917-2c8b-4322-b428-41e4ba9f30ca | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:54:35.553 | INFO     | app.middleware.structured_logging:log_request_start:111 | 059c0b52-0c17-4099-99bf-f17e366a595a | Request started
+2025-08-31 21:54:35.554 | INFO     | app.middleware.structured_logging:log_request_end:153 | 059c0b52-0c17-4099-99bf-f17e366a595a | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:54:37.663 | INFO     | app.middleware.structured_logging:log_request_start:111 | 1600b5ab-3272-495d-90ed-84fb4ebcfed0 | Request started
+2025-08-31 21:54:37.664 | INFO     | app.middleware.structured_logging:log_request_end:153 | 1600b5ab-3272-495d-90ed-84fb4ebcfed0 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:54:40.662 | INFO     | app.middleware.structured_logging:log_request_start:111 | c3ed46bc-1027-4996-b766-39ac7a552109 | Request started
+2025-08-31 21:54:40.663 | INFO     | app.middleware.structured_logging:log_request_end:153 | c3ed46bc-1027-4996-b766-39ac7a552109 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:54:43.663 | INFO     | app.middleware.structured_logging:log_request_start:111 | 54ec3013-bf2e-4737-9509-943551ece0e2 | Request started
+2025-08-31 21:54:43.666 | INFO     | app.middleware.structured_logging:log_request_end:153 | 54ec3013-bf2e-4737-9509-943551ece0e2 | Request completed in 0.003s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:54:46.669 | INFO     | app.middleware.structured_logging:log_request_start:111 | 9524d98a-fd27-4f26-b775-e050ec891804 | Request started
+2025-08-31 21:54:46.670 | INFO     | app.middleware.structured_logging:log_request_end:153 | 9524d98a-fd27-4f26-b775-e050ec891804 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:54:49.654 | INFO     | app.middleware.structured_logging:log_request_start:111 | 9dbef9dd-2c70-4059-873c-f52728484530 | Request started
+2025-08-31 21:54:49.656 | INFO     | app.middleware.structured_logging:log_request_end:153 | 9dbef9dd-2c70-4059-873c-f52728484530 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:54:53.561 | INFO     | app.middleware.structured_logging:log_request_start:111 | a4ab238d-3bd1-4e8e-9df4-9b96440caf4d | Request started
+2025-08-31 21:54:53.562 | INFO     | app.middleware.structured_logging:log_request_end:153 | a4ab238d-3bd1-4e8e-9df4-9b96440caf4d | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:54:56.549 | INFO     | app.middleware.structured_logging:log_request_start:111 | 26e5ab87-b149-43b6-9d80-62b3be02cf1b | Request started
+2025-08-31 21:54:56.550 | INFO     | app.middleware.structured_logging:log_request_end:153 | 26e5ab87-b149-43b6-9d80-62b3be02cf1b | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:54:59.551 | INFO     | app.middleware.structured_logging:log_request_start:111 | fc61163f-f3dc-4fd3-88e9-bb393e6a514b | Request started
+2025-08-31 21:54:59.552 | INFO     | app.middleware.structured_logging:log_request_end:153 | fc61163f-f3dc-4fd3-88e9-bb393e6a514b | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:55:02.549 | INFO     | app.middleware.structured_logging:log_request_start:111 | 276a55f8-ce3b-42b8-b408-1d29406c6e58 | Request started
+2025-08-31 21:55:02.550 | INFO     | app.middleware.structured_logging:log_request_end:153 | 276a55f8-ce3b-42b8-b408-1d29406c6e58 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:55:05.550 | INFO     | app.middleware.structured_logging:log_request_start:111 | e5995c93-f9d1-494d-ae57-e3c6ff2d6e31 | Request started
+2025-08-31 21:55:05.552 | INFO     | app.middleware.structured_logging:log_request_end:153 | e5995c93-f9d1-494d-ae57-e3c6ff2d6e31 | Request completed in 0.002s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:55:08.555 | INFO     | app.middleware.structured_logging:log_request_start:111 | ce37d62e-f0a9-4d02-9e08-6a5d2253bef4 | Request started
+2025-08-31 21:55:08.556 | INFO     | app.middleware.structured_logging:log_request_end:153 | ce37d62e-f0a9-4d02-9e08-6a5d2253bef4 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:55:11.551 | INFO     | app.middleware.structured_logging:log_request_start:111 | efd75c4a-7569-4a0f-80c2-e08276884fbe | Request started
+2025-08-31 21:55:11.552 | INFO     | app.middleware.structured_logging:log_request_end:153 | efd75c4a-7569-4a0f-80c2-e08276884fbe | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:55:14.553 | INFO     | app.middleware.structured_logging:log_request_start:111 | f3f54f11-6604-42a7-9711-ccc551d4e9b7 | Request started
+2025-08-31 21:55:14.554 | INFO     | app.middleware.structured_logging:log_request_end:153 | f3f54f11-6604-42a7-9711-ccc551d4e9b7 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:55:16.665 | INFO     | app.middleware.structured_logging:log_request_start:111 | 16649c00-97b7-4c76-b8d7-c93e5db9ef02 | Request started
+2025-08-31 21:55:16.666 | INFO     | app.middleware.structured_logging:log_request_end:153 | 16649c00-97b7-4c76-b8d7-c93e5db9ef02 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:55:19.664 | INFO     | app.middleware.structured_logging:log_request_start:111 | 4694cc54-5aca-4136-9ee6-6e4f86457e0c | Request started
+2025-08-31 21:55:19.665 | INFO     | app.middleware.structured_logging:log_request_end:153 | 4694cc54-5aca-4136-9ee6-6e4f86457e0c | Request completed in 0.002s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:55:22.666 | INFO     | app.middleware.structured_logging:log_request_start:111 | 85dc0def-dc90-4dd2-9ebc-446132748be0 | Request started
+2025-08-31 21:55:22.669 | INFO     | app.middleware.structured_logging:log_request_end:153 | 85dc0def-dc90-4dd2-9ebc-446132748be0 | Request completed in 0.002s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:55:25.653 | INFO     | app.middleware.structured_logging:log_request_start:111 | baa069fa-0df4-484c-8229-cb4fea37ea4e | Request started
+2025-08-31 21:55:25.655 | INFO     | app.middleware.structured_logging:log_request_end:153 | baa069fa-0df4-484c-8229-cb4fea37ea4e | Request completed in 0.002s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:55:28.658 | INFO     | app.middleware.structured_logging:log_request_start:111 | 98932442-0362-408d-a22b-d6292f3c06a8 | Request started
+2025-08-31 21:55:28.660 | INFO     | app.middleware.structured_logging:log_request_end:153 | 98932442-0362-408d-a22b-d6292f3c06a8 | Request completed in 0.002s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:55:31.657 | INFO     | app.middleware.structured_logging:log_request_start:111 | 32413409-317c-456e-b4ec-35693c9914bb | Request started
+2025-08-31 21:55:31.658 | INFO     | app.middleware.structured_logging:log_request_end:153 | 32413409-317c-456e-b4ec-35693c9914bb | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:55:35.557 | INFO     | app.middleware.structured_logging:log_request_start:111 | b1ac476f-2ac0-4da2-8136-96dd6b701125 | Request started
+2025-08-31 21:55:35.560 | INFO     | app.middleware.structured_logging:log_request_end:153 | b1ac476f-2ac0-4da2-8136-96dd6b701125 | Request completed in 0.003s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:55:38.562 | INFO     | app.middleware.structured_logging:log_request_start:111 | 77656be7-a295-40f5-ac50-921731f68fdd | Request started
+2025-08-31 21:55:38.563 | INFO     | app.middleware.structured_logging:log_request_end:153 | 77656be7-a295-40f5-ac50-921731f68fdd | Request completed in 0.002s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:55:41.560 | INFO     | app.middleware.structured_logging:log_request_start:111 | 62731eea-0711-4034-9791-ed9ce03d8fd1 | Request started
+2025-08-31 21:55:41.563 | INFO     | app.middleware.structured_logging:log_request_end:153 | 62731eea-0711-4034-9791-ed9ce03d8fd1 | Request completed in 0.004s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:55:44.548 | INFO     | app.middleware.structured_logging:log_request_start:111 | ab959bd0-e9cd-4e25-9f61-c3f9efd70ead | Request started
+2025-08-31 21:55:44.549 | INFO     | app.middleware.structured_logging:log_request_end:153 | ab959bd0-e9cd-4e25-9f61-c3f9efd70ead | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:55:47.545 | INFO     | app.middleware.structured_logging:log_request_start:111 | 4aec9f53-4611-41aa-abe1-d742e1035a92 | Request started
+2025-08-31 21:55:47.547 | INFO     | app.middleware.structured_logging:log_request_end:153 | 4aec9f53-4611-41aa-abe1-d742e1035a92 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:55:50.561 | INFO     | app.middleware.structured_logging:log_request_start:111 | a2f8cb11-d51e-4594-a950-a25b7a806d8f | Request started
+2025-08-31 21:55:50.564 | INFO     | app.middleware.structured_logging:log_request_end:153 | a2f8cb11-d51e-4594-a950-a25b7a806d8f | Request completed in 0.003s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:55:53.547 | INFO     | app.middleware.structured_logging:log_request_start:111 | 14a9368a-f7c5-4fdf-a1fc-cfe7c7757eb2 | Request started
+2025-08-31 21:55:53.548 | INFO     | app.middleware.structured_logging:log_request_end:153 | 14a9368a-f7c5-4fdf-a1fc-cfe7c7757eb2 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:55:56.548 | INFO     | app.middleware.structured_logging:log_request_start:111 | b2805ff6-26fb-485f-a8e8-f19cf4ce060b | Request started
+2025-08-31 21:55:56.549 | INFO     | app.middleware.structured_logging:log_request_end:153 | b2805ff6-26fb-485f-a8e8-f19cf4ce060b | Request completed in 0.002s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:55:59.569 | INFO     | app.middleware.structured_logging:log_request_start:111 | 21762dbf-0e68-40ad-86f5-68ef16de14c6 | Request started
+2025-08-31 21:55:59.570 | INFO     | app.middleware.structured_logging:log_request_end:153 | 21762dbf-0e68-40ad-86f5-68ef16de14c6 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:56:02.563 | INFO     | app.middleware.structured_logging:log_request_start:111 | 822133b1-2165-4d22-97e4-84b3dc0347ed | Request started
+2025-08-31 21:56:02.564 | INFO     | app.middleware.structured_logging:log_request_end:153 | 822133b1-2165-4d22-97e4-84b3dc0347ed | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:56:04.668 | INFO     | app.middleware.structured_logging:log_request_start:111 | 2d185765-b569-450d-a1fe-d91fc238ff03 | Request started
+2025-08-31 21:56:04.669 | INFO     | app.middleware.structured_logging:log_request_end:153 | 2d185765-b569-450d-a1fe-d91fc238ff03 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:56:29.357 | INFO     | app.middleware.structured_logging:log_request_start:111 | b17f2f11-7b74-487d-9cb7-d1d14cb8f685 | Request started
+2025-08-31 21:56:29.359 | INFO     | app.middleware.structured_logging:log_request_start:111 | 4afa09fd-43ec-4a2b-bff5-bb2e569a1d69 | Request started
+2025-08-31 21:56:29.360 | WARNING  | app.middleware.structured_logging:log_request_end:153 | 4afa09fd-43ec-4a2b-bff5-bb2e569a1d69 | Client error: 404
+INFO:     114.105.192.135:0 - "GET /api/v1/data/availability/okx/BTC/USDT/1h?start_date=2025-01-01T00:00:00Z&end_date=2025-08-31T23:59:59Z HTTP/1.0" 404 Not Found
+2025-08-31 21:56:29,361 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-08-31 21:56:29,361 INFO sqlalchemy.engine.Engine SELECT data_collection_tasks.id, data_collection_tasks.task_name, data_collection_tasks.exchange, data_collection_tasks.data_type, data_collection_tasks.symbols, data_collection_tasks.timeframes, data_collection_tasks.status, data_collection_tasks.schedule_type, data_collection_tasks.schedule_config, data_collection_tasks.retry_config, data_collection_tasks.last_run_at, data_collection_tasks.next_run_at, data_collection_tasks.success_count, data_collection_tasks.error_count, data_collection_tasks.total_records, data_collection_tasks.config, data_collection_tasks.rate_limit, data_collection_tasks.timeout, data_collection_tasks.priority, data_collection_tasks.created_at, data_collection_tasks.updated_at, data_collection_tasks.last_error_at, data_collection_tasks.last_error_message 
+FROM data_collection_tasks
+2025-08-31 21:56:29,361 INFO sqlalchemy.engine.Engine [cached since 1.011e+04s ago] ()
+2025-08-31 21:56:29,362 INFO sqlalchemy.engine.Engine SELECT tick_data.id, tick_data.exchange, tick_data.symbol, tick_data.price, tick_data.volume, tick_data.side, tick_data.trade_id, tick_data.timestamp, tick_data.best_bid, tick_data.best_ask, tick_data.bid_size, tick_data.ask_size, tick_data.is_validated, tick_data.data_source, tick_data.sequence_number, tick_data.created_at 
+FROM tick_data
+2025-08-31 21:56:29,362 INFO sqlalchemy.engine.Engine [cached since 1.011e+04s ago] ()
+2025-08-31 21:56:29,362 INFO sqlalchemy.engine.Engine ROLLBACK
+2025-08-31 21:56:29.363 | INFO     | app.middleware.structured_logging:log_request_end:153 | b17f2f11-7b74-487d-9cb7-d1d14cb8f685 | Request completed in 0.006s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/statistics HTTP/1.0" 200 OK
+2025-08-31 21:56:29.432 | INFO     | app.middleware.structured_logging:log_request_start:111 | 3fbfcd1b-86db-4f37-8ced-22e3dec716fd | Request started
+2025-08-31 21:56:29.433 | WARNING  | app.middleware.structured_logging:log_request_end:153 | 3fbfcd1b-86db-4f37-8ced-22e3dec716fd | Client error: 404
+INFO:     114.105.192.135:0 - "GET /api/v1/data/availability/okx/ETH/USDT/1h?start_date=2025-01-01T00:00:00Z&end_date=2025-08-31T23:59:59Z HTTP/1.0" 404 Not Found
+2025-08-31 21:56:29.507 | INFO     | app.middleware.structured_logging:log_request_start:111 | cd72502f-16c8-40c5-88d7-9730ac44f774 | Request started
+2025-08-31 21:56:29,508 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-08-31 21:56:29,509 INFO sqlalchemy.engine.Engine 
+        SELECT 
+            MIN(open_time) as first_timestamp,
+            MAX(open_time) as last_timestamp,
+            COUNT(*) as total_records
+        FROM kline_data 
+        WHERE exchange = ? 
+          AND symbol = ? 
+          AND timeframe = ?
+        
+2025-08-31 21:56:29,509 INFO sqlalchemy.engine.Engine [cached since 9922s ago] ('okx', 'BTC-USDT-SWAP', '1h')
+数据可用性检查失败: (sqlite3.OperationalError) no such table: kline_data
+[SQL: 
+        SELECT 
+            MIN(open_time) as first_timestamp,
+            MAX(open_time) as last_timestamp,
+            COUNT(*) as total_records
+        FROM kline_data 
+        WHERE exchange = ? 
+          AND symbol = ? 
+          AND timeframe = ?
+        ]
+[parameters: ('okx', 'BTC-USDT-SWAP', '1h')]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-08-31 21:56:29,509 INFO sqlalchemy.engine.Engine ROLLBACK
+2025-08-31 21:56:29.510 | WARNING  | app.middleware.structured_logging:log_request_end:153 | cd72502f-16c8-40c5-88d7-9730ac44f774 | Client error: 400
+INFO:     114.105.192.135:0 - "GET /api/v1/data/availability/okx/BTC-USDT-SWAP/1h?start_date=2025-01-01T00:00:00Z&end_date=2025-08-31T23:59:59Z HTTP/1.0" 400 Bad Request
+2025-08-31 21:56:29.518 | INFO     | app.middleware.structured_logging:log_request_start:111 | e2b1d3a9-fa0b-4c76-9028-7cf2bc9ad40f | Request started
+2025-08-31 21:56:29.520 | INFO     | app.middleware.structured_logging:log_request_start:111 | f0cdf004-3037-434b-9bd3-7df64681e50d | Request started
+2025-08-31 21:56:29.522 | INFO     | app.middleware.structured_logging:log_request_start:111 | 3cd3def4-2855-4f68-be7f-74edb630d213 | Request started
+2025-08-31 21:56:29.523 | INFO     | app.middleware.structured_logging:log_request_end:153 | 3cd3def4-2855-4f68-be7f-74edb630d213 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:56:29,524 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-08-31 21:56:29,524 INFO sqlalchemy.engine.Engine 
+        SELECT 
+            exchange,
+            COUNT(DISTINCT symbol) as symbol_count,
+            COUNT(DISTINCT timeframe) as timeframe_count,
+            COUNT(*) as total_records
+        FROM market_data
+        GROUP BY exchange
+        
+2025-08-31 21:56:29,524 INFO sqlalchemy.engine.Engine [cached since 1.318e+04s ago] ()
+2025-08-31 21:56:29,524 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-08-31 21:56:29,525 INFO sqlalchemy.engine.Engine 
+        SELECT 
+            MIN(open_time) as first_timestamp,
+            MAX(open_time) as last_timestamp,
+            COUNT(*) as total_records
+        FROM kline_data 
+        WHERE exchange = ? 
+          AND symbol = ? 
+          AND timeframe = ?
+        
+2025-08-31 21:56:29,525 INFO sqlalchemy.engine.Engine [cached since 9922s ago] ('okx', 'ETH-USDT-SWAP', '1h')
+数据可用性检查失败: (sqlite3.OperationalError) no such table: kline_data
+[SQL: 
+        SELECT 
+            MIN(open_time) as first_timestamp,
+            MAX(open_time) as last_timestamp,
+            COUNT(*) as total_records
+        FROM kline_data 
+        WHERE exchange = ? 
+          AND symbol = ? 
+          AND timeframe = ?
+        ]
+[parameters: ('okx', 'ETH-USDT-SWAP', '1h')]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-08-31 21:56:29,525 INFO sqlalchemy.engine.Engine ROLLBACK
+2025-08-31 21:56:29,525 INFO sqlalchemy.engine.Engine ROLLBACK
+2025-08-31 21:56:29.526 | INFO     | app.middleware.structured_logging:log_request_end:153 | f0cdf004-3037-434b-9bd3-7df64681e50d | Request completed in 0.006s
+2025-08-31 21:56:29.526 | WARNING  | app.middleware.structured_logging:log_request_end:153 | e2b1d3a9-fa0b-4c76-9028-7cf2bc9ad40f | Client error: 400
+INFO:     114.105.192.135:0 - "GET /api/v1/data/storage/stats HTTP/1.0" 200 OK
+INFO:     114.105.192.135:0 - "GET /api/v1/data/availability/okx/ETH-USDT-SWAP/1h?start_date=2025-01-01T00:00:00Z&end_date=2025-08-31T23:59:59Z HTTP/1.0" 400 Bad Request
+2025-08-31 21:56:34.999 | INFO     | app.middleware.structured_logging:log_request_start:111 | 45ed6db2-b677-4030-873a-0e509dc40962 | Request started
+2025-08-31 21:56:35.000 | INFO     | app.middleware.structured_logging:log_request_end:153 | 45ed6db2-b677-4030-873a-0e509dc40962 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:56:37.987 | INFO     | app.middleware.structured_logging:log_request_start:111 | 311a18ae-6299-4d31-8a12-1dadd29b1c46 | Request started
+2025-08-31 21:56:37.988 | INFO     | app.middleware.structured_logging:log_request_end:153 | 311a18ae-6299-4d31-8a12-1dadd29b1c46 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:56:41.002 | INFO     | app.middleware.structured_logging:log_request_start:111 | 19a5809b-38c0-4895-bd12-7b488ab6f32d | Request started
+2025-08-31 21:56:41.003 | INFO     | app.middleware.structured_logging:log_request_end:153 | 19a5809b-38c0-4895-bd12-7b488ab6f32d | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:56:43.992 | INFO     | app.middleware.structured_logging:log_request_start:111 | 1a173986-aaba-4cd2-9b75-38122742bad6 | Request started
+2025-08-31 21:56:43.994 | INFO     | app.middleware.structured_logging:log_request_end:153 | 1a173986-aaba-4cd2-9b75-38122742bad6 | Request completed in 0.003s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:56:47.000 | INFO     | app.middleware.structured_logging:log_request_start:111 | 129d4708-da88-417c-825e-c6622ba82ce8 | Request started
+2025-08-31 21:56:47.001 | INFO     | app.middleware.structured_logging:log_request_end:153 | 129d4708-da88-417c-825e-c6622ba82ce8 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:56:49.998 | INFO     | app.middleware.structured_logging:log_request_start:111 | 68961c28-e637-4e5a-a857-7162e50b71b7 | Request started
+2025-08-31 21:56:49.999 | INFO     | app.middleware.structured_logging:log_request_end:153 | 68961c28-e637-4e5a-a857-7162e50b71b7 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:56:52.993 | INFO     | app.middleware.structured_logging:log_request_start:111 | 18f522cd-968f-475c-8936-f72840a1549d | Request started
+2025-08-31 21:56:52.994 | INFO     | app.middleware.structured_logging:log_request_end:153 | 18f522cd-968f-475c-8936-f72840a1549d | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:56:55.999 | INFO     | app.middleware.structured_logging:log_request_start:111 | 32e0956b-50c4-4c8a-9506-0af245c0781a | Request started
+2025-08-31 21:56:56.000 | INFO     | app.middleware.structured_logging:log_request_end:153 | 32e0956b-50c4-4c8a-9506-0af245c0781a | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:56:58.989 | INFO     | app.middleware.structured_logging:log_request_start:111 | 0dc79414-9051-4e44-9f57-ae223c97b544 | Request started
+2025-08-31 21:56:58.991 | INFO     | app.middleware.structured_logging:log_request_end:153 | 0dc79414-9051-4e44-9f57-ae223c97b544 | Request completed in 0.002s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:57:01.998 | INFO     | app.middleware.structured_logging:log_request_start:111 | c66fbe42-e6b8-41ba-a0c9-d1149edb0519 | Request started
+2025-08-31 21:57:01.999 | INFO     | app.middleware.structured_logging:log_request_end:153 | c66fbe42-e6b8-41ba-a0c9-d1149edb0519 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:57:04.988 | INFO     | app.middleware.structured_logging:log_request_start:111 | 6f40f402-82e8-4e23-8a62-4a766916c252 | Request started
+2025-08-31 21:57:04.989 | INFO     | app.middleware.structured_logging:log_request_end:153 | 6f40f402-82e8-4e23-8a62-4a766916c252 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:57:07.992 | INFO     | app.middleware.structured_logging:log_request_start:111 | 98700d0c-ff96-4cae-92b3-602ec368f1c9 | Request started
+2025-08-31 21:57:07.993 | INFO     | app.middleware.structured_logging:log_request_end:153 | 98700d0c-ff96-4cae-92b3-602ec368f1c9 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 21:57:10.940 | INFO     | app.middleware.structured_logging:log_request_start:111 | ec0b4750-3b04-4bfe-bcf0-fdc14e6aa526 | Request started
+启动OKX K线数据下载失败: 不支持的交易对: ['BTC-USDT-SWAP']
+2025-08-31 21:57:11.943 | WARNING  | app.middleware.structured_logging:log_request_end:153 | ec0b4750-3b04-4bfe-bcf0-fdc14e6aa526 | Client error: 400
+INFO:     114.105.192.135:0 - "POST /api/v1/data/okx/kline/download HTTP/1.0" 400 Bad Request
+2025-08-31 21:57:11.944 | INFO     | app.middleware.structured_logging:log_request_start:111 | e77bd041-0cf1-4f11-992e-2c3023b98fa6 | Request started
+2025-08-31 21:57:11.946 | INFO     | app.middleware.structured_logging:log_request_end:153 | e77bd041-0cf1-4f11-992e-2c3023b98fa6 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 22:00:09.378 | INFO     | app.middleware.structured_logging:log_request_start:111 | 5e835961-6a0b-4ea8-8ded-ac103a4a5db0 | Request started
+2025-08-31 22:00:09.379 | INFO     | app.middleware.structured_logging:log_request_end:153 | 5e835961-6a0b-4ea8-8ded-ac103a4a5db0 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 22:00:09.456 | INFO     | app.middleware.structured_logging:log_request_start:111 | 07d73079-f171-4d6f-898a-4acb672fcbcc | Request started
+2025-08-31 22:00:09.458 | INFO     | app.middleware.structured_logging:log_request_end:153 | 07d73079-f171-4d6f-898a-4acb672fcbcc | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 22:00:09.535 | INFO     | app.middleware.structured_logging:log_request_start:111 | a1c2300f-f0e7-4b81-84e9-b3aae16e8f5a | Request started
+2025-08-31 22:00:09.536 | INFO     | app.middleware.structured_logging:log_request_end:153 | a1c2300f-f0e7-4b81-84e9-b3aae16e8f5a | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 22:00:09.614 | INFO     | app.middleware.structured_logging:log_request_start:111 | 9730c93d-7102-4330-bcd5-3536a4a925cf | Request started
+2025-08-31 22:00:09.615 | INFO     | app.middleware.structured_logging:log_request_end:153 | 9730c93d-7102-4330-bcd5-3536a4a925cf | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 22:00:09.690 | INFO     | app.middleware.structured_logging:log_request_start:111 | 6d42bf15-200a-48fe-8b89-b5dc4ebf2cd9 | Request started
+2025-08-31 22:00:09.691 | INFO     | app.middleware.structured_logging:log_request_end:153 | 6d42bf15-200a-48fe-8b89-b5dc4ebf2cd9 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 22:00:09.768 | INFO     | app.middleware.structured_logging:log_request_start:111 | 73aae1d9-e208-4157-99e2-38b6353008f7 | Request started
+2025-08-31 22:00:09.770 | INFO     | app.middleware.structured_logging:log_request_end:153 | 73aae1d9-e208-4157-99e2-38b6353008f7 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 22:00:09.846 | INFO     | app.middleware.structured_logging:log_request_start:111 | 50f5df25-5f70-4548-a83e-321f1811fb41 | Request started
+2025-08-31 22:00:09.847 | INFO     | app.middleware.structured_logging:log_request_end:153 | 50f5df25-5f70-4548-a83e-321f1811fb41 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 22:00:11.555 | INFO     | app.middleware.structured_logging:log_request_start:111 | 9b730cf4-c410-43d6-ae07-08f7f96bcd60 | Request started
+2025-08-31 22:00:11.556 | INFO     | app.middleware.structured_logging:log_request_end:153 | 9b730cf4-c410-43d6-ae07-08f7f96bcd60 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 22:00:14.556 | INFO     | app.middleware.structured_logging:log_request_start:111 | 52561a44-e7be-4447-b6ed-d2f6b0ed594a | Request started
+2025-08-31 22:00:14.557 | INFO     | app.middleware.structured_logging:log_request_end:153 | 52561a44-e7be-4447-b6ed-d2f6b0ed594a | Request completed in 0.002s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 22:00:17.557 | INFO     | app.middleware.structured_logging:log_request_start:111 | 983197c0-0eb4-40f2-a2a6-52f43c147d95 | Request started
+2025-08-31 22:00:17.558 | INFO     | app.middleware.structured_logging:log_request_end:153 | 983197c0-0eb4-40f2-a2a6-52f43c147d95 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 22:00:20.549 | INFO     | app.middleware.structured_logging:log_request_start:111 | b002eb8e-4279-42d0-9bed-da356b765a79 | Request started
+2025-08-31 22:00:20.550 | INFO     | app.middleware.structured_logging:log_request_end:153 | b002eb8e-4279-42d0-9bed-da356b765a79 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 22:00:23.560 | INFO     | app.middleware.structured_logging:log_request_start:111 | d412126a-54bf-49ad-8289-286b233571e6 | Request started
+2025-08-31 22:00:23.561 | INFO     | app.middleware.structured_logging:log_request_end:153 | d412126a-54bf-49ad-8289-286b233571e6 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 22:00:26.546 | INFO     | app.middleware.structured_logging:log_request_start:111 | 0bcb9013-b25f-4c81-aa86-42ef5ca91b52 | Request started
+2025-08-31 22:00:26.547 | INFO     | app.middleware.structured_logging:log_request_end:153 | 0bcb9013-b25f-4c81-aa86-42ef5ca91b52 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 22:00:29.552 | INFO     | app.middleware.structured_logging:log_request_start:111 | 2ee114b7-31b7-4a6e-98bd-01b3d3ca78f1 | Request started
+2025-08-31 22:00:29.553 | INFO     | app.middleware.structured_logging:log_request_end:153 | 2ee114b7-31b7-4a6e-98bd-01b3d3ca78f1 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 22:00:32.549 | INFO     | app.middleware.structured_logging:log_request_start:111 | d1c88f46-5f58-49e1-83a3-a33a8bb24aef | Request started
+2025-08-31 22:00:32.550 | INFO     | app.middleware.structured_logging:log_request_end:153 | d1c88f46-5f58-49e1-83a3-a33a8bb24aef | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 22:00:35.550 | INFO     | app.middleware.structured_logging:log_request_start:111 | 22715f6c-175a-4683-bb9f-589649be90b1 | Request started
+2025-08-31 22:00:35.551 | INFO     | app.middleware.structured_logging:log_request_end:153 | 22715f6c-175a-4683-bb9f-589649be90b1 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 22:00:38.557 | INFO     | app.middleware.structured_logging:log_request_start:111 | 8f3136ec-d642-4bdf-97fd-dff42909d22d | Request started
+2025-08-31 22:00:38.558 | INFO     | app.middleware.structured_logging:log_request_end:153 | 8f3136ec-d642-4bdf-97fd-dff42909d22d | Request completed in 0.002s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 22:00:41.550 | INFO     | app.middleware.structured_logging:log_request_start:111 | 6ffcdde2-2840-4896-b69b-6189fe0aebb8 | Request started
+2025-08-31 22:00:41.552 | INFO     | app.middleware.structured_logging:log_request_end:153 | 6ffcdde2-2840-4896-b69b-6189fe0aebb8 | Request completed in 0.002s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 22:00:44.550 | INFO     | app.middleware.structured_logging:log_request_start:111 | fe30eb97-accb-456d-9880-722494a6b4cb | Request started
+2025-08-31 22:00:44.551 | INFO     | app.middleware.structured_logging:log_request_end:153 | fe30eb97-accb-456d-9880-722494a6b4cb | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 22:00:47.554 | INFO     | app.middleware.structured_logging:log_request_start:111 | 98aa14ce-01d3-4cfc-94a8-caba38eac3a0 | Request started
+2025-08-31 22:00:47.555 | INFO     | app.middleware.structured_logging:log_request_end:153 | 98aa14ce-01d3-4cfc-94a8-caba38eac3a0 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 22:00:50.545 | INFO     | app.middleware.structured_logging:log_request_start:111 | e003b062-df8f-40f9-9b97-a8747d574192 | Request started
+2025-08-31 22:00:50.546 | INFO     | app.middleware.structured_logging:log_request_end:153 | e003b062-df8f-40f9-9b97-a8747d574192 | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-08-31 22:00:53.548 | INFO     | app.middleware.structured_logging:log_request_start:111 | be355e85-0d73-4a2e-886c-2848e7c891bd | Request started
+2025-08-31 22:00:53.549 | INFO     | app.middleware.structured_logging:log_request_end:153 | be355e85-0d73-4a2e-886c-2848e7c891bd | Request completed in 0.001s
+INFO:     114.105.192.135:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK

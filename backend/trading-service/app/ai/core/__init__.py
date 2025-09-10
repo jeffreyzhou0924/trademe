@@ -2,7 +2,7 @@
 AI核心模块
 """
 
-from .claude_client import ClaudeClient
+from app.core.claude_client import ClaudeClient
 
 __all__ = [
     "ClaudeClient"

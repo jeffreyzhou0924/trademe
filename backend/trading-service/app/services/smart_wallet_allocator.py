@@ -136,7 +136,9 @@ class SmartWalletAllocator:
             allocated_wallet = await self._atomic_allocate(best_wallet, request)
             
             if allocated_wallet:
-                logger.info(f"智能分配成功: 钱包={allocated_wallet.address}, 评分={best_wallet.total_score:.3f}")
+                from app.utils.data_validation import DataValidator
+                score_formatted = DataValidator.safe_format_percentage(best_wallet.total_score * 100, decimals=3)
+                logger.info(f"智能分配成功: 钱包={allocated_wallet.address}, 评分={score_formatted}")
                 
                 # 记录分配决策日志
                 await self._log_allocation_decision(best_wallet, request)
@@ -376,8 +378,15 @@ class SmartWalletAllocator:
         # 选择评分最高的钱包
         best_score = wallet_scores[0]
         
-        logger.info(f"选择最优钱包: 地址={best_score.address}, 评分={best_score.total_score:.3f}")
-        logger.debug(f"评分详情: 风险={best_score.risk_score:.3f}, 性能={best_score.performance_score:.3f}, 可用性={best_score.availability_score:.3f}")
+        # 使用安全格式化避免NULL值错误
+        from app.utils.data_validation import DataValidator
+        score_formatted = DataValidator.safe_format_percentage(best_score.total_score * 100, decimals=3)
+        risk_formatted = DataValidator.safe_format_percentage(best_score.risk_score * 100, decimals=3) 
+        perf_formatted = DataValidator.safe_format_percentage(best_score.performance_score * 100, decimals=3)
+        avail_formatted = DataValidator.safe_format_percentage(best_score.availability_score * 100, decimals=3)
+        
+        logger.info(f"选择最优钱包: 地址={best_score.address}, 评分={score_formatted}")
+        logger.debug(f"评分详情: 风险={risk_formatted}, 性能={perf_formatted}, 可用性={avail_formatted}")
         
         return best_score
 

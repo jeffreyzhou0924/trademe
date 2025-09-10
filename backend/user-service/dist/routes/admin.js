@@ -1,0 +1,34 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const validation_1 = require("../utils/validation");
+const validation_2 = require("../middleware/validation");
+const errorHandler_1 = require("../middleware/errorHandler");
+const auth_1 = require("../middleware/auth");
+const admin_1 = __importDefault(require("../controllers/admin"));
+const router = (0, express_1.Router)();
+router.use(auth_1.authenticateToken);
+router.use(auth_1.requireAdmin);
+router.get('/users', (0, validation_2.validateQuery)(validation_1.paginationSchema), (0, errorHandler_1.asyncHandler)(admin_1.default.getUsers));
+router.get('/users/:userId', (0, errorHandler_1.asyncHandler)(admin_1.default.getUserDetail));
+router.put('/users/:userId', (0, errorHandler_1.asyncHandler)(admin_1.default.updateUser));
+router.get('/stats/system', (0, errorHandler_1.asyncHandler)(admin_1.default.getSystemStats));
+router.get('/users/:userId/activities', (0, validation_2.validateQuery)(validation_1.paginationSchema), (0, errorHandler_1.asyncHandler)(admin_1.default.getUserActivities));
+router.get('/users/:userId/membership-stats', (0, errorHandler_1.asyncHandler)(admin_1.default.getUserMembershipStats));
+router.patch('/users/batch', (0, errorHandler_1.asyncHandler)(admin_1.default.batchUpdateUsers));
+router.get('/analytics/membership', (0, errorHandler_1.asyncHandler)(admin_1.default.getMembershipAnalytics));
+router.get('/claude/accounts', (0, errorHandler_1.asyncHandler)(admin_1.default.getClaudeAccounts));
+router.post('/claude/accounts', (0, errorHandler_1.asyncHandler)(admin_1.default.addClaudeAccount));
+router.put('/claude/accounts/:accountId', (0, errorHandler_1.asyncHandler)(admin_1.default.updateClaudeAccount));
+router.delete('/claude/accounts/:accountId', (0, errorHandler_1.asyncHandler)(admin_1.default.deleteClaudeAccount));
+router.post('/claude/accounts/:accountId/test', (0, errorHandler_1.asyncHandler)(admin_1.default.testClaudeAccount));
+router.get('/claude/usage-stats', (0, errorHandler_1.asyncHandler)(admin_1.default.getClaudeUsageStats));
+router.get('/proxies', (0, errorHandler_1.asyncHandler)(admin_1.default.getProxies));
+router.get('/scheduler/config', (0, errorHandler_1.asyncHandler)(admin_1.default.getSchedulerConfig));
+router.put('/scheduler/config', (0, errorHandler_1.asyncHandler)(admin_1.default.updateSchedulerConfig));
+router.get('/claude/anomaly-detection', (0, errorHandler_1.asyncHandler)(admin_1.default.getAIAnomalyDetection));
+exports.default = router;
+//# sourceMappingURL=admin.js.map

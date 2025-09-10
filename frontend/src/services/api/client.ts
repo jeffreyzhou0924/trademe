@@ -5,7 +5,7 @@ import { handleError } from '@/utils/errorHandler'
 const createApiClient = (baseURL: string, serviceName = 'api'): AxiosInstance => {
   const client = axios.create({
     baseURL,
-    timeout: 30000,
+    timeout: 60000, // 增加超时时间到60秒，适应AI响应时间
     headers: {
       'Content-Type': 'application/json',
     },

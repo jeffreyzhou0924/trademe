@@ -17,6 +17,7 @@ from app.models.api_key import ApiKey
 from app.models.market_data import MarketData
 from app.models.trade import Trade
 from app.core.risk_manager import risk_manager, OrderRiskAssessment, RiskLevel
+from app.utils.data_validation import DataValidator
 from loguru import logger
 
 
@@ -63,6 +64,28 @@ class ExchangeService:
             
         except Exception as e:
             logger.error(f"创建交易所实例失败: {exchange_name}, 错误: {str(e)}")
+            raise
+    
+    def _create_public_exchange_instance(self, exchange_name: str) -> ccxt.Exchange:
+        """创建公共API交易所实例（无需API密钥）"""
+        try:
+            if exchange_name not in self.SUPPORTED_EXCHANGES:
+                raise ValueError(f"不支持的交易所: {exchange_name}")
+            
+            exchange_class = self.SUPPORTED_EXCHANGES[exchange_name]
+            config = {
+                'timeout': 30000,
+                'enableRateLimit': True,
+                'sandbox': settings.environment != "production",
+            }
+            # 注意：不设置apiKey和secret，用于公共API调用
+            
+            exchange = exchange_class(config)
+            logger.info(f"创建公共API交易所实例: {exchange_name}")
+            return exchange
+            
+        except Exception as e:
+            logger.error(f"创建公共API交易所实例失败: {exchange_name}, 错误: {str(e)}")
             raise
     
     async def get_exchange(self, user_id: int, exchange_name: str, 
@@ -194,8 +217,10 @@ class ExchangeService:
             exchange = await self.get_exchange(user_id, exchange_name, db)
             if not exchange:
                 # 如果用户没有配置API，使用公开接口
-                exchange = self._create_exchange_instance(exchange_name, '', '')
+                logger.info(f"用户 {user_id} 无可用API密钥，使用公共API获取数据: {exchange_name}")
+                exchange = self._create_public_exchange_instance(exchange_name)
             
+            logger.info(f"获取市场数据: {symbol} {timeframe} limit={limit} exchange={exchange_name}")
             loop = asyncio.get_event_loop()
             ohlcv_data = await loop.run_in_executor(
                 None, 
@@ -205,6 +230,8 @@ class ExchangeService:
                 None, 
                 limit
             )
+            
+            logger.info(f"成功获取 {len(ohlcv_data) if ohlcv_data else 0} 条市场数据")
             
             # 转换数据格式
             formatted_data = []
@@ -219,10 +246,13 @@ class ExchangeService:
                     'volume': float(ohlcv[5]) if ohlcv[5] else 0
                 })
             
+            logger.info(f"格式化完成，返回 {len(formatted_data)} 条数据")
             return formatted_data
             
         except Exception as e:
             logger.error(f"获取市场数据失败: {exchange_name}, {symbol}, 错误: {str(e)}")
+            import traceback
+            logger.error(f"详细错误信息: {traceback.format_exc()}")
             return None
     
     async def place_order(self, user_id: int, exchange_name: str, symbol: str,
@@ -317,7 +347,7 @@ class ExchangeService:
                     logger.info(f"根据风险建议调整仓位: {amount} -> {risk_assessment.suggested_position_size}")
                     amount = risk_assessment.suggested_position_size
                 
-                logger.info(f"风险验证通过: 等级={risk_assessment.risk_level.value}, 评分={risk_assessment.risk_score:.2f}")
+                logger.info(f"风险验证通过: 等级={risk_assessment.risk_level.value}, 评分={DataValidator.safe_format_decimal(risk_assessment.risk_score, decimals=2)}")
             
             # 4. 执行实际下单
             loop = asyncio.get_event_loop()

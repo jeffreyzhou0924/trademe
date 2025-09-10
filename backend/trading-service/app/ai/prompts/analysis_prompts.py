@@ -106,14 +106,14 @@ class AnalysisPrompts:
 协议类型：{protocol_type}
 
 关键指标：
-- TVL（总锁仓价值）：${tvl:,.2f}
-- 24h交易量：${volume_24h:,.2f}
-- 用户数量：{user_count:,}
-- 代币价格：${token_price:.4f}
+- TVL（总锁仓价值）：{tvl_formatted}
+- 24h交易量：{volume_24h_formatted}
+- 用户数量：{user_count_formatted}
+- 代币价格：{token_price_formatted}
 
 收益数据：
-- APY：{apy:.2f}%
-- 手续费收入：${fee_revenue:,.2f}
+- APY：{apy_formatted}
+- 手续费收入：{fee_revenue_formatted}
 - 代币奖励：{token_rewards}
 
 风险评估：
@@ -188,4 +188,38 @@ class AnalysisPrompts:
             long_term_holders=long_term_holders,
             exchange_balance=exchange_balance,
             whale_holdings=whale_holdings
+        )
+    
+    @classmethod
+    def format_defi_analysis(
+        cls,
+        protocol_name: str,
+        protocol_type: str,
+        tvl: float,
+        volume_24h: float,
+        user_count: int,
+        token_price: float,
+        apy: float,
+        fee_revenue: float,
+        token_rewards: str,
+        contract_risk: str,
+        liquidity_risk: str,
+        governance_risk: str
+    ) -> str:
+        """格式化DeFi协议分析提示词"""
+        from app.utils.data_validation import DataValidator
+        
+        return cls.DEFI_ANALYSIS_PROMPT.format(
+            protocol_name=protocol_name,
+            protocol_type=protocol_type,
+            tvl_formatted=DataValidator.safe_format_price(tvl),
+            volume_24h_formatted=DataValidator.safe_format_price(volume_24h),
+            user_count_formatted=f"{user_count:,}" if user_count else "N/A",
+            token_price_formatted=DataValidator.safe_format_price(token_price, decimals=4),
+            apy_formatted=DataValidator.safe_format_percentage(apy),
+            fee_revenue_formatted=DataValidator.safe_format_price(fee_revenue),
+            token_rewards=token_rewards,
+            contract_risk=contract_risk,
+            liquidity_risk=liquidity_risk,
+            governance_risk=governance_risk
         )

@@ -1,0 +1,39 @@
+{
+  "timestamp": "2025-08-28T01:29:50.623136",
+  "tests": {
+    "dynamic_context": {
+      "success": true,
+      "window_size": 10,
+      "strategy": "default_fallback",
+      "context_entries": 0
+    },
+    "context_summarizer": {
+      "success": true,
+      "health_maintained": false,
+      "summary_generated": false
+    },
+    "session_recovery": {
+      "success": true,
+      "interrupted_sessions": 1,
+      "recovery_success": true
+    },
+    "knowledge_accumulator": {
+      "success": true,
+      "expertise_level": "unknown",
+      "technical_interests": 5,
+      "learning_analysis": "completed",
+      "context_recommendations": 0
+    },
+    "full_integration": {
+      "success": true,
+      "response_received": true,
+      "context_enhanced": true,
+      "window_size": 10,
+      "user_expertise": "unknown"
+    }
+  },
+  "overall_success": true,
+  "success_rate": 1.0,
+  "passed_tests": 5,
+  "total_tests": 5
+}

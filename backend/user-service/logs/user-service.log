@@ -1,0 +1,26 @@
+
+> @trademe/user-service@1.0.0 start
+> node -r tsconfig-paths/register dist/app.js
+
+node:internal/modules/cjs/loader:1215
+  throw err;
+  ^
+
+Error: Cannot find module '@/middleware/errorHandler'
+Require stack:
+- /root/trademe/backend/user-service/dist/app.js
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1212:15)
+    at Module._resolveFilename (/root/trademe/backend/user-service/node_modules/tsconfig-paths/lib/register.js:103:40)
+    at Module._load (node:internal/modules/cjs/loader:1043:27)
+    at Module.require (node:internal/modules/cjs/loader:1298:19)
+    at require (node:internal/modules/helpers:182:18)
+    at Object.<anonymous> (/root/trademe/backend/user-service/dist/app.js:12:24)
+    at Module._compile (node:internal/modules/cjs/loader:1529:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1613:10)
+    at Module.load (node:internal/modules/cjs/loader:1275:32)
+    at Module._load (node:internal/modules/cjs/loader:1096:12) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [ '/root/trademe/backend/user-service/dist/app.js' ]
+}
+
+Node.js v20.19.4

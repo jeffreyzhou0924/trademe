@@ -1,0 +1,308 @@
+2025-09-01 16:52:36.172 | INFO     | app.ai.core.claude_client:__init__:113 - 使用自定义Claude API端点: https://claude.cloudcdn7.com/api
+2025-09-01 16:52:36.207 | INFO     | app.ai.core.claude_client:__init__:117 - Claude客户端初始化成功
+2025-09-01 16:52:36.207 | INFO     | app.ai.core.claude_client:__init__:134 - Claude客户端初始化完成 - 模型: claude-sonnet-4-20250514, 启用状态: True
+未配置主密钥，将生成临时密钥
+未配置主密钥，将生成临时密钥
+2025-09-01 16:52:36.767 | INFO     | app.services.okx_service:__init__:116 - 🚀 OKX交易服务初始化完成
+INFO:app.services.wallet_generator:多链钱包生成器初始化完成
+INFO:     Started server process [2347693]
+INFO:     Waiting for application startup.
+2025-09-01 16:52:37,138 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+INFO:sqlalchemy.engine.Engine:BEGIN (implicit)
+2025-09-01 16:52:37,138 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("api_keys")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("api_keys")
+2025-09-01 16:52:37,138 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-09-01 16:52:37,140 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("backtests")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("backtests")
+2025-09-01 16:52:37,140 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-09-01 16:52:37,140 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("market_data")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("market_data")
+2025-09-01 16:52:37,140 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-09-01 16:52:37,141 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("strategies")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("strategies")
+2025-09-01 16:52:37,141 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-09-01 16:52:37,141 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("trades")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("trades")
+2025-09-01 16:52:37,141 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-09-01 16:52:37,141 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("users")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("users")
+2025-09-01 16:52:37,141 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-09-01 16:52:37,142 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("claude_conversations")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("claude_conversations")
+2025-09-01 16:52:37,142 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-09-01 16:52:37,142 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("claude_usage_stats")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("claude_usage_stats")
+2025-09-01 16:52:37,142 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-09-01 16:52:37,142 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("generated_strategies")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("generated_strategies")
+2025-09-01 16:52:37,142 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-09-01 16:52:37,142 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("ai_chat_sessions")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("ai_chat_sessions")
+2025-09-01 16:52:37,142 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-09-01 16:52:37,143 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("trading_notes")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("trading_notes")
+2025-09-01 16:52:37,143 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-09-01 16:52:37,143 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("trading_note_likes")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("trading_note_likes")
+2025-09-01 16:52:37,143 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-09-01 16:52:37,143 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("trading_note_comments")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("trading_note_comments")
+2025-09-01 16:52:37,143 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-09-01 16:52:37,144 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("admins")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("admins")
+2025-09-01 16:52:37,144 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-09-01 16:52:37,144 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("admin_roles")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("admin_roles")
+2025-09-01 16:52:37,144 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-09-01 16:52:37,145 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("admin_operation_logs")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("admin_operation_logs")
+2025-09-01 16:52:37,145 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-09-01 16:52:37,145 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("admin_sessions")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("admin_sessions")
+2025-09-01 16:52:37,145 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-09-01 16:52:37,145 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("claude_accounts")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("claude_accounts")
+2025-09-01 16:52:37,145 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-09-01 16:52:37,146 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("proxies")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("proxies")
+2025-09-01 16:52:37,146 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-09-01 16:52:37,146 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("claude_usage_logs")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("claude_usage_logs")
+2025-09-01 16:52:37,146 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-09-01 16:52:37,146 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("claude_scheduler_configs")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("claude_scheduler_configs")
+2025-09-01 16:52:37,146 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-09-01 16:52:37,146 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("user_claude_keys")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("user_claude_keys")
+2025-09-01 16:52:37,146 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-09-01 16:52:37,147 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("user_claude_usage")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("user_claude_usage")
+2025-09-01 16:52:37,147 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-09-01 16:52:37,147 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("proxy_health_checks")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("proxy_health_checks")
+2025-09-01 16:52:37,147 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-09-01 16:52:37,147 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("usdt_wallets")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("usdt_wallets")
+2025-09-01 16:52:37,147 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-09-01 16:52:37,148 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("usdt_payment_orders")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("usdt_payment_orders")
+2025-09-01 16:52:37,148 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-09-01 16:52:37,148 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("blockchain_transactions")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("blockchain_transactions")
+2025-09-01 16:52:37,148 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-09-01 16:52:37,148 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("payment_webhooks")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("payment_webhooks")
+2025-09-01 16:52:37,148 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-09-01 16:52:37,149 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("wallet_balances")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("wallet_balances")
+2025-09-01 16:52:37,149 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-09-01 16:52:37,149 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("payment_notifications")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("payment_notifications")
+2025-09-01 16:52:37,149 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-09-01 16:52:37,149 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("webhook_logs")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("webhook_logs")
+2025-09-01 16:52:37,149 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-09-01 16:52:37,149 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("data_collection_tasks")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("data_collection_tasks")
+2025-09-01 16:52:37,149 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-09-01 16:52:37,150 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("data_quality_metrics")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("data_quality_metrics")
+2025-09-01 16:52:37,150 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-09-01 16:52:37,150 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("exchange_api_configs")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("exchange_api_configs")
+2025-09-01 16:52:37,150 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-09-01 16:52:37,150 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("data_collection_logs")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("data_collection_logs")
+2025-09-01 16:52:37,150 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-09-01 16:52:37,151 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("data_storage_usage")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("data_storage_usage")
+2025-09-01 16:52:37,151 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-09-01 16:52:37,151 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("data_cleanup_jobs")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("data_cleanup_jobs")
+2025-09-01 16:52:37,151 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-09-01 16:52:37,151 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("tick_data")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("tick_data")
+2025-09-01 16:52:37,151 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-09-01 16:52:37,151 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("data_export_tasks")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("data_export_tasks")
+2025-09-01 16:52:37,151 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-09-01 16:52:37,152 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("user_data_access")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("user_data_access")
+2025-09-01 16:52:37,152 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-09-01 16:52:37,152 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("data_partitions")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("data_partitions")
+2025-09-01 16:52:37,152 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-09-01 16:52:37,152 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("data_pipeline_configs")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("data_pipeline_configs")
+2025-09-01 16:52:37,152 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-09-01 16:52:37,153 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("data_quality_rules")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("data_quality_rules")
+2025-09-01 16:52:37,153 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-09-01 16:52:37,153 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("data_access_audit")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("data_access_audit")
+2025-09-01 16:52:37,153 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-09-01 16:52:37,153 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("membership_plans")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("membership_plans")
+2025-09-01 16:52:37,153 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-09-01 16:52:37,154 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("user_tags")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("user_tags")
+2025-09-01 16:52:37,154 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-09-01 16:52:37,154 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("user_tag_assignments")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("user_tag_assignments")
+2025-09-01 16:52:37,154 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-09-01 16:52:37,154 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("user_activity_logs")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("user_activity_logs")
+2025-09-01 16:52:37,154 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-09-01 16:52:37,155 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("user_statistics_snapshots")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("user_statistics_snapshots")
+2025-09-01 16:52:37,155 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-09-01 16:52:37,155 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("user_notifications")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("user_notifications")
+2025-09-01 16:52:37,155 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-09-01 16:52:37,155 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("user_behavior_profiles")
+INFO:sqlalchemy.engine.Engine:PRAGMA main.table_info("user_behavior_profiles")
+2025-09-01 16:52:37,155 INFO sqlalchemy.engine.Engine [raw sql] ()
+INFO:sqlalchemy.engine.Engine:[raw sql] ()
+2025-09-01 16:52:37,157 INFO sqlalchemy.engine.Engine COMMIT
+INFO:sqlalchemy.engine.Engine:COMMIT
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+✅ 数据库初始化成功
+📋 包含的表：用户、策略、回测、交易、API密钥、市场数据、Claude对话、交易心得
+📋 管理后台表：管理员、Claude代理池、USDT支付、数据采集
+✅ Redis连接成功
+🔑 OKX API认证成功，已连接到真实交易接口
+🚀 Trading Service 启动成功
+📊 环境: development
+🏠 Host: 0.0.0.0:8001
+2025-09-01 16:52:49.477 | INFO     | app.middleware.structured_logging:log_request_start:111 | d2fc54a9-35cd-4ad3-af43-5e6321ade674 | Request started
+2025-09-01 16:52:49,481 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+INFO:sqlalchemy.engine.Engine:BEGIN (implicit)
+2025-09-01 16:52:49,482 INFO sqlalchemy.engine.Engine 
+        SELECT task_name, exchange, data_type, symbols, timeframes, status, 
+               success_count, error_count, total_records, config, created_at,
+               last_run_at, last_error_message
+        FROM data_collection_tasks 
+        WHERE exchange = 'okx' 
+        ORDER BY created_at DESC 
+        LIMIT 50
+        
+INFO:sqlalchemy.engine.Engine:
+        SELECT task_name, exchange, data_type, symbols, timeframes, status, 
+               success_count, error_count, total_records, config, created_at,
+               last_run_at, last_error_message
+        FROM data_collection_tasks 
+        WHERE exchange = 'okx' 
+        ORDER BY created_at DESC 
+        LIMIT 50
+        
+2025-09-01 16:52:49,482 INFO sqlalchemy.engine.Engine [generated in 0.00012s] ()
+INFO:sqlalchemy.engine.Engine:[generated in 0.00012s] ()
+2025-09-01 16:52:49,483 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:sqlalchemy.engine.Engine:ROLLBACK
+2025-09-01 16:52:49.483 | INFO     | app.middleware.structured_logging:log_request_end:153 | d2fc54a9-35cd-4ad3-af43-5e6321ade674 | Request completed in 0.007s
+INFO:     1.161.51.80:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-09-01 16:53:49.480 | INFO     | app.middleware.structured_logging:log_request_start:111 | 618c2680-1fdb-421c-ada2-462db3642c6e | Request started
+2025-09-01 16:53:49,482 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+INFO:sqlalchemy.engine.Engine:BEGIN (implicit)
+2025-09-01 16:53:49,482 INFO sqlalchemy.engine.Engine 
+        SELECT task_name, exchange, data_type, symbols, timeframes, status, 
+               success_count, error_count, total_records, config, created_at,
+               last_run_at, last_error_message
+        FROM data_collection_tasks 
+        WHERE exchange = 'okx' 
+        ORDER BY created_at DESC 
+        LIMIT 50
+        
+INFO:sqlalchemy.engine.Engine:
+        SELECT task_name, exchange, data_type, symbols, timeframes, status, 
+               success_count, error_count, total_records, config, created_at,
+               last_run_at, last_error_message
+        FROM data_collection_tasks 
+        WHERE exchange = 'okx' 
+        ORDER BY created_at DESC 
+        LIMIT 50
+        
+2025-09-01 16:53:49,482 INFO sqlalchemy.engine.Engine [cached since 60s ago] ()
+INFO:sqlalchemy.engine.Engine:[cached since 60s ago] ()
+2025-09-01 16:53:49,482 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:sqlalchemy.engine.Engine:ROLLBACK
+2025-09-01 16:53:49.483 | INFO     | app.middleware.structured_logging:log_request_end:153 | 618c2680-1fdb-421c-ada2-462db3642c6e | Request completed in 0.003s
+INFO:     1.161.51.80:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK
+2025-09-01 16:54:49.479 | INFO     | app.middleware.structured_logging:log_request_start:111 | 83fbf02f-df34-46fd-8262-3a4d522cd9a4 | Request started
+2025-09-01 16:54:49,486 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+INFO:sqlalchemy.engine.Engine:BEGIN (implicit)
+2025-09-01 16:54:49,487 INFO sqlalchemy.engine.Engine 
+        SELECT task_name, exchange, data_type, symbols, timeframes, status, 
+               success_count, error_count, total_records, config, created_at,
+               last_run_at, last_error_message
+        FROM data_collection_tasks 
+        WHERE exchange = 'okx' 
+        ORDER BY created_at DESC 
+        LIMIT 50
+        
+INFO:sqlalchemy.engine.Engine:
+        SELECT task_name, exchange, data_type, symbols, timeframes, status, 
+               success_count, error_count, total_records, config, created_at,
+               last_run_at, last_error_message
+        FROM data_collection_tasks 
+        WHERE exchange = 'okx' 
+        ORDER BY created_at DESC 
+        LIMIT 50
+        
+2025-09-01 16:54:49,487 INFO sqlalchemy.engine.Engine [cached since 120s ago] ()
+INFO:sqlalchemy.engine.Engine:[cached since 120s ago] ()
+2025-09-01 16:54:49,487 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:sqlalchemy.engine.Engine:ROLLBACK
+2025-09-01 16:54:49.488 | INFO     | app.middleware.structured_logging:log_request_end:153 | 83fbf02f-df34-46fd-8262-3a4d522cd9a4 | Request completed in 0.009s
+INFO:     1.161.51.80:0 - "GET /api/v1/data/okx/tasks HTTP/1.0" 200 OK

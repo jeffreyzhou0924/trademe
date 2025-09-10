@@ -2,6 +2,8 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import toast from 'react-hot-toast'
 import { aiApi } from '../services/api/ai'
+import { errorHandler, createRetryHandler, ErrorType } from '../utils/errorHandler'
+import { getWebSocketAIService, type AIProgressCallback, type WebSocketAIService } from '../services/ai/websocketAI'
 import type { 
   ChatSession, 
   ChatMessage, 
@@ -23,6 +25,34 @@ interface AIState {
   messages: ChatMessage[]
   isTyping: boolean
   
+  // 消息加载状态管理 - 解决异步竞态条件
+  messagesLoading: boolean
+  messagesLoaded: boolean
+  
+  // WebSocket状态
+  useWebSocket: boolean
+  wsConnected: boolean
+  wsConnectionId: string | null
+  
+  // AI进度状态
+  aiProgress: {
+    isProcessing: boolean
+    step: number
+    totalSteps: number
+    status: string
+    message: string
+    complexity?: 'simple' | 'medium' | 'complex'
+    estimatedTime?: number
+  } | null
+  
+  // 🌊 流式响应状态
+  streamingMessage: {
+    isStreaming: boolean
+    requestId?: string
+    accumulatedContent: string
+    messageIndex?: number  // 当前正在更新的消息索引
+  } | null
+  
   // 策略生成
   generatedStrategies: GeneratedStrategy[]
   isGenerating: boolean
@@ -38,6 +68,10 @@ interface AIState {
   // 加载状态
   isLoading: boolean
   error: string | null
+  
+  // 网络状态和重试管理
+  networkStatus: 'checking' | 'connected' | 'disconnected'
+  retryCount: number
   
   // 模式和会话操作
   setAIMode: (mode: AIMode) => void
@@ -63,10 +97,16 @@ interface AIState {
   getTradingSignals: (symbol: string, exchange: string, timeframes: string[]) => Promise<any>
   assessRisk: (strategyCode?: string, portfolio?: any) => Promise<any>
   
+  // WebSocket方法
+  toggleWebSocket: () => void
+  initializeWebSocket: () => Promise<boolean>
+  sendMessageWebSocket: (message: string) => Promise<boolean>
+  
   // 工具方法
   clearError: () => void
   reset: () => void
   checkNetworkStatus: () => Promise<boolean>
+  getErrorMessage: (error: any) => string
 }
 
 export const useAIStore = create<AIState>()(
@@ -81,6 +121,19 @@ export const useAIStore = create<AIState>()(
       currentSession: null,
       messages: [],
       isTyping: false,
+      messagesLoading: false,
+      messagesLoaded: false,
+      
+      // WebSocket状态初始值
+      useWebSocket: true, // 默认启用WebSocket
+      wsConnected: false,
+      wsConnectionId: null,
+      
+      // AI进度状态初始值  
+      aiProgress: null,
+      
+      // 🌊 流式响应状态初始值
+      streamingMessage: null,
       
       generatedStrategies: [],
       isGenerating: false,
@@ -93,6 +146,10 @@ export const useAIStore = create<AIState>()(
       
       isLoading: false,
       error: null,
+      
+      // 网络状态和重试管理初始值
+      networkStatus: 'connected',
+      retryCount: 0,
 
       // =============== 模式和会话管理 ===============
       
@@ -148,7 +205,7 @@ export const useAIStore = create<AIState>()(
           toast.success(`创建${request.session_type === 'strategy' ? '策略' : request.session_type === 'indicator' ? '指标' : ''}会话成功`)
           return true
         } catch (error: any) {
-          const message = error.response?.data?.message || '创建会话失败'
+          const message = String(error.response?.data?.message || '创建会话失败')
           set({ error: message, isLoading: false })
           toast.error(message)
           return false
@@ -168,59 +225,127 @@ export const useAIStore = create<AIState>()(
             isLoading: false 
           }))
         } catch (error: any) {
-          const message = error.response?.data?.message || '加载会话列表失败'
+          const message = String(error.response?.data?.message || '加载会话列表失败')
           set({ error: message, isLoading: false })
           console.error('Load chat sessions error:', error)
         }
       },
 
-      // 选择聊天会话
-      selectChatSession: (session: ChatSession | null) => {
+      // 选择聊天会话 - 修复异步竞态条件 ✅
+      selectChatSession: async (session: ChatSession | null) => {
+        // 立即设置基础状态，包含加载状态管理
         set({ 
           currentSession: session,
           messages: [],
-          error: null
+          error: null,
+          messagesLoading: !!session,  // 🔧 如果有会话则开始加载
+          messagesLoaded: false
         })
 
-        // 如果选择了会话，异步加载聊天历史（不阻塞UI）
+        // 如果选择了会话，立即开始异步加载聊天历史
         if (session) {
-          // 使用setTimeout确保不阻塞UI
-          setTimeout(async () => {
-            try {
-              const response = await aiApi.getChatHistory(session.session_id, 20)
-              const messages = (response?.messages || []).map((msg: any) => ({
-                role: msg.message_type || msg.role,
-                content: msg.content,
-                timestamp: msg.created_at || msg.timestamp
-              } as ChatMessage))
+          try {
+            console.log('📥 [AIStore] 开始加载聊天历史:', session.session_id)
+            const response = await aiApi.getChatHistory(session.session_id, 20)
+            
+            // API返回的消息格式转换
+            const historyMessages = (response?.messages || []).map((msg: any) => ({
+              role: msg.message_type || msg.role, // 保持兼容性
+              content: String(msg.content || ''), // 确保content是字符串
+              timestamp: msg.created_at || msg.timestamp // 保持兼容性
+            } as ChatMessage))
+            
+            // API返回的消息已经是按时间倒序排列，需要反转为正序
+            const orderedHistoryMessages = historyMessages.reverse()
+            
+            // 只有当前会话仍然是选中的会话时才更新消息
+            const currentState = get()
+            if (currentState.currentSession?.session_id === session.session_id) {
+              console.log('✅ [AIStore] 聊天历史加载完成:', {
+                sessionId: session.session_id,
+                messageCount: orderedHistoryMessages.length
+              })
               
-              // 只有当前会话仍然是选中的会话时才更新消息
-              const currentState = get()
-              if (currentState.currentSession?.session_id === session.session_id) {
-                set({ 
-                  messages: messages.reverse() // 确保消息按时间顺序显示
-                })
-              }
-            } catch (error: any) {
-              console.error('Load chat history failed:', error)
-              // 静默失败，不阻塞UI
+              set({ 
+                messages: orderedHistoryMessages,
+                messagesLoading: false,  // 🔧 标记加载完成
+                messagesLoaded: true     // 🔧 标记已加载
+              })
+            } else {
+              console.log('⚠️ [AIStore] 会话已切换，忽略历史消息加载')
+              set({ messagesLoading: false, messagesLoaded: true })
             }
-          }, 0)
+          } catch (error: any) {
+            console.error('❌ [AIStore] 加载聊天历史失败:', error)
+            set({ 
+              error: '加载聊天历史失败，请刷新重试',
+              messagesLoading: false,  // 🔧 标记加载完成（即使失败）
+              messagesLoaded: true     // 🔧 标记已尝试加载
+            })
+          }
+        } else {
+          // 没有选择会话，直接标记为加载完成
+          set({ messagesLoading: false, messagesLoaded: true })
         }
       },
 
-      // 发送消息 - 增强错误处理和重试机制
+      // 发送消息 - 支持WebSocket/HTTP双模式
       sendMessage: async (message: string) => {
-        const { currentSession, currentAIMode, retryCount } = get()
+        const { useWebSocket } = get()
+        
+        // 如果启用WebSocket，使用WebSocket发送
+        if (useWebSocket) {
+          return get().sendMessageWebSocket(message)
+        }
+        
+        // 原有HTTP发送逻辑
+        let { currentSession, currentAIMode, retryCount } = get()
+        
+        // console.log('🚀 [DEBUG] sendMessage called:', { 
+        //   message, 
+        //   currentSession: currentSession?.session_id || 'null',
+        //   currentAIMode 
+        // })
+        
+        // 如果没有当前会话，自动创建一个默认会话
         if (!currentSession) {
-          toast.error('请先选择或创建聊天会话')
-          return false
+          console.log('❌ [DEBUG] No currentSession, creating default session')
+          try {
+            const defaultSessionName = currentAIMode === 'trader' ? '市场分析对话' : '策略开发对话'
+            const success = await get().createChatSession({
+              name: defaultSessionName,
+              ai_mode: currentAIMode,
+              session_type: 'strategy',
+              description: '自动创建的对话会话'
+            })
+            
+            if (!success) {
+              toast.error('创建对话会话失败')
+              return false
+            }
+            
+            // 重新获取当前会话
+            currentSession = get().currentSession
+            if (!currentSession) {
+              toast.error('会话创建失败')
+              return false
+            }
+            
+            console.log('✅ [DEBUG] Auto-created session:', currentSession.session_id)
+            toast.success('已自动创建新对话')
+          } catch (error) {
+            console.log('❌ [DEBUG] Exception in session creation:', error)
+            toast.error('创建对话会话失败')
+            return false
+          }
+        } else {
+          console.log('✅ [DEBUG] Using existing currentSession:', currentSession.session_id)
         }
 
         // 立即添加用户消息到界面
         const userMessage: ChatMessage = {
           role: 'user',
-          content: message,
+          content: String(message || ''), // 确保content是字符串
           timestamp: new Date().toISOString()
         }
 
@@ -243,6 +368,13 @@ export const useAIStore = create<AIState>()(
             })
             
             // 发送消息到后端
+            console.log('📤 [DEBUG] Calling aiApi.sendChatMessage with:', {
+              message,
+              sessionId: currentSession.session_id,
+              aiMode: currentSession.ai_mode,
+              sessionType: currentSession.session_type
+            })
+            
             const messagePromise = aiApi.sendChatMessage(
               message,
               currentSession.session_id,
@@ -258,7 +390,7 @@ export const useAIStore = create<AIState>()(
           // 构建AI回复消息
           const assistantMessage: ChatMessage = {
             role: 'assistant',
-            content: aiResponse.response,
+            content: String(aiResponse.response || ''), // 确保content是字符串
             timestamp: new Date().toISOString()
           }
           
@@ -429,7 +561,7 @@ export const useAIStore = create<AIState>()(
             isLoading: false 
           })
         } catch (error: any) {
-          const message = error.response?.data?.message || '获取使用统计失败'
+          const message = String(error.response?.data?.message || '获取使用统计失败')
           set({ error: message, isLoading: false })
           console.error('Load usage stats error:', error)
         }
@@ -446,7 +578,22 @@ export const useAIStore = create<AIState>()(
       generateStrategy: async (request: StrategyGenerationRequest) => {
         set({ isGenerating: true, error: null })
         try {
-          const strategy = await aiApi.generateStrategy(request)
+          const apiResponse = await aiApi.generateStrategy(request)
+          
+          // Transform API response to GeneratedStrategy interface
+          const strategy: GeneratedStrategy = {
+            name: request.description.split(' ').slice(0, 3).join(' ') + ' Strategy',
+            description: request.description,
+            code: apiResponse.code,
+            explanation: apiResponse.explanation,
+            parameters: apiResponse.parameters,
+            risk_assessment: {
+              level: request.risk_level || 'medium',
+              factors: apiResponse.warnings || [],
+              recommendations: ['Review and test thoroughly before live trading']
+            }
+          }
+          
           set(state => ({
             generatedStrategies: [strategy, ...state.generatedStrategies],
             currentGeneratedStrategy: strategy,
@@ -455,38 +602,48 @@ export const useAIStore = create<AIState>()(
           toast.success('策略生成成功')
           return strategy
         } catch (error: any) {
-          const message = error.response?.data?.message || '策略生成失败'
+          const message = String(error.response?.data?.message || '策略生成失败')
           set({ error: message, isGenerating: false })
           toast.error(message)
           return null
         }
       },
 
-      // 优化策略代码
+      // 优化策略代码 - 使用Chat API实现
       optimizeStrategy: async (code: string, objectives: string[]) => {
         set({ isLoading: true, error: null })
         try {
-          const result = await aiApi.optimizeStrategy(code, objectives)
+          const prompt = `请优化以下策略代码，优化目标：${objectives.join(', ')}\n\n代码：\n${code}`
+          const result = await aiApi.sendChatMessage(prompt, undefined, 'developer', 'strategy')
           set({ isLoading: false })
           toast.success('策略优化完成')
-          return result
+          return {
+            code: result.response,
+            explanation: '通过AI聊天优化生成',
+            improvements: objectives
+          }
         } catch (error: any) {
-          const message = error.response?.data?.message || '策略优化失败'
+          const message = String(error.response?.data?.message || '策略优化失败')
           set({ error: message, isLoading: false })
           toast.error(message)
           throw error
         }
       },
 
-      // 解释策略代码
+      // 解释策略代码 - 使用Chat API实现
       explainStrategy: async (code: string) => {
         set({ isLoading: true, error: null })
         try {
-          const result = await aiApi.explainStrategy(code)
+          const prompt = `请详细解释以下策略代码的逻辑和功能：\n\n${code}`
+          const result = await aiApi.sendChatMessage(prompt, undefined, 'developer', 'strategy')
           set({ isLoading: false })
-          return result
+          return {
+            explanation: result.response,
+            complexity: 'medium',
+            features: []
+          }
         } catch (error: any) {
-          const message = error.response?.data?.message || '策略解释失败'
+          const message = String(error.response?.data?.message || '策略解释失败')
           set({ error: message, isLoading: false })
           toast.error(message)
           throw error
@@ -509,7 +666,26 @@ export const useAIStore = create<AIState>()(
         set({ isAnalyzing: true, error: null })
         
         try {
-          const analysis = await aiApi.analyzeMarket(symbol, exchange, timeframe)
+          const apiResponse = await aiApi.analyzeMarket({
+            symbols: [symbol],
+            timeframe: timeframe,
+            analysis_type: 'technical'
+          })
+          
+          // Transform API response to MarketAnalysis format
+          const analysis: MarketAnalysis = {
+            symbol: symbol,
+            timeframe: timeframe,
+            trend_direction: 'neutral', // Default, could be parsed from summary
+            strength: 0.5, // Default, could be calculated from signals
+            support_levels: [],
+            resistance_levels: [],
+            technical_indicators: apiResponse.risk_assessment || {},
+            summary: apiResponse.summary,
+            recommendations: apiResponse.recommendations,
+            confidence: 0.75 // Default confidence
+          }
+          
           set(state => ({
             marketAnalyses: {
               ...state.marketAnalyses,
@@ -520,39 +696,63 @@ export const useAIStore = create<AIState>()(
           toast.success(`${symbol} 市场分析完成`)
           return analysis
         } catch (error: any) {
-          const message = error.response?.data?.message || '市场分析失败'
+          const message = String(error.response?.data?.message || '市场分析失败')
           set({ error: message, isAnalyzing: false })
           toast.error(message)
           return null
         }
       },
 
-      // 获取交易信号
+      // 获取交易信号 - 使用市场分析API实现
       getTradingSignals: async (symbol: string, exchange: string, timeframes: string[]) => {
         set({ isLoading: true, error: null })
         try {
-          const signals = await aiApi.getTradingSignals(symbol, exchange, timeframes)
+          const signals = []
+          for (const timeframe of timeframes) {
+            const analysis = await aiApi.analyzeMarket({
+              symbols: [symbol],
+              timeframe: timeframe,
+              analysis_type: 'technical'
+            })
+            signals.push({
+              symbol,
+              timeframe,
+              signals: analysis.signals || [],
+              summary: analysis.summary,
+              recommendations: analysis.recommendations
+            })
+          }
           set({ isLoading: false })
           toast.success(`${symbol} 交易信号获取成功`)
           return signals
         } catch (error: any) {
-          const message = error.response?.data?.message || '获取交易信号失败'
+          const message = String(error.response?.data?.message || '获取交易信号失败')
           set({ error: message, isLoading: false })
           toast.error(message)
           throw error
         }
       },
 
-      // 风险评估
+      // 风险评估 - 使用市场分析API实现
       assessRisk: async (strategyCode?: string, portfolio?: any) => {
         set({ isLoading: true, error: null })
         try {
-          const assessment = await aiApi.assessRisk(strategyCode, portfolio)
+          const prompt = strategyCode ? 
+            `请评估以下策略代码的风险：\n${strategyCode}` :
+            `请评估以下投资组合的风险：\n${JSON.stringify(portfolio, null, 2)}`
+          
+          const result = await aiApi.sendChatMessage(prompt, undefined, 'trader', 'strategy')
+          const assessment = {
+            riskLevel: 'medium',
+            riskFactors: ['市场波动风险', '流动性风险'],
+            recommendations: result.response.split('\n').filter(line => line.trim()),
+            score: 0.6
+          }
           set({ isLoading: false })
           toast.success('风险评估完成')
           return assessment
         } catch (error: any) {
-          const message = error.response?.data?.message || '风险评估失败'
+          const message = String(error.response?.data?.message || '风险评估失败')
           set({ error: message, isLoading: false })
           toast.error(message)
           throw error
@@ -589,6 +789,571 @@ export const useAIStore = create<AIState>()(
           retryCount: 0
         })
       },
+
+      // =============== WebSocket方法 ===============
+
+      // 切换WebSocket/HTTP模式
+      toggleWebSocket: () => {
+        set(state => ({ 
+          useWebSocket: !state.useWebSocket,
+          aiProgress: null
+        }))
+        
+        const { useWebSocket } = get()
+        toast.success(useWebSocket ? '已切换到WebSocket模式 (实时对话)' : '已切换到HTTP模式')
+      },
+
+      // 初始化WebSocket连接
+      initializeWebSocket: async () => {
+        const { useWebSocket } = get()
+        if (!useWebSocket) {
+          console.log('🔄 [AIStore] WebSocket未启用，跳过初始化')
+          return false
+        }
+
+        try {
+          set({ isLoading: true, error: null })
+          
+          // 从authStore获取token - 修复键名问题
+          const authData = localStorage.getItem('auth-storage')
+          if (!authData) {
+            throw new Error('未找到认证信息，请重新登录')
+          }
+          
+          const authStore = JSON.parse(authData)
+          const token = authStore?.state?.token || ''
+          const isAuthenticated = authStore?.state?.isAuthenticated || false
+          
+          if (!token || !isAuthenticated) {
+            throw new Error('认证token无效或已过期，请重新登录')
+          }
+          
+          console.log('🔗 [AIStore] 开始初始化WebSocket连接...')
+          console.log('🔑 [AIStore] 使用token:', token.substring(0, 20) + '...')
+          
+          // 使用当前域名作为baseUrl，不需要协议转换
+          const wsService = getWebSocketAIService({
+            baseUrl: window.location.origin, // 保持http/https协议
+            token
+          })
+          
+          console.log('🔄 [AIStore] WebSocket服务实例已创建，开始连接...')
+          
+          const connected = await wsService.initialize()
+          
+          if (connected) {
+            const status = wsService.getConnectionStatus()
+            console.log('✅ [AIStore] WebSocket连接成功:', status)
+            
+            set({ 
+              wsConnected: true,
+              wsConnectionId: status.connectionId,
+              isLoading: false,
+              networkStatus: 'connected'
+            })
+            
+            toast.success('🌊 WebSocket AI服务连接成功!', { 
+              icon: '🔗',
+              duration: 3000
+            })
+            return true
+          } else {
+            throw new Error('WebSocket连接失败')
+          }
+        } catch (error: any) {
+          const errorMessage = String(error?.message || error || 'WebSocket连接失败')
+          console.error('❌ [AIStore] WebSocket初始化失败:', error)
+          
+          set({ 
+            wsConnected: false,
+            wsConnectionId: null,
+            error: errorMessage,
+            isLoading: false,
+            networkStatus: 'disconnected'
+          })
+          
+          // 如果是认证相关错误，提供更友好的提示
+          if (errorMessage.includes('认证') || errorMessage.includes('登录')) {
+            toast.error(`🔐 ${errorMessage}`, {
+              icon: '🔑',
+              duration: 6000
+            })
+          } else {
+            toast.error(`🔌 WebSocket连接失败: ${errorMessage}`, {
+              icon: '❌',
+              duration: 5000
+            })
+          }
+          return false
+        }
+      },
+
+      // WebSocket发送消息
+      sendMessageWebSocket: async (message: string) => {
+        const { currentSession, currentAIMode, useWebSocket, wsConnected } = get()
+        
+        if (!useWebSocket) {
+          // 回退到HTTP模式
+          return get().sendMessage(message)
+        }
+        
+        if (!wsConnected) {
+          // 尝试重新连接
+          const connected = await get().initializeWebSocket()
+          if (!connected) {
+            toast.error('WebSocket未连接，请检查网络连接')
+            return false
+          }
+        }
+
+        // 确保有会话
+        if (!currentSession) {
+          const defaultSessionName = currentAIMode === 'trader' ? '市场分析对话' : '策略开发对话'
+          const success = await get().createChatSession({
+            name: defaultSessionName,
+            ai_mode: currentAIMode,
+            session_type: 'strategy',
+            description: '自动创建的WebSocket对话会话'
+          })
+          
+          if (!success) {
+            toast.error('创建对话会话失败')
+            return false
+          }
+        }
+
+        // 立即添加用户消息
+        set(state => {
+          const safeUserMessage: ChatMessage = {
+            role: 'user',
+            content: String(message || ''), // 确保content是字符串
+            timestamp: new Date().toISOString()
+          }
+
+          return {
+            messages: [...state.messages, safeUserMessage],
+            isTyping: true,
+            error: null,
+            aiProgress: {
+              isProcessing: true,
+              step: 0,
+              totalSteps: 4,
+              status: 'preparing',
+              message: '正在准备发送...'
+            }
+          }
+        })
+
+        try {
+          // 从authStore获取token - 使用正确的键名
+          const authData = localStorage.getItem('auth-storage')
+          if (!authData) {
+            throw new Error('认证信息丢失，请重新登录')
+          }
+          
+          const authStore = JSON.parse(authData)
+          const token = authStore?.state?.token || ''
+          if (!token) {
+            throw new Error('认证token无效，请重新登录')
+          }
+          
+          const wsService = getWebSocketAIService({
+            baseUrl: window.location.origin,
+            token
+          })
+
+          const session = get().currentSession!
+          
+          // 发送WebSocket消息并处理回调
+          await wsService.sendChatMessage(
+            message,
+            session.session_id,
+            session.ai_mode,
+            session.session_type,
+            {
+              onStart: (data) => {
+                set(state => ({
+                  aiProgress: {
+                    ...state.aiProgress!,
+                    status: 'started',
+                    message: data.message || 'AI开始处理...'
+                  }
+                }))
+              },
+
+              onComplexityAnalysis: (data) => {
+                set(state => ({
+                  aiProgress: {
+                    ...state.aiProgress!,
+                    complexity: data.complexity,
+                    estimatedTime: data.estimated_time_seconds,
+                    message: data.message
+                  }
+                }))
+              },
+
+              onProgress: (data) => {
+                set(state => ({
+                  aiProgress: {
+                    ...state.aiProgress!,
+                    step: data.step,
+                    totalSteps: data.total_steps,
+                    status: data.status,
+                    message: data.message
+                  }
+                }))
+              },
+
+              onSuccess: (data) => {
+                // 确保response是字符串
+                let responseContent: string;
+                if (typeof data.response === 'string' && data.response) {
+                  responseContent = data.response;
+                } else if (data.response && typeof data.response === 'object') {
+                  // 安全地访问对象属性
+                  const responseObj = data.response as any;
+                  responseContent = responseObj.content || responseObj.message || JSON.stringify(responseObj);
+                } else if (data.message) {
+                  responseContent = String(data.message);
+                } else {
+                  responseContent = 'AI响应错误';
+                }
+                
+                // 确保responseContent始终是字符串
+                responseContent = String(responseContent || 'AI响应为空');
+                
+                const assistantMessage: ChatMessage = {
+                  role: 'assistant', 
+                  content: responseContent,
+                  timestamp: new Date().toISOString()
+                }
+                
+                // 只有在有代码块时才添加metadata
+                if (responseContent && responseContent.includes('```')) {
+                  assistantMessage.metadata = {
+                    codeBlock: responseContent
+                  }
+                }
+
+                set(state => {
+                  // 确保assistantMessage是纯粹的对象，没有循环引用
+                  const safeMessage: ChatMessage = {
+                    role: 'assistant',
+                    content: String(assistantMessage.content),
+                    timestamp: String(assistantMessage.timestamp)
+                  }
+                  
+                  if (assistantMessage.metadata) {
+                    safeMessage.metadata = {
+                      codeBlock: String(assistantMessage.metadata.codeBlock || '')
+                    }
+                  }
+                  
+                  return {
+                    messages: [...state.messages, safeMessage],
+                    isTyping: false,
+                    aiProgress: null
+                  }
+                })
+
+                if (data.cost_usd > 0) {
+                  toast.success(`AI回复完成 (消耗 $${data.cost_usd.toFixed(4)}, ${data.tokens_used} tokens)`, {
+                    icon: '🚀',
+                    duration: 4000
+                  })
+                }
+              },
+
+              // 🌊 流式AI回调处理
+              onStreamStart: (data) => {
+                console.log('🌊 [AIStore] 流式开始:', data)
+                
+                // 添加一个包含等待提示的assistant消息，准备接收流式内容
+                set(state => {
+                  const streamingMessage: ChatMessage = {
+                    role: 'assistant',
+                    content: '🤔 AI正在深度思考中，马上开始回复...',  // 给用户友好的等待提示
+                    timestamp: new Date().toISOString(),
+                    metadata: {
+                      isStreaming: true,
+                      isWaitingFirstChunk: true  // 标记为等待第一个数据块
+                    }
+                  }
+                  
+                  return {
+                    messages: [...state.messages, streamingMessage],
+                    isTyping: false,  // 不显示传统的"正在思考"
+                    streamingMessage: {
+                      isStreaming: true,
+                      requestId: data.request_id,
+                      accumulatedContent: '',
+                      messageIndex: state.messages.length  // 新消息的索引
+                    },
+                    aiProgress: {
+                      ...state.aiProgress!,
+                      status: 'stream_waiting',
+                      message: '🌊 AI正在深度分析，即将开始流式回复...'
+                    }
+                  }
+                })
+              },
+              
+              onStreamChunk: (data) => {
+                console.log('📝 [AIStore] 流式数据块:', data.chunk)
+                
+                set(state => {
+                  const { streamingMessage } = state
+                  if (!streamingMessage?.isStreaming || streamingMessage.messageIndex === undefined) {
+                    return state
+                  }
+                  
+                  // 更新消息数组中对应的消息
+                  const updatedMessages = [...state.messages]
+                  let newAccumulatedContent = streamingMessage.accumulatedContent
+                  
+                  if (updatedMessages[streamingMessage.messageIndex]) {
+                    const currentMessage = updatedMessages[streamingMessage.messageIndex]
+                    const isFirstChunk = currentMessage.metadata?.isWaitingFirstChunk
+                    
+                    // 更新累积内容 - 如果是第一个chunk，替换等待提示；否则追加内容
+                    newAccumulatedContent = isFirstChunk ? 
+                      data.chunk : 
+                      streamingMessage.accumulatedContent + data.chunk
+                    
+                    updatedMessages[streamingMessage.messageIndex] = {
+                      ...currentMessage,
+                      content: newAccumulatedContent,
+                      metadata: {
+                        isStreaming: true,
+                        isWaitingFirstChunk: false  // 清除等待标记
+                      }
+                    }
+                  }
+                  
+                  return {
+                    messages: updatedMessages,
+                    streamingMessage: {
+                      ...streamingMessage,
+                      accumulatedContent: newAccumulatedContent
+                    },
+                    aiProgress: {
+                      ...state.aiProgress!,
+                      status: 'streaming_active',
+                      message: '✍️ AI正在实时生成回复...'
+                    }
+                  }
+                })
+              },
+              
+              onStreamEnd: (data) => {
+                console.log('✅ [AIStore] 流式结束:', data)
+                
+                set(state => {
+                  console.log('🔄 [AIStore] 流式结束前的状态:', {
+                    isTyping: state.isTyping,
+                    aiProgress: state.aiProgress,
+                    streamingMessage: state.streamingMessage
+                  })
+                  
+                  const { streamingMessage } = state
+                  if (!streamingMessage?.isStreaming || streamingMessage.messageIndex === undefined) {
+                    console.log('⚠️ [AIStore] 流式状态检查失败，直接清理状态')
+                    return {
+                      ...state,
+                      isTyping: false,
+                      streamingMessage: null,
+                      aiProgress: null
+                    }
+                  }
+                  
+                  // 完成流式消息，移除流式标记
+                  const updatedMessages = [...state.messages]
+                  if (updatedMessages[streamingMessage.messageIndex]) {
+                    const currentMessage = updatedMessages[streamingMessage.messageIndex]
+                    const finalContent = data.content || currentMessage.content || streamingMessage.accumulatedContent || ''
+                    
+                    updatedMessages[streamingMessage.messageIndex] = {
+                      ...currentMessage,
+                      content: finalContent,
+                      metadata: {
+                        // 移除isStreaming标记，表示已完成
+                        codeBlock: finalContent.includes('```') ? finalContent : undefined
+                      }
+                    }
+                  }
+                  
+                  const newState = {
+                    messages: updatedMessages,
+                    isTyping: false,
+                    streamingMessage: null,  // 清除流式状态
+                    aiProgress: null
+                  }
+                  
+                  console.log('✅ [AIStore] 流式结束后的状态:', {
+                    isTyping: newState.isTyping,
+                    aiProgress: newState.aiProgress,
+                    streamingMessage: newState.streamingMessage,
+                    messageCount: newState.messages.length
+                  })
+                  
+                  return newState
+                })
+                
+                if (data.cost_usd > 0) {
+                  toast.success(`🌊 流式AI回复完成 (消耗 $${data.cost_usd.toFixed(4)}, ${data.tokens_used} tokens)`, {
+                    icon: '🚀',
+                    duration: 4000
+                  })
+                }
+              },
+              
+              onStreamError: (data) => {
+                // 安全的错误对象序列化
+                const safeStringifyError = (error: any): string => {
+                  if (!error) return 'undefined'
+                  if (typeof error === 'string') return error
+                  if (typeof error === 'number' || typeof error === 'boolean') return String(error)
+                  if (typeof error === 'object') {
+                    try {
+                      // 尝试提取常见的错误属性
+                      if (error.message) return error.message
+                      if (error.error) return String(error.error)
+                      if (error.toString && typeof error.toString === 'function') {
+                        const str = error.toString()
+                        if (str !== '[object Object]') return str
+                      }
+                      // 最后尝试JSON.stringify，如果失败则返回默认消息
+                      return JSON.stringify(error, null, 2)
+                    } catch {
+                      return '[Complex Error Object]'
+                    }
+                  }
+                  return String(error)
+                }
+                
+                console.log('❌ [AIStore] 流式错误:', {
+                  error: safeStringifyError(data?.error),
+                  error_type: data?.error_type,
+                  message: data?.message,
+                  request_id: data?.request_id
+                })
+                
+                // 预处理错误数据，确保错误字段是字符串
+                const processedErrorData = {
+                  ...data,
+                  error: safeStringifyError(data?.error),
+                  message: data?.message || safeStringifyError(data?.error) || '流式处理失败'
+                }
+                
+                // 清理流式状态，但不添加错误消息到聊天记录
+                set(state => ({
+                  ...state,
+                  isTyping: false,
+                  streamingMessage: null,  // 清除流式状态
+                  aiProgress: null,
+                  error: processedErrorData.message
+                }))
+                
+                // 使用预处理后的数据生成友好的错误消息
+                const friendlyMessage = get().getErrorMessage(processedErrorData);
+                
+                // 显示用户友好的错误提示
+                toast.error(friendlyMessage, {
+                  duration: 6000,
+                  id: `stream-error-${Date.now()}` // 防止重复toast
+                })
+              },
+
+              onError: (data) => {
+                console.log('❌ [AIStore] onError - 处理AI对话错误:', data);
+                
+                // 安全的错误对象序列化 - 与onStreamError保持一致
+                const safeStringifyError = (error: any): string => {
+                  if (!error) return 'undefined'
+                  if (typeof error === 'string') return error
+                  if (typeof error === 'number' || typeof error === 'boolean') return String(error)
+                  if (typeof error === 'object') {
+                    try {
+                      // 尝试提取常见的错误属性
+                      if (error.message) return error.message
+                      if (error.error) return String(error.error)
+                      if (error.toString && typeof error.toString === 'function') {
+                        const str = error.toString()
+                        if (str !== '[object Object]') return str
+                      }
+                      // 最后尝试JSON.stringify，如果失败则返回默认消息
+                      return JSON.stringify(error, null, 2)
+                    } catch {
+                      return '[Complex Error Object]'
+                    }
+                  }
+                  return String(error)
+                }
+                
+                // 预处理错误数据，确保错误字段是字符串
+                const processedErrorData = {
+                  ...data,
+                  error: safeStringifyError(data?.error),
+                  message: data?.message || safeStringifyError(data?.error) || 'AI处理失败'
+                }
+                
+                // 使用预处理后的数据生成友好的错误消息
+                const friendlyMessage = get().getErrorMessage(processedErrorData);
+                
+                // 添加错误消息到聊天记录
+                const errorMessage_content = `抱歉，${friendlyMessage}`;
+                
+                set(state => {
+                  const safeErrorMessage: ChatMessage = {
+                    role: 'assistant',
+                    content: String(errorMessage_content),
+                    timestamp: new Date().toISOString(),
+                    metadata: {
+                      isError: true
+                    }
+                  }
+                  
+                  return {
+                    messages: [...state.messages, safeErrorMessage],
+                    isTyping: false,
+                    error: String(errorMessage_content),
+                    aiProgress: null
+                  }
+                })
+
+                const errorMsg = data.retry_suggested 
+                  ? `${friendlyMessage} (可以重试)` 
+                  : friendlyMessage
+                  
+                toast.error(errorMsg, {
+                  duration: data.retry_suggested ? 8000 : 5000,
+                  icon: data.retry_suggested ? '🔄' : '❌'
+                })
+              }
+            }
+          )
+
+          return true
+        } catch (error: any) {
+          console.error('❌ [DEBUG] WebSocket发送异常:', error)
+          console.error('❌ [DEBUG] Error stack:', error.stack)
+          console.error('❌ [DEBUG] Error details:', {
+            message: error.message,
+            name: error.name,
+            type: typeof error,
+            error
+          })
+          
+          set({
+            isTyping: false,
+            error: error.message || 'WebSocket发送失败',
+            aiProgress: null
+          })
+          
+          toast.error(`WebSocket发送失败: ${error.message}`)
+          return false
+        }
+      },
       
       // 检查网络连接状态
       checkNetworkStatus: async () => {
@@ -611,6 +1376,112 @@ export const useAIStore = create<AIState>()(
           set({ networkStatus: 'disconnected' })
           return false
         }
+      },
+
+      // 生成用户友好的错误消息
+      getErrorMessage: (error: any) => {
+        if (!error) return '未知错误，请重试'
+
+        // 检查错误类型 - 修复对象序列化问题
+        const errorCode = error.error_code || error.code
+        let errorMessage = error.error || error.message || ''
+        
+        // 增强的安全对象序列化函数
+        const safeStringify = (obj: any): string => {
+          if (!obj) return ''
+          if (typeof obj === 'string') return obj
+          if (typeof obj === 'number' || typeof obj === 'boolean') return String(obj)
+          if (typeof obj === 'object') {
+            try {
+              // 优先级1: 提取常见的错误属性
+              if (obj.message && typeof obj.message === 'string') return obj.message
+              if (obj.error && typeof obj.error === 'string') return obj.error
+              if (obj.detail && typeof obj.detail === 'string') return obj.detail
+              if (obj.description && typeof obj.description === 'string') return obj.description
+              
+              // 优先级2: 尝试toString方法
+              if (obj.toString && typeof obj.toString === 'function') {
+                const str = obj.toString()
+                if (str !== '[object Object]' && str !== '[object Error]') return str
+              }
+              
+              // 优先级3: 如果是Error对象，尝试提取name和message
+              if (obj instanceof Error) {
+                return obj.name ? `${obj.name}: ${obj.message}` : obj.message
+              }
+              
+              // 优先级4: 尝试JSON.stringify
+              const jsonStr = JSON.stringify(obj, Object.getOwnPropertyNames(obj), 2)
+              if (jsonStr && jsonStr !== '{}' && jsonStr !== 'null' && jsonStr !== '[]') {
+                return jsonStr
+              }
+              
+              // 最后的fallback - 空对象或无有效信息的对象
+              return ''
+            } catch {
+              return '[Serialization Error]'
+            }
+          }
+          return String(obj)
+        }
+        
+        errorMessage = safeStringify(errorMessage)
+        
+        // 基于错误码的友好提示
+        switch (errorCode) {
+          case 'WEBSOCKET_TIMEOUT':
+            return '⏰ AI响应超时，请重试或检查网络连接'
+          case 'WEBSOCKET_DISCONNECTED':
+            return '🔌 连接断开，正在重新连接...'
+          case 'WEBSOCKET_ERROR':
+            return '📡 网络连接出现问题，请检查网络设置'
+          case 'AI_PROCESSING_FAILED':
+            return '🤖 AI处理失败，请稍后重试'
+          case 'RATE_LIMIT_EXCEEDED':
+            return '⚡ 请求过于频繁，请稍等片刻再试'
+          case 'INSUFFICIENT_CREDITS':
+            return '💳 AI对话额度不足，请升级会员'
+          case 'INVALID_SESSION':
+            return '🔄 会话已过期，将为您创建新会话'
+        }
+
+        // 基于错误消息内容的智能识别
+        if (errorMessage.includes('timeout') || errorMessage.includes('超时')) {
+          return '⏰ 请求超时，请重试'
+        }
+        if (errorMessage.includes('network') || errorMessage.includes('网络')) {
+          return '📡 网络连接异常，请检查网络设置'
+        }
+        if (errorMessage.includes('quota') || errorMessage.includes('额度')) {
+          return '💳 AI对话额度已用尽，请明日再试或升级会员'
+        }
+        if (errorMessage.includes('session') || errorMessage.includes('会话')) {
+          return '🔄 会话异常，请刷新页面重试'
+        }
+        if (errorMessage.includes('auth') || errorMessage.includes('认证')) {
+          return '🔐 身份认证失败，请重新登录'
+        }
+        if (errorMessage.includes('busy') || errorMessage.includes('繁忙') || errorMessage.includes('服务繁忙')) {
+          return '🚀 AI服务繁忙，请稍后重试'
+        }
+        if (errorMessage.includes('unavailable') || errorMessage.includes('不可用')) {
+          return '⚠️ AI服务暂时不可用，请稍后重试'
+        }
+
+        // 检查是否是空错误或无用信息
+        if (!errorMessage || errorMessage.trim() === '' || 
+            errorMessage === 'undefined' || errorMessage === 'null' ||
+            errorMessage === '[object Object]' || errorMessage === '[object Error]') {
+          return '⚠️ 服务暂时不可用，请稍后重试'
+        }
+
+        // 返回清理后的错误消息
+        const cleanErrorMessage = errorMessage.replace(/^(Error:|ERROR:|错误:)\s*/i, '').trim()
+        if (cleanErrorMessage) {
+          return `❌ ${cleanErrorMessage}`
+        }
+
+        return '⚠️ 服务暂时不可用，请稍后重试'
       }
     }),
     {

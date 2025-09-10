@@ -36,6 +36,7 @@ export interface BacktestConfig {
 export interface BacktestResult {
   id: string
   strategy_id: string
+  strategy_name?: string
   user_id: string
   start_date: string
   end_date: string
@@ -71,4 +72,10 @@ export interface TradeRecord {
   pnl_percentage?: number
   order_id?: string
   signal?: string
+}
+
+export interface StrategyWithDisplayInfo extends Strategy {
+  displayStatus?: string
+  displayColor?: string
+  formattedReturn?: string
 }

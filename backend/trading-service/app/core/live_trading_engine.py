@@ -70,6 +70,9 @@ class TradingSession:
     total_trades: int = 0
     daily_pnl: float = 0.0
     error_message: Optional[str] = None
+    # 新增：活跃订单追踪
+    open_orders: Dict[str, str] = field(default_factory=dict)  # order_id -> symbol
+    pending_stops: Dict[str, str] = field(default_factory=dict)  # stop_order_id -> symbol
 
 
 @dataclass
@@ -267,7 +270,7 @@ class LiveTradingEngine:
             session.status = TradingSessionStatus.STOPPING
             
             # 取消所有挂单
-            # TODO: 实现取消挂单逻辑
+            await self._cancel_all_open_orders(session)
             
             session.status = TradingSessionStatus.STOPPED
             session.stopped_at = datetime.utcnow()
@@ -356,15 +359,18 @@ class LiveTradingEngine:
         signals_to_process = self._pending_signals[:10]  # 每次最多处理10个
         self._pending_signals = self._pending_signals[10:]
         
-        for signal in signals_to_process:
-            try:
-                # TODO: 需要从外部传入数据库会话
-                # 这里暂时使用 None，实际应该从调用处传入
-                await self._execute_trading_signal(signal, None)
-                self._stats['total_signals_processed'] += 1
-            except Exception as e:
-                logger.error(f"执行交易信号异常: {str(e)}")
-                self._stats['failed_executions'] += 1
+        # 获取数据库会话
+        from app.database import AsyncSessionLocal
+        async with AsyncSessionLocal() as db:
+            for signal in signals_to_process:
+                try:
+                    await self._execute_trading_signal(signal, db)
+                    self._stats['total_signals_processed'] += 1
+                except Exception as e:
+                    logger.error(f"执行交易信号异常: {str(e)}")
+                    self._stats['failed_executions'] += 1
+                    # 回滚这个信号的任何数据库操作
+                    await db.rollback()
     
     async def _execute_trading_signal(self, signal: TradingSignal, db: AsyncSession):
         """执行单个交易信号"""
@@ -635,9 +641,23 @@ class LiveTradingEngine:
                 continue
                 
             try:
-                # TODO: 更新持仓的实时价格和PnL
-                # TODO: 检查是否需要调整止损止盈
-                pass
+                # 更新持仓的实时价格和PnL
+                current_price = await exchange_service.get_current_price(
+                    position.exchange, position.symbol
+                )
+                
+                if current_price:
+                    # 计算未实现盈亏
+                    if position.current_quantity > 0:  # 多头持仓
+                        position.unrealized_pnl = (current_price - position.avg_entry_price) * position.current_quantity
+                    else:  # 空头持仓
+                        position.unrealized_pnl = (position.avg_entry_price - current_price) * abs(position.current_quantity)
+                    
+                    position.last_updated = datetime.utcnow()
+                    
+                    # 检查是否需要调整止损止盈
+                    await self._update_stop_orders_if_needed(position)
+                    
             except Exception as e:
                 logger.error(f"管理持仓异常: {position.symbol}, 错误: {str(e)}")
     
@@ -648,10 +668,21 @@ class LiveTradingEngine:
                 continue
                 
             try:
-                # TODO: 检查止损条件
-                # TODO: 检查止盈条件
-                # TODO: 触发相应的止损止盈订单
-                pass
+                current_price = await exchange_service.get_current_price(
+                    position.exchange, position.symbol
+                )
+                
+                if not current_price:
+                    continue
+                
+                # 检查止损条件
+                if position.stop_loss_price and self._should_trigger_stop_loss(position, current_price):
+                    await self._trigger_stop_loss(position)
+                
+                # 检查止盈条件
+                if position.take_profit_price and self._should_trigger_take_profit(position, current_price):
+                    await self._trigger_take_profit(position)
+                    
             except Exception as e:
                 logger.error(f"检查止损止盈异常: {position.symbol}, 错误: {str(e)}")
     
@@ -737,9 +768,44 @@ class LiveTradingEngine:
     async def _risk_monitoring(self):
         """风险监控"""
         try:
-            # TODO: 检查各个用户的风险状况
-            # TODO: 检查整体系统风险
-            pass
+            # 检查各个用户的风险状况
+            user_risks = {}
+            for position in self._positions.values():
+                user_id = position.user_id
+                if user_id not in user_risks:
+                    user_risks[user_id] = {
+                        'total_unrealized_pnl': 0.0,
+                        'position_count': 0,
+                        'total_exposure': 0.0
+                    }
+                
+                user_risks[user_id]['total_unrealized_pnl'] += position.unrealized_pnl
+                user_risks[user_id]['position_count'] += 1
+                user_risks[user_id]['total_exposure'] += abs(position.current_quantity * position.avg_entry_price)
+            
+            # 检查用户风险并发出警告
+            for user_id, risk_data in user_risks.items():
+                # 检查损失是否过大
+                if risk_data['total_unrealized_pnl'] < -5000:  # 损失超过5000的警告阈值
+                    logger.warning(f"用户 {user_id} 未实现损失过大: {risk_data['total_unrealized_pnl']:.2f}")
+                
+                # 检查持仓数量是否过多
+                if risk_data['position_count'] > 10:
+                    logger.warning(f"用户 {user_id} 持仓数量过多: {risk_data['position_count']}")
+            
+            # 检查整体系统风险
+            total_system_pnl = sum(pos.unrealized_pnl for pos in self._positions.values())
+            active_position_count = len([p for p in self._positions.values() if p.current_quantity != 0])
+            
+            # 系统级别的风险检查
+            if total_system_pnl < -10000:  # 系统总损失超过10000的警告
+                logger.error(f"系统风险警告: 总未实现损失 {total_system_pnl:.2f}")
+            
+            if active_position_count > 50:  # 活跃持仓过多
+                logger.warning(f"系统风险: 活跃持仓数量过多 {active_position_count}")
+            
+            logger.debug(f"风险监控完成: 系统PnL={total_system_pnl:.2f}, 活跃持仓={active_position_count}")
+            
         except Exception as e:
             logger.error(f"风险监控异常: {str(e)}")
     
@@ -862,16 +928,216 @@ class LiveTradingEngine:
                 
                 if signal.stop_loss:
                     position.stop_loss_price = signal.stop_loss
-                    # TODO: 实际在交易所放置止损单
+                    # 实际在交易所放置止损单
+                    stop_order_id = await self._place_stop_loss_order(position, self._sessions[session_id])
+                    if stop_order_id:
+                        position.stop_loss_order_id = stop_order_id
                     
                 if signal.take_profit:
                     position.take_profit_price = signal.take_profit
-                    # TODO: 实际在交易所放置止盈单
+                    # 实际在交易所放置止盈单
+                    profit_order_id = await self._place_take_profit_order(position, self._sessions[session_id])
+                    if profit_order_id:
+                        position.take_profit_order_id = profit_order_id
                     
                 logger.info(f"设置止损止盈: {signal.symbol}, SL: {signal.stop_loss}, TP: {signal.take_profit}")
                 
         except Exception as e:
             logger.error(f"设置止损止盈异常: {str(e)}")
+    
+    async def _cancel_all_open_orders(self, session: TradingSession) -> None:
+        """取消会话中的所有挂单"""
+        try:
+            logger.info(f"开始取消会话 {session.id} 的所有挂单")
+            
+            # 取消所有常规订单
+            cancelled_orders = 0
+            for order_id, symbol in list(session.open_orders.items()):
+                try:
+                    # 通过交易所服务取消订单
+                    success = await exchange_service.cancel_order(
+                        user_id=session.user_id,
+                        exchange=session.exchange,
+                        order_id=order_id,
+                        symbol=symbol
+                    )
+                    
+                    if success:
+                        session.open_orders.pop(order_id, None)
+                        cancelled_orders += 1
+                        logger.info(f"成功取消订单: {order_id} ({symbol})")
+                    else:
+                        logger.warning(f"取消订单失败: {order_id} ({symbol})")
+                        
+                except Exception as e:
+                    logger.error(f"取消订单异常: {order_id} - {str(e)}")
+            
+            # 取消所有止损止盈订单
+            cancelled_stops = 0
+            for stop_order_id, symbol in list(session.pending_stops.items()):
+                try:
+                    success = await exchange_service.cancel_order(
+                        user_id=session.user_id,
+                        exchange=session.exchange,
+                        order_id=stop_order_id,
+                        symbol=symbol
+                    )
+                    
+                    if success:
+                        session.pending_stops.pop(stop_order_id, None)
+                        cancelled_stops += 1
+                        logger.info(f"成功取消止损单: {stop_order_id} ({symbol})")
+                        
+                except Exception as e:
+                    logger.error(f"取消止损单异常: {stop_order_id} - {str(e)}")
+            
+            logger.info(f"订单取消完成 - 常规订单: {cancelled_orders}, 止损单: {cancelled_stops}")
+            
+        except Exception as e:
+            logger.error(f"取消挂单失败: {str(e)}")
+    
+    async def _place_stop_loss_order(self, position: PositionManager, session: TradingSession) -> Optional[str]:
+        """在交易所放置止损单"""
+        try:
+            if not position.stop_loss_price:
+                return None
+            
+            # 确定订单方向（与持仓相反）
+            side = "sell" if position.current_quantity > 0 else "buy"
+            quantity = abs(position.current_quantity)
+            
+            # 通过交易所服务下止损单
+            order_result = await exchange_service.place_stop_order(
+                user_id=position.user_id,
+                exchange=position.exchange,
+                symbol=position.symbol,
+                side=side,
+                quantity=quantity,
+                stop_price=position.stop_loss_price
+            )
+            
+            if order_result and 'order_id' in order_result:
+                order_id = order_result['order_id']
+                position.stop_loss_order_id = order_id
+                session.pending_stops[order_id] = position.symbol
+                
+                logger.info(f"止损单已下达: {order_id} - {position.symbol} @ {position.stop_loss_price}")
+                return order_id
+            else:
+                logger.error(f"止损单下达失败: {position.symbol}")
+                return None
+                
+        except Exception as e:
+            logger.error(f"下达止损单异常: {str(e)}")
+            return None
+    
+    async def _place_take_profit_order(self, position: PositionManager, session: TradingSession) -> Optional[str]:
+        """在交易所放置止盈单"""
+        try:
+            if not position.take_profit_price:
+                return None
+            
+            # 确定订单方向（与持仓相反）
+            side = "sell" if position.current_quantity > 0 else "buy"
+            quantity = abs(position.current_quantity)
+            
+            # 通过交易所服务下止盈单
+            order_result = await exchange_service.place_limit_order(
+                user_id=position.user_id,
+                exchange=position.exchange,
+                symbol=position.symbol,
+                side=side,
+                quantity=quantity,
+                price=position.take_profit_price
+            )
+            
+            if order_result and 'order_id' in order_result:
+                order_id = order_result['order_id']
+                position.take_profit_order_id = order_id
+                session.pending_stops[order_id] = position.symbol
+                
+                logger.info(f"止盈单已下达: {order_id} - {position.symbol} @ {position.take_profit_price}")
+                return order_id
+            else:
+                logger.error(f"止盈单下达失败: {position.symbol}")
+                return None
+                
+        except Exception as e:
+            logger.error(f"下达止盈单异常: {str(e)}")
+            return None
+    
+    async def _update_stop_orders_if_needed(self, position: PositionManager):
+        """如果需要，更新止损止盈订单"""
+        try:
+            # 这里可以实现动态止损逻辑
+            # 例如：跟踪止损、基于波动率的止损调整等
+            pass
+        except Exception as e:
+            logger.error(f"更新止损订单异常: {str(e)}")
+    
+    def _should_trigger_stop_loss(self, position: PositionManager, current_price: float) -> bool:
+        """判断是否应该触发止损"""
+        if not position.stop_loss_price:
+            return False
+        
+        if position.current_quantity > 0:  # 多头持仓
+            return current_price <= position.stop_loss_price
+        else:  # 空头持仓
+            return current_price >= position.stop_loss_price
+    
+    def _should_trigger_take_profit(self, position: PositionManager, current_price: float) -> bool:
+        """判断是否应该触发止盈"""
+        if not position.take_profit_price:
+            return False
+        
+        if position.current_quantity > 0:  # 多头持仓
+            return current_price >= position.take_profit_price
+        else:  # 空头持仓
+            return current_price <= position.take_profit_price
+    
+    async def _trigger_stop_loss(self, position: PositionManager):
+        """触发止损"""
+        try:
+            logger.warning(f"触发止损: {position.symbol} @ {position.stop_loss_price}")
+            
+            # 创建市价平仓信号
+            close_signal = TradingSignal(
+                user_id=position.user_id,
+                strategy_id=None,
+                exchange=position.exchange,
+                symbol=position.symbol,
+                signal_type="CLOSE",
+                quantity=abs(position.current_quantity),
+                reason="止损触发"
+            )
+            
+            # 添加到信号队列立即处理
+            self._pending_signals.insert(0, close_signal)
+            
+        except Exception as e:
+            logger.error(f"触发止损异常: {str(e)}")
+    
+    async def _trigger_take_profit(self, position: PositionManager):
+        """触发止盈"""
+        try:
+            logger.info(f"触发止盈: {position.symbol} @ {position.take_profit_price}")
+            
+            # 创建市价平仓信号
+            close_signal = TradingSignal(
+                user_id=position.user_id,
+                strategy_id=None,
+                exchange=position.exchange,
+                symbol=position.symbol,
+                signal_type="CLOSE",
+                quantity=abs(position.current_quantity),
+                reason="止盈触发"
+            )
+            
+            # 添加到信号队列立即处理
+            self._pending_signals.insert(0, close_signal)
+            
+        except Exception as e:
+            logger.error(f"触发止盈异常: {str(e)}")
 
 
 # 全局实盘交易引擎实例

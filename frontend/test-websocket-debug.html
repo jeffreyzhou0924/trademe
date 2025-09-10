@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐛 WebSocket 调试版 - 流式响应问题诊断</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .status {
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        .status.connected { background: #d4edda; color: #155724; }
+        .status.disconnected { background: #f8d7da; color: #721c24; }
+        .status.error { background: #fff3cd; color: #856404; }
+        .test-controls {
+            margin: 20px 0;
+        }
+        .btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .btn:hover { background: #0056b3; }
+        .btn:disabled { background: #6c757d; cursor: not-allowed; }
+        .response-area {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            min-height: 200px;
+            white-space: pre-wrap;
+            font-family: 'Monaco', 'Menlo', monospace;
+        }
+        .log {
+            font-size: 12px;
+            color: #6c757d;
+            margin: 5px 0;
+            border-bottom: 1px solid #eee;
+            padding: 5px 0;
+        }
+        .debug-section {
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .highlight {
+            background: #fff3cd;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border-left: 4px solid #ffc107;
+        }
+        .error { color: #dc3545; }
+        .success { color: #28a745; }
+        .warning { color: #ffc107; }
+        .info { color: #17a2b8; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🐛 WebSocket AI测试 - 调试版</h1>
+        
+        <div class="highlight">
+            <strong>🔍 调试目标:</strong><br>
+            • 监控WebSocket消息的完整流程<br>
+            • 检查request_id匹配问题<br>
+            • 追踪流式消息处理过程<br>
+            • 识别UI更新阻塞点
+        </div>
+        
+        <div id="connectionStatus" class="status disconnected">
+            ❌ 未连接
+        </div>
+        
+        <div class="test-controls">
+            <button id="connectBtn" class="btn">连接WebSocket</button>
+            <button id="testBtn" class="btn" disabled>测试流式AI</button>
+            <button id="clearBtn" class="btn">清除日志</button>
+            <button id="disconnectBtn" class="btn" disabled>断开连接</button>
+        </div>
+        
+        <div class="debug-section">
+            <h3>🎯 实时调试信息</h3>
+            <div id="debugInfo">等待连接...</div>
+        </div>
+        
+        <div class="response-area" id="responseArea">
+            等待流式响应...
+        </div>
+        
+        <div id="logs"></div>
+    </div>
+
+    <script>
+        // 使用最新的有效JWT token (2025-09-05 新生成，7天有效期)
+        const JWT_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2IiwiZW1haWwiOiJhZG1pbkB0cmFkZW1lLmNvbSIsIm1lbWJlcnNoaXBMZXZlbCI6InByb2Zlc3Npb25hbCIsInR5cGUiOiJhY2Nlc3MiLCJpYXQiOjE3NTcwNTE2MDQsImV4cCI6MTc1NzY1NjQwNCwiYXVkIjoidHJhZGVtZS1hcHAiLCJpc3MiOiJ0cmFkZW1lLXVzZXItc2VydmljZSJ9.Dn4EPCZYz4EmA-bK5Tbs7AL-ZN86uF5PX-RRDb81QMA";
+        
+        let ws = null;
+        let isConnected = false;
+        let currentRequestId = null;
+        let messageCount = 0;
+        
+        const statusEl = document.getElementById('connectionStatus');
+        const responseArea = document.getElementById('responseArea');
+        const logsEl = document.getElementById('logs');
+        const debugInfo = document.getElementById('debugInfo');
+        const connectBtn = document.getElementById('connectBtn');
+        const testBtn = document.getElementById('testBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const disconnectBtn = document.getElementById('disconnectBtn');
+        
+        function log(message, type = 'info') {
+            messageCount++;
+            const logEl = document.createElement('div');
+            logEl.className = `log ${type}`;
+            logEl.innerHTML = `[${messageCount}] [${new Date().toLocaleTimeString()}] ${message}`;
+            logsEl.appendChild(logEl);
+            logsEl.scrollTop = logsEl.scrollHeight;
+            console.log(`[${messageCount}]`, message);
+        }
+        
+        function updateDebug(info) {
+            debugInfo.innerHTML = `
+                <strong>连接状态:</strong> ${isConnected ? '✅ 已连接' : '❌ 未连接'}<br>
+                <strong>当前Request ID:</strong> ${currentRequestId || 'None'}<br>
+                <strong>消息计数:</strong> ${messageCount}<br>
+                <strong>附加信息:</strong> ${info || 'None'}
+            `;
+        }
+        
+        function updateStatus(status, message) {
+            statusEl.className = `status ${status}`;
+            statusEl.textContent = message;
+            
+            connectBtn.disabled = isConnected;
+            testBtn.disabled = !isConnected;
+            disconnectBtn.disabled = !isConnected;
+            
+            updateDebug(message);
+        }
+        
+        function connect() {
+            if (ws) {
+                ws.close();
+            }
+            
+            const wsUrl = 'ws://43.167.252.120/ws/realtime';
+            log(`🔌 正在连接: ${wsUrl}`, 'info');
+            
+            ws = new WebSocket(wsUrl);
+            
+            ws.onopen = () => {
+                log('✅ WebSocket连接已建立', 'success');
+                
+                // 发送认证消息
+                const authMessage = {
+                    type: 'auth',
+                    token: JWT_TOKEN
+                };
+                
+                log(`🔐 发送认证消息: ${JSON.stringify(authMessage)}`, 'info');
+                ws.send(JSON.stringify(authMessage));
+            };
+            
+            ws.onmessage = (event) => {
+                try {
+                    const data = JSON.parse(event.data);
+                    log(`📨 收到消息 [${data.type}]: ${JSON.stringify(data)}`, 'info');
+                    
+                    // 详细的消息类型处理
+                    switch(data.type) {
+                        case 'auth_success':
+                            isConnected = true;
+                            updateStatus('connected', '✅ 已连接并认证成功');
+                            log(`✅ 认证成功！用户ID: ${data.user_id}`, 'success');
+                            break;
+                            
+                        case 'ai_stream_start':
+                            log(`🌊 流式开始 - Request ID: ${data.request_id}`, 'info');
+                            updateDebug(`流式开始 - Request ID: ${data.request_id}`);
+                            responseArea.textContent = '';
+                            
+                            // 检查request_id是否匹配
+                            if (data.request_id !== currentRequestId) {
+                                log(`⚠️ Request ID不匹配! 期望: ${currentRequestId}, 实际: ${data.request_id}`, 'warning');
+                            }
+                            break;
+                            
+                        case 'ai_stream_chunk':
+                            log(`📝 流式数据块 [${data.chunk?.length || 0} 字符]: "${data.chunk || 'empty'}"`, 'info');
+                            responseArea.textContent += data.chunk || '';
+                            
+                            // 检查request_id是否匹配
+                            if (data.request_id !== currentRequestId) {
+                                log(`⚠️ Chunk Request ID不匹配! 期望: ${currentRequestId}, 实际: ${data.request_id}`, 'warning');
+                            }
+                            break;
+                            
+                        case 'ai_stream_end':
+                            log(`✅ 流式结束 - Request ID: ${data.request_id}`, 'success');
+                            log(`📊 完整回复长度: ${data.full_response?.length || 0} 字符`, 'info');
+                            log(`💰 成本: $${data.cost_usd}, Tokens: ${data.tokens_used}`, 'info');
+                            
+                            // 检查request_id是否匹配（在清空之前检查）
+                            if (data.request_id !== currentRequestId) {
+                                log(`⚠️ End Request ID不匹配! 期望: ${currentRequestId}, 实际: ${data.request_id}`, 'warning');
+                            } else {
+                                log(`✅ Request ID匹配正确`, 'success');
+                            }
+                            
+                            updateDebug(`流式完成 - 总长度: ${data.full_response?.length || 0}`);
+                            currentRequestId = null;
+                            break;
+                            
+                        case 'ai_stream_error':
+                            log(`❌ 流式错误: ${data.error}`, 'error');
+                            responseArea.textContent += `\\n\\n❌ 错误: ${data.error}`;
+                            currentRequestId = null;
+                            break;
+                            
+                        case 'ai_progress_update':
+                            log(`⏳ AI进度更新: ${data.message} (${data.step}/${data.total_steps})`, 'info');
+                            updateDebug(`进度: ${data.message} (${data.step}/${data.total_steps})`);
+                            break;
+                            
+                        case 'error':
+                            log(`❌ 系统错误: ${data.message}`, 'error');
+                            break;
+                            
+                        default:
+                            log(`📦 其他消息类型: ${data.type}`, 'warning');
+                    }
+                } catch (e) {
+                    log(`❌ 解析消息失败: ${e.message}`, 'error');
+                    log(`📦 原始消息: ${event.data}`, 'error');
+                }
+            };
+            
+            ws.onclose = (event) => {
+                isConnected = false;
+                currentRequestId = null;
+                updateStatus('disconnected', '❌ 连接已断开');
+                log(`🔌 连接关闭: 代码=${event.code}, 原因="${event.reason}", 正常=${event.wasClean}`, 'warning');
+                
+                // 显示常见错误码的含义
+                const errorMessages = {
+                    1000: '正常关闭 ✅',
+                    1001: '端点离开',
+                    1002: '协议错误',
+                    1003: '不支持的数据类型',
+                    1006: '连接异常关闭 ❌',
+                    1011: '服务器错误',
+                    4001: '认证失败',
+                    4003: 'Token验证失败'
+                };
+                
+                if (errorMessages[event.code]) {
+                    log(`📝 错误说明: ${errorMessages[event.code]}`, 'info');
+                }
+            };
+            
+            ws.onerror = (error) => {
+                log(`❌ WebSocket错误: ${JSON.stringify(error)}`, 'error');
+                console.error('WebSocket错误详情:', error);
+                updateStatus('error', '❌ 连接错误');
+            };
+        }
+        
+        function testStreaming() {
+            if (!isConnected || !ws) {
+                log('❌ 请先连接WebSocket', 'error');
+                return;
+            }
+            
+            // 生成唯一的request ID
+            currentRequestId = 'test_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            
+            const testMessage = {
+                type: 'ai_chat',
+                request_id: currentRequestId,
+                content: '请简单介绍MACD技术指标的用法，用流式方式回复',
+                ai_mode: 'trader',
+                session_type: 'strategy',
+                session_id: 'debug_test_' + Date.now(),
+                complexity: 'simple'
+            };
+            
+            log(`🚀 发送AI聊天请求 - Request ID: ${currentRequestId}`, 'info');
+            log(`📤 消息内容: ${JSON.stringify(testMessage)}`, 'info');
+            ws.send(JSON.stringify(testMessage));
+            
+            responseArea.textContent = '正在等待AI流式回复...';
+            updateDebug(`发送请求 - Request ID: ${currentRequestId}`);
+        }
+        
+        function disconnect() {
+            if (ws) {
+                ws.close();
+                ws = null;
+            }
+            currentRequestId = null;
+        }
+        
+        function clearLogs() {
+            logsEl.innerHTML = '';
+            messageCount = 0;
+            responseArea.textContent = '日志已清除...';
+            updateDebug('日志已清除');
+        }
+        
+        connectBtn.addEventListener('click', connect);
+        testBtn.addEventListener('click', testStreaming);
+        disconnectBtn.addEventListener('click', disconnect);
+        clearBtn.addEventListener('click', clearLogs);
+        
+        // 页面加载时显示状态
+        log('📱 调试页面加载完成，准备诊断WebSocket流式响应问题', 'info');
+        updateDebug('页面初始化完成');
+    </script>
+</body>
+</html>

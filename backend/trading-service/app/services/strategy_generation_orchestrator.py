@@ -12,10 +12,12 @@ from loguru import logger
 
 from app.services.strategy_intent_analyzer import StrategyIntentAnalyzer
 from app.services.strategy_template_validator import StrategyTemplateValidator
+from app.services.enhanced_strategy_validator import EnhancedStrategyValidator
 from app.services.strategy_auto_fix_service import StrategyAutoFixService
 from app.services.auto_backtest_service import AutoBacktestService
 from app.services.strategy_optimization_advisor import StrategyOptimizationAdvisor
-from app.ai.core.claude_client import claude_client
+from app.core.claude_client import ClaudeClient
+from app.services.claude_account_service import ClaudeAccountService
 
 
 class StrategyGenerationOrchestrator:
@@ -88,12 +90,28 @@ class StrategyGenerationOrchestrator:
             strategy_code = generation_result["code"]
             generation_attempts = generation_result["attempts"]
             
-            # 第四步：策略代码验证和自动修复
-            logger.info(f"步骤4: 代码验证与修复 - {generation_id}")
-            validation_result = await StrategyTemplateValidator.validate_strategy(strategy_code)
+            # 第四步：增强策略代码验证和自动修复
+            logger.info(f"步骤4: 增强代码验证与修复 - {generation_id}")
+            
+            # 构建验证上下文
+            validation_context = {
+                "user_id": user_id,
+                "membership_level": user_membership,
+                "target_market": intent_analysis.get("trading_pair", "BTCUSDT"),
+                "generation_id": generation_id
+            }
+            
+            # 使用增强版策略校验器
+            validation_result = await EnhancedStrategyValidator.validate_strategy_enhanced(
+                strategy_code, validation_context
+            )
+            
+            # 记录增强校验结果
+            logger.info(f"增强校验完成 - 质量评分: {validation_result.get('final_quality_score', 0):.2f}, "
+                       f"风险评分: {validation_result.get('risk_score', 0):.2f}")
             
             if not validation_result["valid"]:
-                # 自动修复
+                # 尝试自动修复
                 fix_result = await StrategyAutoFixService.auto_fix_strategy(
                     strategy_code, validation_result["errors"], intent_analysis
                 )
@@ -101,13 +119,20 @@ class StrategyGenerationOrchestrator:
                 if fix_result["success"]:
                     strategy_code = fix_result["fixed_code"]
                     logger.info(f"策略代码修复成功，使用{fix_result['attempts_used']}次尝试")
+                    
+                    # 重新验证修复后的代码
+                    validation_result = await EnhancedStrategyValidator.validate_strategy_enhanced(
+                        strategy_code, validation_context
+                    )
                 else:
                     return {
                         "generation_id": generation_id,
                         "success": False,
-                        "stage": "validation_and_fix",
+                        "stage": "enhanced_validation_and_fix",
                         "error": f"代码修复失败: {fix_result['error']}",
                         "validation_errors": validation_result["errors"],
+                        "enhanced_analysis": validation_result.get("enhanced_checks", {}),
+                        "quality_score": validation_result.get("final_quality_score", 0),
                         "fix_attempts": fix_result.get("attempts_used", 0),
                         "execution_time": (datetime.now() - start_time).total_seconds()
                     }
@@ -137,6 +162,15 @@ class StrategyGenerationOrchestrator:
                 "intent_analysis": intent_analysis,
                 "validation_passed": True,
                 "generation_attempts": generation_attempts,
+                # 增强校验结果
+                "enhanced_validation": {
+                    "quality_score": validation_result.get("final_quality_score", 0),
+                    "risk_score": validation_result.get("risk_score", 0),
+                    "risk_level": validation_result.get("enhanced_checks", {}).get("risk_analysis", {}).get("risk_level", "未评估"),
+                    "intelligent_suggestions": validation_result.get("intelligent_suggestions", []),
+                    "optimization_opportunities": validation_result.get("optimization_opportunities", []),
+                    "enhanced_checks": validation_result.get("enhanced_checks", {})
+                },
                 "backtest_results": {
                     "performance_grade": performance_grade,
                     "meets_expectations": meets_expectations,
@@ -197,6 +231,35 @@ class StrategyGenerationOrchestrator:
             }
         
         try:
+            # 创建正确的Claude客户端（使用数据库代理配置）
+            account = await ClaudeAccountService.get_available_account()
+            if not account:
+                return {
+                    "success": False,
+                    "error": "无可用的Claude账号",
+                    "attempts": attempt
+                }
+            
+            # 解密API密钥
+            from app.security.crypto_manager import CryptoManager
+            crypto_manager = CryptoManager()
+            decrypted_api_key = crypto_manager.decrypt(account.api_key)
+            
+            if not decrypted_api_key:
+                return {
+                    "success": False,
+                    "error": "无法解密Claude API密钥",
+                    "attempts": attempt
+                }
+            
+            # 创建配置正确的Claude客户端
+            claude_client = ClaudeClient(
+                api_key=decrypted_api_key,
+                base_url=account.proxy_base_url,
+                timeout=120,
+                max_retries=2
+            )
+            
             # 构建增强版策略生成提示词
             generation_prompt = f"""
 基于用户需求和意图分析，生成专业的EnhancedBaseStrategy策略代码。
@@ -329,6 +392,40 @@ class UserStrategy(EnhancedBaseStrategy):
         optimization_cycles = 0
         
         try:
+            # 创建正确的Claude客户端（使用数据库代理配置）
+            account = await ClaudeAccountService.get_available_account()
+            if not account:
+                logger.error("无可用的Claude账号")
+                return {
+                    "success": False,
+                    "message": "无可用的Claude账号",
+                    "best_code": original_code,
+                    "optimization_cycles": 0
+                }
+            
+            # 解密API密钥
+            from app.security.crypto_manager import CryptoManager
+            crypto_manager = CryptoManager()
+            decrypted_api_key = crypto_manager.decrypt(account.api_key)
+            
+            if not decrypted_api_key:
+                logger.error("无法解密Claude API密钥")
+                return {
+                    "success": False,
+                    "message": "无法解密Claude API密钥",
+                    "best_code": original_code,
+                    "optimization_cycles": 0
+                }
+            
+            # 创建配置正确的Claude客户端
+            claude_client = ClaudeClient(
+                api_key=decrypted_api_key,
+                base_url=account.proxy_base_url,
+                timeout=120,
+                max_retries=2
+            )
+            logger.info(f"策略优化使用Claude账号: {account.account_name}, 代理: {account.proxy_base_url}")
+            
             for cycle in range(StrategyGenerationOrchestrator.MAX_OPTIMIZATION_CYCLES):
                 optimization_cycles += 1
                 logger.info(f"优化迭代第{cycle + 1}轮")

@@ -41,20 +41,29 @@ metadata = MetaData()
 
 async def get_db() -> AsyncGenerator[AsyncSession, None]:
     """
-    获取数据库会话
+    获取数据库会话 - 修复事务处理逻辑
     
     用法:
     async def some_function(db: AsyncSession = Depends(get_db)):
         # 使用db进行数据库操作
     """
-    async with AsyncSessionLocal() as session:
-        try:
-            yield session
-        except Exception:
+    session = AsyncSessionLocal()
+    try:
+        # 提供会话给业务逻辑
+        yield session
+        
+        # 如果没有显式提交，则提交事务
+        if session.in_transaction():
+            await session.commit()
+            
+    except Exception as e:
+        # 发生异常时回滚事务
+        if session.in_transaction():
             await session.rollback()
-            raise
-        finally:
-            await session.close()
+        raise
+    finally:
+        # 确保会话关闭
+        await session.close()
 
 
 async def init_db():
@@ -192,18 +201,51 @@ async def bulk_insert_data(model_class, data_list: list, batch_size: int = 1000)
 
 # 事务支持
 class DatabaseTransaction:
-    """数据库事务管理器"""
+    """数据库事务管理器 - 改进版本"""
     
     def __init__(self):
         self.session = None
+        self._committed = False
     
     async def __aenter__(self):
         self.session = AsyncSessionLocal()
+        await self.session.begin()  # 显式开始事务
         return self.session
     
     async def __aexit__(self, exc_type, exc_val, exc_tb):
-        if exc_type:
-            await self.session.rollback()
-        else:
+        try:
+            if exc_type is None and not self._committed:
+                # 没有异常且未手动提交，自动提交
+                await self.session.commit()
+                self._committed = True
+            elif exc_type is not None:
+                # 有异常，回滚事务
+                await self.session.rollback()
+        except Exception as e:
+            # 确保即使commit/rollback失败也能清理资源
+            logger.error(f"事务管理器异常: {e}")
+        finally:
+            # 确保会话关闭
+            await self.session.close()
+    
+    async def commit(self):
+        """手动提交事务"""
+        if self.session and not self._committed:
             await self.session.commit()
-        await self.session.close()
+            self._committed = True
+    
+    async def rollback(self):
+        """手动回滚事务"""
+        if self.session:
+            await self.session.rollback()
+
+
+# 更安全的事务装饰器
+def transactional(func):
+    """事务装饰器 - 自动处理事务提交和回滚"""
+    async def wrapper(*args, **kwargs):
+        async with DatabaseTransaction() as session:
+            # 将session注入到kwargs中
+            kwargs['session'] = session
+            return await func(*args, **kwargs)
+    return wrapper

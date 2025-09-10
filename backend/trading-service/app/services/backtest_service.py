@@ -19,6 +19,7 @@ from app.models.backtest import Backtest
 from app.models.trade import Trade
 from app.services.exchange_service import exchange_service
 from app.config import settings
+from app.utils.data_validation import DataValidator
 from loguru import logger
 
 
@@ -84,7 +85,7 @@ class BacktestEngine:
                 initial_capital, performance_metrics, backtest_results
             )
             
-            logger.info(f"回测完成，总收益率: {performance_metrics.get('total_return', 0):.2%}")
+            logger.info(f"回测完成，总收益率: {DataValidator.safe_format_percentage(performance_metrics.get('total_return', 0) * 100, decimals=2)}")
             
             return {
                 "backtest_id": backtest_record.id if backtest_record else None,
@@ -124,41 +125,75 @@ class BacktestEngine:
         user_id: int,
         db: AsyncSession
     ) -> List[Dict[str, Any]]:
-        """获取历史数据"""
+        """获取历史数据 - 优先使用本地数据源"""
         try:
-            # 计算需要的数据点数量
-            if timeframe == "1m":
-                delta_minutes = 1
-            elif timeframe == "5m":
-                delta_minutes = 5
-            elif timeframe == "1h":
-                delta_minutes = 60
-            elif timeframe == "1d":
-                delta_minutes = 1440
-            else:
-                delta_minutes = 60  # 默认1小时
+            # 导入历史数据下载器
+            from app.services.historical_data_downloader import historical_data_downloader
             
-            total_minutes = int((end_date - start_date).total_seconds() / 60)
-            limit = min(total_minutes // delta_minutes + 100, 1000)  # 多获取一些数据
+            logger.info(f"获取历史数据: {exchange} {symbol} {timeframe} {start_date}-{end_date}")
             
-            # 从交易所获取历史数据
-            data = await exchange_service.get_market_data(
-                user_id, exchange, symbol, timeframe, limit, db
+            # 第一步：检查本地数据可用性
+            availability = await historical_data_downloader.check_data_availability(
+                exchange, symbol, timeframe, start_date, end_date, db
             )
             
-            if not data:
-                # 如果获取失败，生成模拟数据用于测试
-                logger.warning(f"无法获取真实数据，生成模拟数据进行回测")
-                return self._generate_mock_data(start_date, end_date, timeframe)
+            logger.info(f"本地数据覆盖率: {availability['coverage']:.1f}% ({availability['total_records']} 条记录)")
             
-            # 过滤日期范围
-            filtered_data = []
-            for item in data:
-                item_date = datetime.fromtimestamp(item['timestamp'] / 1000)
-                if start_date <= item_date <= end_date:
-                    filtered_data.append(item)
+            # 第二步：获取本地数据
+            local_data = []
+            if availability['coverage'] > 80:  # 覆盖率大于80%使用本地数据
+                local_data = await historical_data_downloader.get_local_kline_data(
+                    exchange, symbol, timeframe, start_date, end_date, db
+                )
+                logger.info(f"使用本地历史数据: {len(local_data)} 条记录")
             
-            return filtered_data
+            # 第三步：数据不足时从API补充
+            if len(local_data) < 10:
+                logger.info("本地数据不足，从交易所API获取数据")
+                
+                # 计算需要的数据点数量
+                if timeframe == "1m":
+                    delta_minutes = 1
+                elif timeframe == "5m":
+                    delta_minutes = 5
+                elif timeframe == "1h":
+                    delta_minutes = 60
+                elif timeframe == "1d":
+                    delta_minutes = 1440
+                else:
+                    delta_minutes = 60  # 默认1小时
+                
+                total_minutes = int((end_date - start_date).total_seconds() / 60)
+                limit = min(total_minutes // delta_minutes + 100, 1000)
+                
+                # 从交易所获取历史数据
+                api_data = await exchange_service.get_market_data(
+                    user_id, exchange, symbol, timeframe, limit, db
+                )
+                
+                if api_data:
+                    # 过滤日期范围
+                    filtered_data = []
+                    for item in api_data:
+                        item_date = datetime.fromtimestamp(item['timestamp'] / 1000)
+                        if start_date <= item_date <= end_date:
+                            filtered_data.append(item)
+                    
+                    logger.info(f"API数据过滤后: {len(filtered_data)} 条记录")
+                    
+                    # 第四步：异步保存API数据到本地(提升未来性能)
+                    if len(filtered_data) > 10:
+                        asyncio.create_task(self._save_api_data_to_local(
+                            db, exchange, symbol, timeframe, filtered_data
+                        ))
+                    
+                    return filtered_data
+            else:
+                return local_data
+            
+            # 第五步：所有方法都失败，使用模拟数据
+            logger.warning(f"无法获取真实数据，生成模拟数据进行回测")
+            return self._generate_mock_data(start_date, end_date, timeframe)
             
         except Exception as e:
             logger.warning(f"获取历史数据失败: {str(e)}，使用模拟数据")
@@ -332,6 +367,63 @@ class BacktestEngine:
         
         return signals
     
+    async def _save_api_data_to_local(
+        self,
+        db: AsyncSession,
+        exchange: str,
+        symbol: str,
+        timeframe: str,
+        api_data: List[Dict[str, Any]]
+    ):
+        """异步保存API数据到本地数据库"""
+        try:
+            from app.services.historical_data_downloader import historical_data_downloader
+            from decimal import Decimal
+            
+            logger.info(f"保存API数据到本地: {len(api_data)} 条记录")
+            
+            # 转换API数据格式为数据库格式
+            timeframe_ms = {
+                '1m': 60 * 1000,
+                '5m': 5 * 60 * 1000,
+                '15m': 15 * 60 * 1000,
+                '1h': 60 * 60 * 1000,
+                '4h': 4 * 60 * 60 * 1000,
+                '1d': 24 * 60 * 60 * 1000
+            }.get(timeframe, 60 * 60 * 1000)
+            
+            batch_records = []
+            for item in api_data:
+                timestamp = item['timestamp']
+                record = {
+                    'exchange': exchange.lower(),
+                    'symbol': symbol,
+                    'timeframe': timeframe,
+                    'open_time': timestamp,
+                    'close_time': timestamp + timeframe_ms - 1,
+                    'open_price': Decimal(str(item['open'])),
+                    'high_price': Decimal(str(item['high'])),
+                    'low_price': Decimal(str(item['low'])),
+                    'close_price': Decimal(str(item['close'])),
+                    'volume': Decimal(str(item['volume'])),
+                    'quote_volume': Decimal(str(item.get('quote_volume', 0))),
+                    'data_source': 'api'
+                }
+                batch_records.append(record)
+            
+            # 批量保存到数据库
+            await historical_data_downloader._batch_insert_klines(db, batch_records)
+            
+            # 更新缓存元信息
+            await historical_data_downloader._update_cache_metadata(
+                db, exchange, symbol, timeframe, batch_records
+            )
+            
+            logger.info(f"API数据保存完成: {len(batch_records)} 条记录")
+            
+        except Exception as e:
+            logger.error(f"保存API数据失败: {str(e)}")
+    
     async def _execute_trade(
         self, 
         signal: str, 
@@ -387,7 +479,7 @@ class BacktestEngine:
             return
         
         self.trades.append(trade_record)
-        logger.debug(f"执行交易: {signal} {trade_amount:.6f} @ {current_price:.2f}")
+        logger.debug(f"执行交易: {signal} {DataValidator.safe_format_decimal(trade_amount, decimals=6)} @ {DataValidator.safe_format_price(current_price, decimals=2)}")
     
     def _calculate_performance_metrics(self, initial_capital: float) -> Dict[str, Any]:
         """计算完整的性能指标"""

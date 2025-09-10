@@ -16,7 +16,8 @@ from loguru import logger
 
 from app.database import AsyncSessionLocal
 from app.models.payment import USDTWallet, USDTPaymentOrder, WalletBalance
-from app.core.config import settings
+from app.config import settings
+from app.utils.data_validation import DataValidator
 
 
 class USDTWalletService:
@@ -39,7 +40,9 @@ class USDTWalletService:
         
     def _get_or_create_encryption_key(self) -> bytes:
         """获取或创建加密密钥"""
-        key_file = settings.DATA_DIR / "usdt_wallet_encryption.key"
+        import os
+        from pathlib import Path
+        key_file = Path(settings.data_dir) / "usdt_wallet_encryption.key"
         
         if key_file.exists():
             return key_file.read_bytes()
@@ -239,7 +242,7 @@ class USDTWalletService:
         best_wallet = wallet_scores[0][0]
         best_score = wallet_scores[0][1]
         
-        logger.debug(f"选择最优钱包: {best_wallet.wallet_name}, 得分: {best_score:.3f}")
+        logger.debug(f"选择最优钱包: {best_wallet.wallet_name}, 得分: {DataValidator.safe_format_decimal(best_score, decimals=3)}")
         return best_wallet
     
     async def release_wallet(self, order_no: str, update_statistics: bool = True) -> bool:

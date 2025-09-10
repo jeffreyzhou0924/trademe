@@ -20,6 +20,7 @@ from app.models.user import User
 from app.models.strategy import Strategy
 from app.models.backtest import Backtest
 from app.services.backtest_service import BacktestEngine
+from app.utils.data_validation import DataValidator
 
 
 class UserTier(Enum):
@@ -120,7 +121,7 @@ class BasicBacktestEngine(BaseBacktestEngine):
                 }
             })
             
-            logger.info(f"Basic回测完成: 收益率{result.get('performance', {}).get('total_return', 0):.2%}")
+            logger.info(f"Basic回测完成: 收益率{DataValidator.safe_format_percentage(result.get('performance', {}).get('total_return', 0) * 100, decimals=2)}")
             return result
             
         except Exception as e:
@@ -191,7 +192,7 @@ class HybridBacktestEngine(BaseBacktestEngine):
                 "precision_breakdown": self._get_precision_breakdown(segment_results)
             })
             
-            logger.info(f"Pro混合回测完成: 总段数{len(market_states)}, 收益率{aggregated_result.get('performance', {}).get('total_return', 0):.2%}")
+            logger.info(f"Pro混合回测完成: 总段数{len(market_states)}, 收益率{DataValidator.safe_format_percentage(aggregated_result.get('performance', {}).get('total_return', 0) * 100, decimals=2)}")
             return aggregated_result
             
         except Exception as e:
@@ -409,7 +410,7 @@ class TickBacktestEngine(BaseBacktestEngine):
                 ]
             }
             
-            logger.info(f"Elite Tick回测完成: 处理{len(tick_data)}个tick, 收益率{elite_metrics.get('total_return', 0):.2%}")
+            logger.info(f"Elite Tick回测完成: 处理{len(tick_data)}个tick, 收益率{DataValidator.safe_format_percentage(elite_metrics.get('total_return', 0) * 100, decimals=2)}")
             return result
             
         except Exception as e:

@@ -8,7 +8,7 @@ AI功能模块
 - 回测结果解读
 """
 
-from .core.claude_client import ClaudeClient
+from app.core.claude_client import ClaudeClient
 
 __all__ = [
     "ClaudeClient"

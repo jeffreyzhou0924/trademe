@@ -45,15 +45,29 @@ class UserStrategy(EnhancedBaseStrategy):
         if data_type != "kline":
             return None
             
+        # 使用系统提供的数据获取方法（禁止自己加载数据）
         df = self.get_kline_data()
         if df is None or len(df) < 20:
             return None
         
-        # 在这里实现策略逻辑
-        # 计算技术指标
-        # 生成交易信号
+        # 使用系统内置指标方法（禁止自己实现指标计算）
+        sma_short = self.calculate_sma(df['close'], 10)
+        sma_long = self.calculate_sma(df['close'], 20)
+        rsi = self.calculate_rsi(df['close'], 14)
         
-        return None  # 或返回TradingSignal对象
+        # 只生成交易信号，不实现回测逻辑
+        current_price = df['close'].iloc[-1]
+        
+        # 示例信号生成逻辑
+        if sma_short[-1] > sma_long[-1] and rsi[-1] < 70:
+            return TradingSignal(
+                signal_type=SignalType.BUY,
+                symbol=self.symbol,
+                price=current_price,
+                quantity=1.0
+            )
+        
+        return None
 ```
 
 严格要求：
@@ -64,6 +78,10 @@ class UserStrategy(EnhancedBaseStrategy):
 5. 返回TradingSignal对象或None
 6. 不得使用eval(), exec(), import, open(), 等危险函数
 7. 所有参数通过self.context.parameters获取
+8. 禁止创建模拟数据函数（如create_sample_data、load_data等）
+9. 禁止在策略中实现回测逻辑，只生成交易信号
+10. 禁止使用pandas生成模拟K线数据
+11. 策略只负责信号生成，数据获取和回测由系统处理
 
 数据源类型：
 - DataType.KLINE: K线数据
@@ -84,8 +102,15 @@ class UserStrategy(EnhancedBaseStrategy):
 时间周期: {timeframe}
 风险级别: {risk_level}
 
+⚠️ 重要提醒：
+- 只生成纯策略信号代码，不包含数据加载逻辑
+- 不要创建模拟数据或回测功能
+- 使用系统提供的self.get_kline_data()获取数据
+- 使用系统内置指标方法（self.calculate_sma等）
+- 策略只负责信号生成，回测由用户在界面配置
+
 请提供：
-1. 完整的策略代码
+1. 完整的策略代码（仅信号生成逻辑）
 2. 策略原理说明
 3. 参数设置建议
 4. 风险提示
@@ -211,7 +236,7 @@ class UserStrategy(EnhancedBaseStrategy):
     ) -> Dict[str, str]:
         """格式化策略生成提示词"""
         return {
-            "system": cls.STRATEGY_GENERATION_SYSTEM,
+            "system": cls.ENHANCED_STRATEGY_GENERATION_SYSTEM,
             "user": cls.STRATEGY_GENERATION_USER.format(
                 description=description,
                 indicators=", ".join(indicators),

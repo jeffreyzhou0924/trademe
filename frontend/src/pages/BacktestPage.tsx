@@ -454,7 +454,7 @@ const BacktestPage: React.FC = () => {
                               onChange={() => toggleComparisonSelection(backtest.id)}
                               className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                             />
-                            <h3 className="font-semibold text-gray-900">{backtest.strategy_name || '未知策略'}</h3>
+                            <h3 className="font-semibold text-gray-900">{backtest.config?.strategy_id || '未知策略'}</h3>
                             <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusStyle(backtest.status)}`}>
                               {getStatusText(backtest.status)}
                             </span>
@@ -462,16 +462,16 @@ const BacktestPage: React.FC = () => {
                           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                             <div>
                               <span className="text-gray-500">回测周期:</span>
-                              <p className="font-medium">{backtest.start_date} - {backtest.end_date}</p>
+                              <p className="font-medium">{backtest.config?.start_date} - {backtest.config?.end_date}</p>
                             </div>
                             <div>
                               <span className="text-gray-500">初始资金:</span>
-                              <p className="font-medium">{formatCurrency(backtest.initial_capital)}</p>
+                              <p className="font-medium">{formatCurrency(backtest.config?.initial_capital || 0)}</p>
                             </div>
                             <div>
                               <span className="text-gray-500">总收益:</span>
-                              <p className={`font-medium ${backtest.total_return >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                                {formatPercent(backtest.total_return)}
+                              <p className={`font-medium ${(backtest.results?.total_return || 0) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                                {formatPercent(backtest.results?.total_return || 0)}
                               </p>
                             </div>
                             <div>

@@ -13,7 +13,7 @@ from app.models.user import User
 from app.models.strategy import Strategy
 from app.models.api_key import ApiKey
 from app.models.trading_note import TradingNote
-from app.models.claude_conversation import ClaudeUsage
+from app.models.claude_proxy import ClaudeUsageLog
 from app.schemas.membership import UserStats, MembershipLimits
 from app.services.ai_service import AIService
 
@@ -30,7 +30,7 @@ class MembershipService:
             tick_backtest_limit=0,      # 无Tick级别回测
             storage_limit=0.005,        # 5KB
             indicators_limit=1,         # AI指标数量
-            strategies_limit=1,         # AI策略数量
+            strategies_limit=50,        # AI策略数量（开发阶段放宽限制）
             live_trading_limit=1        # 1个免费实盘
         ),
         "premium": MembershipLimits(
@@ -40,7 +40,7 @@ class MembershipService:
             tick_backtest_limit=30,     # 每月30次Tick级别回测
             storage_limit=0.050,        # 50KB
             indicators_limit=5,         # AI指标数量
-            strategies_limit=5,         # AI策略数量
+            strategies_limit=50,        # AI策略数量（开发阶段放宽限制）
             live_trading_limit=5        # 5个免费实盘
         ),
         "professional": MembershipLimits(
@@ -50,7 +50,7 @@ class MembershipService:
             tick_backtest_limit=100,    # 每月100次Tick级别回测
             storage_limit=0.100,        # 100KB
             indicators_limit=10,        # AI指标数量
-            strategies_limit=10,        # AI策略数量
+            strategies_limit=100,       # AI策略数量（开发阶段放宽限制）
             live_trading_limit=10       # 10个免费实盘
         )
     }

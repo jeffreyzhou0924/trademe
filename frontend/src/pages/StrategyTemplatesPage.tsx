@@ -191,7 +191,7 @@ const StrategyTemplatesPage: React.FC = () => {
               />
               <Button
                 onClick={handleSearch}
-                variant="default"
+                variant="primary"
                 size="sm"
               >
                 搜索
@@ -450,7 +450,7 @@ const StrategyTemplatesPage: React.FC = () => {
               </Button>
               <Button
                 onClick={handleStartCustomization}
-                variant="default"
+                variant="primary"
               >
                 自定义应用
               </Button>
@@ -656,7 +656,7 @@ const StrategyTemplatesPage: React.FC = () => {
               </Button>
               <Button
                 onClick={handleApplyTemplate}
-                variant="default"
+                variant="primary"
                 disabled={isApplying || !customName.trim()}
               >
                 {isApplying ? '应用中...' : '创建策略'}
