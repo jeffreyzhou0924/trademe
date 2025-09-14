@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>策略版本管理系统测试</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .log { background: #f5f5f5; padding: 10px; margin: 10px 0; border-left: 4px solid #007acc; }
+        .success { border-color: #28a745; }
+        .warning { border-color: #ffc107; }
+        .error { border-color: #dc3545; }
+        .code { background: #282c34; color: #abb2bf; padding: 10px; border-radius: 4px; font-family: 'Courier New', monospace; }
+        button { padding: 10px 20px; margin: 5px; background: #007acc; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #005a9e; }
+        .test-step { border: 1px solid #ddd; padding: 15px; margin: 10px 0; border-radius: 5px; }
+        .test-result { margin-top: 10px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>🔧 策略版本管理系统集成测试</h1>
+    
+    <div class="log success">
+        <h3>✅ 系统修复完成</h3>
+        <ul>
+            <li>TypeScript编译错误已修复</li>
+            <li>生产版本构建成功</li>
+            <li>metadata字段定义完整</li>
+            <li>WebSocket流式消息处理优化</li>
+        </ul>
+    </div>
+    
+    <div class="test-step">
+        <h3>测试步骤 1: 前端系统状态检查</h3>
+        <p>检查生产环境是否已更新到最新版本</p>
+        <button onclick="checkFrontendStatus()">检查前端状态</button>
+        <div id="frontend-status" class="test-result"></div>
+    </div>
+    
+    <div class="test-step">
+        <h3>测试步骤 2: AI会话创建测试</h3>
+        <p>创建新的AI会话并测试JWT认证</p>
+        <button onclick="testSessionCreation()">测试会话创建</button>
+        <div id="session-result" class="test-result"></div>
+    </div>
+    
+    <div class="test-step">
+        <h3>测试步骤 3: 策略生成成功消息测试</h3>
+        <p>模拟策略生成成功的流式消息</p>
+        <button onclick="testStrategySuccessDetection()">测试策略检测</button>
+        <div id="strategy-result" class="test-result"></div>
+    </div>
+    
+    <div class="test-step">
+        <h3>测试步骤 4: 完整流程验证</h3>
+        <p>完整测试：创建会话 → AI生成策略 → 版本控制按钮显示</p>
+        <button onclick="window.open('http://43.167.252.120/ai-chat', '_blank')">🚀 完整流程测试</button>
+        <div class="log warning">
+            <strong>测试指南</strong>:
+            <ol>
+                <li>打开AI聊天页面</li>
+                <li>输入策略需求，如："我想要一个MACD策略"</li>
+                <li>确认生成代码</li>
+                <li>观察是否出现版本控制按钮（绿色小按钮，标记"代码"）</li>
+                <li>点击版本按钮查看策略代码</li>
+            </ol>
+        </div>
+    </div>
+    
+    <h2>预期测试结果</h2>
+    <div class="log success">
+        <h3>✅ 成功指标</h3>
+        <ul>
+            <li><strong>前端状态</strong>: 应显示最新的构建版本和时间戳</li>
+            <li><strong>会话创建</strong>: JWT认证成功，会话ID正确生成</li>
+            <li><strong>消息检测</strong>: 策略成功检测逻辑正确识别目标消息</li>
+            <li><strong>版本按钮</strong>: 在"策略生成成功"消息旁显示绿色版本按钮</li>
+            <li><strong>代码展示</strong>: 点击按钮后正确显示策略代码模态框</li>
+        </ul>
+    </div>
+    
+    <h2>调试日志监控</h2>
+    <div class="log">
+        <h3>🔍 关键日志指标</h3>
+        <p>在浏览器控制台中应该看到以下日志：</p>
+        <div class="code">
+📝 [WebSocketClient] 流式AI数据块: ✅ **策略生成成功！**
+✅ [AIStore] 流式结束: ...
+🚀 [AIStore] 立即强制更新messages数组以触发React重新渲染
+[GlobalMessageTracker] 消息数组发生变化
+🔍 [StrategyDetection] 检测到策略成功消息
+🎯 [StrategyDetection] 添加版本控制按钮
+        </div>
+    </div>
+    
+    <script>
+        const JWT_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2IiwiZW1haWwiOiJhZG1pbkB0cmFkZW1lLmNvbSIsIm1lbWJlcnNoaXBMZXZlbCI6InByb2Zlc3Npb25hbCIsInR5cGUiOiJhY2Nlc3MiLCJpYXQiOjE3NTc2Nzg5NzUsImV4cCI6MTc1ODI4Mzc3NSwiYXVkIjoidHJhZGVtZS1hcHAiLCJpc3MiOiJ0cmFkZW1lLXVzZXItc2VydmljZSJ9.wB3lgUgg70uoKIClv_Iq082CUqfd52XvALV1wU1JLoE';
+        
+        async function checkFrontendStatus() {
+            const result = document.getElementById('frontend-status');
+            result.innerHTML = '检查中...';
+            
+            try {
+                // 检查构建文件的时间戳
+                const response = await fetch('/');
+                if (response.ok) {
+                    result.innerHTML = `
+                        <span class="success">✅ 前端状态正常</span><br>
+                        最后检查时间: ${new Date().toLocaleString()}<br>
+                        响应状态: ${response.status}
+                    `;
+                } else {
+                    result.innerHTML = `<span class="error">❌ 前端访问异常: ${response.status}</span>`;
+                }
+            } catch (error) {
+                result.innerHTML = `<span class="error">❌ 前端检查失败: ${error.message}</span>`;
+            }
+        }
+        
+        async function testSessionCreation() {
+            const result = document.getElementById('session-result');
+            result.innerHTML = '创建会话中...';
+            
+            try {
+                const response = await fetch('http://43.167.252.120:8001/api/v1/ai/sessions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${JWT_TOKEN}`
+                    },
+                    body: JSON.stringify({
+                        name: 'Version Management Test Session',
+                        ai_mode: 'trader',
+                        session_type: 'strategy',
+                        description: 'Testing strategy version management integration'
+                    })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    result.innerHTML = `
+                        <span class="success">✅ 会话创建成功</span><br>
+                        会话ID: ${data.session_id}<br>
+                        模式: ${data.ai_mode}<br>
+                        类型: ${data.session_type}
+                    `;
+                    
+                    // 存储会话ID供后续测试使用
+                    window.testSessionId = data.session_id;
+                } else {
+                    const errorText = await response.text();
+                    result.innerHTML = `<span class="error">❌ 会话创建失败: ${response.status} - ${errorText}</span>`;
+                }
+            } catch (error) {
+                result.innerHTML = `<span class="error">❌ 会话创建异常: ${error.message}</span>`;
+            }
+        }
+        
+        function testStrategySuccessDetection() {
+            const result = document.getElementById('strategy-result');
+            result.innerHTML = '测试策略检测逻辑...';
+            
+            // 模拟策略成功消息检测
+            const testMessages = [
+                '✅ **策略生成成功！**',
+                '📊 **性能评级**: 未知 📈 **策略代码已生成并通过验证**',
+                '策略代码已生成并通过验证',
+                '您可以在策略管理页面查看和使用生成的策略'
+            ];
+            
+            const detectionResults = testMessages.map(content => {
+                const isStrategySuccess = (
+                    content.includes('策略生成成功') ||
+                    content.includes('策略代码已生成并通过验证') ||
+                    content.includes('✅ **策略生成成功！**') ||
+                    (content.includes('📊 **性能评级**') && content.includes('📈 **策略代码已生成并通过验证**')) ||
+                    content.includes('您可以在策略管理页面查看和使用生成的策略')
+                );
+                
+                return {
+                    content: content.substring(0, 50) + (content.length > 50 ? '...' : ''),
+                    detected: isStrategySuccess
+                };
+            });
+            
+            const successCount = detectionResults.filter(r => r.detected).length;
+            result.innerHTML = `
+                <span class="${successCount > 0 ? 'success' : 'error'}">
+                    ${successCount > 0 ? '✅' : '❌'} 检测结果: ${successCount}/${detectionResults.length} 个消息被正确识别
+                </span><br>
+                <details>
+                    <summary>详细检测结果</summary>
+                    <ul>
+                        ${detectionResults.map(r => 
+                            `<li>${r.detected ? '✅' : '❌'} ${r.content}</li>`
+                        ).join('')}
+                    </ul>
+                </details>
+            `;
+        }
+        
+        // 页面加载时的初始化
+        console.log('🔧 [测试页面] 策略版本管理系统测试页面已加载');
+        console.log('📋 [修复状态] TypeScript编译错误已修复，生产版本已更新');
+        console.log('🎯 [测试目标] 验证AI对话中的策略版本控制功能');
+        
+        // 检测当前环境
+        const isProduction = location.hostname === '43.167.252.120';
+        console.log(`🌐 [环境] 当前环境: ${isProduction ? '生产环境' : '开发环境'}`);
+        
+        if (isProduction) {
+            console.log('📝 [提示] 请点击"完整流程测试"进行端到端验证');
+        }
+    </script>
+</body>
+</html>

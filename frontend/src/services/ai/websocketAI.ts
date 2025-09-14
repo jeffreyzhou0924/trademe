@@ -58,8 +58,8 @@ export class WebSocketAIService {
       baseUrl = window.location.protocol + '//' + baseUrl
     }
     
-    // 构建WebSocket URL - 修复端点匹配问题
-    const wsUrl = baseUrl.replace(/^http/, 'ws') + '/ai/ws/chat'
+    // 构建WebSocket URL - 修复端点匹配问题，需要包含API版本前缀
+    const wsUrl = baseUrl.replace(/^http/, 'ws') + '/api/v1/ai/ws/chat'
     
     console.log('🔗 [WebSocketAI] 构建的WebSocket URL:', wsUrl)
     

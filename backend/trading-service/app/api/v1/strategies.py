@@ -747,3 +747,134 @@ async def update_strategy_parameters(
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"更新策略参数失败: {str(e)}")
+
+
+@router.get("/ai-generated/{strategy_id}")
+async def get_ai_generated_strategy_for_backtest(
+    strategy_id: int,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    获取AI生成的策略详情用于回测
+    
+    前端在AI策略生成成功后调用此API获取策略详情，
+    包括策略代码、建议的回测参数等信息
+    """
+    try:
+        # 检查策略所有权
+        strategy = await StrategyService.get_strategy_by_id(db, strategy_id, current_user.id)
+        if not strategy:
+            raise HTTPException(status_code=404, detail="策略不存在")
+        
+        # 检查是否为AI生成的策略
+        if not hasattr(strategy, 'ai_session_id') or not strategy.ai_session_id:
+            raise HTTPException(status_code=400, detail="该策略不是AI生成的策略")
+        
+        # 基于策略内容智能推荐回测参数
+        suggested_params = await _generate_backtest_suggestions(strategy)
+        
+        return {
+            "strategy_id": strategy.id,
+            "name": strategy.name,
+            "description": strategy.description,
+            "code": strategy.code,
+            "parameters": strategy.parameters,
+            "strategy_type": strategy.strategy_type,
+            "ai_session_id": strategy.ai_session_id,
+            "suggested_backtest_params": suggested_params,
+            "created_at": strategy.created_at.isoformat() if strategy.created_at else None
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"获取AI策略详情失败: {str(e)}")
+
+
+@router.get("/latest-ai-strategy/{session_id}")
+async def get_latest_ai_strategy_from_session(
+    session_id: str,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    根据AI会话ID获取最新生成的策略
+    
+    AI对话完成策略生成后，前端可以通过会话ID获取最新的策略
+    """
+    try:
+        # 查找该会话最新创建的策略
+        latest_strategy = await StrategyService.get_latest_strategy_by_session(
+            db, session_id, current_user.id
+        )
+        
+        if not latest_strategy:
+            raise HTTPException(status_code=404, detail="该会话中没有找到策略")
+        
+        # 生成回测建议参数
+        suggested_params = await _generate_backtest_suggestions(latest_strategy)
+        
+        return {
+            "strategy_id": latest_strategy.id,
+            "name": latest_strategy.name,
+            "description": latest_strategy.description,
+            "code": latest_strategy.code,
+            "parameters": latest_strategy.parameters,
+            "strategy_type": latest_strategy.strategy_type,
+            "ai_session_id": latest_strategy.ai_session_id,
+            "suggested_backtest_params": suggested_params,
+            "created_at": latest_strategy.created_at.isoformat() if latest_strategy.created_at else None
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"获取AI会话策略失败: {str(e)}")
+
+
+async def _generate_backtest_suggestions(strategy) -> Dict[str, Any]:
+    """
+    基于策略内容智能推荐回测参数
+    """
+    suggestions = {
+        "symbols": ["BTC/USDT"],  # 默认推荐
+        "timeframes": ["1h"],     # 默认时间框架
+        "initial_capital": 10000.0,
+        "start_date": "2024-01-01",
+        "end_date": "2024-12-31",
+        "exchange": "binance",
+        "fee_rate": "vip0"
+    }
+    
+    # 基于策略代码内容进行智能推荐
+    code_lower = strategy.code.lower() if strategy.code else ""
+    
+    # 时间框架推荐
+    if any(indicator in code_lower for indicator in ['1m', 'minute', '分钟']):
+        suggestions["timeframes"] = ["1m", "5m"]
+    elif any(indicator in code_lower for indicator in ['1h', 'hour', '小时']):
+        suggestions["timeframes"] = ["1h", "4h"]
+    elif any(indicator in code_lower for indicator in ['1d', 'day', '日']):
+        suggestions["timeframes"] = ["1d"]
+    
+    # 交易对推荐
+    if any(symbol in code_lower for symbol in ['eth', 'ethereum']):
+        suggestions["symbols"] = ["ETH/USDT", "BTC/USDT"]
+    elif any(symbol in code_lower for symbol in ['bnb', 'binance']):
+        suggestions["symbols"] = ["BNB/USDT", "BTC/USDT"]
+    
+    # 根据策略复杂度推荐回测时间范围
+    complexity_indicators = ['ma', 'rsi', 'macd', 'bollinger', 'ema', 'sma']
+    complexity_score = sum(1 for indicator in complexity_indicators if indicator in code_lower)
+    
+    if complexity_score >= 3:  # 复杂策略
+        suggestions["start_date"] = "2023-01-01"  # 更长的回测时间
+    elif complexity_score >= 2:  # 中等复杂度
+        suggestions["start_date"] = "2023-06-01"
+    
+    # 风险管理相关的资金建议
+    if any(risk_term in code_lower for risk_term in ['stop_loss', 'risk', '止损']):
+        suggestions["initial_capital"] = 50000.0  # 有风险管理的策略可以用更多资金
+    
+    return suggestions

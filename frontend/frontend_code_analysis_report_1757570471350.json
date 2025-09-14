@@ -1,0 +1,131 @@
+{
+  "timestamp": "2025-09-11T06:01:11.350Z",
+  "summary": {
+    "total_tests": 14,
+    "passed_tests": 12,
+    "failed_tests": 2,
+    "success_rate": 85.71428571428571,
+    "average_implementation": 5.333333333333333
+  },
+  "test_details": [
+    {
+      "test_name": "AI对话页面功能实现",
+      "success": false,
+      "details": "实现的关键功能: 2/3 (立即回测, autoBacktest)"
+    },
+    {
+      "test_name": "AI对话页面代码质量",
+      "success": true,
+      "details": "代码质量指标得分: 6/6"
+    },
+    {
+      "test_name": "TypeScript类型定义完整性",
+      "success": true,
+      "details": "定义的类型: 5/5 (AutoBacktestConfig, BacktestProgress, BacktestResults, AIGeneratedStrategy, BacktestHistoryItem)"
+    },
+    {
+      "test_name": "TypeScript接口数量",
+      "success": true,
+      "details": "导出的接口数量: 6"
+    },
+    {
+      "test_name": "API服务方法实现",
+      "success": true,
+      "details": "实现的API方法: 5/5 (getLatestAIStrategy, autoBacktest, getBacktestProgress, getBacktestResults, getAISessionBacktestHistory)"
+    },
+    {
+      "test_name": "API错误处理机制",
+      "success": true,
+      "details": "错误处理得分: 4/4"
+    },
+    {
+      "test_name": "状态管理功能实现",
+      "success": false,
+      "details": "实现的状态功能: 3/6"
+    },
+    {
+      "test_name": "Zustand状态管理集成",
+      "success": true,
+      "details": "Zustand集成得分: 1/3"
+    },
+    {
+      "test_name": "回测组件文件存在性",
+      "success": true,
+      "details": "存在的组件文件: 1/3"
+    },
+    {
+      "test_name": "回测组件代码质量",
+      "success": true,
+      "details": "高质量组件数量: 1"
+    },
+    {
+      "test_name": "项目目录结构",
+      "success": true,
+      "details": "存在的目录: 6/6"
+    },
+    {
+      "test_name": "项目依赖完整性",
+      "success": true,
+      "details": "找到的必需依赖: 4/4 (react, typescript, zustand, axios)"
+    },
+    {
+      "test_name": "代码规模评估",
+      "success": true,
+      "details": "总代码行数: 4769, 函数数量: 239, 接口数量: 13"
+    },
+    {
+      "test_name": "代码组织评估",
+      "success": true,
+      "details": "函数组织度评分: ✓, 类型定义完整度: ✓"
+    }
+  ],
+  "code_analysis": {
+    "aiChatPage": {
+      "立即回测": 1,
+      "BacktestConfig": 11,
+      "autoBacktest": 2,
+      "getBacktestProgress": 0,
+      "WebSocket": 21,
+      "realtime-backtest": 2,
+      "aiStore": 3,
+      "useState": 16,
+      "useEffect": 9
+    },
+    "typeDefinitions": {
+      "AutoBacktestConfig": 1,
+      "BacktestProgress": 1,
+      "BacktestResults": 1,
+      "AIGeneratedStrategy": 1,
+      "BacktestHistoryItem": 2
+    },
+    "apiServices": {
+      "getLatestAIStrategy": 1,
+      "autoBacktest": 1,
+      "getBacktestProgress": 1,
+      "getBacktestResults": 1,
+      "getAISessionBacktestHistory": 1
+    },
+    "stateManagement": {
+      "backtest": 69,
+      "progress": 56,
+      "results": 19,
+      "setBacktest": 0,
+      "updateProgress": 0,
+      "clearBacktest": 0
+    },
+    "backtestComponents": {
+      "strategy/BacktestModal.tsx": {
+        "useState": 4,
+        "useEffect": 0,
+        "props": 2,
+        "interface": 1,
+        "export": 1
+      }
+    },
+    "complexity": {
+      "total_lines": 4769,
+      "total_functions": 239,
+      "total_interfaces": 13
+    }
+  }
+}

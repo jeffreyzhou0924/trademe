@@ -94,24 +94,32 @@ class CollaborativeOptimizerHelpers:
             if not claude_client:
                 return "请明确告诉我您是否确认这个优化方案，或者需要调整哪些地方？"
                 
-            response = await claude_client.create_message(
+            response = await claude_client.chat_completion(
                 messages=[{"role": "user", "content": prompt}],
                 system="你是耐心的量化策略优化顾问，帮助用户明确优化方案。",
                 temperature=0.5
             )
             
-            if response.get("success"):
-                content = response["content"]
-                if isinstance(content, list) and len(content) > 0:
-                    # Anthropic原始格式
-                    content = content[0].get("text", "")
-                elif isinstance(content, str):
-                    # 包装格式
-                    pass
+            # Handle chat_completion response format
+            try:
+                content = ""
+                if "content" in response and isinstance(response["content"], list):
+                    # Extract text from content array
+                    for item in response["content"]:
+                        if item.get("type") == "text":
+                            content = item.get("text", "")
+                            break
+                elif isinstance(response.get("content"), str):
+                    content = response["content"]
                 else:
-                    content = str(content)
-                return content + "\n\n请明确回复"确认"开始生成代码，或告诉我需要调整的地方。"
-            else:
+                    content = str(response.get("content", ""))
+                
+                if content:
+                    return content + "\n\n请明确回复"确认"开始生成代码，或告诉我需要调整的地方。"
+                else:
+                    return "让我们再确认一下细节。您对这个优化方案还有什么担心的地方吗？"
+            except Exception as e:
+                logger.error(f"处理AI响应失败: {e}")
                 return "让我们再确认一下细节。您对这个优化方案还有什么担心的地方吗？"
         
         except Exception as e:
@@ -303,35 +311,49 @@ class CollaborativeOptimizerHelpers:
                     "requires_user_input": True
                 }
                 
-            response = await claude_client.create_message(
+            response = await claude_client.chat_completion(
                 messages=[{"role": "user", "content": prompt}],
                 system="你是专业的量化交易结果分析师，善于解释回测数据和优化效果。",
                 temperature=0.6
             )
             
-            if response.get("success"):
-                content = response["content"]
-                if isinstance(content, list) and len(content) > 0:
-                    # Anthropic原始格式
-                    ai_response = content[0].get("text", "")
-                elif isinstance(content, str):
-                    # 包装格式
-                    ai_response = content
+            # Handle chat_completion response format
+            try:
+                content = ""
+                if "content" in response and isinstance(response["content"], list):
+                    # Extract text from content array
+                    for item in response["content"]:
+                        if item.get("type") == "text":
+                            content = item.get("text", "")
+                            break
+                elif isinstance(response.get("content"), str):
+                    content = response["content"]
                 else:
-                    ai_response = str(content)
-                ai_response += "\n\n您对结果还有什么疑问，或者我们是否继续优化？"
+                    content = str(response.get("content", ""))
                 
-                return {
-                    "success": True,
-                    "message": ai_response,
-                    "stage": "backtest_review",
-                    "requires_user_input": True
-                }
-            else:
+                if content:
+                    ai_response = content + "\n\n您对结果还有什么疑问，或者我们是否继续优化？"
+                    
+                    return {
+                        "success": True,
+                        "message": ai_response,
+                        "stage": "backtest_review",
+                        "requires_user_input": True
+                    }
+                else:
+                    return {
+                        "success": True,
+                        "message": "让我们详细讨论这个回测结果。您对哪个指标有疑问？",
+                        "stage": "backtest_review", 
+                        "requires_user_input": True
+                    }
+                    
+            except Exception as e:
+                logger.error(f"处理AI响应失败: {e}")
                 return {
                     "success": True,
                     "message": "让我们详细讨论这个回测结果。您对哪个指标有疑问？",
-                    "stage": "backtest_review", 
+                    "stage": "backtest_review",
                     "requires_user_input": True
                 }
         

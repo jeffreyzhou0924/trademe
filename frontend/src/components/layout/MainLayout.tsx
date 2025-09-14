@@ -18,12 +18,13 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     { path: '/ai-chat', label: 'AI助手', key: 'ai-chat' },
     // 仪表盘功能暂时隐藏
     // { path: '/overview', label: t('dashboard'), key: 'home' },
-    { path: '/trading', label: t('chartTrading'), key: 'trading' },
     { path: '/strategies', label: t('liveTrading'), key: 'strategies' },
     // 策略模板功能暂时隐藏 - 项目初期未考虑此功能
     // { path: '/strategy-templates', label: '策略模板', key: 'strategy-templates' },
     { path: '/backtest', label: t('backtest'), key: 'backtest' },
-    { path: '/trading-notes', label: t('tradingNotes'), key: 'trading-notes' },
+    // 移除图表交易和交易心得 - 不作为生产环境1.0功能
+    // { path: '/trading', label: t('chartTrading'), key: 'trading' },
+    // { path: '/trading-notes', label: t('tradingNotes'), key: 'trading-notes' },
     // API管理已移至账户中心入口 - 从导航栏删除
     // { path: '/api-keys', label: t('apiManagement'), key: 'api' },
     { path: '/profile', label: t('accountCenter'), key: 'profile' },

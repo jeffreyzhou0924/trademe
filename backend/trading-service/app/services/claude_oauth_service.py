@@ -119,7 +119,11 @@ class ClaudeOAuthService:
             client = self._client
             if proxy_config:
                 proxy_url = self._build_proxy_url(proxy_config)
-                client = httpx.AsyncClient(proxies=proxy_url, timeout=30.0)
+                # 修复httpx新版本的代理语法
+                client = httpx.AsyncClient(
+                    proxy=proxy_url,  # 新版本使用proxy而不是proxies
+                    timeout=30.0
+                )
             
             # 构建token交换请求
             token_data = {

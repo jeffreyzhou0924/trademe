@@ -223,14 +223,19 @@ export class WebSocketAIClient {
         return
       }
 
-      // 设置认证超时
+      // 设置认证超时（增加到30秒，给后端足够的时间处理）
       const authTimeout = setTimeout(() => {
+        console.error('❌ [WebSocketClient] 认证超时，30秒内未收到认证响应')
         reject(new Error('认证超时'))
-      }, 10000)
+      }, 30000)
 
       // 监听认证结果
       const originalHandler = this.events.onAuthenticated
+      console.log('🔐 [WebSocketClient] 设置临时认证处理器')
+      
+      // 设置临时认证处理器
       this.events.onAuthenticated = (data) => {
+        console.log('🎉 [WebSocketClient] 认证回调被触发！', data)
         clearTimeout(authTimeout)
         this.isAuthenticated = true
         // 后端返回的是 user_id，而不是 connection_id
@@ -250,10 +255,12 @@ export class WebSocketAIClient {
       }
 
       // 发送认证消息（使用后端期望的格式）
-      this.send({
+      const authMessage = {
         type: 'auth',  // 后端期望 'auth' 而不是 'authenticate'
         token: this.config.token
-      })
+      }
+      console.log('📤 [WebSocketClient] 发送认证消息:', { type: authMessage.type, tokenLength: authMessage.token?.length })
+      this.send(authMessage)
     })
   }
 
@@ -378,9 +385,14 @@ export class WebSocketAIClient {
     switch (data.type) {
       case 'connection_established':
         console.log('✅ [WebSocketClient] 连接已建立:', data)
+        this.isAuthenticated = true  // 标记为已认证
         this.connectionId = data.connection_id || null
         this.userId = data.user_id || null
-        this.events.onAuthenticated?.(data)
+        // 触发认证成功回调
+        if (this.events.onAuthenticated) {
+          console.log('🎯 [WebSocketClient] 触发onAuthenticated回调 (connection_established)')
+          this.events.onAuthenticated(data)
+        }
         break
         
       case 'auth_success':
@@ -388,7 +400,13 @@ export class WebSocketAIClient {
         this.isAuthenticated = true
         this.connectionId = data.connection_id || null
         this.userId = data.user_id || null
-        this.events.onAuthenticated?.(data)
+        // 关键：调用认证成功回调
+        if (this.events.onAuthenticated) {
+          console.log('🎯 [WebSocketClient] 调用onAuthenticated回调')
+          this.events.onAuthenticated(data)
+        } else {
+          console.warn('⚠️ [WebSocketClient] onAuthenticated回调未设置')
+        }
         break
       
       case 'ai_chat_start':
@@ -437,12 +455,15 @@ export class WebSocketAIClient {
         break
       
       case 'ai_stream_error':
-        console.log('❌ [WebSocketClient] 流式AI错误:', {
-          error: data.error,
-          error_type: data.error_type,
-          message: data.message,
-          request_id: data.request_id
-        })
+        // 安全的错误日志记录，防止 Object 显示问题
+        const errorInfo = {
+          error: data?.error || 'Unknown error',
+          error_type: data?.error_type || 'UNKNOWN',
+          message: data?.message || 'No error message',
+          request_id: data?.request_id || 'No request ID'
+        }
+        console.log('❌ [WebSocketClient] 流式AI错误:', errorInfo)
+        console.log('❌ [WebSocketClient] 原始错误数据:', JSON.stringify(data, null, 2))
         this.events.onStreamError?.(data as AIStreamError)
         break
       

@@ -489,6 +489,22 @@ class StrategyService:
         return result.scalar_one_or_none()
 
     @staticmethod
+    async def get_latest_strategy_by_session(
+        db: AsyncSession,
+        session_id: str,
+        user_id: int
+    ) -> Optional[Strategy]:
+        """根据AI会话ID获取最新创建的策略"""
+        query = select(Strategy).where(and_(
+            Strategy.ai_session_id == session_id,
+            Strategy.user_id == user_id,
+            Strategy.is_active == True
+        )).order_by(Strategy.created_at.desc()).limit(1)
+        
+        result = await db.execute(query)
+        return result.scalar_one_or_none()
+
+    @staticmethod
     async def get_strategies_by_type(
         db: AsyncSession,
         user_id: int,

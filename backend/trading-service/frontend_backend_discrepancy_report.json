@@ -1,0 +1,33 @@
+{
+  "timestamp": "2025-09-14T14:36:06.806957",
+  "tests_performed": 3,
+  "results": {
+    "frontend_simulation": {
+      "trades": 0,
+      "final_value": 0.0,
+      "success": true
+    },
+    "direct_service": {
+      "trades": 0,
+      "final_value": 0.0,
+      "entry_trades": 0,
+      "exit_trades": 0,
+      "success": true
+    },
+    "data_analysis": {
+      "total_records": 4350,
+      "has_data": true,
+      "data_gaps": -2886,
+      "time_range": "2025-07-01 14:00:00 ~ 2025-08-30 23:00:00"
+    }
+  },
+  "diagnosis": [
+    "\u7b56\u7565\u6ca1\u6709\u4ea7\u751f\u4efb\u4f55\u4ea4\u6613\u4fe1\u53f7 - \u53ef\u80fd\u662f\u7b56\u7565\u903b\u8f91\u95ee\u9898\u6216\u6570\u636e\u95ee\u9898"
+  ],
+  "recommendations": [
+    "\u68c0\u67e5\u7b56\u7565\u903b\u8f91\uff0c\u786e\u4fdd\u80fd\u5728\u7ed9\u5b9a\u6570\u636e\u4e0a\u4ea7\u751f\u4ea4\u6613\u4fe1\u53f7",
+    "\u9a8c\u8bc1\u6280\u672f\u6307\u6807\u8ba1\u7b97\u662f\u5426\u6b63\u786e",
+    "\u786e\u8ba4\u4ea4\u53c9\u6761\u4ef6\u662f\u5426\u5728\u6570\u636e\u4e2d\u5b9e\u9645\u53d1\u751f",
+    "\u8003\u8651\u964d\u4f4e\u7b56\u7565\u89e6\u53d1\u6761\u4ef6\u7684\u4e25\u683c\u7a0b\u5ea6"
+  ]
+}

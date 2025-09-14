@@ -1,0 +1,97 @@
+{
+  "timestamp": "2025-09-11T13:58:07.905491",
+  "summary": {
+    "total_tests": 5,
+    "passed_tests": 0,
+    "failed_tests": 5,
+    "success_rate": 0.0
+  },
+  "performance": {
+    "avg_response_time": 0,
+    "max_response_time": 0
+  },
+  "test_details": [
+    {
+      "name": "获取AI会话列表",
+      "endpoint": "/ai/sessions?ai_mode=trader",
+      "method": "GET",
+      "status_code": 401,
+      "success": false,
+      "execution_time": 0.008531808853149414,
+      "response_size": 31,
+      "content_type": "application/json",
+      "error_message": "HTTP 401: {\"detail\":\"缺少认证令牌\"}",
+      "response_data": {
+        "detail": "缺少认证令牌"
+      }
+    },
+    {
+      "name": "创建AI会话",
+      "endpoint": "/ai/sessions",
+      "method": "POST",
+      "status_code": 401,
+      "success": false,
+      "execution_time": 0.007280111312866211,
+      "response_size": 31,
+      "content_type": "application/json",
+      "error_message": "HTTP 401: {\"detail\":\"缺少认证令牌\"}",
+      "response_data": {
+        "detail": "缺少认证令牌"
+      }
+    },
+    {
+      "name": "启动实时回测",
+      "endpoint": "/realtime-backtest/start",
+      "method": "POST",
+      "status_code": 401,
+      "success": false,
+      "execution_time": 0.0074787139892578125,
+      "response_size": 31,
+      "content_type": "application/json",
+      "error_message": "HTTP 401: {\"detail\":\"缺少认证令牌\"}",
+      "response_data": {
+        "detail": "缺少认证令牌"
+      }
+    },
+    {
+      "name": "获取策略列表",
+      "endpoint": "/strategies?limit=5",
+      "method": "GET",
+      "status_code": 400,
+      "success": false,
+      "execution_time": 0.004515171051025391,
+      "response_size": 286,
+      "content_type": "application/json",
+      "error_message": "HTTP 400: {\"success\":false,\"message\":\"参数验证失败\",\"errors\":[\"字段 'name' 是必填的\",\"字段 'code' 是必填的\",\"字段 'symbols' 是必填的\",",
+      "response_data": {
+        "success": false,
+        "message": "参数验证失败",
+        "errors": [
+          "字段 'name' 是必填的",
+          "字段 'code' 是必填的",
+          "字段 'symbols' 是必填的",
+          "字段 'name' 是必填的",
+          "字段 'code' 是必填的",
+          "字段 'symbols' 是必填的"
+        ],
+        "warnings": [
+          "发现未定义的字段: limit"
+        ]
+      }
+    },
+    {
+      "name": "获取用户统计",
+      "endpoint": "/users/me/stats",
+      "method": "GET",
+      "status_code": 404,
+      "success": false,
+      "execution_time": 0.006305217742919922,
+      "response_size": 22,
+      "content_type": "application/json",
+      "error_message": "HTTP 404: {\"detail\":\"Not Found\"}",
+      "response_data": {
+        "detail": "Not Found"
+      }
+    }
+  ]
+}

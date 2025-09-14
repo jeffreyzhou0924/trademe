@@ -341,16 +341,27 @@ class ClaudeClient:
         """
         logger.info(f"🔄 [Claude流式] 开始流式对话请求 - 模型: {model or self.DEFAULT_MODEL}")
         
-        # 调用现有的chat_completion方法，设置stream=True
-        async for chunk in self.chat_completion(
-            messages=messages,
-            model=model,
-            max_tokens=max_tokens,
-            temperature=temperature,
-            system=system,
-            stream=True,  # 强制启用流式响应
-            stop_sequences=stop_sequences
-        ):
+        # 直接调用_stream_request进行流式请求
+        await self._ensure_session()
+        
+        # 构建请求数据
+        request_data = {
+            "model": model or self.DEFAULT_MODEL,
+            "messages": messages,
+            "max_tokens": max_tokens,
+            "temperature": temperature,
+            "stream": True
+        }
+        
+        if system:
+            request_data["system"] = system
+        if stop_sequences:
+            request_data["stop_sequences"] = stop_sequences
+        
+        endpoint = f"{self.base_url}/v1/messages"
+        
+        # 异步迭代流式生成器
+        async for chunk in self._stream_request(endpoint, request_data):
             yield chunk
         
         logger.info(f"✅ [Claude流式] 流式对话完成")
@@ -561,38 +572,90 @@ class ClaudeClient:
         Yields:
             流式响应数据块
         """
-        await self._ensure_session()
-        
-        kwargs = {"json": data}
-        if self._proxy_config:
-            kwargs["proxy"] = self._proxy_config["proxy_url"]
-            if self._proxy_config.get("username"):
-                kwargs["proxy_auth"] = aiohttp.BasicAuth(
-                    self._proxy_config["username"],
-                    self._proxy_config["password"]
-                )
-        
-        async with self.session.post(url, **kwargs) as response:
-            if response.status != 200:
-                error_text = await response.text()
-                raise ClaudeAPIError(
-                    f"流式请求失败: {error_text}",
-                    error_code="STREAM_ERROR",
-                    status_code=response.status
-                )
+        try:
+            await self._ensure_session()
             
-            # 处理Server-Sent Events格式
-            async for line in response.content:
-                line = line.decode('utf-8').strip()
-                if line.startswith('data: '):
-                    data_str = line[6:]  # 移除 'data: ' 前缀
-                    if data_str == '[DONE]':
-                        break
-                    try:
-                        chunk_data = json.loads(data_str)
-                        yield chunk_data
-                    except json.JSONDecodeError:
-                        continue
+            kwargs = {"json": data, "headers": self._default_headers}
+            if self._proxy_config:
+                kwargs["proxy"] = self._proxy_config["proxy_url"]
+                if self._proxy_config.get("username"):
+                    kwargs["proxy_auth"] = aiohttp.BasicAuth(
+                        self._proxy_config["username"],
+                        self._proxy_config["password"]
+                    )
+        
+        except Exception as e:
+            logger.error(f"❌ 流式请求初始化失败: {e}")
+            yield {
+                "type": "stream_error",
+                "error": f"流式请求初始化失败: {str(e)}"
+            }
+            return
+        
+        try:
+            async with self.session.post(url, **kwargs) as response:
+                if response.status != 200:
+                    error_text = await response.text()
+                    logger.error(f"❌ 流式API请求失败: HTTP {response.status} - {error_text}")
+                    yield {
+                        "type": "stream_error",
+                        "error": f"API请求失败: {error_text}",
+                        "status_code": response.status
+                    }
+                    return
+                
+                # 修复流式响应处理 - 正确处理Server-Sent Events
+                buffer = ""
+                async for chunk in response.content.iter_chunked(1024):
+                    if chunk:
+                        buffer += chunk.decode('utf-8')
+                        
+                        # 按行处理缓冲区内容
+                        while '\n' in buffer:
+                            line, buffer = buffer.split('\n', 1)
+                            line = line.strip()
+                            
+                            # 处理SSE格式
+                            if line.startswith('data: '):
+                                data_str = line[6:]  # 移除 'data: ' 前缀
+                                
+                                # 检查结束标记
+                                if data_str == '[DONE]':
+                                    return
+                                    
+                                try:
+                                    chunk_data = json.loads(data_str)
+                                    
+                                    # 转换为标准格式以匹配AI服务期望的响应
+                                    if chunk_data.get('type') == 'message_start':
+                                        yield {
+                                            "type": "stream_start",
+                                            "model": chunk_data.get('message', {}).get('model'),
+                                            "input_tokens": chunk_data.get('message', {}).get('usage', {}).get('input_tokens', 0)
+                                        }
+                                    elif chunk_data.get('type') == 'content_block_delta':
+                                        delta = chunk_data.get('delta', {})
+                                        if delta.get('type') == 'text_delta':
+                                            yield {
+                                                "type": "content_delta",
+                                                "text": delta.get('text', '')
+                                            }
+                                    elif chunk_data.get('type') == 'message_delta':
+                                        yield {
+                                            "type": "stream_end",
+                                            "usage": chunk_data.get('usage', {})
+                                        }
+                                        
+                                except json.JSONDecodeError as e:
+                                    logger.warning(f"⚠️ JSON解析失败: {e}, data: {data_str}")
+                                    continue
+                                
+        except Exception as e:
+            logger.error(f"❌ 流式响应处理失败: {e}")
+            yield {
+                "type": "stream_error",
+                "error": f"网络或解析错误: {str(e)}"
+            }
     
     def _build_analysis_prompt(self, analysis_type: str, context: Optional[Dict]) -> str:
         """构建内容分析的系统提示"""

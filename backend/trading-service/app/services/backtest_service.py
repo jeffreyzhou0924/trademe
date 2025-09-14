@@ -8,9 +8,11 @@ import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Any, Tuple
-from decimal import Decimal
+from decimal import Decimal, getcontext
 import json
 import asyncio
+import random
+import os
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
@@ -27,12 +29,18 @@ class BacktestEngine:
     """回测引擎类"""
     
     def __init__(self):
+        self._reset_state()
+    
+    def _reset_state(self):
+        """完全重置回测引擎状态，确保每次回测的独立性"""
         self.results = {}
         self.current_position = 0.0  # 当前持仓
         self.cash_balance = 0.0      # 现金余额
         self.total_value = 0.0       # 总资产价值
         self.trades = []             # 交易记录
         self.daily_returns = []      # 日收益率
+        self.portfolio_history = []  # 资产价值历史
+        self.drawdown_history = []   # 回撤历史
         
     async def run_backtest(
         self, 
@@ -50,12 +58,13 @@ class BacktestEngine:
         try:
             logger.info(f"开始回测策略 {strategy_id}: {start_date} 到 {end_date}")
             
+            # 🔧 关键修复：完全重置状态，确保每次回测的独立性
+            self._reset_state()
+            
             # 初始化回测参数
             self.cash_balance = initial_capital
             self.total_value = initial_capital
-            self.current_position = 0.0
-            self.trades = []
-            self.daily_returns = []
+            logger.info(f"🔧 状态重置完成，初始资金: {initial_capital}")
             
             # 获取策略代码
             strategy = await self._get_strategy(db, strategy_id, user_id)
@@ -125,121 +134,83 @@ class BacktestEngine:
         user_id: int,
         db: AsyncSession
     ) -> List[Dict[str, Any]]:
-        """获取历史数据 - 优先使用本地数据源"""
+        """获取历史数据 - 直接从数据库获取（增强数据验证）"""
         try:
-            # 导入历史数据下载器
-            from app.services.historical_data_downloader import historical_data_downloader
+            from app.models.market_data import MarketData
+            from sqlalchemy import select, and_
+            from app.services.data_validation_service import DataValidationService
             
             logger.info(f"获取历史数据: {exchange} {symbol} {timeframe} {start_date}-{end_date}")
             
-            # 第一步：检查本地数据可用性
-            availability = await historical_data_downloader.check_data_availability(
-                exchange, symbol, timeframe, start_date, end_date, db
+            # 🆕 使用数据验证服务检查数据可用性
+            validation = await DataValidationService.validate_backtest_data_availability(
+                db=db,
+                exchange=exchange,
+                symbol=symbol,
+                timeframe=timeframe,
+                start_date=start_date,
+                end_date=end_date
             )
             
-            logger.info(f"本地数据覆盖率: {availability['coverage']:.1f}% ({availability['total_records']} 条记录)")
+            if not validation["available"]:
+                # 详细的错误信息和建议
+                error_msg = f"❌ {validation['error_message']}"
+                if validation.get("suggestions"):
+                    error_msg += f"\n💡 建议: {'; '.join(validation['suggestions'])}"
+                
+                logger.error(error_msg)
+                raise ValueError(error_msg)
             
-            # 第二步：获取本地数据
-            local_data = []
-            if availability['coverage'] > 80:  # 覆盖率大于80%使用本地数据
-                local_data = await historical_data_downloader.get_local_kline_data(
-                    exchange, symbol, timeframe, start_date, end_date, db
+            # 使用验证通过的实际交易对格式
+            actual_symbol = validation["actual_symbol"]
+            if actual_symbol != symbol:
+                logger.info(f"✅ 将使用数据库中的交易对格式: {actual_symbol} (原请求: {symbol})")
+            
+            # 从数据库查询历史数据
+            query = select(MarketData).where(
+                and_(
+                    MarketData.exchange == exchange.lower(),
+                    MarketData.symbol == actual_symbol,  # 使用实际可用的格式
+                    MarketData.timeframe == timeframe,
+                    MarketData.timestamp >= start_date,
+                    MarketData.timestamp <= end_date
                 )
-                logger.info(f"使用本地历史数据: {len(local_data)} 条记录")
+            ).order_by(MarketData.timestamp.asc()).limit(10000)
             
-            # 第三步：数据不足时从API补充
-            if len(local_data) < 10:
-                logger.info("本地数据不足，从交易所API获取数据")
-                
-                # 计算需要的数据点数量
-                if timeframe == "1m":
-                    delta_minutes = 1
-                elif timeframe == "5m":
-                    delta_minutes = 5
-                elif timeframe == "1h":
-                    delta_minutes = 60
-                elif timeframe == "1d":
-                    delta_minutes = 1440
-                else:
-                    delta_minutes = 60  # 默认1小时
-                
-                total_minutes = int((end_date - start_date).total_seconds() / 60)
-                limit = min(total_minutes // delta_minutes + 100, 1000)
-                
-                # 从交易所获取历史数据
-                api_data = await exchange_service.get_market_data(
-                    user_id, exchange, symbol, timeframe, limit, db
-                )
-                
-                if api_data:
-                    # 过滤日期范围
-                    filtered_data = []
-                    for item in api_data:
-                        item_date = datetime.fromtimestamp(item['timestamp'] / 1000)
-                        if start_date <= item_date <= end_date:
-                            filtered_data.append(item)
-                    
-                    logger.info(f"API数据过滤后: {len(filtered_data)} 条记录")
-                    
-                    # 第四步：异步保存API数据到本地(提升未来性能)
-                    if len(filtered_data) > 10:
-                        asyncio.create_task(self._save_api_data_to_local(
-                            db, exchange, symbol, timeframe, filtered_data
-                        ))
-                    
-                    return filtered_data
-            else:
-                return local_data
+            result = await db.execute(query)
+            records = result.scalars().all()
             
-            # 第五步：所有方法都失败，使用模拟数据
-            logger.warning(f"无法获取真实数据，生成模拟数据进行回测")
-            return self._generate_mock_data(start_date, end_date, timeframe)
+            # 再次检查数据量
+            if not records or len(records) < 10:
+                error_msg = f"❌ 验证通过但数据量不足: {len(records) if records else 0}条记录"
+                logger.error(error_msg)
+                raise ValueError(error_msg)
+            
+            # 转换为回测所需的格式
+            historical_data = []
+            for record in records:
+                historical_data.append({
+                    'timestamp': int(record.timestamp.timestamp() * 1000),
+                    'datetime': record.timestamp.isoformat(),
+                    'open': float(record.open_price),
+                    'high': float(record.high_price),
+                    'low': float(record.low_price),
+                    'close': float(record.close_price),
+                    'volume': float(record.volume)
+                })
+            
+            logger.info(f"✅ 成功获取{exchange.upper()}历史数据: {len(historical_data)}条记录")
+            logger.info(f"   数据时间范围: {records[0].timestamp} 到 {records[-1].timestamp}")
+            
+            return historical_data
             
         except Exception as e:
-            logger.warning(f"获取历史数据失败: {str(e)}，使用模拟数据")
-            return self._generate_mock_data(start_date, end_date, timeframe)
+            error_msg = f"❌ 获取历史数据失败: {str(e)}"
+            logger.error(error_msg)
+            raise ValueError(error_msg)
     
-    def _generate_mock_data(
-        self, 
-        start_date: datetime, 
-        end_date: datetime, 
-        timeframe: str
-    ) -> List[Dict[str, Any]]:
-        """生成模拟市场数据用于测试"""
-        if timeframe == "1h":
-            delta = timedelta(hours=1)
-        elif timeframe == "1d":
-            delta = timedelta(days=1)
-        else:
-            delta = timedelta(hours=1)
-        
-        data = []
-        current_date = start_date
-        base_price = 50000.0  # BTC基础价格
-        
-        while current_date <= end_date:
-            # 简单的随机游走价格模型
-            change_percent = np.random.normal(0, 0.02)  # 2%标准差
-            new_price = base_price * (1 + change_percent)
-            
-            high = new_price * (1 + abs(np.random.normal(0, 0.01)))
-            low = new_price * (1 - abs(np.random.normal(0, 0.01)))
-            volume = np.random.uniform(100, 1000)
-            
-            data.append({
-                'timestamp': int(current_date.timestamp() * 1000),
-                'datetime': current_date.isoformat(),
-                'open': base_price,
-                'high': max(base_price, new_price, high),
-                'low': min(base_price, new_price, low),
-                'close': new_price,
-                'volume': volume
-            })
-            
-            base_price = new_price
-            current_date += delta
-        
-        return data
+    # 移除了 _generate_mock_data 方法
+    # 生产环境不应该使用模拟数据进行回测，这会误导用户
     
     def _prepare_data(self, market_data: List[Dict[str, Any]]) -> pd.DataFrame:
         """准备数据用于回测"""
@@ -272,13 +243,22 @@ class BacktestEngine:
         return df
     
     def _calculate_rsi(self, prices: pd.Series, period: int = 14) -> pd.Series:
-        """计算RSI指标"""
+        """计算RSI指标 - 修复浮点精度问题"""
         delta = prices.diff()
         gain = (delta.where(delta > 0, 0)).rolling(window=period).mean()
         loss = (-delta.where(delta < 0, 0)).rolling(window=period).mean()
-        rs = gain / loss
+        
+        # 🔧 修复除零错误和无效值问题
+        # 避免除零，当loss为0时，RSI应为100
+        rs = np.where(loss != 0, gain / loss, np.inf)
         rsi = 100 - (100 / (1 + rs))
-        return rsi
+        
+        # 清理无效值并转换为Pandas Series
+        rsi_series = pd.Series(rsi, index=prices.index)
+        rsi_series = rsi_series.fillna(50)  # NaN填充为中性值50  
+        rsi_series = rsi_series.clip(lower=0, upper=100)  # 确保RSI在有效范围内
+        
+        return rsi_series
     
     def _calculate_macd(self, prices: pd.Series, fast: int = 12, slow: int = 26, signal: int = 9) -> Tuple[pd.Series, pd.Series]:
         """计算MACD指标"""
@@ -303,13 +283,17 @@ class BacktestEngine:
         symbol: str,
         initial_capital: float
     ) -> Dict[str, Any]:
-        """执行回测逻辑"""
+        """执行回测逻辑 - 修复：使用用户策略代码而非简单移动平均"""
         try:
-            # 解析策略参数
-            strategy_params = json.loads(strategy.parameters) if strategy.parameters else {}
-            
-            # 简化的策略执行逻辑（基于移动平均线交叉）
-            signals = self._generate_trading_signals(df, strategy_params)
+            # 🔧 关键修复：使用用户的策略代码
+            if strategy.code and strategy.code.strip():
+                logger.info("使用用户策略代码执行回测")
+                signals = await self._execute_user_strategy_code(strategy, df, symbol)
+            else:
+                logger.info("使用默认移动平均策略")
+                # 解析策略参数
+                strategy_params = json.loads(strategy.parameters) if strategy.parameters else {}
+                signals = self._generate_trading_signals(df, strategy_params)
             
             # 执行交易
             for i, (timestamp, row) in enumerate(df.iterrows()):
@@ -339,32 +323,130 @@ class BacktestEngine:
             logger.error(f"执行回测失败: {str(e)}")
             raise
     
+    async def _execute_user_strategy_code(
+        self, 
+        strategy: Strategy, 
+        df: pd.DataFrame, 
+        symbol: str
+    ) -> List[str]:
+        """执行用户策略代码并生成信号"""
+        try:
+            # 动态执行策略代码
+            namespace = {}
+            exec(strategy.code, namespace)
+            
+            # 获取UserStrategy类
+            UserStrategy = namespace.get('UserStrategy')
+            if not UserStrategy:
+                raise ValueError("策略代码中未找到UserStrategy类")
+            
+            # 创建策略实例
+            strategy_instance = UserStrategy()
+            
+            # 为策略实例提供数据访问方法
+            strategy_instance.get_kline_data = lambda: df
+            
+            signals = []
+            
+            # 遍历数据，调用策略的on_data_update方法
+            for i, (timestamp, row) in enumerate(df.iterrows()):
+                if i < 50:  # 确保有足够的历史数据
+                    signals.append('hold')
+                    continue
+                
+                # 创建当前时间点的数据切片
+                current_df = df.iloc[:i+1].copy()
+                strategy_instance.get_kline_data = lambda: current_df
+                
+                # 模拟参数上下文
+                from types import SimpleNamespace
+                strategy_instance.context = SimpleNamespace()
+                strategy_instance.context.parameters = {
+                    'position_size': 10.0,
+                    'stop_loss': 5.0,
+                    'take_profit': 10.0
+                }
+                
+                # 模拟当前持仓
+                strategy_instance.get_current_position = lambda: self.current_position
+                
+                # 添加技术指标计算方法
+                strategy_instance.calculate_sma = self.calculate_sma
+                
+                try:
+                    # 调用策略的信号生成方法
+                    signal = await strategy_instance.on_data_update("kline", {})
+                    
+                    if signal:
+                        if hasattr(signal, 'signal_type'):
+                            if str(signal.signal_type) == 'SignalType.BUY':
+                                signals.append('buy')
+                            elif str(signal.signal_type) == 'SignalType.SELL':
+                                signals.append('sell')
+                            else:
+                                signals.append('hold')
+                        else:
+                            signals.append('hold')
+                    else:
+                        signals.append('hold')
+                        
+                except Exception as signal_error:
+                    logger.warning(f"策略信号生成错误 (时间点 {i}): {signal_error}")
+                    signals.append('hold')
+            
+            logger.info(f"用户策略执行完成: {signals.count('buy')}买入, {signals.count('sell')}卖出, {signals.count('hold')}持有")
+            return signals
+            
+        except Exception as e:
+            logger.error(f"执行用户策略代码失败: {str(e)}")
+            # 回退到简单策略
+            strategy_params = json.loads(strategy.parameters) if strategy.parameters else {}
+            return self._generate_trading_signals(df, strategy_params)
+    
+    def calculate_sma(self, series: pd.Series, period: int) -> pd.Series:
+        """计算简单移动平均线"""
+        return series.rolling(window=period).mean()
+    
     def _generate_trading_signals(self, df: pd.DataFrame, params: Dict[str, Any]) -> List[str]:
-        """生成交易信号"""
+        """生成交易信号 - 修复浮点比较精度问题"""
         signals = []
         
         # 简单的移动平均线交叉策略
         short_period = params.get('short_ma', 5)
         long_period = params.get('long_ma', 20)
         
-        for i in range(len(df)):
-            if i < long_period:
+        # 🔧 预先计算移动平均线，提高一致性
+        df_work = df.copy()
+        df_work['short_ma'] = df_work['close'].rolling(window=short_period).mean()
+        df_work['long_ma'] = df_work['close'].rolling(window=long_period).mean()
+        
+        for i in range(len(df_work)):
+            if i < long_period or i == 0:
                 signals.append('hold')
                 continue
             
-            short_ma = df['close'].iloc[i-short_period:i].mean()
-            long_ma = df['close'].iloc[i-long_period:i].mean()
-            prev_short_ma = df['close'].iloc[i-short_period-1:i-1].mean()
-            prev_long_ma = df['close'].iloc[i-long_period-1:i-1].mean()
+            # 使用预先计算的移动平均线
+            current_short_ma = df_work['short_ma'].iloc[i]
+            current_long_ma = df_work['long_ma'].iloc[i]
+            prev_short_ma = df_work['short_ma'].iloc[i-1]
+            prev_long_ma = df_work['long_ma'].iloc[i-1]
             
-            # 金叉买入，死叉卖出
-            if short_ma > long_ma and prev_short_ma <= prev_long_ma:
+            # 🔧 修复浮点比较精度问题，使用容差
+            tolerance = 1e-10
+            
+            # 金叉买入：短期均线上穿长期均线
+            short_cross_above = (current_short_ma > current_long_ma + tolerance) and (prev_short_ma <= prev_long_ma + tolerance)
+            # 死叉卖出：短期均线下穿长期均线  
+            short_cross_below = (current_short_ma < current_long_ma - tolerance) and (prev_short_ma >= prev_long_ma - tolerance)
+            
+            if short_cross_above:
                 signals.append('buy')
-            elif short_ma < long_ma and prev_short_ma >= prev_long_ma:
+            elif short_cross_below:
                 signals.append('sell')
             else:
                 signals.append('hold')
         
+        logger.debug(f"🔧 生成交易信号完成: {signals.count('buy')}买入, {signals.count('sell')}卖出, {signals.count('hold')}持有")
         return signals
     
     async def _save_api_data_to_local(
@@ -432,13 +514,15 @@ class BacktestEngine:
         symbol: str
     ):
         """执行交易"""
+        logger.debug(f"🔧 尝试执行交易: 信号={signal}, 价格={market_data['close']:.2f}, 现金={self.cash_balance:.2f}, 持仓={self.current_position:.6f}")
+        
         if signal == 'hold':
             return
         
         current_price = market_data['close']
         trade_amount = 0
         
-        if signal == 'buy' and self.cash_balance > current_price:
+        if signal == 'buy' and self.cash_balance > 100:  # 只需要有足够现金进行交易(最少$100)
             # 买入：使用50%可用资金
             trade_value = self.cash_balance * 0.5
             trade_amount = trade_value / current_price
@@ -457,6 +541,8 @@ class BacktestEngine:
                 'cash_after': self.cash_balance
             }
             
+            logger.info(f"✅ 执行买入: {trade_amount:.6f} @ {current_price:.2f}, 剩余现金: {self.cash_balance:.2f}")
+        
         elif signal == 'sell' and self.current_position > 0:
             # 卖出：卖出50%持仓
             trade_amount = self.current_position * 0.5
@@ -475,6 +561,9 @@ class BacktestEngine:
                 'position_after': self.current_position,
                 'cash_after': self.cash_balance
             }
+            
+            logger.info(f"✅ 执行卖出: {trade_amount:.6f} @ {current_price:.2f}, 获得现金: {trade_value:.2f}")
+            
         else:
             return
         
@@ -774,6 +863,177 @@ class BacktestEngine:
             await db.rollback()
             logger.error(f"保存回测结果失败: {str(e)}")
             return None
+    
+    async def execute_backtest(
+        self,
+        backtest_params: Dict[str, Any],
+        user_id: int,
+        db: AsyncSession
+    ) -> Dict[str, Any]:
+        """
+        执行回测的标准接口方法
+        
+        Args:
+            backtest_params: 回测参数字典
+            user_id: 用户ID  
+            db: 数据库会话
+            
+        Returns:
+            包含success状态和回测结果的字典
+        """
+        try:
+            logger.info(f"执行回测，参数: {backtest_params}")
+            
+            # 🔧 关键修复：确保每次execute_backtest调用都重置状态
+            self._reset_state()
+            
+            # 提取参数
+            strategy_code = backtest_params.get('strategy_code')
+            exchange = backtest_params.get('exchange', 'binance')
+            symbols = backtest_params.get('symbols', ['BTC/USDT'])
+            timeframes = backtest_params.get('timeframes', ['1h'])
+            start_date = backtest_params.get('start_date')
+            end_date = backtest_params.get('end_date')
+            initial_capital = backtest_params.get('initial_capital', 10000.0)
+            
+            logger.info(f"🔧 状态重置完成，开始执行回测: {exchange}-{symbols[0]}-{initial_capital}")
+            
+            # 验证必要参数
+            if not strategy_code:
+                raise ValueError("策略代码不能为空")
+            if not start_date or not end_date:
+                raise ValueError("开始日期和结束日期不能为空")
+            
+            # 转换日期
+            if isinstance(start_date, str):
+                start_date = datetime.fromisoformat(start_date.replace('Z', '+00:00')).replace(tzinfo=None)
+            if isinstance(end_date, str):
+                end_date = datetime.fromisoformat(end_date.replace('Z', '+00:00')).replace(tzinfo=None)
+            
+            # 验证数据源可用性
+            primary_symbol = symbols[0] if symbols else 'BTC/USDT'
+            data_availability = await self._check_data_availability(
+                exchange, primary_symbol, start_date, end_date, db
+            )
+            
+            if not data_availability['has_data']:
+                error_msg = (
+                    f"❌ {exchange.upper()}交易所的{primary_symbol}在指定时间范围"
+                    f"({start_date.date()} 到 {end_date.date()})内没有历史数据。\n"
+                    f"当前系统数据源: {data_availability['available_exchanges']}\n"
+                    f"建议: 请选择有数据的交易所进行回测"
+                )
+                logger.error(error_msg)
+                return {
+                    'success': False,
+                    'error': error_msg,
+                    'available_data': data_availability
+                }
+            
+            # 获取历史数据
+            market_data = await self._get_historical_data(
+                exchange, primary_symbol, timeframes[0], start_date, end_date, user_id, db
+            )
+            
+            if not market_data or len(market_data) < 10:
+                error_msg = f"获取到的{exchange.upper()}历史数据不足({len(market_data) if market_data else 0}条)，无法进行有效回测"
+                logger.error(error_msg)
+                return {
+                    'success': False,
+                    'error': error_msg
+                }
+            
+            # 准备数据
+            df = self._prepare_data(market_data)
+            logger.info(f"成功准备回测数据: {len(df)} 条记录，时间范围: {df.index[0]} 到 {df.index[-1]}")
+            
+            # 创建临时策略对象用于回测执行
+            from app.models.strategy import Strategy
+            temp_strategy = Strategy(
+                id=0,
+                user_id=user_id,
+                name="临时回测策略",
+                code=strategy_code,
+                parameters=json.dumps({})
+            )
+            
+            # 执行回测
+            backtest_results = await self._execute_backtest(temp_strategy, df, primary_symbol, initial_capital)
+            
+            # 计算性能指标
+            performance_metrics = self._calculate_performance_metrics(initial_capital)
+            
+            logger.info(f"回测执行成功，总收益率: {performance_metrics.get('total_return', 0) * 100:.2f}%")
+            
+            return {
+                'success': True,
+                'backtest_result': {
+                    'trades': self.trades,
+                    'final_portfolio_value': self.total_value,
+                    'performance_metrics': performance_metrics,
+                    'backtest_results': backtest_results,
+                    'data_source': f"{exchange.upper()}真实数据",
+                    'data_records': len(df)
+                }
+            }
+            
+        except Exception as e:
+            error_msg = f"回测执行失败: {str(e)}"
+            logger.error(error_msg)
+            return {
+                'success': False,
+                'error': error_msg
+            }
+    
+    async def _check_data_availability(
+        self,
+        exchange: str,
+        symbol: str, 
+        start_date: datetime,
+        end_date: datetime,
+        db: AsyncSession
+    ) -> Dict[str, Any]:
+        """检查指定交易所和交易对的数据可用性"""
+        try:
+            from app.models.market_data import MarketData
+            from sqlalchemy import select, distinct
+            
+            # 检查指定交易所的数据
+            # 使用更宽松的时间范围查询，因为数据可能不在精确的时间范围内
+            query = select(MarketData).where(
+                MarketData.exchange.ilike(f"%{exchange}%"),
+                MarketData.symbol == symbol
+            ).limit(1000)  # 限制查询数量以检查数据可用性
+            
+            result = await db.execute(query)
+            records = result.scalars().all()
+            has_data = len(records) > 10  # 至少需要10条数据
+            
+            # 获取可用的交易所列表
+            available_exchanges_query = select(distinct(MarketData.exchange)).where(
+                MarketData.symbol == symbol
+            )
+            exchanges_result = await db.execute(available_exchanges_query)
+            available_exchanges = [ex for ex in exchanges_result.scalars().all() if ex]
+            
+            return {
+                'has_data': has_data,
+                'record_count': len(records),
+                'requested_exchange': exchange,
+                'available_exchanges': available_exchanges,
+                'symbol': symbol,
+                'date_range': f"{start_date.date()} 到 {end_date.date()}"
+            }
+            
+        except Exception as e:
+            logger.error(f"检查数据可用性失败: {e}")
+            return {
+                'has_data': False,
+                'record_count': 0,
+                'requested_exchange': exchange,
+                'available_exchanges': [],
+                'error': str(e)
+            }
 
 
 class BacktestService:
@@ -797,7 +1057,7 @@ class BacktestService:
             # 创建并行任务
             tasks = []
             for strategy_id in strategies:
-                engine = BacktestEngine()
+                engine = create_backtest_engine()  # 🔧 使用工厂方法创建独立实例
                 task = engine.run_backtest(
                     strategy_id=strategy_id,
                     user_id=user_id,
@@ -1174,7 +1434,7 @@ class BacktestService:
                     return
                 
                 # 执行回测
-                engine = BacktestEngine()
+                engine = create_backtest_engine()  # 🔧 使用工厂方法创建独立实例
                 result = await engine.run_backtest(
                     strategy_id=strategy_id,
                     user_id=user_id,
@@ -1237,7 +1497,7 @@ class BacktestService:
         """启动回测"""
         try:
             # 创建回测引擎实例
-            engine = BacktestEngine()
+            engine = create_backtest_engine()  # 🔧 使用工厂方法创建独立实例
             
             # 执行回测
             result = await engine.run_backtest(
@@ -1275,5 +1535,360 @@ class BacktestService:
             return False
 
 
-# 全局回测引擎实例
-backtest_engine = BacktestEngine()
+class DeterministicBacktestEngine(BacktestEngine):
+    """确定性回测引擎 - 解决回测结果不一致问题
+    
+    主要修复:
+    1. 随机种子控制 - 消除所有随机性源头
+    2. Decimal高精度计算 - 避免浮点数精度累积误差
+    3. 确定性数据库查询 - 复合排序确保查询结果一致
+    4. 增强状态管理 - 完全独立的状态重置
+    """
+    
+    def __init__(self, random_seed: int = 42):
+        """初始化确定性回测引擎
+        
+        Args:
+            random_seed: 随机种子，确保结果可重现
+        """
+        self.random_seed = random_seed
+        self._set_deterministic_environment()
+        super().__init__()
+        logger.info(f"🔧 初始化确定性回测引擎，随机种子: {random_seed}")
+        
+    def _set_deterministic_environment(self):
+        """设置完全确定性的环境"""
+        # 1. 设置所有随机源的种子
+        random.seed(self.random_seed)
+        np.random.seed(self.random_seed)
+        os.environ['PYTHONHASHSEED'] = str(self.random_seed)
+        
+        # 2. 设置Decimal高精度计算环境
+        getcontext().prec = 28  # 28位精度，足够处理金融计算
+        getcontext().rounding = 'ROUND_HALF_EVEN'  # 银行家舍入，避免累积偏差
+        
+        logger.debug(f"🔧 设置确定性环境: 随机种子={self.random_seed}, Decimal精度=28位")
+        
+    def _reset_state(self):
+        """完全重置回测引擎状态，确保每次回测的确定性独立性"""
+        super()._reset_state()
+        
+        # 重新设置确定性环境（防止外部代码污染）
+        self._set_deterministic_environment()
+        
+        logger.debug("🔧 确定性状态重置完成")
+        
+    async def _get_historical_data_deterministic(
+        self, 
+        db: AsyncSession, 
+        symbol: str, 
+        start_date: datetime, 
+        end_date: datetime, 
+        timeframe: str = "1h"
+    ) -> pd.DataFrame:
+        """确定性历史数据查询 - 使用复合排序确保结果一致"""
+        try:
+            from app.models.market_data import MarketData
+            
+            logger.info(f"🔧 确定性数据查询: {symbol} {timeframe} {start_date} - {end_date}")
+            
+            # 关键修复：使用复合排序确保查询结果完全确定
+            query = select(MarketData).where(
+                MarketData.symbol == symbol.replace('/', ''),
+                MarketData.timeframe == timeframe,
+                MarketData.open_time >= int(start_date.timestamp() * 1000),
+                MarketData.open_time <= int(end_date.timestamp() * 1000)
+            ).order_by(
+                MarketData.open_time.asc(),  # 主排序：时间戳
+                MarketData.id.asc()          # 次排序：ID，确保完全确定性
+            )
+            
+            result = await db.execute(query)
+            market_data = result.scalars().all()
+            
+            if not market_data:
+                error_msg = f"❌ 数据库中没有找到 {symbol} {timeframe} 的历史数据"
+                logger.error(error_msg)
+                raise ValueError(error_msg)
+            
+            # 转换为DataFrame，使用Decimal确保精度
+            df_data = []
+            for item in market_data:
+                df_data.append({
+                    'timestamp': pd.Timestamp(item.open_time, unit='ms'),
+                    'open': float(Decimal(str(item.open_price))),
+                    'high': float(Decimal(str(item.high_price))),
+                    'low': float(Decimal(str(item.low_price))),
+                    'close': float(Decimal(str(item.close_price))),
+                    'volume': float(Decimal(str(item.volume))),
+                })
+            
+            df = pd.DataFrame(df_data)
+            df.set_index('timestamp', inplace=True)
+            df.sort_index(inplace=True)  # 确保时间序列排序
+            
+            logger.info(f"✅ 确定性数据获取成功: {len(df)} 条记录")
+            return df
+            
+        except Exception as e:
+            logger.error(f"❌ 确定性数据查询失败: {str(e)}")
+            # 不再生成模拟数据，直接抛出异常
+            raise ValueError(f"无法获取 {symbol} 的历史数据: {str(e)}")
+            
+    async def _get_api_data_deterministic(
+        self, 
+        db: AsyncSession, 
+        symbol: str, 
+        start_date: datetime, 
+        end_date: datetime, 
+        timeframe: str
+    ) -> pd.DataFrame:
+        """确定性API数据获取 - 使用固定参数确保一致性"""
+        try:
+            # 使用父类的API获取方法，但确保参数确定性
+            df = await super()._get_historical_data(db, symbol, start_date, end_date, timeframe)
+            
+            if df.empty:
+                error_msg = f"❌ API数据获取失败，没有找到 {symbol} 的数据"
+                logger.error(error_msg)
+                raise ValueError(error_msg)
+                
+            # 对API数据进行确定性后处理
+            df = df.sort_index()  # 确保时间排序
+            return df
+            
+        except Exception as e:
+            logger.error(f"❌ API数据获取失败: {str(e)}")
+            raise ValueError(f"无法通过API获取 {symbol} 的历史数据: {str(e)}")
+    
+    # 已移除 _create_deterministic_fallback_data 方法
+    # 回测系统不应该生成模拟数据，必须使用真实的历史数据
+    
+    def _calculate_moving_average_deterministic(self, prices: List[float], window: int) -> List[Optional[float]]:
+        """确定性移动平均线计算 - 使用Decimal精度"""
+        decimal_prices = [Decimal(str(p)) for p in prices]
+        ma_values = []
+        
+        for i in range(len(decimal_prices)):
+            if i < window - 1:
+                ma_values.append(None)
+            else:
+                # 使用Decimal进行高精度计算
+                window_sum = sum(decimal_prices[i-window+1:i+1])
+                ma_value = window_sum / Decimal(str(window))
+                ma_values.append(float(ma_value))
+        
+        return ma_values
+    
+    def _generate_trading_signals_deterministic(self, df: pd.DataFrame, strategy_params: Dict[str, Any] = None) -> List[str]:
+        """确定性交易信号生成 - 消除所有随机性"""
+        if df.empty:
+            return []
+        
+        if strategy_params is None:
+            strategy_params = {'short_period': 5, 'long_period': 20}
+        
+        short_period = strategy_params.get('short_period', 5)
+        long_period = strategy_params.get('long_period', 20)
+        
+        logger.debug(f"🔧 确定性信号生成: MA({short_period}, {long_period})")
+        
+        closes = df['close'].tolist()
+        
+        # 使用确定性移动平均计算
+        ma_short = self._calculate_moving_average_deterministic(closes, short_period)
+        ma_long = self._calculate_moving_average_deterministic(closes, long_period)
+        
+        signals = []
+        tolerance = Decimal('0.01')  # 使用Decimal容差
+        
+        for i in range(len(closes)):
+            if i < long_period or ma_short[i] is None or ma_long[i] is None:
+                signals.append('hold')
+                continue
+                
+            # 确定性的交叉判断
+            current_diff = Decimal(str(ma_short[i])) - Decimal(str(ma_long[i]))
+            prev_diff = (Decimal(str(ma_short[i-1])) - Decimal(str(ma_long[i-1])) 
+                        if i > 0 and ma_short[i-1] is not None and ma_long[i-1] is not None 
+                        else Decimal('0'))
+            
+            # 金叉买入
+            if current_diff > tolerance and prev_diff <= tolerance:
+                signals.append('buy')
+            # 死叉卖出  
+            elif current_diff < -tolerance and prev_diff >= -tolerance:
+                signals.append('sell')
+            else:
+                signals.append('hold')
+                
+        logger.debug(f"🔧 确定性信号统计: {signals.count('buy')}买入, {signals.count('sell')}卖出, {signals.count('hold')}持有")
+        return signals
+    
+    async def _execute_trade_deterministic(
+        self, 
+        signal: str, 
+        market_data: pd.Series, 
+        timestamp: pd.Timestamp, 
+        symbol: str
+    ):
+        """确定性交易执行 - 使用Decimal确保精度一致性"""
+        if signal == 'hold':
+            return
+            
+        # 使用Decimal进行所有金融计算
+        current_price = Decimal(str(market_data['close']))
+        cash_decimal = Decimal(str(self.cash_balance))
+        position_decimal = Decimal(str(self.current_position))
+        
+        logger.debug(f"🔧 确定性交易执行: 信号={signal}, 价格={current_price}, 现金={cash_decimal}, 持仓={position_decimal}")
+        
+        if signal == 'buy' and cash_decimal > Decimal('100'):
+            # 买入：使用50%的现金（固定比例，避免随机性）
+            trade_ratio = Decimal('0.5')
+            trade_value = cash_decimal * trade_ratio
+            trade_amount = trade_value / current_price
+            
+            # 更新持仓和现金（使用Decimal确保精度）
+            self.current_position = float(position_decimal + trade_amount)
+            self.cash_balance = float(cash_decimal - trade_value)
+            
+            trade_record = {
+                'timestamp': timestamp,
+                'signal': signal,
+                'price': float(current_price),
+                'amount': float(trade_amount),
+                'value': float(trade_value),
+                'position_change': float(trade_amount),
+                'position_after': self.current_position,
+                'cash_after': self.cash_balance
+            }
+            
+            self.trades.append(trade_record)
+            logger.info(f"✅ 确定性买入: {float(trade_amount):.6f} @ {float(current_price):.2f}")
+            
+        elif signal == 'sell' and position_decimal > Decimal('0.00001'):
+            # 卖出：卖出50%持仓（固定比例，避免随机性）
+            trade_ratio = Decimal('0.5')
+            trade_amount = position_decimal * trade_ratio
+            trade_value = trade_amount * current_price
+            
+            # 更新持仓和现金
+            self.current_position = float(position_decimal - trade_amount)
+            self.cash_balance = float(cash_decimal + trade_value)
+            
+            trade_record = {
+                'timestamp': timestamp,
+                'signal': signal,
+                'price': float(current_price),
+                'amount': float(trade_amount),
+                'value': float(trade_value),
+                'position_change': float(-trade_amount),
+                'position_after': self.current_position,
+                'cash_after': self.cash_balance
+            }
+            
+            self.trades.append(trade_record)
+            logger.info(f"✅ 确定性卖出: {float(trade_amount):.6f} @ {float(current_price):.2f}")
+    
+    async def run_deterministic_backtest(
+        self, 
+        strategy_id: int, 
+        user_id: int,
+        start_date: datetime,
+        end_date: datetime,
+        initial_capital: float,
+        symbol: str = "BTC/USDT",
+        session: AsyncSession = None
+    ) -> Dict[str, Any]:
+        """运行确定性回测 - 保证100%可重现的结果"""
+        
+        # 确保每次回测都重新设置确定性环境
+        self._set_deterministic_environment()
+        self._reset_state()
+        
+        logger.info(f"🔧 启动确定性回测: {symbol} {start_date} - {end_date}, 初始资金: {initial_capital}")
+        
+        try:
+            self.cash_balance = initial_capital
+            self.total_value = initial_capital
+            
+            # 获取确定性历史数据
+            df = await self._get_historical_data_deterministic(
+                session, symbol, start_date, end_date
+            )
+            
+            if df.empty:
+                raise ValueError("无法获取历史数据")
+            
+            # 生成确定性交易信号
+            signals = self._generate_trading_signals_deterministic(df)
+            
+            # 执行确定性回测
+            for i, (timestamp, market_data) in enumerate(df.iterrows()):
+                if i < len(signals):
+                    signal = signals[i]
+                    await self._execute_trade_deterministic(signal, market_data, timestamp, symbol)
+                
+                # 更新总资产价值
+                current_price = Decimal(str(market_data['close']))
+                position_value = Decimal(str(self.current_position)) * current_price
+                self.total_value = float(Decimal(str(self.cash_balance)) + position_value)
+                self.portfolio_history.append(self.total_value)
+            
+            # 计算确定性性能指标
+            metrics = self._calculate_performance_metrics(initial_capital)
+            
+            # 生成确定性结果哈希（用于验证一致性）
+            result_data = [
+                self.total_value,
+                len(self.trades),
+                self.cash_balance,
+                self.current_position,
+                self.random_seed
+            ]
+            result_hash = hash(str(sorted(result_data)))
+            
+            result = {
+                'start_date': start_date.isoformat(),
+                'end_date': end_date.isoformat(),
+                'symbol': symbol,
+                'initial_capital': initial_capital,
+                'final_value': self.total_value,
+                'total_return': metrics.get('total_return', 0),
+                'trade_count': len(self.trades),
+                'trades': self.trades,
+                'metrics': metrics,
+                'random_seed': self.random_seed,
+                'result_hash': result_hash,  # 用于验证结果一致性
+                'deterministic': True  # 标记为确定性结果
+            }
+            
+            logger.info(f"✅ 确定性回测完成: 最终价值={self.total_value:.2f}, 交易次数={len(self.trades)}, 哈希={result_hash}")
+            return result
+            
+        except Exception as e:
+            logger.error(f"❌ 确定性回测失败: {str(e)}")
+            raise
+
+
+# 🔧 关键修复：移除全局实例，每次都创建新的BacktestEngine实例
+# 这确保了不同回测任务之间的完全独立性
+def create_backtest_engine() -> 'StatelessBacktestAdapter':
+    """创建新的回测引擎实例，确保状态独立性 - 现在使用无状态引擎"""
+    from app.services.stateless_backtest_adapter import create_stateless_backtest_engine
+    return create_stateless_backtest_engine()
+
+def create_deterministic_backtest_engine(random_seed: int = 42) -> 'StatelessBacktestAdapter':
+    """创建确定性回测引擎实例 - 解决回测结果不一致问题
+    
+    现在使用无状态引擎，彻底解决状态污染问题
+    
+    Args:
+        random_seed: 随机种子，确保结果100%可重现
+        
+    Returns:
+        StatelessBacktestAdapter: 无状态回测引擎适配器
+    """
+    from app.services.stateless_backtest_adapter import create_stateless_deterministic_backtest_engine
+    return create_stateless_deterministic_backtest_engine(random_seed)

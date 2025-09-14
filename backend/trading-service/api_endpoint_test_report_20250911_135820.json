@@ -1,0 +1,189 @@
+{
+  "timestamp": "2025-09-11T13:58:20.598715",
+  "summary": {
+    "total_tests": 8,
+    "passed_tests": 4,
+    "failed_tests": 4,
+    "success_rate": 0.5
+  },
+  "performance": {
+    "avg_response_time": 0.035708069801330566,
+    "max_response_time": 0.08032894134521484
+  },
+  "test_details": [
+    {
+      "name": "获取AI会话列表",
+      "endpoint": "/ai/sessions?ai_mode=trader",
+      "method": "GET",
+      "status_code": 200,
+      "success": true,
+      "execution_time": 0.08032894134521484,
+      "response_size": 314,
+      "content_type": "application/json",
+      "error_message": null,
+      "response_data": {
+        "sessions": [
+          {
+            "session_id": "c3355cda-d3ef-4079-846c-72ba44bcee86",
+            "name": "1",
+            "ai_mode": "trader",
+            "session_type": "general",
+            "status": "active",
+            "progress": 0,
+            "message_count": 0,
+            "last_message": null,
+            "cost_total": 0.0,
+            "created_at": "2025-08-27T10:08:45",
+            "updated_at": "2025-08-27T10:08:45"
+          }
+        ],
+        "total_count": 1,
+        "ai_mode": "trader"
+      }
+    },
+    {
+      "name": "创建AI会话",
+      "endpoint": "/ai/sessions",
+      "method": "POST",
+      "status_code": 200,
+      "success": true,
+      "execution_time": 0.028830528259277344,
+      "response_size": 182,
+      "content_type": "application/json",
+      "error_message": null,
+      "response_data": {
+        "session_id": "61b7c720-5862-47cb-997d-375c8ae9c700",
+        "name": "测试会话_c5548786",
+        "ai_mode": "trader",
+        "session_type": "strategy",
+        "status": "active",
+        "created_at": "2025-09-11T05:58:20"
+      }
+    },
+    {
+      "name": "发送AI聊天消息",
+      "endpoint": "/ai/chat",
+      "method": "POST",
+      "status_code": 400,
+      "success": false,
+      "execution_time": 0.005270719528198242,
+      "response_size": 131,
+      "content_type": "application/json",
+      "error_message": "HTTP 400: {\"success\":false,\"message\":\"参数验证失败\",\"errors\":[\"会话ID格式无效\"],\"warnings\":[\"发现未定义的字段: ai_mode\"]}",
+      "response_data": {
+        "success": false,
+        "message": "参数验证失败",
+        "errors": [
+          "会话ID格式无效"
+        ],
+        "warnings": [
+          "发现未定义的字段: ai_mode"
+        ]
+      }
+    },
+    {
+      "name": "获取聊天历史",
+      "endpoint": "/ai/chat/history?session_id=61b7c720-5862-47cb-997d-375c8ae9c700&limit=10",
+      "method": "GET",
+      "status_code": 200,
+      "success": true,
+      "execution_time": 0.012873411178588867,
+      "response_size": 15,
+      "content_type": "application/json",
+      "error_message": null,
+      "response_data": {
+        "messages": []
+      }
+    },
+    {
+      "name": "启动实时回测",
+      "endpoint": "/realtime-backtest/start",
+      "method": "POST",
+      "status_code": 500,
+      "success": false,
+      "execution_time": 0.008663177490234375,
+      "response_size": 53,
+      "content_type": "application/json",
+      "error_message": "HTTP 500: {\"detail\":\"'MockUser' object has no attribute 'get'\"}",
+      "response_data": {
+        "detail": "'MockUser' object has no attribute 'get'"
+      }
+    },
+    {
+      "name": "AI策略自动回测",
+      "endpoint": "/ai/strategy/auto-backtest",
+      "method": "POST",
+      "status_code": 200,
+      "success": true,
+      "execution_time": 0.02079939842224121,
+      "response_size": 466,
+      "content_type": "application/json",
+      "error_message": null,
+      "response_data": {
+        "success": true,
+        "strategy_id": 22,
+        "backtest_task_id": "0691cbbe-6a7e-40d5-9db1-c9df7bdaa353",
+        "strategy_name": "测试AI策略",
+        "ai_session_id": "61b7c720-5862-47cb-997d-375c8ae9c700",
+        "backtest_config": {
+          "exchange": "binance",
+          "product_type": "spot",
+          "symbols": [
+            "BTC/USDT",
+            "ETH/USDT"
+          ],
+          "timeframes": [
+            "1h",
+            "4h"
+          ],
+          "fee_rate": "vip0",
+          "initial_capital": 25000.0,
+          "start_date": "2023-06-01",
+          "end_date": "2024-12-31",
+          "data_type": "kline"
+        },
+        "message": "AI策略已生成并自动启动回测"
+      }
+    },
+    {
+      "name": "获取策略列表",
+      "endpoint": "/strategies?limit=5",
+      "method": "GET",
+      "status_code": 400,
+      "success": false,
+      "execution_time": 0.0044574737548828125,
+      "response_size": 286,
+      "content_type": "application/json",
+      "error_message": "HTTP 400: {\"success\":false,\"message\":\"参数验证失败\",\"errors\":[\"字段 'name' 是必填的\",\"字段 'code' 是必填的\",\"字段 'symbols' 是必填的\",",
+      "response_data": {
+        "success": false,
+        "message": "参数验证失败",
+        "errors": [
+          "字段 'name' 是必填的",
+          "字段 'code' 是必填的",
+          "字段 'symbols' 是必填的",
+          "字段 'name' 是必填的",
+          "字段 'code' 是必填的",
+          "字段 'symbols' 是必填的"
+        ],
+        "warnings": [
+          "发现未定义的字段: limit"
+        ]
+      }
+    },
+    {
+      "name": "获取用户统计",
+      "endpoint": "/users/me/stats",
+      "method": "GET",
+      "status_code": 404,
+      "success": false,
+      "execution_time": 0.008569955825805664,
+      "response_size": 22,
+      "content_type": "application/json",
+      "error_message": "HTTP 404: {\"detail\":\"Not Found\"}",
+      "response_data": {
+        "detail": "Not Found"
+      }
+    }
+  ]
+}

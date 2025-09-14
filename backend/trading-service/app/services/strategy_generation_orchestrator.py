@@ -332,11 +332,11 @@ class UserStrategy(EnhancedBaseStrategy):
                     "role": "user",
                     "content": generation_prompt
                 }],
-                system_prompt="你是专业的量化策略开发专家，严格按照EnhancedBaseStrategy框架生成高质量策略代码。",
+                system="你是专业的量化策略开发专家，严格按照EnhancedBaseStrategy框架生成高质量策略代码。",
                 temperature=0.4
             )
             
-            if response["success"]:
+            if response.get("success", False):
                 # 提取代码
                 content = response["content"]
                 if "```python" in content:
@@ -451,11 +451,11 @@ class UserStrategy(EnhancedBaseStrategy):
                 
                 response = await claude_client.chat_completion(
                     messages=[{"role": "user", "content": improvement_prompt}],
-                    system_prompt="你是量化策略优化专家，根据回测结果和分析建议改进策略性能。",
+                    system="你是量化策略优化专家，根据回测结果和分析建议改进策略性能。",
                     temperature=0.3
                 )
                 
-                if not response["success"]:
+                if not response.get("success", False):
                     break
                 
                 # 提取优化后的代码

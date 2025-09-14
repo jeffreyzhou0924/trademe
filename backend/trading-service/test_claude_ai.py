@@ -33,7 +33,7 @@ async def test_claude_client_basic():
     try:
         response = await claude_client.chat_completion(
             messages=messages,
-            system_prompt=SystemPrompts.TRADING_ASSISTANT_SYSTEM,
+            system=SystemPrompts.TRADING_ASSISTANT_SYSTEM,
             temperature=0.7
         )
         

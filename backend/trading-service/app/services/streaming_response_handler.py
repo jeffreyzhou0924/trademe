@@ -518,7 +518,7 @@ class StreamingResponseHandler:
                 proxy_request = {
                     "virtual_api_key": virtual_key,
                     "messages": messages,
-                    "system_prompt": system_prompt,
+                    "system": system_prompt,
                     "stream": True,
                     "claude_account_id": account.id
                 }

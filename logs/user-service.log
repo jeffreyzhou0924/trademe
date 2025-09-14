@@ -19,39 +19,44 @@ Error: listen EADDRINUSE: address already in use 0.0.0.0:3001
     at listenInCluster (node:net:1965:12)
     at doListen (node:net:2139:7)
     at processTicksAndRejections (node:internal/process/task_queues:83:21)
-[31m[nodemon] app crashed - waiting for file changes before starting...[39m
-2025-09-06 18:19:50 +08:00: 2025-09-06 18:19:50:1950 [32minfo[39m: [32mRequest started[39m
-2025-09-06 18:19:50 +08:00: prisma:query SELECT 1
-2025-09-06 18:19:50 +08:00: prisma:query SELECT 1
-2025-09-06 18:19:50 +08:00: 2025-09-06 18:19:50:1950 [32minfo[39m: [32mUpload service health check passed[39m
-2025-09-06 18:19:52 +08:00: 2025-09-06 18:19:52:1952 [32minfo[39m: [32mRequest completed[39m
-2025-09-06 18:35:15 +08:00: 2025-09-06 18:35:15:3515 [32minfo[39m: [32mRequest started[39m
-2025-09-06 18:35:15 +08:00: 2025-09-06 18:35:15:3515 [33mwarn[39m: [33mClient error:[39m
-2025-09-06 18:35:15 +08:00: 2025-09-06 18:35:15:3515 [32minfo[39m: [32mRequest completed[39m
-2025-09-06 18:35:19 +08:00: 2025-09-06 18:35:19:3519 [32minfo[39m: [32mRequest started[39m
-2025-09-06 18:35:19 +08:00: 2025-09-06 18:35:19:3519 [33mwarn[39m: [33mClient error:[39m
-2025-09-06 18:35:19 +08:00: 2025-09-06 18:35:19:3519 [32minfo[39m: [32mRequest completed[39m
-2025-09-06 18:35:26 +08:00: 2025-09-06 18:35:26:3526 [32minfo[39m: [32mRequest started[39m
-2025-09-06 18:35:26 +08:00: 2025-09-06 18:35:26:3526 [33mwarn[39m: [33mClient error:[39m
-2025-09-06 18:35:26 +08:00: 2025-09-06 18:35:26:3526 [32minfo[39m: [32mRequest completed[39m
-2025-09-06 19:31:42 +08:00: 2025-09-06 19:31:42:3142 [32minfo[39m: [32mRequest started[39m
-2025-09-06 19:31:42 +08:00: prisma:query SELECT 1
-2025-09-06 19:31:42 +08:00: prisma:query SELECT 1
-2025-09-06 19:31:42 +08:00: 2025-09-06 19:31:42:3142 [32minfo[39m: [32mUpload service health check passed[39m
-2025-09-06 19:31:42 +08:00: 2025-09-06 19:31:42:3142 [32minfo[39m: [32mRequest completed[39m
-2025-09-06 19:59:21 +08:00: 2025-09-06 19:59:21:5921 [32minfo[39m: [32mRequest started[39m
-2025-09-06 19:59:21 +08:00: 2025-09-06 19:59:21:5921 [33mwarn[39m: [33mClient error:[39m
-2025-09-06 19:59:21 +08:00: 2025-09-06 19:59:21:5921 [32minfo[39m: [32mRequest completed[39m
-2025-09-06 19:59:26 +08:00: 2025-09-06 19:59:26:5926 [32minfo[39m: [32mRequest started[39m
-2025-09-06 19:59:26 +08:00: 2025-09-06 19:59:26:5926 [33mwarn[39m: [33mClient error:[39m
-2025-09-06 19:59:26 +08:00: 2025-09-06 19:59:26:5926 [32minfo[39m: [32mRequest completed[39m
-2025-09-06 20:00:14 +08:00: 2025-09-06 20:00:14:014 [32minfo[39m: [32mRequest started[39m
-2025-09-06 20:00:14 +08:00: 2025-09-06 20:00:14:014 [33mwarn[39m: [33mClient error:[39m
-2025-09-06 20:00:14 +08:00: 2025-09-06 20:00:14:014 [32minfo[39m: [32mRequest completed[39m
-2025-09-06 20:00:29 +08:00: 2025-09-06 20:00:29:029 [32minfo[39m: [32mRequest started[39m
-2025-09-06 20:00:29 +08:00: prisma:query SELECT 1
-2025-09-06 20:00:29 +08:00: prisma:query SELECT `main`.`users`.`id`, `main`.`users`.`username`, `main`.`users`.`email`, `main`.`users`.`password_hash`, `main`.`users`.`membership_level`, `main`.`users`.`membership_expires_at`, `main`.`users`.`is_active`, `main`.`users`.`email_verified`, `main`.`users`.`avatar_url`, `main`.`users`.`created_at` FROM `main`.`users` WHERE (`main`.`users`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
-2025-09-06 20:00:30 +08:00: prisma:query INSERT INTO `main`.`user_sessions` (`user_id`, `token`, `refresh_token`, `expires_at`, `ip_address`, `user_agent`, `is_active`, `created_at`) VALUES (?,?,?,?,?,?,?,?) RETURNING `id` AS `id`, `user_id` AS `user_id`, `token` AS `token`, `refresh_token` AS `refresh_token`, `expires_at` AS `expires_at`, `ip_address` AS `ip_address`, `user_agent` AS `user_agent`, `is_active` AS `is_active`, `created_at` AS `created_at`
+[31m[nodemon] app crashed - waiting for file changes before starting...[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `ts-node -r tsconfig-paths/register src/app.ts`[39m
+[32m[[32m[nodemon] restarting due to changes...[32m[[32m[nodemon] restarting due to changes...[32m[[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `ts-node -r tsconfig-paths/register src/app.ts`[32m[nodemon] restarting due to changes...[39m
+[32m[[32m[nodemon] starting `ts-node -r tsconfig-paths/register src/app.ts`[32m[nodemon] restarting due to changes...[39m
+[32m[[32m[nodemon] starting `ts-node -r tsconfig-paths/register src/app.ts`[32m[[32m[nodemon] restarting due to changes...[32m[nodemon] starting `ts-node -r tsconfig-paths/register src/app.ts`[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `ts-node -r tsconfig-paths/register src/app.ts`[39m
+[32m[[32m[nodemon] restarting due to changes...[32m[nodemon] restarting due to changes...[39m
+[32m[[32m[nodemon] starting `ts-node -r tsconfig-paths/register src/app.ts`[32m[nodemon] restarting due to changes...[39m
+[32m[[32m[nodemon] starting `ts-node -r tsconfig-paths/register src/app.ts`[32m[nodemon] restarting due to changes...[39m
+[32m[[32m[nodemon] restarting due to changes...[32m[[32m[nodemon] starting `ts-node -r tsconfig-paths/register src/app.ts`[32m[nodemon] restarting due to changes...[39m
+[32m[[32m[nodemon] restarting due to changes...[32m[nodemon] starting `ts-node -r tsconfig-paths/register src/app.ts`[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `ts-node -r tsconfig-paths/register src/app.ts`[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[[32m[nodemon] restarting due to changes...[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] restarting due to c[32m[nodemon] [32m[nodemon] starting `ts-node -[32m[nodemon] restarting due to changes...[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `ts-node -r tsconfig-paths/register src/app.ts`[39m
+2025-09-11 20:10:24:1024 [32minfo[39m: [32mUpload directories initialized:[39m
+prisma:info Starting a sqlite pool with 3 connections.
+2025-09-11 20:10:24:1024 [32minfo[39m: [32mDatabase connected successfully[39m
+2025-09-11 20:10:24:1024 [32minfo[39m: [32mDatabase initialized successfully[39m
+2025-09-11 20:10:24:1024 [32minfo[39m: [32mRedis client connected[39m
+2025-09-11 20:10:24:1024 [32minfo[39m: [32mRedis initialized successfully[39m
+2025-09-11 20:10:24:1024 [31merror[39m: [31mUncaught Exception: listen EADDRINUSE: address already in use 0.0.0.0:3001[39m
+Error: listen EADDRINUSE: address already in use 0.0.0.0:3001
+    at Server.setupListenHandle [as _listen2] (node:net:1908:16)
+    at listenInCluster (node:net:1965:12)
+    at doListen (node:net:2139:7)
+    at processTicksAndRejections (node:internal/process/task_queues:83:21)
+[31m[[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+address`, `user_agent`, `is_active`, `created_at`) VALUES (?,?,?,?,?,?,?,?) RETURNING `id` AS `id`, `user_id` AS `user_id`, `token` AS `token`, `refresh_token` AS `refresh_token`, `expires_at` AS `expires_at`, `ip_address` AS `ip_address`, `user_agent` AS `user_agent`, `is_active` AS `is_active`, `created_at` AS `created_at`
 2025-09-06 20:00:30 +08:00: 2025-09-06 20:00:30:030 [32minfo[39m: [32mUser logged in:[39m
 2025-09-06 20:00:30 +08:00: 2025-09-06 20:00:30:030 [32minfo[39m: [32mRequest completed[39m
 2025-09-06 20:00:30 +08:00: prisma:query UPDATE `main`.`users` SET `last_login_at` = ?, `updated_at` = ? WHERE (`main`.`users`.`id` = ? AND 1=1) RETURNING `id` AS `id`, `username` AS `username`, `email` AS `email`, `password_hash` AS `password_hash`, `google_id` AS `google_id`, `avatar_url` AS `avatar_url`, `phone` AS `phone`, `membership_level` AS `membership_level`, `membership_expires_at` AS `membership_expires_at`, `is_active` AS `is_active`, `email_verified` AS `email_verified`, `last_login_at` AS `last_login_at`, `preferences` AS `preferences`, `created_at` AS `created_at`, `updated_at` AS `updated_at`
@@ -235,3 +240,789 @@ Error: listen EADDRINUSE: address already in use 0.0.0.0:3001
 2025-09-10 18:49:22 +08:00: 2025-09-10 18:49:22:4922 [32minfo[39m: [32mRequest started[39m
 2025-09-10 18:49:22 +08:00: 2025-09-10 18:49:22:4922 [33mwarn[39m: [33mClient error:[39m
 2025-09-10 18:49:22 +08:00: 2025-09-10 18:49:22:4922 [32minfo[39m: [32mRequest completed[39m
+2025-09-10 19:44:54 +08:00: 2025-09-10 19:44:54:4454 [32minfo[39m: [32mRequest started[39m
+2025-09-10 19:44:54 +08:00: 2025-09-10 19:44:54:4454 [33mwarn[39m: [33mClient error:[39m
+2025-09-10 19:44:54 +08:00: 2025-09-10 19:44:54:4454 [32minfo[39m: [32mRequest completed[39m
+2025-09-10 19:45:08 +08:00: 2025-09-10 19:45:08:458 [32minfo[39m: [32mRequest started[39m
+2025-09-10 19:45:08 +08:00: 2025-09-10 19:45:08:458 [33mwarn[39m: [33mClient error:[39m
+2025-09-10 19:45:08 +08:00: 2025-09-10 19:45:08:458 [32minfo[39m: [32mRequest completed[39m
+2025-09-10 21:46:10 +08:00: 2025-09-10 21:46:10:4610 [33mwarn[39m: [33mJSON parsing error: Bad escaped character in JSON at position 60[39m
+2025-09-10 21:46:34 +08:00: 2025-09-10 21:46:34:4634 [32minfo[39m: [32mRequest started[39m
+2025-09-10 21:46:34 +08:00: prisma:query SELECT 1
+2025-09-10 21:46:34 +08:00: prisma:query SELECT `main`.`users`.`id`, `main`.`users`.`username`, `main`.`users`.`email`, `main`.`users`.`password_hash`, `main`.`users`.`membership_level`, `main`.`users`.`membership_expires_at`, `main`.`users`.`is_active`, `main`.`users`.`email_verified`, `main`.`users`.`avatar_url`, `main`.`users`.`created_at` FROM `main`.`users` WHERE (`main`.`users`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
+2025-09-10 21:46:35 +08:00: prisma:query INSERT INTO `main`.`user_sessions` (`user_id`, `token`, `refresh_token`, `expires_at`, `ip_address`, `user_agent`, `is_active`, `created_at`) VALUES (?,?,?,?,?,?,?,?) RETURNING `id` AS `id`, `user_id` AS `user_id`, `token` AS `token`, `refresh_token` AS `refresh_token`, `expires_at` AS `expires_at`, `ip_address` AS `ip_address`, `user_agent` AS `user_agent`, `is_active` AS `is_active`, `created_at` AS `created_at`
+2025-09-10 21:46:35 +08:00: prisma:query UPDATE `main`.`users` SET `last_login_at` = ?, `updated_at` = ? WHERE (`main`.`users`.`id` = ? AND 1=1) RETURNING `id` AS `id`, `username` AS `username`, `email` AS `email`, `password_hash` AS `password_hash`, `google_id` AS `google_id`, `avatar_url` AS `avatar_url`, `phone` AS `phone`, `membership_level` AS `membership_level`, `membership_expires_at` AS `membership_expires_at`, `is_active` AS `is_active`, `email_verified` AS `email_verified`, `last_login_at` AS `last_login_at`, `preferences` AS `preferences`, `created_at` AS `created_at`, `updated_at` AS `updated_at`
+2025-09-10 21:46:35 +08:00: 2025-09-10 21:46:35:4635 [32minfo[39m: [32mUser logged in:[39m
+2025-09-10 21:46:35 +08:00: 2025-09-10 21:46:35:4635 [32minfo[39m: [32mRequest completed[39m
+2025-09-11 10:30:44 +08:00: 2025-09-11 10:30:44:3044 [32minfo[39m: [32mRequest started[39m
+2025-09-11 10:30:44 +08:00: 2025-09-11 10:30:44:3044 [33mwarn[39m: [33mClient error:[39m
+2025-09-11 10:30:44 +08:00: 2025-09-11 10:30:44:3044 [32minfo[39m: [32mRequest completed[39m
+2025-09-11 12:29:07 +08:00: 2025-09-11 12:29:07:297 [32minfo[39m: [32mRequest started[39m
+2025-09-11 12:29:07 +08:00: 2025-09-11 12:29:07:297 [33mwarn[39m: [33mClient error:[39m
+2025-09-11 12:29:07 +08:00: 2025-09-11 12:29:07:297 [32minfo[39m: [32mRequest completed[39m
+2025-09-11 13:33:35 +08:00: 2025-09-11 13:33:35:3335 [32minfo[39m: [32mRequest started[39m
+2025-09-11 13:33:35 +08:00: prisma:query SELECT 1
+2025-09-11 13:33:35 +08:00: prisma:query SELECT `main`.`users`.`id`, `main`.`users`.`username`, `main`.`users`.`email`, `main`.`users`.`password_hash`, `main`.`users`.`membership_level`, `main`.`users`.`membership_expires_at`, `main`.`users`.`is_active`, `main`.`users`.`email_verified`, `main`.`users`.`avatar_url`, `main`.`users`.`created_at` FROM `main`.`users` WHERE (`main`.`users`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
+2025-09-11 13:33:35 +08:00: prisma:query INSERT INTO `main`.`user_sessions` (`user_id`, `token`, `refresh_token`, `expires_at`, `ip_address`, `user_agent`, `is_active`, `created_at`) VALUES (?,?,?,?,?,?,?,?) RETURNING `id` AS `id`, `user_id` AS `user_id`, `token` AS `token`, `refresh_token` AS `refresh_token`, `expires_at` AS `expires_at`, `ip_address` AS `ip_address`, `user_agent` AS `user_agent`, `is_active` AS `is_active`, `created_at` AS `created_at`
+2025-09-11 13:33:35 +08:00: prisma:query UPDATE `main`.`users` SET `last_login_at` = ?, `updated_at` = ? WHERE (`main`.`users`.`id` = ? AND 1=1) RETURNING `id` AS `id`, `username` AS `username`, `email` AS `email`, `password_hash` AS `password_hash`, `google_id` AS `google_id`, `avatar_url` AS `avatar_url`, `phone` AS `phone`, `membership_level` AS `membership_level`, `membership_expires_at` AS `membership_expires_at`, `is_active` AS `is_active`, `email_verified` AS `email_verified`, `last_login_at` AS `last_login_at`, `preferences` AS `preferences`, `created_at` AS `created_at`, `updated_at` AS `updated_at`
+2025-09-11 13:33:35 +08:00: 2025-09-11 13:33:35:3335 [32minfo[39m: [32mUser logged in:[39m
+2025-09-11 13:33:35 +08:00: 2025-09-11 13:33:35:3335 [32minfo[39m: [32mRequest completed[39m
+2025-09-11 13:33:45 +08:00: 2025-09-11 13:33:45:3345 [33mwarn[39m: [33mJSON parsing error: Bad escaped character in JSON at position 60[39m
+2025-09-11 13:33:50 +08:00: 2025-09-11 13:33:50:3350 [32minfo[39m: [32mRequest started[39m
+2025-09-11 13:33:50 +08:00: prisma:query SELECT 1
+2025-09-11 13:33:50 +08:00: prisma:query SELECT `main`.`users`.`id`, `main`.`users`.`username`, `main`.`users`.`email`, `main`.`users`.`password_hash`, `main`.`users`.`membership_level`, `main`.`users`.`membership_expires_at`, `main`.`users`.`is_active`, `main`.`users`.`email_verified`, `main`.`users`.`avatar_url`, `main`.`users`.`created_at` FROM `main`.`users` WHERE (`main`.`users`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
+2025-09-11 13:33:51 +08:00: prisma:query INSERT INTO `main`.`user_sessions` (`user_id`, `token`, `refresh_token`, `expires_at`, `ip_address`, `user_agent`, `is_active`, `created_at`) VALUES (?,?,?,?,?,?,?,?) RETURNING `id` AS `id`, `user_id` AS `user_id`, `token` AS `token`, `refresh_token` AS `refresh_token`, `expires_at` AS `expires_at`, `ip_address` AS `ip_address`, `user_agent` AS `user_agent`, `is_active` AS `is_active`, `created_at` AS `created_at`
+2025-09-11 13:33:51 +08:00: prisma:query UPDATE `main`.`users` SET `last_login_at` = ?, `updated_at` = ? WHERE (`main`.`users`.`id` = ? AND 1=1) RETURNING `id` AS `id`, `username` AS `username`, `email` AS `email`, `password_hash` AS `password_hash`, `google_id` AS `google_id`, `avatar_url` AS `avatar_url`, `phone` AS `phone`, `membership_level` AS `membership_level`, `membership_expires_at` AS `membership_expires_at`, `is_active` AS `is_active`, `email_verified` AS `email_verified`, `last_login_at` AS `last_login_at`, `preferences` AS `preferences`, `created_at` AS `created_at`, `updated_at` AS `updated_at`
+2025-09-11 13:33:51 +08:00: 2025-09-11 13:33:51:3351 [32minfo[39m: [32mUser logged in:[39m
+2025-09-11 13:33:51 +08:00: 2025-09-11 13:33:51:3351 [32minfo[39m: [32mRequest completed[39m
+2025-09-11 13:34:19 +08:00: 2025-09-11 13:34:19:3419 [32minfo[39m: [32mRequest started[39m
+2025-09-11 13:34:19 +08:00: prisma:query SELECT 1
+2025-09-11 13:34:19 +08:00: prisma:query SELECT `main`.`users`.`id`, `main`.`users`.`username`, `main`.`users`.`email`, `main`.`users`.`password_hash`, `main`.`users`.`membership_level`, `main`.`users`.`membership_expires_at`, `main`.`users`.`is_active`, `main`.`users`.`email_verified`, `main`.`users`.`avatar_url`, `main`.`users`.`created_at` FROM `main`.`users` WHERE (`main`.`users`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
+2025-09-11 13:34:20 +08:00: prisma:query INSERT INTO `main`.`user_sessions` (`user_id`, `token`, `refresh_token`, `expires_at`, `ip_address`, `user_agent`, `is_active`, `created_at`) VALUES (?,?,?,?,?,?,?,?) RETURNING `id` AS `id`, `user_id` AS `user_id`, `token` AS `token`, `refresh_token` AS `refresh_token`, `expires_at` AS `expires_at`, `ip_address` AS `ip_address`, `user_agent` AS `user_agent`, `is_active` AS `is_active`, `created_at` AS `created_at`
+2025-09-11 13:34:20 +08:00: prisma:query UPDATE `main`.`users` SET `last_login_at` = ?, `updated_at` = ? WHERE (`main`.`users`.`id` = ? AND 1=1) RETURNING `id` AS `id`, `username` AS `username`, `email` AS `email`, `password_hash` AS `password_hash`, `google_id` AS `google_id`, `avatar_url` AS `avatar_url`, `phone` AS `phone`, `membership_level` AS `membership_level`, `membership_expires_at` AS `membership_expires_at`, `is_active` AS `is_active`, `email_verified` AS `email_verified`, `last_login_at` AS `last_login_at`, `preferences` AS `preferences`, `created_at` AS `created_at`, `updated_at` AS `updated_at`
+2025-09-11 13:34:20 +08:00: 2025-09-11 13:34:20:3420 [32minfo[39m: [32mUser logged in:[39m
+2025-09-11 13:34:20 +08:00: 2025-09-11 13:34:20:3420 [32minfo[39m: [32mRequest completed[39m
+2025-09-11 13:58:07 +08:00: 2025-09-11 13:58:07:587 [32minfo[39m: [32mRequest started[39m
+2025-09-11 13:58:07 +08:00: prisma:query SELECT 1
+2025-09-11 13:58:07 +08:00: prisma:query SELECT `main`.`users`.`id`, `main`.`users`.`username`, `main`.`users`.`email`, `main`.`users`.`password_hash`, `main`.`users`.`membership_level`, `main`.`users`.`membership_expires_at`, `main`.`users`.`is_active`, `main`.`users`.`email_verified`, `main`.`users`.`avatar_url`, `main`.`users`.`created_at` FROM `main`.`users` WHERE (`main`.`users`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
+2025-09-11 13:58:07 +08:00: prisma:query INSERT INTO `main`.`user_sessions` (`user_id`, `token`, `refresh_token`, `expires_at`, `ip_address`, `user_agent`, `is_active`, `created_at`) VALUES (?,?,?,?,?,?,?,?) RETURNING `id` AS `id`, `user_id` AS `user_id`, `token` AS `token`, `refresh_token` AS `refresh_token`, `expires_at` AS `expires_at`, `ip_address` AS `ip_address`, `user_agent` AS `user_agent`, `is_active` AS `is_active`, `created_at` AS `created_at`
+2025-09-11 13:58:07 +08:00: prisma:query UPDATE `main`.`users` SET `last_login_at` = ?, `updated_at` = ? WHERE (`main`.`users`.`id` = ? AND 1=1) RETURNING `id` AS `id`, `username` AS `username`, `email` AS `email`, `password_hash` AS `password_hash`, `google_id` AS `google_id`, `avatar_url` AS `avatar_url`, `phone` AS `phone`, `membership_level` AS `membership_level`, `membership_expires_at` AS `membership_expires_at`, `is_active` AS `is_active`, `email_verified` AS `email_verified`, `last_login_at` AS `last_login_at`, `preferences` AS `preferences`, `created_at` AS `created_at`, `updated_at` AS `updated_at`
+2025-09-11 13:58:07 +08:00: 2025-09-11 13:58:07:587 [32minfo[39m: [32mUser logged in:[39m
+2025-09-11 13:58:07 +08:00: 2025-09-11 13:58:07:587 [32minfo[39m: [32mRequest completed[39m
+2025-09-11 13:58:20 +08:00: 2025-09-11 13:58:20:5820 [32minfo[39m: [32mRequest started[39m
+2025-09-11 13:58:20 +08:00: prisma:query SELECT `main`.`users`.`id`, `main`.`users`.`username`, `main`.`users`.`email`, `main`.`users`.`password_hash`, `main`.`users`.`membership_level`, `main`.`users`.`membership_expires_at`, `main`.`users`.`is_active`, `main`.`users`.`email_verified`, `main`.`users`.`avatar_url`, `main`.`users`.`created_at` FROM `main`.`users` WHERE (`main`.`users`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
+2025-09-11 13:58:20 +08:00: prisma:query INSERT INTO `main`.`user_sessions` (`user_id`, `token`, `refresh_token`, `expires_at`, `ip_address`, `user_agent`, `is_active`, `created_at`) VALUES (?,?,?,?,?,?,?,?) RETURNING `id` AS `id`, `user_id` AS `user_id`, `token` AS `token`, `refresh_token` AS `refresh_token`, `expires_at` AS `expires_at`, `ip_address` AS `ip_address`, `user_agent` AS `user_agent`, `is_active` AS `is_active`, `created_at` AS `created_at`
+2025-09-11 13:58:20 +08:00: prisma:query UPDATE `main`.`users` SET `last_login_at` = ?, `updated_at` = ? WHERE (`main`.`users`.`id` = ? AND 1=1) RETURNING `id` AS `id`, `username` AS `username`, `email` AS `email`, `password_hash` AS `password_hash`, `google_id` AS `google_id`, `avatar_url` AS `avatar_url`, `phone` AS `phone`, `membership_level` AS `membership_level`, `membership_expires_at` AS `membership_expires_at`, `is_active` AS `is_active`, `email_verified` AS `email_verified`, `last_login_at` AS `last_login_at`, `preferences` AS `preferences`, `created_at` AS `created_at`, `updated_at` AS `updated_at`
+2025-09-11 13:58:20 +08:00: 2025-09-11 13:58:20:5820 [32minfo[39m: [32mUser logged in:[39m
+2025-09-11 13:58:20 +08:00: 2025-09-11 13:58:20:5820 [32minfo[39m: [32mRequest completed[39m
+2025-09-11 14:02:50 +08:00: 2025-09-11 14:02:50:250 [32minfo[39m: [32mRequest started[39m
+2025-09-11 14:02:50 +08:00: prisma:query SELECT 1
+2025-09-11 14:02:50 +08:00: prisma:query SELECT `main`.`users`.`id`, `main`.`users`.`username`, `main`.`users`.`email`, `main`.`users`.`password_hash`, `main`.`users`.`membership_level`, `main`.`users`.`membership_expires_at`, `main`.`users`.`is_active`, `main`.`users`.`email_verified`, `main`.`users`.`avatar_url`, `main`.`users`.`created_at` FROM `main`.`users` WHERE (`main`.`users`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
+2025-09-11 14:02:51 +08:00: prisma:query INSERT INTO `main`.`user_sessions` (`user_id`, `token`, `refresh_token`, `expires_at`, `ip_address`, `user_agent`, `is_active`, `created_at`) VALUES (?,?,?,?,?,?,?,?) RETURNING `id` AS `id`, `user_id` AS `user_id`, `token` AS `token`, `refresh_token` AS `refresh_token`, `expires_at` AS `expires_at`, `ip_address` AS `ip_address`, `user_agent` AS `user_agent`, `is_active` AS `is_active`, `created_at` AS `created_at`
+2025-09-11 14:02:51 +08:00: prisma:query UPDATE `main`.`users` SET `last_login_at` = ?, `updated_at` = ? WHERE (`main`.`users`.`id` = ? AND 1=1) RETURNING `id` AS `id`, `username` AS `username`, `email` AS `email`, `password_hash` AS `password_hash`, `google_id` AS `google_id`, `avatar_url` AS `avatar_url`, `phone` AS `phone`, `membership_level` AS `membership_level`, `membership_expires_at` AS `membership_expires_at`, `is_active` AS `is_active`, `email_verified` AS `email_verified`, `last_login_at` AS `last_login_at`, `preferences` AS `preferences`, `created_at` AS `created_at`, `updated_at` AS `updated_at`
+2025-09-11 14:02:51 +08:00: 2025-09-11 14:02:51:251 [32minfo[39m: [32mUser logged in:[39m
+2025-09-11 14:02:51 +08:00: 2025-09-11 14:02:51:251 [32minfo[39m: [32mRequest completed[39m
+2025-09-11 14:07:57 +08:00: 2025-09-11 14:07:57:757 [33mwarn[39m: [33mJSON parsing error: Bad escaped character in JSON at position 60[39m
+2025-09-11 14:08:02 +08:00: 2025-09-11 14:08:02:82 [33mwarn[39m: [33mJSON parsing error: Bad escaped character in JSON at position 60[39m
+2025-09-11 14:08:29 +08:00: 2025-09-11 14:08:29:829 [32minfo[39m: [32mRequest started[39m
+2025-09-11 14:08:29 +08:00: prisma:query SELECT 1
+2025-09-11 14:08:29 +08:00: prisma:query SELECT `main`.`users`.`id`, `main`.`users`.`username`, `main`.`users`.`email`, `main`.`users`.`password_hash`, `main`.`users`.`membership_level`, `main`.`users`.`membership_expires_at`, `main`.`users`.`is_active`, `main`.`users`.`email_verified`, `main`.`users`.`avatar_url`, `main`.`users`.`created_at` FROM `main`.`users` WHERE (`main`.`users`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
+2025-09-11 14:08:29 +08:00: prisma:query INSERT INTO `main`.`user_sessions` (`user_id`, `token`, `refresh_token`, `expires_at`, `ip_address`, `user_agent`, `is_active`, `created_at`) VALUES (?,?,?,?,?,?,?,?) RETURNING `id` AS `id`, `user_id` AS `user_id`, `token` AS `token`, `refresh_token` AS `refresh_token`, `expires_at` AS `expires_at`, `ip_address` AS `ip_address`, `user_agent` AS `user_agent`, `is_active` AS `is_active`, `created_at` AS `created_at`
+2025-09-11 14:08:29 +08:00: prisma:query UPDATE `main`.`users` SET `last_login_at` = ?, `updated_at` = ? WHERE (`main`.`users`.`id` = ? AND 1=1) RETURNING `id` AS `id`, `username` AS `username`, `email` AS `email`, `password_hash` AS `password_hash`, `google_id` AS `google_id`, `avatar_url` AS `avatar_url`, `phone` AS `phone`, `membership_level` AS `membership_level`, `membership_expires_at` AS `membership_expires_at`, `is_active` AS `is_active`, `email_verified` AS `email_verified`, `last_login_at` AS `last_login_at`, `preferences` AS `preferences`, `created_at` AS `created_at`, `updated_at` AS `updated_at`
+2025-09-11 14:08:29 +08:00: 2025-09-11 14:08:29:829 [32minfo[39m: [32mUser logged in:[39m
+2025-09-11 14:08:29 +08:00: 2025-09-11 14:08:29:829 [32minfo[39m: [32mRequest completed[39m
+2025-09-11 14:54:22 +08:00: 2025-09-11 14:54:22:5422 [32minfo[39m: [32mRequest started[39m
+2025-09-11 14:54:22 +08:00: prisma:query SELECT 1
+2025-09-11 14:54:22 +08:00: prisma:query SELECT `main`.`users`.`id`, `main`.`users`.`username`, `main`.`users`.`email`, `main`.`users`.`password_hash`, `main`.`users`.`membership_level`, `main`.`users`.`membership_expires_at`, `main`.`users`.`is_active`, `main`.`users`.`email_verified`, `main`.`users`.`avatar_url`, `main`.`users`.`created_at` FROM `main`.`users` WHERE (`main`.`users`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
+2025-09-11 14:54:23 +08:00: prisma:query INSERT INTO `main`.`user_sessions` (`user_id`, `token`, `refresh_token`, `expires_at`, `ip_address`, `user_agent`, `is_active`, `created_at`) VALUES (?,?,?,?,?,?,?,?) RETURNING `id` AS `id`, `user_id` AS `user_id`, `token` AS `token`, `refresh_token` AS `refresh_token`, `expires_at` AS `expires_at`, `ip_address` AS `ip_address`, `user_agent` AS `user_agent`, `is_active` AS `is_active`, `created_at` AS `created_at`
+2025-09-11 14:54:23 +08:00: prisma:query UPDATE `main`.`users` SET `last_login_at` = ?, `updated_at` = ? WHERE (`main`.`users`.`id` = ? AND 1=1) RETURNING `id` AS `id`, `username` AS `username`, `email` AS `email`, `password_hash` AS `password_hash`, `google_id` AS `google_id`, `avatar_url` AS `avatar_url`, `phone` AS `phone`, `membership_level` AS `membership_level`, `membership_expires_at` AS `membership_expires_at`, `is_active` AS `is_active`, `email_verified` AS `email_verified`, `last_login_at` AS `last_login_at`, `preferences` AS `preferences`, `created_at` AS `created_at`, `updated_at` AS `updated_at`
+2025-09-11 14:54:23 +08:00: 2025-09-11 14:54:23:5423 [32minfo[39m: [32mUser logged in:[39m
+2025-09-11 14:54:23 +08:00: 2025-09-11 14:54:23:5423 [32minfo[39m: [32mRequest completed[39m
+2025-09-11 14:56:22 +08:00: 2025-09-11 14:56:22:5622 [33mwarn[39m: [33mJSON parsing error: Bad escaped character in JSON at position 60[39m
+2025-09-11 14:56:27 +08:00: 2025-09-11 14:56:27:5627 [33mwarn[39m: [33mJSON parsing error: Bad escaped character in JSON at position 60[39m
+2025-09-11 15:18:15 +08:00: 2025-09-11 15:18:15:1815 [32minfo[39m: [32mRequest started[39m
+2025-09-11 15:18:15 +08:00: prisma:query SELECT 1
+2025-09-11 15:18:15 +08:00: prisma:query SELECT `main`.`users`.`id`, `main`.`users`.`username`, `main`.`users`.`email`, `main`.`users`.`password_hash`, `main`.`users`.`membership_level`, `main`.`users`.`membership_expires_at`, `main`.`users`.`is_active`, `main`.`users`.`email_verified`, `main`.`users`.`avatar_url`, `main`.`users`.`created_at` FROM `main`.`users` WHERE (`main`.`users`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
+2025-09-11 15:18:16 +08:00: prisma:query INSERT INTO `main`.`user_sessions` (`user_id`, `token`, `refresh_token`, `expires_at`, `ip_address`, `user_agent`, `is_active`, `created_at`) VALUES (?,?,?,?,?,?,?,?) RETURNING `id` AS `id`, `user_id` AS `user_id`, `token` AS `token`, `refresh_token` AS `refresh_token`, `expires_at` AS `expires_at`, `ip_address` AS `ip_address`, `user_agent` AS `user_agent`, `is_active` AS `is_active`, `created_at` AS `created_at`
+2025-09-11 15:18:16 +08:00: prisma:query UPDATE `main`.`users` SET `last_login_at` = ?, `updated_at` = ? WHERE (`main`.`users`.`id` = ? AND 1=1) RETURNING `id` AS `id`, `username` AS `username`, `email` AS `email`, `password_hash` AS `password_hash`, `google_id` AS `google_id`, `avatar_url` AS `avatar_url`, `phone` AS `phone`, `membership_level` AS `membership_level`, `membership_expires_at` AS `membership_expires_at`, `is_active` AS `is_active`, `email_verified` AS `email_verified`, `last_login_at` AS `last_login_at`, `preferences` AS `preferences`, `created_at` AS `created_at`, `updated_at` AS `updated_at`
+2025-09-11 15:18:16 +08:00: 2025-09-11 15:18:16:1816 [32minfo[39m: [32mUser logged in:[39m
+2025-09-11 15:18:16 +08:00: 2025-09-11 15:18:16:1816 [32minfo[39m: [32mRequest completed[39m
+2025-09-11 15:40:22 +08:00: 2025-09-11 15:40:22:4022 [33mwarn[39m: [33mJSON parsing error: Bad escaped character in JSON at position 60[39m
+2025-09-11 15:40:31 +08:00: 2025-09-11 15:40:31:4031 [32minfo[39m: [32mRequest started[39m
+2025-09-11 15:40:31 +08:00: 2025-09-11 15:40:31:4031 [33mwarn[39m: [33mClient error:[39m
+2025-09-11 15:40:31 +08:00: 2025-09-11 15:40:31:4031 [32minfo[39m: [32mRequest completed[39m
+2025-09-11 15:40:58 +08:00: 2025-09-11 15:40:58:4058 [32minfo[39m: [32mRequest started[39m
+2025-09-11 15:40:58 +08:00: prisma:query SELECT 1
+2025-09-11 15:40:58 +08:00: prisma:query SELECT `main`.`users`.`id`, `main`.`users`.`username`, `main`.`users`.`email`, `main`.`users`.`password_hash`, `main`.`users`.`membership_level`, `main`.`users`.`membership_expires_at`, `main`.`users`.`is_active`, `main`.`users`.`email_verified`, `main`.`users`.`avatar_url`, `main`.`users`.`created_at` FROM `main`.`users` WHERE (`main`.`users`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
+2025-09-11 15:40:58 +08:00: prisma:query INSERT INTO `main`.`user_sessions` (`user_id`, `token`, `refresh_token`, `expires_at`, `ip_address`, `user_agent`, `is_active`, `created_at`) VALUES (?,?,?,?,?,?,?,?) RETURNING `id` AS `id`, `user_id` AS `user_id`, `token` AS `token`, `refresh_token` AS `refresh_token`, `expires_at` AS `expires_at`, `ip_address` AS `ip_address`, `user_agent` AS `user_agent`, `is_active` AS `is_active`, `created_at` AS `created_at`
+2025-09-11 15:40:58 +08:00: prisma:query UPDATE `main`.`users` SET `last_login_at` = ?, `updated_at` = ? WHERE (`main`.`users`.`id` = ? AND 1=1) RETURNING `id` AS `id`, `username` AS `username`, `email` AS `email`, `password_hash` AS `password_hash`, `google_id` AS `google_id`, `avatar_url` AS `avatar_url`, `phone` AS `phone`, `membership_level` AS `membership_level`, `membership_expires_at` AS `membership_expires_at`, `is_active` AS `is_active`, `email_verified` AS `email_verified`, `last_login_at` AS `last_login_at`, `preferences` AS `preferences`, `created_at` AS `created_at`, `updated_at` AS `updated_at`
+2025-09-11 15:40:58 +08:00: 2025-09-11 15:40:58:4058 [32minfo[39m: [32mUser logged in:[39m
+2025-09-11 15:40:58 +08:00: 2025-09-11 15:40:58:4058 [32minfo[39m: [32mRequest completed[39m
+2025-09-11 15:42:54 +08:00: 2025-09-11 15:42:54:4254 [32minfo[39m: [32mRequest started[39m
+2025-09-11 15:42:54 +08:00: prisma:query SELECT 1
+2025-09-11 15:42:54 +08:00: prisma:query SELECT `main`.`users`.`id`, `main`.`users`.`username`, `main`.`users`.`email`, `main`.`users`.`password_hash`, `main`.`users`.`membership_level`, `main`.`users`.`membership_expires_at`, `main`.`users`.`is_active`, `main`.`users`.`email_verified`, `main`.`users`.`avatar_url`, `main`.`users`.`created_at` FROM `main`.`users` WHERE (`main`.`users`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
+2025-09-11 15:42:54 +08:00: prisma:query INSERT INTO `main`.`user_sessions` (`user_id`, `token`, `refresh_token`, `expires_at`, `ip_address`, `user_agent`, `is_active`, `created_at`) VALUES (?,?,?,?,?,?,?,?) RETURNING `id` AS `id`, `user_id` AS `user_id`, `token` AS `token`, `refresh_token` AS `refresh_token`, `expires_at` AS `expires_at`, `ip_address` AS `ip_address`, `user_agent` AS `user_agent`, `is_active` AS `is_active`, `created_at` AS `created_at`
+2025-09-11 15:42:54 +08:00: prisma:query UPDATE `main`.`users` SET `last_login_at` = ?, `updated_at` = ? WHERE (`main`.`users`.`id` = ? AND 1=1) RETURNING `id` AS `id`, `username` AS `username`, `email` AS `email`, `password_hash` AS `password_hash`, `google_id` AS `google_id`, `avatar_url` AS `avatar_url`, `phone` AS `phone`, `membership_level` AS `membership_level`, `membership_expires_at` AS `membership_expires_at`, `is_active` AS `is_active`, `email_verified` AS `email_verified`, `last_login_at` AS `last_login_at`, `preferences` AS `preferences`, `created_at` AS `created_at`, `updated_at` AS `updated_at`
+2025-09-11 15:42:54 +08:00: 2025-09-11 15:42:54:4254 [32minfo[39m: [32mUser logged in:[39m
+2025-09-11 15:42:54 +08:00: 2025-09-11 15:42:54:4254 [32minfo[39m: [32mRequest completed[39m
+2025-09-11 17:51:18 +08:00: 2025-09-11 17:51:18:5118 [32minfo[39m: [32mRequest started[39m
+2025-09-11 17:51:18 +08:00: 2025-09-11 17:51:18:5118 [33mwarn[39m: [33mClient error:[39m
+2025-09-11 17:51:18 +08:00: 2025-09-11 17:51:18:5118 [32minfo[39m: [32mRequest completed[39m
+2025-09-11 17:51:24 +08:00: 2025-09-11 17:51:24:5124 [32minfo[39m: [32mRequest started[39m
+2025-09-11 17:51:24 +08:00: 2025-09-11 17:51:24:5124 [33mwarn[39m: [33mClient error:[39m
+2025-09-11 17:51:24 +08:00: 2025-09-11 17:51:24:5124 [32minfo[39m: [32mRequest completed[39m
+2025-09-11 17:51:37 +08:00: 2025-09-11 17:51:37:5137 [32minfo[39m: [32mRequest started[39m
+2025-09-11 17:51:37 +08:00: 2025-09-11 17:51:37:5137 [33mwarn[39m: [33mClient error:[39m
+2025-09-11 17:51:37 +08:00: 2025-09-11 17:51:37:5137 [32minfo[39m: [32mRequest completed[39m
+2025-09-11 18:09:56 +08:00: 2025-09-11 18:09:56:956 [32minfo[39m: [32mRequest started[39m
+2025-09-11 18:09:56 +08:00: 2025-09-11 18:09:56:956 [33mwarn[39m: [33mClient error:[39m
+2025-09-11 18:09:56 +08:00: 2025-09-11 18:09:56:956 [32minfo[39m: [32mRequest completed[39m
+2025-09-11 18:09:57 +08:00: 2025-09-11 18:09:57:957 [32minfo[39m: [32mRequest started[39m
+2025-09-11 18:09:57 +08:00: 2025-09-11 18:09:57:957 [33mwarn[39m: [33mClient error:[39m
+2025-09-11 18:09:57 +08:00: 2025-09-11 18:09:57:957 [32minfo[39m: [32mRequest completed[39m
+2025-09-11 18:09:57 +08:00: 2025-09-11 18:09:57:957 [32minfo[39m: [32mRequest started[39m
+2025-09-11 18:09:57 +08:00: 2025-09-11 18:09:57:957 [33mwarn[39m: [33mClient error:[39m
+2025-09-11 18:09:57 +08:00: 2025-09-11 18:09:57:957 [32minfo[39m: [32mRequest completed[39m
+2025-09-11 18:09:58 +08:00: 2025-09-11 18:09:58:958 [32minfo[39m: [32mRequest started[39m
+2025-09-11 18:09:58 +08:00: 2025-09-11 18:09:58:958 [33mwarn[39m: [33mClient error:[39m
+2025-09-11 18:09:58 +08:00: 2025-09-11 18:09:58:958 [32minfo[39m: [32mRequest completed[39m
+2025-09-11 18:09:58 +08:00: 2025-09-11 18:09:58:958 [32minfo[39m: [32mRequest started[39m
+2025-09-11 18:09:58 +08:00: 2025-09-11 18:09:58:958 [33mwarn[39m: [33mClient error:[39m
+2025-09-11 18:09:58 +08:00: 2025-09-11 18:09:58:958 [32minfo[39m: [32mRequest completed[39m
+2025-09-11 18:09:59 +08:00: 2025-09-11 18:09:59:959 [32minfo[39m: [32mRequest started[39m
+2025-09-11 18:09:59 +08:00: 2025-09-11 18:09:59:959 [33mwarn[39m: [33mClient error:[39m
+2025-09-11 18:09:59 +08:00: 2025-09-11 18:09:59:959 [32minfo[39m: [32mRequest completed[39m
+2025-09-11 21:04:17 +08:00: 2025-09-11 21:04:17:417 [32minfo[39m: [32mRequest started[39m
+2025-09-11 21:04:17 +08:00: prisma:query SELECT 1
+2025-09-11 21:04:17 +08:00: prisma:query SELECT 1
+2025-09-11 21:04:17 +08:00: 2025-09-11 21:04:17:417 [32minfo[39m: [32mUpload service health check passed[39m
+2025-09-11 21:04:18 +08:00: 2025-09-11 21:04:18:418 [32minfo[39m: [32mRequest completed[39m
+2025-09-11 21:51:30 +08:00: 2025-09-11 21:51:30:5130 [32minfo[39m: [32mRequest started[39m
+2025-09-11 21:51:30 +08:00: prisma:query SELECT 1
+2025-09-11 21:51:30 +08:00: prisma:query SELECT `main`.`users`.`id`, `main`.`users`.`username`, `main`.`users`.`email`, `main`.`users`.`password_hash`, `main`.`users`.`membership_level`, `main`.`users`.`membership_expires_at`, `main`.`users`.`is_active`, `main`.`users`.`email_verified`, `main`.`users`.`avatar_url`, `main`.`users`.`created_at` FROM `main`.`users` WHERE (`main`.`users`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
+2025-09-11 21:51:31 +08:00: prisma:query INSERT INTO `main`.`user_sessions` (`user_id`, `token`, `refresh_token`, `expires_at`, `ip_address`, `user_agent`, `is_active`, `created_at`) VALUES (?,?,?,?,?,?,?,?) RETURNING `id` AS `id`, `user_id` AS `user_id`, `token` AS `token`, `refresh_token` AS `refresh_token`, `expires_at` AS `expires_at`, `ip_address` AS `ip_address`, `user_agent` AS `user_agent`, `is_active` AS `is_active`, `created_at` AS `created_at`
+2025-09-11 21:51:31 +08:00: prisma:query UPDATE `main`.`users` SET `last_login_at` = ?, `updated_at` = ? WHERE (`main`.`users`.`id` = ? AND 1=1) RETURNING `id` AS `id`, `username` AS `username`, `email` AS `email`, `password_hash` AS `password_hash`, `google_id` AS `google_id`, `avatar_url` AS `avatar_url`, `phone` AS `phone`, `membership_level` AS `membership_level`, `membership_expires_at` AS `membership_expires_at`, `is_active` AS `is_active`, `email_verified` AS `email_verified`, `last_login_at` AS `last_login_at`, `preferences` AS `preferences`, `created_at` AS `created_at`, `updated_at` AS `updated_at`
+2025-09-11 21:51:31 +08:00: 2025-09-11 21:51:31:5131 [32minfo[39m: [32mUser logged in:[39m
+2025-09-11 21:51:31 +08:00: 2025-09-11 21:51:31:5131 [32minfo[39m: [32mRequest completed[39m
+2025-09-11 21:51:41 +08:00: 2025-09-11 21:51:41:5141 [32minfo[39m: [32mRequest started[39m
+2025-09-11 21:51:41 +08:00: prisma:query SELECT `main`.`users`.`id`, `main`.`users`.`username`, `main`.`users`.`email`, `main`.`users`.`password_hash`, `main`.`users`.`membership_level`, `main`.`users`.`membership_expires_at`, `main`.`users`.`is_active`, `main`.`users`.`email_verified`, `main`.`users`.`avatar_url`, `main`.`users`.`created_at` FROM `main`.`users` WHERE (`main`.`users`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
+2025-09-11 21:51:42 +08:00: prisma:query INSERT INTO `main`.`user_sessions` (`user_id`, `token`, `refresh_token`, `expires_at`, `ip_address`, `user_agent`, `is_active`, `created_at`) VALUES (?,?,?,?,?,?,?,?) RETURNING `id` AS `id`, `user_id` AS `user_id`, `token` AS `token`, `refresh_token` AS `refresh_token`, `expires_at` AS `expires_at`, `ip_address` AS `ip_address`, `user_agent` AS `user_agent`, `is_active` AS `is_active`, `created_at` AS `created_at`
+2025-09-11 21:51:42 +08:00: prisma:query UPDATE `main`.`users` SET `last_login_at` = ?, `updated_at` = ? WHERE (`main`.`users`.`id` = ? AND 1=1) RETURNING `id` AS `id`, `username` AS `username`, `email` AS `email`, `password_hash` AS `password_hash`, `google_id` AS `google_id`, `avatar_url` AS `avatar_url`, `phone` AS `phone`, `membership_level` AS `membership_level`, `membership_expires_at` AS `membership_expires_at`, `is_active` AS `is_active`, `email_verified` AS `email_verified`, `last_login_at` AS `last_login_at`, `preferences` AS `preferences`, `created_at` AS `created_at`, `updated_at` AS `updated_at`
+2025-09-11 21:51:42 +08:00: 2025-09-11 21:51:42:5142 [32minfo[39m: [32mUser logged in:[39m
+2025-09-11 21:51:42 +08:00: 2025-09-11 21:51:42:5142 [32minfo[39m: [32mRequest completed[39m
+2025-09-11 22:21:34 +08:00: 2025-09-11 22:21:34:2134 [32minfo[39m: [32mRequest started[39m
+2025-09-11 22:21:34 +08:00: prisma:query SELECT 1
+2025-09-11 22:21:34 +08:00: prisma:query SELECT `main`.`users`.`id`, `main`.`users`.`username`, `main`.`users`.`email`, `main`.`users`.`password_hash`, `main`.`users`.`membership_level`, `main`.`users`.`membership_expires_at`, `main`.`users`.`is_active`, `main`.`users`.`email_verified`, `main`.`users`.`avatar_url`, `main`.`users`.`created_at` FROM `main`.`users` WHERE (`main`.`users`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
+2025-09-11 22:21:35 +08:00: prisma:query INSERT INTO `main`.`user_sessions` (`user_id`, `token`, `refresh_token`, `expires_at`, `ip_address`, `user_agent`, `is_active`, `created_at`) VALUES (?,?,?,?,?,?,?,?) RETURNING `id` AS `id`, `user_id` AS `user_id`, `token` AS `token`, `refresh_token` AS `refresh_token`, `expires_at` AS `expires_at`, `ip_address` AS `ip_address`, `user_agent` AS `user_agent`, `is_active` AS `is_active`, `created_at` AS `created_at`
+2025-09-11 22:21:35 +08:00: prisma:query UPDATE `main`.`users` SET `last_login_at` = ?, `updated_at` = ? WHERE (`main`.`users`.`id` = ? AND 1=1) RETURNING `id` AS `id`, `username` AS `username`, `email` AS `email`, `password_hash` AS `password_hash`, `google_id` AS `google_id`, `avatar_url` AS `avatar_url`, `phone` AS `phone`, `membership_level` AS `membership_level`, `membership_expires_at` AS `membership_expires_at`, `is_active` AS `is_active`, `email_verified` AS `email_verified`, `last_login_at` AS `last_login_at`, `preferences` AS `preferences`, `created_at` AS `created_at`, `updated_at` AS `updated_at`
+2025-09-11 22:21:35 +08:00: 2025-09-11 22:21:35:2135 [32minfo[39m: [32mUser logged in:[39m
+2025-09-11 22:21:35 +08:00: 2025-09-11 22:21:35:2135 [32minfo[39m: [32mRequest completed[39m
+2025-09-12 06:48:43 +08:00: 2025-09-12 06:48:43:4843 [32minfo[39m: [32mRequest started[39m
+2025-09-12 06:48:43 +08:00: 2025-09-12 06:48:43:4843 [33mwarn[39m: [33mClient error:[39m
+2025-09-12 06:48:43 +08:00: 2025-09-12 06:48:43:4843 [32minfo[39m: [32mRequest completed[39m
+2025-09-12 11:33:44 +08:00: 2025-09-12 11:33:44:3344 [33mwarn[39m: [33mJSON parsing error: Bad escaped character in JSON at position 60[39m
+2025-09-12 11:33:48 +08:00: 2025-09-12 11:33:48:3348 [32minfo[39m: [32mRequest started[39m
+2025-09-12 11:33:48 +08:00: prisma:query SELECT 1
+2025-09-12 11:33:48 +08:00: prisma:query SELECT `main`.`users`.`id`, `main`.`users`.`username`, `main`.`users`.`email`, `main`.`users`.`password_hash`, `main`.`users`.`membership_level`, `main`.`users`.`membership_expires_at`, `main`.`users`.`is_active`, `main`.`users`.`email_verified`, `main`.`users`.`avatar_url`, `main`.`users`.`created_at` FROM `main`.`users` WHERE (`main`.`users`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
+2025-09-12 11:33:49 +08:00: prisma:query INSERT INTO `main`.`user_sessions` (`user_id`, `token`, `refresh_token`, `expires_at`, `ip_address`, `user_agent`, `is_active`, `created_at`) VALUES (?,?,?,?,?,?,?,?) RETURNING `id` AS `id`, `user_id` AS `user_id`, `token` AS `token`, `refresh_token` AS `refresh_token`, `expires_at` AS `expires_at`, `ip_address` AS `ip_address`, `user_agent` AS `user_agent`, `is_active` AS `is_active`, `created_at` AS `created_at`
+2025-09-12 11:33:49 +08:00: prisma:query UPDATE `main`.`users` SET `last_login_at` = ?, `updated_at` = ? WHERE (`main`.`users`.`id` = ? AND 1=1) RETURNING `id` AS `id`, `username` AS `username`, `email` AS `email`, `password_hash` AS `password_hash`, `google_id` AS `google_id`, `avatar_url` AS `avatar_url`, `phone` AS `phone`, `membership_level` AS `membership_level`, `membership_expires_at` AS `membership_expires_at`, `is_active` AS `is_active`, `email_verified` AS `email_verified`, `last_login_at` AS `last_login_at`, `preferences` AS `preferences`, `created_at` AS `created_at`, `updated_at` AS `updated_at`
+2025-09-12 11:33:49 +08:00: 2025-09-12 11:33:49:3349 [32minfo[39m: [32mUser logged in:[39m
+2025-09-12 11:33:49 +08:00: 2025-09-12 11:33:49:3349 [32minfo[39m: [32mRequest completed[39m
+2025-09-12 12:17:27 +08:00: 2025-09-12 12:17:27:1727 [33mwarn[39m: [33mJSON parsing error: Bad escaped character in JSON at position 60[39m
+2025-09-12 12:17:47 +08:00: 2025-09-12 12:17:47:1747 [32minfo[39m: [32mRequest started[39m
+2025-09-12 12:17:47 +08:00: prisma:query SELECT 1
+2025-09-12 12:17:47 +08:00: prisma:query SELECT `main`.`users`.`id`, `main`.`users`.`username`, `main`.`users`.`email`, `main`.`users`.`password_hash`, `main`.`users`.`membership_level`, `main`.`users`.`membership_expires_at`, `main`.`users`.`is_active`, `main`.`users`.`email_verified`, `main`.`users`.`avatar_url`, `main`.`users`.`created_at` FROM `main`.`users` WHERE (`main`.`users`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
+2025-09-12 12:17:47 +08:00: prisma:query INSERT INTO `main`.`user_sessions` (`user_id`, `token`, `refresh_token`, `expires_at`, `ip_address`, `user_agent`, `is_active`, `created_at`) VALUES (?,?,?,?,?,?,?,?) RETURNING `id` AS `id`, `user_id` AS `user_id`, `token` AS `token`, `refresh_token` AS `refresh_token`, `expires_at` AS `expires_at`, `ip_address` AS `ip_address`, `user_agent` AS `user_agent`, `is_active` AS `is_active`, `created_at` AS `created_at`
+2025-09-12 12:17:47 +08:00: prisma:query UPDATE `main`.`users` SET `last_login_at` = ?, `updated_at` = ? WHERE (`main`.`users`.`id` = ? AND 1=1) RETURNING `id` AS `id`, `username` AS `username`, `email` AS `email`, `password_hash` AS `password_hash`, `google_id` AS `google_id`, `avatar_url` AS `avatar_url`, `phone` AS `phone`, `membership_level` AS `membership_level`, `membership_expires_at` AS `membership_expires_at`, `is_active` AS `is_active`, `email_verified` AS `email_verified`, `last_login_at` AS `last_login_at`, `preferences` AS `preferences`, `created_at` AS `created_at`, `updated_at` AS `updated_at`
+2025-09-12 12:17:47 +08:00: 2025-09-12 12:17:47:1747 [32minfo[39m: [32mUser logged in:[39m
+2025-09-12 12:17:47 +08:00: 2025-09-12 12:17:47:1747 [32minfo[39m: [32mRequest completed[39m
+2025-09-12 12:45:09 +08:00: 2025-09-12 12:45:09:459 [32minfo[39m: [32mRequest started[39m
+2025-09-12 12:45:09 +08:00: prisma:query SELECT 1
+2025-09-12 12:45:09 +08:00: prisma:query SELECT `main`.`users`.`id`, `main`.`users`.`username`, `main`.`users`.`email`, `main`.`users`.`password_hash`, `main`.`users`.`membership_level`, `main`.`users`.`membership_expires_at`, `main`.`users`.`is_active`, `main`.`users`.`email_verified`, `main`.`users`.`avatar_url`, `main`.`users`.`created_at` FROM `main`.`users` WHERE (`main`.`users`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
+2025-09-12 12:45:10 +08:00: prisma:query INSERT INTO `main`.`user_sessions` (`user_id`, `token`, `refresh_token`, `expires_at`, `ip_address`, `user_agent`, `is_active`, `created_at`) VALUES (?,?,?,?,?,?,?,?) RETURNING `id` AS `id`, `user_id` AS `user_id`, `token` AS `token`, `refresh_token` AS `refresh_token`, `expires_at` AS `expires_at`, `ip_address` AS `ip_address`, `user_agent` AS `user_agent`, `is_active` AS `is_active`, `created_at` AS `created_at`
+2025-09-12 12:45:10 +08:00: prisma:query UPDATE `main`.`users` SET `last_login_at` = ?, `updated_at` = ? WHERE (`main`.`users`.`id` = ? AND 1=1) RETURNING `id` AS `id`, `username` AS `username`, `email` AS `email`, `password_hash` AS `password_hash`, `google_id` AS `google_id`, `avatar_url` AS `avatar_url`, `phone` AS `phone`, `membership_level` AS `membership_level`, `membership_expires_at` AS `membership_expires_at`, `is_active` AS `is_active`, `email_verified` AS `email_verified`, `last_login_at` AS `last_login_at`, `preferences` AS `preferences`, `created_at` AS `created_at`, `updated_at` AS `updated_at`
+2025-09-12 12:45:10 +08:00: 2025-09-12 12:45:10:4510 [32minfo[39m: [32mUser logged in:[39m
+2025-09-12 12:45:10 +08:00: 2025-09-12 12:45:10:4510 [32minfo[39m: [32mRequest completed[39m
+2025-09-12 12:45:15 +08:00: 2025-09-12 12:45:15:4515 [33mwarn[39m: [33mJSON parsing error: Bad escaped character in JSON at position 60[39m
+2025-09-12 12:46:02 +08:00: 2025-09-12 12:46:02:462 [32minfo[39m: [32mRequest started[39m
+2025-09-12 12:46:02 +08:00: prisma:query SELECT 1
+2025-09-12 12:46:02 +08:00: prisma:query SELECT `main`.`users`.`id`, `main`.`users`.`username`, `main`.`users`.`email`, `main`.`users`.`password_hash`, `main`.`users`.`membership_level`, `main`.`users`.`membership_expires_at`, `main`.`users`.`is_active`, `main`.`users`.`email_verified`, `main`.`users`.`avatar_url`, `main`.`users`.`created_at` FROM `main`.`users` WHERE (`main`.`users`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
+2025-09-12 12:46:02 +08:00: prisma:query INSERT INTO `main`.`user_sessions` (`user_id`, `token`, `refresh_token`, `expires_at`, `ip_address`, `user_agent`, `is_active`, `created_at`) VALUES (?,?,?,?,?,?,?,?) RETURNING `id` AS `id`, `user_id` AS `user_id`, `token` AS `token`, `refresh_token` AS `refresh_token`, `expires_at` AS `expires_at`, `ip_address` AS `ip_address`, `user_agent` AS `user_agent`, `is_active` AS `is_active`, `created_at` AS `created_at`
+2025-09-12 12:46:02 +08:00: prisma:query UPDATE `main`.`users` SET `last_login_at` = ?, `updated_at` = ? WHERE (`main`.`users`.`id` = ? AND 1=1) RETURNING `id` AS `id`, `username` AS `username`, `email` AS `email`, `password_hash` AS `password_hash`, `google_id` AS `google_id`, `avatar_url` AS `avatar_url`, `phone` AS `phone`, `membership_level` AS `membership_level`, `membership_expires_at` AS `membership_expires_at`, `is_active` AS `is_active`, `email_verified` AS `email_verified`, `last_login_at` AS `last_login_at`, `preferences` AS `preferences`, `created_at` AS `created_at`, `updated_at` AS `updated_at`
+2025-09-12 12:46:02 +08:00: 2025-09-12 12:46:02:462 [32minfo[39m: [32mUser logged in:[39m
+2025-09-12 12:46:02 +08:00: 2025-09-12 12:46:02:462 [32minfo[39m: [32mRequest completed[39m
+2025-09-12 12:46:17 +08:00: 2025-09-12 12:46:17:4617 [32minfo[39m: [32mRequest started[39m
+2025-09-12 12:46:17 +08:00: prisma:query SELECT 1
+2025-09-12 12:46:17 +08:00: prisma:query SELECT `main`.`users`.`id`, `main`.`users`.`username`, `main`.`users`.`email`, `main`.`users`.`password_hash`, `main`.`users`.`membership_level`, `main`.`users`.`membership_expires_at`, `main`.`users`.`is_active`, `main`.`users`.`email_verified`, `main`.`users`.`avatar_url`, `main`.`users`.`created_at` FROM `main`.`users` WHERE (`main`.`users`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
+2025-09-12 12:46:17 +08:00: prisma:query INSERT INTO `main`.`user_sessions` (`user_id`, `token`, `refresh_token`, `expires_at`, `ip_address`, `user_agent`, `is_active`, `created_at`) VALUES (?,?,?,?,?,?,?,?) RETURNING `id` AS `id`, `user_id` AS `user_id`, `token` AS `token`, `refresh_token` AS `refresh_token`, `expires_at` AS `expires_at`, `ip_address` AS `ip_address`, `user_agent` AS `user_agent`, `is_active` AS `is_active`, `created_at` AS `created_at`
+2025-09-12 12:46:17 +08:00: prisma:query UPDATE `main`.`users` SET `last_login_at` = ?, `updated_at` = ? WHERE (`main`.`users`.`id` = ? AND 1=1) RETURNING `id` AS `id`, `username` AS `username`, `email` AS `email`, `password_hash` AS `password_hash`, `google_id` AS `google_id`, `avatar_url` AS `avatar_url`, `phone` AS `phone`, `membership_level` AS `membership_level`, `membership_expires_at` AS `membership_expires_at`, `is_active` AS `is_active`, `email_verified` AS `email_verified`, `last_login_at` AS `last_login_at`, `preferences` AS `preferences`, `created_at` AS `created_at`, `updated_at` AS `updated_at`
+2025-09-12 12:46:17 +08:00: 2025-09-12 12:46:17:4617 [32minfo[39m: [32mUser logged in:[39m
+2025-09-12 12:46:17 +08:00: 2025-09-12 12:46:17:4617 [32minfo[39m: [32mRequest completed[39m
+2025-09-12 12:46:31 +08:00: 2025-09-12 12:46:31:4631 [32minfo[39m: [32mRequest started[39m
+2025-09-12 12:46:31 +08:00: prisma:query SELECT `main`.`users`.`id`, `main`.`users`.`username`, `main`.`users`.`email`, `main`.`users`.`password_hash`, `main`.`users`.`membership_level`, `main`.`users`.`membership_expires_at`, `main`.`users`.`is_active`, `main`.`users`.`email_verified`, `main`.`users`.`avatar_url`, `main`.`users`.`created_at` FROM `main`.`users` WHERE (`main`.`users`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
+2025-09-12 12:46:31 +08:00: prisma:query INSERT INTO `main`.`user_sessions` (`user_id`, `token`, `refresh_token`, `expires_at`, `ip_address`, `user_agent`, `is_active`, `created_at`) VALUES (?,?,?,?,?,?,?,?) RETURNING `id` AS `id`, `user_id` AS `user_id`, `token` AS `token`, `refresh_token` AS `refresh_token`, `expires_at` AS `expires_at`, `ip_address` AS `ip_address`, `user_agent` AS `user_agent`, `is_active` AS `is_active`, `created_at` AS `created_at`
+2025-09-12 12:46:31 +08:00: prisma:query UPDATE `main`.`users` SET `last_login_at` = ?, `updated_at` = ? WHERE (`main`.`users`.`id` = ? AND 1=1) RETURNING `id` AS `id`, `username` AS `username`, `email` AS `email`, `password_hash` AS `password_hash`, `google_id` AS `google_id`, `avatar_url` AS `avatar_url`, `phone` AS `phone`, `membership_level` AS `membership_level`, `membership_expires_at` AS `membership_expires_at`, `is_active` AS `is_active`, `email_verified` AS `email_verified`, `last_login_at` AS `last_login_at`, `preferences` AS `preferences`, `created_at` AS `created_at`, `updated_at` AS `updated_at`
+2025-09-12 12:46:31 +08:00: 2025-09-12 12:46:31:4631 [32minfo[39m: [32mUser logged in:[39m
+2025-09-12 12:46:31 +08:00: 2025-09-12 12:46:31:4631 [32minfo[39m: [32mRequest completed[39m
+2025-09-12 12:47:55 +08:00: 2025-09-12 12:47:55:4755 [32minfo[39m: [32mRequest started[39m
+2025-09-12 12:47:55 +08:00: prisma:query SELECT 1
+2025-09-12 12:47:55 +08:00: prisma:query SELECT `main`.`users`.`id`, `main`.`users`.`username`, `main`.`users`.`email`, `main`.`users`.`password_hash`, `main`.`users`.`membership_level`, `main`.`users`.`membership_expires_at`, `main`.`users`.`is_active`, `main`.`users`.`email_verified`, `main`.`users`.`avatar_url`, `main`.`users`.`created_at` FROM `main`.`users` WHERE (`main`.`users`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
+2025-09-12 12:47:56 +08:00: prisma:query INSERT INTO `main`.`user_sessions` (`user_id`, `token`, `refresh_token`, `expires_at`, `ip_address`, `user_agent`, `is_active`, `created_at`) VALUES (?,?,?,?,?,?,?,?) RETURNING `id` AS `id`, `user_id` AS `user_id`, `token` AS `token`, `refresh_token` AS `refresh_token`, `expires_at` AS `expires_at`, `ip_address` AS `ip_address`, `user_agent` AS `user_agent`, `is_active` AS `is_active`, `created_at` AS `created_at`
+2025-09-12 12:47:56 +08:00: prisma:query UPDATE `main`.`users` SET `last_login_at` = ?, `updated_at` = ? WHERE (`main`.`users`.`id` = ? AND 1=1) RETURNING `id` AS `id`, `username` AS `username`, `email` AS `email`, `password_hash` AS `password_hash`, `google_id` AS `google_id`, `avatar_url` AS `avatar_url`, `phone` AS `phone`, `membership_level` AS `membership_level`, `membership_expires_at` AS `membership_expires_at`, `is_active` AS `is_active`, `email_verified` AS `email_verified`, `last_login_at` AS `last_login_at`, `preferences` AS `preferences`, `created_at` AS `created_at`, `updated_at` AS `updated_at`
+2025-09-12 12:47:56 +08:00: 2025-09-12 12:47:56:4756 [32minfo[39m: [32mUser logged in:[39m
+2025-09-12 12:47:56 +08:00: 2025-09-12 12:47:56:4756 [32minfo[39m: [32mRequest completed[39m
+2025-09-12 12:48:09 +08:00: 2025-09-12 12:48:09:489 [32minfo[39m: [32mRequest started[39m
+2025-09-12 12:48:09 +08:00: prisma:query SELECT `main`.`users`.`id`, `main`.`users`.`username`, `main`.`users`.`email`, `main`.`users`.`password_hash`, `main`.`users`.`membership_level`, `main`.`users`.`membership_expires_at`, `main`.`users`.`is_active`, `main`.`users`.`email_verified`, `main`.`users`.`avatar_url`, `main`.`users`.`created_at` FROM `main`.`users` WHERE (`main`.`users`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
+2025-09-12 12:48:09 +08:00: prisma:query INSERT INTO `main`.`user_sessions` (`user_id`, `token`, `refresh_token`, `expires_at`, `ip_address`, `user_agent`, `is_active`, `created_at`) VALUES (?,?,?,?,?,?,?,?) RETURNING `id` AS `id`, `user_id` AS `user_id`, `token` AS `token`, `refresh_token` AS `refresh_token`, `expires_at` AS `expires_at`, `ip_address` AS `ip_address`, `user_agent` AS `user_agent`, `is_active` AS `is_active`, `created_at` AS `created_at`
+2025-09-12 12:48:09 +08:00: prisma:query UPDATE `main`.`users` SET `last_login_at` = ?, `updated_at` = ? WHERE (`main`.`users`.`id` = ? AND 1=1) RETURNING `id` AS `id`, `username` AS `username`, `email` AS `email`, `password_hash` AS `password_hash`, `google_id` AS `google_id`, `avatar_url` AS `avatar_url`, `phone` AS `phone`, `membership_level` AS `membership_level`, `membership_expires_at` AS `membership_expires_at`, `is_active` AS `is_active`, `email_verified` AS `email_verified`, `last_login_at` AS `last_login_at`, `preferences` AS `preferences`, `created_at` AS `created_at`, `updated_at` AS `updated_at`
+2025-09-12 12:48:09 +08:00: 2025-09-12 12:48:09:489 [32minfo[39m: [32mUser logged in:[39m
+2025-09-12 12:48:09 +08:00: 2025-09-12 12:48:09:489 [32minfo[39m: [32mRequest completed[39m
+2025-09-12 14:02:32 +08:00: 2025-09-12 14:02:32:232 [32minfo[39m: [32mRequest started[39m
+2025-09-12 14:02:32 +08:00: 2025-09-12 14:02:32:232 [32minfo[39m: [32mRequest started[39m
+2025-09-12 14:02:32 +08:00: 2025-09-12 14:02:32:232 [33mwarn[39m: [33mClient error:[39m
+2025-09-12 14:02:32 +08:00: 2025-09-12 14:02:32:232 [32minfo[39m: [32mRequest completed[39m
+2025-09-12 14:02:32 +08:00: 2025-09-12 14:02:32:232 [33mwarn[39m: [33mClient error:[39m
+2025-09-12 14:02:32 +08:00: 2025-09-12 14:02:32:232 [32minfo[39m: [32mRequest completed[39m
+2025-09-12 14:24:20 +08:00: 2025-09-12 14:24:20:2420 [32minfo[39m: [32mRequest started[39m
+2025-09-12 14:24:20 +08:00: 2025-09-12 14:24:20:2420 [33mwarn[39m: [33mClient error:[39m
+2025-09-12 14:24:20 +08:00: 2025-09-12 14:24:20:2420 [32minfo[39m: [32mRequest completed[39m
+2025-09-12 14:24:47 +08:00: 2025-09-12 14:24:47:2447 [32minfo[39m: [32mRequest started[39m
+2025-09-12 14:24:47 +08:00: 2025-09-12 14:24:47:2447 [33mwarn[39m: [33mClient error:[39m
+2025-09-12 14:24:47 +08:00: 2025-09-12 14:24:47:2447 [32minfo[39m: [32mRequest completed[39m
+2025-09-12 14:25:10 +08:00: 2025-09-12 14:25:10:2510 [32minfo[39m: [32mRequest started[39m
+2025-09-12 14:25:10 +08:00: 2025-09-12 14:25:10:2510 [33mwarn[39m: [33mClient error:[39m
+2025-09-12 14:25:10 +08:00: 2025-09-12 14:25:10:2510 [32minfo[39m: [32mRequest completed[39m
+2025-09-12 14:25:27 +08:00: 2025-09-12 14:25:27:2527 [32minfo[39m: [32mRequest started[39m
+2025-09-12 14:25:27 +08:00: 2025-09-12 14:25:27:2527 [33mwarn[39m: [33mClient error:[39m
+2025-09-12 14:25:27 +08:00: 2025-09-12 14:25:27:2527 [32minfo[39m: [32mRequest completed[39m
+2025-09-12 14:25:44 +08:00: 2025-09-12 14:25:44:2544 [32minfo[39m: [32mRequest started[39m
+2025-09-12 14:25:44 +08:00: 2025-09-12 14:25:44:2544 [33mwarn[39m: [33mClient error:[39m
+2025-09-12 14:25:44 +08:00: 2025-09-12 14:25:44:2544 [32minfo[39m: [32mRequest completed[39m
+2025-09-12 14:26:08 +08:00: 2025-09-12 14:26:08:268 [32minfo[39m: [32mRequest started[39m
+2025-09-12 14:26:08 +08:00: 2025-09-12 14:26:08:268 [33mwarn[39m: [33mClient error:[39m
+2025-09-12 14:26:08 +08:00: 2025-09-12 14:26:08:268 [32minfo[39m: [32mRequest completed[39m
+2025-09-12 14:26:31 +08:00: 2025-09-12 14:26:31:2631 [32minfo[39m: [32mRequest started[39m
+2025-09-12 14:26:31 +08:00: 2025-09-12 14:26:31:2631 [33mwarn[39m: [33mClient error:[39m
+2025-09-12 14:26:31 +08:00: 2025-09-12 14:26:31:2631 [32minfo[39m: [32mRequest completed[39m
+2025-09-12 14:26:44 +08:00: 2025-09-12 14:26:44:2644 [32minfo[39m: [32mRequest started[39m
+2025-09-12 14:26:44 +08:00: 2025-09-12 14:26:44:2644 [33mwarn[39m: [33mClient error:[39m
+2025-09-12 14:26:44 +08:00: 2025-09-12 14:26:44:2644 [32minfo[39m: [32mRequest completed[39m
+2025-09-12 14:27:11 +08:00: 2025-09-12 14:27:11:2711 [32minfo[39m: [32mRequest started[39m
+2025-09-12 14:27:11 +08:00: 2025-09-12 14:27:11:2711 [33mwarn[39m: [33mClient error:[39m
+2025-09-12 14:27:11 +08:00: 2025-09-12 14:27:11:2711 [32minfo[39m: [32mRequest completed[39m
+2025-09-12 14:27:29 +08:00: 2025-09-12 14:27:29:2729 [32minfo[39m: [32mRequest started[39m
+2025-09-12 14:27:29 +08:00: 2025-09-12 14:27:29:2729 [33mwarn[39m: [33mClient error:[39m
+2025-09-12 14:27:29 +08:00: 2025-09-12 14:27:29:2729 [32minfo[39m: [32mRequest completed[39m
+2025-09-12 14:27:46 +08:00: 2025-09-12 14:27:46:2746 [32minfo[39m: [32mRequest started[39m
+2025-09-12 14:27:46 +08:00: 2025-09-12 14:27:46:2746 [33mwarn[39m: [33mClient error:[39m
+2025-09-12 14:27:46 +08:00: 2025-09-12 14:27:46:2746 [32minfo[39m: [32mRequest completed[39m
+2025-09-12 14:28:04 +08:00: 2025-09-12 14:28:04:284 [32minfo[39m: [32mRequest started[39m
+2025-09-12 14:28:04 +08:00: 2025-09-12 14:28:04:284 [33mwarn[39m: [33mClient error:[39m
+2025-09-12 14:28:04 +08:00: 2025-09-12 14:28:04:284 [32minfo[39m: [32mRequest completed[39m
+2025-09-12 14:28:19 +08:00: 2025-09-12 14:28:19:2819 [32minfo[39m: [32mRequest started[39m
+2025-09-12 14:28:19 +08:00: 2025-09-12 14:28:19:2819 [33mwarn[39m: [33mClient error:[39m
+2025-09-12 14:28:19 +08:00: 2025-09-12 14:28:19:2819 [32minfo[39m: [32mRequest completed[39m
+2025-09-12 14:28:32 +08:00: 2025-09-12 14:28:32:2832 [32minfo[39m: [32mRequest started[39m
+2025-09-12 14:28:32 +08:00: 2025-09-12 14:28:32:2832 [33mwarn[39m: [33mClient error:[39m
+2025-09-12 14:28:32 +08:00: 2025-09-12 14:28:32:2832 [32minfo[39m: [32mRequest completed[39m
+2025-09-12 14:28:47 +08:00: 2025-09-12 14:28:47:2847 [32minfo[39m: [32mRequest started[39m
+2025-09-12 14:28:47 +08:00: 2025-09-12 14:28:47:2847 [33mwarn[39m: [33mClient error:[39m
+2025-09-12 14:28:47 +08:00: 2025-09-12 14:28:47:2847 [32minfo[39m: [32mRequest completed[39m
+2025-09-12 14:34:45 +08:00: 2025-09-12 14:34:45:3445 [32minfo[39m: [32mRequest started[39m
+2025-09-12 14:34:45 +08:00: 2025-09-12 14:34:45:3445 [33mwarn[39m: [33mClient error:[39m
+2025-09-12 14:34:45 +08:00: 2025-09-12 14:34:45:3445 [32minfo[39m: [32mRequest completed[39m
+2025-09-12 14:34:46 +08:00: 2025-09-12 14:34:46:3446 [32minfo[39m: [32mRequest started[39m
+2025-09-12 14:34:46 +08:00: 2025-09-12 14:34:46:3446 [33mwarn[39m: [33mClient error:[39m
+2025-09-12 14:34:46 +08:00: 2025-09-12 14:34:46:3446 [32minfo[39m: [32mRequest completed[39m
+2025-09-12 14:34:52 +08:00: 2025-09-12 14:34:52:3452 [32minfo[39m: [32mRequest started[39m
+2025-09-12 14:34:52 +08:00: prisma:query SELECT 1
+2025-09-12 14:34:52 +08:00: prisma:query SELECT `main`.`users`.`id`, `main`.`users`.`username`, `main`.`users`.`email`, `main`.`users`.`password_hash`, `main`.`users`.`membership_level`, `main`.`users`.`membership_expires_at`, `main`.`users`.`is_active`, `main`.`users`.`email_verified`, `main`.`users`.`avatar_url`, `main`.`users`.`created_at` FROM `main`.`users` WHERE (`main`.`users`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
+2025-09-12 14:34:52 +08:00: prisma:query INSERT INTO `main`.`user_sessions` (`user_id`, `token`, `refresh_token`, `expires_at`, `ip_address`, `user_agent`, `is_active`, `created_at`) VALUES (?,?,?,?,?,?,?,?) RETURNING `id` AS `id`, `user_id` AS `user_id`, `token` AS `token`, `refresh_token` AS `refresh_token`, `expires_at` AS `expires_at`, `ip_address` AS `ip_address`, `user_agent` AS `user_agent`, `is_active` AS `is_active`, `created_at` AS `created_at`
+2025-09-12 14:34:52 +08:00: prisma:query UPDATE `main`.`users` SET `last_login_at` = ?, `updated_at` = ? WHERE (`main`.`users`.`id` = ? AND 1=1) RETURNING `id` AS `id`, `username` AS `username`, `email` AS `email`, `password_hash` AS `password_hash`, `google_id` AS `google_id`, `avatar_url` AS `avatar_url`, `phone` AS `phone`, `membership_level` AS `membership_level`, `membership_expires_at` AS `membership_expires_at`, `is_active` AS `is_active`, `email_verified` AS `email_verified`, `last_login_at` AS `last_login_at`, `preferences` AS `preferences`, `created_at` AS `created_at`, `updated_at` AS `updated_at`
+2025-09-12 14:34:52 +08:00: 2025-09-12 14:34:52:3452 [32minfo[39m: [32mUser logged in:[39m
+2025-09-12 14:34:52 +08:00: 2025-09-12 14:34:52:3452 [32minfo[39m: [32mRequest completed[39m
+2025-09-12 14:38:56 +08:00: 2025-09-12 14:38:56:3856 [32minfo[39m: [32mRequest started[39m
+2025-09-12 14:38:56 +08:00: 2025-09-12 14:38:56:3856 [33mwarn[39m: [33mClient error:[39m
+2025-09-12 14:38:56 +08:00: 2025-09-12 14:38:56:3856 [32minfo[39m: [32mRequest completed[39m
+2025-09-12 14:41:24 +08:00: 2025-09-12 14:41:24:4124 [32minfo[39m: [32mRequest started[39m
+2025-09-12 14:41:24 +08:00: 2025-09-12 14:41:24:4124 [33mwarn[39m: [33mClient error:[39m
+2025-09-12 14:41:24 +08:00: 2025-09-12 14:41:24:4124 [32minfo[39m: [32mRequest completed[39m
+2025-09-12 15:26:41 +08:00: 2025-09-12 15:26:41:2641 [32minfo[39m: [32mRequest started[39m
+2025-09-12 15:26:41 +08:00: prisma:query SELECT 1
+2025-09-12 15:26:41 +08:00: prisma:query SELECT `main`.`users`.`id`, `main`.`users`.`username`, `main`.`users`.`email`, `main`.`users`.`password_hash`, `main`.`users`.`membership_level`, `main`.`users`.`membership_expires_at`, `main`.`users`.`is_active`, `main`.`users`.`email_verified`, `main`.`users`.`avatar_url`, `main`.`users`.`created_at` FROM `main`.`users` WHERE (`main`.`users`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
+2025-09-12 15:26:41 +08:00: prisma:query INSERT INTO `main`.`user_sessions` (`user_id`, `token`, `refresh_token`, `expires_at`, `ip_address`, `user_agent`, `is_active`, `created_at`) VALUES (?,?,?,?,?,?,?,?) RETURNING `id` AS `id`, `user_id` AS `user_id`, `token` AS `token`, `refresh_token` AS `refresh_token`, `expires_at` AS `expires_at`, `ip_address` AS `ip_address`, `user_agent` AS `user_agent`, `is_active` AS `is_active`, `created_at` AS `created_at`
+2025-09-12 15:26:41 +08:00: prisma:query UPDATE `main`.`users` SET `last_login_at` = ?, `updated_at` = ? WHERE (`main`.`users`.`id` = ? AND 1=1) RETURNING `id` AS `id`, `username` AS `username`, `email` AS `email`, `password_hash` AS `password_hash`, `google_id` AS `google_id`, `avatar_url` AS `avatar_url`, `phone` AS `phone`, `membership_level` AS `membership_level`, `membership_expires_at` AS `membership_expires_at`, `is_active` AS `is_active`, `email_verified` AS `email_verified`, `last_login_at` AS `last_login_at`, `preferences` AS `preferences`, `created_at` AS `created_at`, `updated_at` AS `updated_at`
+2025-09-12 15:26:41 +08:00: 2025-09-12 15:26:41:2641 [32minfo[39m: [32mUser logged in:[39m
+2025-09-12 15:26:41 +08:00: 2025-09-12 15:26:41:2641 [32minfo[39m: [32mRequest completed[39m
+2025-09-12 18:41:26 +08:00: 2025-09-12 18:41:26:4126 [32minfo[39m: [32mRequest started[39m
+2025-09-12 18:41:26 +08:00: 2025-09-12 18:41:26:4126 [33mwarn[39m: [33mClient error:[39m
+2025-09-12 18:41:26 +08:00: 2025-09-12 18:41:26:4126 [32minfo[39m: [32mRequest completed[39m
+2025-09-12 18:41:32 +08:00: 2025-09-12 18:41:32:4132 [32minfo[39m: [32mRequest started[39m
+2025-09-12 18:41:32 +08:00: 2025-09-12 18:41:32:4132 [33mwarn[39m: [33mClient error:[39m
+2025-09-12 18:41:32 +08:00: 2025-09-12 18:41:32:4132 [32minfo[39m: [32mRequest completed[39m
+2025-09-12 18:41:43 +08:00: 2025-09-12 18:41:43:4143 [32minfo[39m: [32mRequest started[39m
+2025-09-12 18:41:43 +08:00: 2025-09-12 18:41:43:4143 [33mwarn[39m: [33mClient error:[39m
+2025-09-12 18:41:43 +08:00: 2025-09-12 18:41:43:4143 [32minfo[39m: [32mRequest completed[39m
+2025-09-12 19:40:06 +08:00: 2025-09-12 19:40:06:406 [32minfo[39m: [32mRequest started[39m
+2025-09-12 19:40:06 +08:00: 2025-09-12 19:40:06:406 [33mwarn[39m: [33mClient error:[39m
+2025-09-12 19:40:06 +08:00: 2025-09-12 19:40:06:406 [32minfo[39m: [32mRequest completed[39m
+2025-09-12 21:37:31 +08:00: 2025-09-12 21:37:31:3731 [33mwarn[39m: [33mJSON parsing error: Bad escaped character in JSON at position 63[39m
+2025-09-12 21:38:13 +08:00: 2025-09-12 21:38:13:3813 [32minfo[39m: [32mRequest started[39m
+2025-09-12 21:38:13 +08:00: 2025-09-12 21:38:13:3813 [33mwarn[39m: [33mClient error:[39m
+2025-09-12 21:38:13 +08:00: 2025-09-12 21:38:13:3813 [32minfo[39m: [32mRequest completed[39m
+2025-09-12 21:38:19 +08:00: 2025-09-12 21:38:19:3819 [32minfo[39m: [32mRequest started[39m
+2025-09-12 21:38:19 +08:00: prisma:query SELECT 1
+2025-09-12 21:38:19 +08:00: prisma:query SELECT 1
+2025-09-12 21:38:19 +08:00: 2025-09-12 21:38:19:3819 [32minfo[39m: [32mUpload service health check passed[39m
+2025-09-12 21:38:20 +08:00: 2025-09-12 21:38:20:3820 [32minfo[39m: [32mRequest completed[39m
+2025-09-12 22:27:34 +08:00: 2025-09-12 22:27:34:2734 [32minfo[39m: [32mRequest started[39m
+2025-09-12 22:27:34 +08:00: 2025-09-12 22:27:34:2734 [33mwarn[39m: [33mClient error:[39m
+2025-09-12 22:27:34 +08:00: 2025-09-12 22:27:34:2734 [32minfo[39m: [32mRequest completed[39m
+2025-09-13 01:19:13 +08:00: 2025-09-13 01:19:13:1913 [32minfo[39m: [32mRequest started[39m
+2025-09-13 01:19:13 +08:00: 2025-09-13 01:19:13:1913 [33mwarn[39m: [33mClient error:[39m
+2025-09-13 01:19:13 +08:00: 2025-09-13 01:19:13:1913 [32minfo[39m: [32mRequest completed[39m
+2025-09-13 01:19:20 +08:00: 2025-09-13 01:19:20:1920 [32minfo[39m: [32mRequest started[39m
+2025-09-13 01:19:20 +08:00: 2025-09-13 01:19:20:1920 [33mwarn[39m: [33mClient error:[39m
+2025-09-13 01:19:20 +08:00: 2025-09-13 01:19:20:1920 [32minfo[39m: [32mRequest completed[39m
+2025-09-13 01:19:20 +08:00: 2025-09-13 01:19:20:1920 [31merror[39m: [31mUnhandled error: Not allowed by CORS[39m
+2025-09-13 01:19:20 +08:00: Error: Not allowed by CORS
+2025-09-13 01:19:20 +08:00:     at origin (/root/trademe/backend/user-service/src/app.ts:86:20)
+2025-09-13 01:19:20 +08:00:     at /root/trademe/backend/user-service/node_modules/cors/lib/index.js:219:13
+2025-09-13 01:19:20 +08:00:     at optionsCallback (/root/trademe/backend/user-service/node_modules/cors/lib/index.js:199:9)
+2025-09-13 01:19:20 +08:00:     at corsMiddleware (/root/trademe/backend/user-service/node_modules/cors/lib/index.js:204:7)
+2025-09-13 01:19:20 +08:00:     at Layer.handle [as handle_request] (/root/trademe/backend/user-service/node_modules/express/lib/router/layer.js:95:5)
+2025-09-13 01:19:20 +08:00:     at trim_prefix (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:328:13)
+2025-09-13 01:19:20 +08:00:     at /root/trademe/backend/user-service/node_modules/express/lib/router/index.js:286:9
+2025-09-13 01:19:20 +08:00:     at Function.process_params (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:346:12)
+2025-09-13 01:19:20 +08:00:     at next (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:280:10)
+2025-09-13 01:19:20 +08:00:     at internalNext (/root/trademe/backend/user-service/node_modules/helmet/index.cjs:537:6)
+2025-09-13 01:19:20 +08:00: 2025-09-13 01:19:20:1920 [31merror[39m: [31mServer error:[39m
+2025-09-13 01:19:20 +08:00: Error: Not allowed by CORS
+2025-09-13 01:19:20 +08:00:     at globalErrorHandler (/root/trademe/backend/user-service/src/middleware/errorHandler.ts:192:16)
+2025-09-13 01:19:20 +08:00:     at Layer.handle_error (/root/trademe/backend/user-service/node_modules/express/lib/router/layer.js:71:5)
+2025-09-13 01:19:20 +08:00:     at trim_prefix (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:326:13)
+2025-09-13 01:19:20 +08:00:     at /root/trademe/backend/user-service/node_modules/express/lib/router/index.js:286:9
+2025-09-13 01:19:20 +08:00:     at Function.process_params (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:346:12)
+2025-09-13 01:19:20 +08:00:     at next (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:280:10)
+2025-09-13 01:19:20 +08:00:     at Layer.handle_error (/root/trademe/backend/user-service/node_modules/express/lib/router/layer.js:67:12)
+2025-09-13 01:19:20 +08:00:     at trim_prefix (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:326:13)
+2025-09-13 01:19:20 +08:00:     at /root/trademe/backend/user-service/node_modules/express/lib/router/index.js:286:9
+2025-09-13 01:19:20 +08:00:     at Function.process_params (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:346:12)
+2025-09-13 01:19:21 +08:00: 2025-09-13 01:19:21:1921 [32minfo[39m: [32mRequest started[39m
+2025-09-13 01:19:21 +08:00: 2025-09-13 01:19:21:1921 [33mwarn[39m: [33mClient error:[39m
+2025-09-13 01:19:21 +08:00: 2025-09-13 01:19:21:1921 [32minfo[39m: [32mRequest completed[39m
+2025-09-13 01:19:22 +08:00: 2025-09-13 01:19:22:1922 [32minfo[39m: [32mRequest started[39m
+2025-09-13 01:19:22 +08:00: 2025-09-13 01:19:22:1922 [33mwarn[39m: [33mClient error:[39m
+2025-09-13 01:19:22 +08:00: 2025-09-13 01:19:22:1922 [32minfo[39m: [32mRequest completed[39m
+2025-09-13 01:19:22 +08:00: 2025-09-13 01:19:22:1922 [31merror[39m: [31mUnhandled error: Not allowed by CORS[39m
+2025-09-13 01:19:22 +08:00: Error: Not allowed by CORS
+2025-09-13 01:19:22 +08:00:     at origin (/root/trademe/backend/user-service/src/app.ts:86:20)
+2025-09-13 01:19:22 +08:00:     at /root/trademe/backend/user-service/node_modules/cors/lib/index.js:219:13
+2025-09-13 01:19:22 +08:00:     at optionsCallback (/root/trademe/backend/user-service/node_modules/cors/lib/index.js:199:9)
+2025-09-13 01:19:22 +08:00:     at corsMiddleware (/root/trademe/backend/user-service/node_modules/cors/lib/index.js:204:7)
+2025-09-13 01:19:22 +08:00:     at Layer.handle [as handle_request] (/root/trademe/backend/user-service/node_modules/express/lib/router/layer.js:95:5)
+2025-09-13 01:19:22 +08:00:     at trim_prefix (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:328:13)
+2025-09-13 01:19:22 +08:00:     at /root/trademe/backend/user-service/node_modules/express/lib/router/index.js:286:9
+2025-09-13 01:19:22 +08:00:     at Function.process_params (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:346:12)
+2025-09-13 01:19:22 +08:00:     at next (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:280:10)
+2025-09-13 01:19:22 +08:00:     at internalNext (/root/trademe/backend/user-service/node_modules/helmet/index.cjs:537:6)
+2025-09-13 01:19:22 +08:00: 2025-09-13 01:19:22:1922 [31merror[39m: [31mServer error:[39m
+2025-09-13 01:19:22 +08:00: Error: Not allowed by CORS
+2025-09-13 01:19:22 +08:00:     at globalErrorHandler (/root/trademe/backend/user-service/src/middleware/errorHandler.ts:192:16)
+2025-09-13 01:19:22 +08:00:     at Layer.handle_error (/root/trademe/backend/user-service/node_modules/express/lib/router/layer.js:71:5)
+2025-09-13 01:19:22 +08:00:     at trim_prefix (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:326:13)
+2025-09-13 01:19:22 +08:00:     at /root/trademe/backend/user-service/node_modules/express/lib/router/index.js:286:9
+2025-09-13 01:19:22 +08:00:     at Function.process_params (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:346:12)
+2025-09-13 01:19:22 +08:00:     at next (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:280:10)
+2025-09-13 01:19:22 +08:00:     at Layer.handle_error (/root/trademe/backend/user-service/node_modules/express/lib/router/layer.js:67:12)
+2025-09-13 01:19:22 +08:00:     at trim_prefix (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:326:13)
+2025-09-13 01:19:22 +08:00:     at /root/trademe/backend/user-service/node_modules/express/lib/router/index.js:286:9
+2025-09-13 01:19:22 +08:00:     at Function.process_params (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:346:12)
+2025-09-13 01:19:22 +08:00: 2025-09-13 01:19:22:1922 [32minfo[39m: [32mRequest started[39m
+2025-09-13 01:19:22 +08:00: 2025-09-13 01:19:22:1922 [33mwarn[39m: [33mClient error:[39m
+2025-09-13 01:19:22 +08:00: 2025-09-13 01:19:22:1922 [32minfo[39m: [32mRequest completed[39m
+2025-09-13 04:01:08 +08:00: 2025-09-13 04:01:08:18 [32minfo[39m: [32mRequest started[39m
+2025-09-13 04:01:08 +08:00: 2025-09-13 04:01:08:18 [33mwarn[39m: [33mClient error:[39m
+2025-09-13 04:01:08 +08:00: 2025-09-13 04:01:08:18 [32minfo[39m: [32mRequest completed[39m
+2025-09-13 05:15:42 +08:00: 2025-09-13 05:15:42:1542 [32minfo[39m: [32mRequest started[39m
+2025-09-13 05:15:42 +08:00: 2025-09-13 05:15:42:1542 [33mwarn[39m: [33mClient error:[39m
+2025-09-13 05:15:42 +08:00: 2025-09-13 05:15:42:1542 [32minfo[39m: [32mRequest completed[39m
+2025-09-13 05:15:42 +08:00: 2025-09-13 05:15:42:1542 [32minfo[39m: [32mRequest started[39m
+2025-09-13 05:15:42 +08:00: 2025-09-13 05:15:42:1542 [33mwarn[39m: [33mClient error:[39m
+2025-09-13 05:15:42 +08:00: 2025-09-13 05:15:42:1542 [32minfo[39m: [32mRequest completed[39m
+2025-09-13 10:42:51 +08:00: 2025-09-13 10:42:51:4251 [32minfo[39m: [32mRequest started[39m
+2025-09-13 10:42:51 +08:00: 2025-09-13 10:42:51:4251 [33mwarn[39m: [33mClient error:[39m
+2025-09-13 10:42:51 +08:00: 2025-09-13 10:42:51:4251 [32minfo[39m: [32mRequest completed[39m
+2025-09-13 10:42:58 +08:00: 2025-09-13 10:42:58:4258 [32minfo[39m: [32mRequest started[39m
+2025-09-13 10:42:58 +08:00: 2025-09-13 10:42:58:4258 [33mwarn[39m: [33mClient error:[39m
+2025-09-13 10:42:58 +08:00: 2025-09-13 10:42:58:4258 [32minfo[39m: [32mRequest completed[39m
+2025-09-13 10:42:58 +08:00: 2025-09-13 10:42:58:4258 [31merror[39m: [31mUnhandled error: Not allowed by CORS[39m
+2025-09-13 10:42:58 +08:00: Error: Not allowed by CORS
+2025-09-13 10:42:58 +08:00:     at origin (/root/trademe/backend/user-service/src/app.ts:86:20)
+2025-09-13 10:42:58 +08:00:     at /root/trademe/backend/user-service/node_modules/cors/lib/index.js:219:13
+2025-09-13 10:42:58 +08:00:     at optionsCallback (/root/trademe/backend/user-service/node_modules/cors/lib/index.js:199:9)
+2025-09-13 10:42:58 +08:00:     at corsMiddleware (/root/trademe/backend/user-service/node_modules/cors/lib/index.js:204:7)
+2025-09-13 10:42:58 +08:00:     at Layer.handle [as handle_request] (/root/trademe/backend/user-service/node_modules/express/lib/router/layer.js:95:5)
+2025-09-13 10:42:58 +08:00:     at trim_prefix (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:328:13)
+2025-09-13 10:42:58 +08:00:     at /root/trademe/backend/user-service/node_modules/express/lib/router/index.js:286:9
+2025-09-13 10:42:58 +08:00:     at Function.process_params (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:346:12)
+2025-09-13 10:42:58 +08:00:     at next (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:280:10)
+2025-09-13 10:42:58 +08:00:     at internalNext (/root/trademe/backend/user-service/node_modules/helmet/index.cjs:537:6)
+2025-09-13 10:42:58 +08:00: 2025-09-13 10:42:58:4258 [31merror[39m: [31mServer error:[39m
+2025-09-13 10:42:58 +08:00: Error: Not allowed by CORS
+2025-09-13 10:42:58 +08:00:     at globalErrorHandler (/root/trademe/backend/user-service/src/middleware/errorHandler.ts:192:16)
+2025-09-13 10:42:58 +08:00:     at Layer.handle_error (/root/trademe/backend/user-service/node_modules/express/lib/router/layer.js:71:5)
+2025-09-13 10:42:58 +08:00:     at trim_prefix (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:326:13)
+2025-09-13 10:42:58 +08:00:     at /root/trademe/backend/user-service/node_modules/express/lib/router/index.js:286:9
+2025-09-13 10:42:58 +08:00:     at Function.process_params (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:346:12)
+2025-09-13 10:42:58 +08:00:     at next (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:280:10)
+2025-09-13 10:42:58 +08:00:     at Layer.handle_error (/root/trademe/backend/user-service/node_modules/express/lib/router/layer.js:67:12)
+2025-09-13 10:42:58 +08:00:     at trim_prefix (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:326:13)
+2025-09-13 10:42:58 +08:00:     at /root/trademe/backend/user-service/node_modules/express/lib/router/index.js:286:9
+2025-09-13 10:42:58 +08:00:     at Function.process_params (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:346:12)
+2025-09-13 10:42:58 +08:00: 2025-09-13 10:42:58:4258 [32minfo[39m: [32mRequest started[39m
+2025-09-13 10:42:58 +08:00: 2025-09-13 10:42:58:4258 [33mwarn[39m: [33mClient error:[39m
+2025-09-13 10:42:58 +08:00: 2025-09-13 10:42:58:4258 [32minfo[39m: [32mRequest completed[39m
+2025-09-13 10:42:59 +08:00: 2025-09-13 10:42:59:4259 [32minfo[39m: [32mRequest started[39m
+2025-09-13 10:42:59 +08:00: 2025-09-13 10:42:59:4259 [33mwarn[39m: [33mClient error:[39m
+2025-09-13 10:42:59 +08:00: 2025-09-13 10:42:59:4259 [32minfo[39m: [32mRequest completed[39m
+2025-09-13 10:42:59 +08:00: 2025-09-13 10:42:59:4259 [32minfo[39m: [32mRequest started[39m
+2025-09-13 10:42:59 +08:00: 2025-09-13 10:42:59:4259 [33mwarn[39m: [33mClient error:[39m
+2025-09-13 10:42:59 +08:00: 2025-09-13 10:42:59:4259 [32minfo[39m: [32mRequest completed[39m
+2025-09-13 10:42:59 +08:00: 2025-09-13 10:42:59:4259 [31merror[39m: [31mUnhandled error: Not allowed by CORS[39m
+2025-09-13 10:42:59 +08:00: Error: Not allowed by CORS
+2025-09-13 10:42:59 +08:00:     at origin (/root/trademe/backend/user-service/src/app.ts:86:20)
+2025-09-13 10:42:59 +08:00:     at /root/trademe/backend/user-service/node_modules/cors/lib/index.js:219:13
+2025-09-13 10:42:59 +08:00:     at optionsCallback (/root/trademe/backend/user-service/node_modules/cors/lib/index.js:199:9)
+2025-09-13 10:42:59 +08:00:     at corsMiddleware (/root/trademe/backend/user-service/node_modules/cors/lib/index.js:204:7)
+2025-09-13 10:42:59 +08:00:     at Layer.handle [as handle_request] (/root/trademe/backend/user-service/node_modules/express/lib/router/layer.js:95:5)
+2025-09-13 10:42:59 +08:00:     at trim_prefix (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:328:13)
+2025-09-13 10:42:59 +08:00:     at /root/trademe/backend/user-service/node_modules/express/lib/router/index.js:286:9
+2025-09-13 10:42:59 +08:00:     at Function.process_params (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:346:12)
+2025-09-13 10:42:59 +08:00:     at next (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:280:10)
+2025-09-13 10:42:59 +08:00:     at internalNext (/root/trademe/backend/user-service/node_modules/helmet/index.cjs:537:6)
+2025-09-13 10:42:59 +08:00: 2025-09-13 10:42:59:4259 [31merror[39m: [31mServer error:[39m
+2025-09-13 10:42:59 +08:00: Error: Not allowed by CORS
+2025-09-13 10:42:59 +08:00:     at globalErrorHandler (/root/trademe/backend/user-service/src/middleware/errorHandler.ts:192:16)
+2025-09-13 10:42:59 +08:00:     at Layer.handle_error (/root/trademe/backend/user-service/node_modules/express/lib/router/layer.js:71:5)
+2025-09-13 10:42:59 +08:00:     at trim_prefix (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:326:13)
+2025-09-13 10:42:59 +08:00:     at /root/trademe/backend/user-service/node_modules/express/lib/router/index.js:286:9
+2025-09-13 10:42:59 +08:00:     at Function.process_params (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:346:12)
+2025-09-13 10:42:59 +08:00:     at next (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:280:10)
+2025-09-13 10:42:59 +08:00:     at Layer.handle_error (/root/trademe/backend/user-service/node_modules/express/lib/router/layer.js:67:12)
+2025-09-13 10:42:59 +08:00:     at trim_prefix (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:326:13)
+2025-09-13 10:42:59 +08:00:     at /root/trademe/backend/user-service/node_modules/express/lib/router/index.js:286:9
+2025-09-13 10:42:59 +08:00:     at Function.process_params (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:346:12)
+2025-09-13 15:52:53 +08:00: 2025-09-13 15:52:53:5253 [32minfo[39m: [32mRequest started[39m
+2025-09-13 15:52:53 +08:00: 2025-09-13 15:52:53:5253 [33mwarn[39m: [33mClient error:[39m
+2025-09-13 15:52:53 +08:00: 2025-09-13 15:52:53:5253 [32minfo[39m: [32mRequest completed[39m
+2025-09-13 15:55:59 +08:00: 2025-09-13 15:55:59:5559 [32minfo[39m: [32mRequest started[39m
+2025-09-13 15:55:59 +08:00: 2025-09-13 15:55:59:5559 [33mwarn[39m: [33mClient error:[39m
+2025-09-13 15:55:59 +08:00: 2025-09-13 15:55:59:5559 [32minfo[39m: [32mRequest completed[39m
+2025-09-13 15:56:26 +08:00: 2025-09-13 15:56:26:5626 [32minfo[39m: [32mRequest started[39m
+2025-09-13 15:56:26 +08:00: 2025-09-13 15:56:26:5626 [33mwarn[39m: [33mClient error:[39m
+2025-09-13 15:56:26 +08:00: 2025-09-13 15:56:26:5626 [32minfo[39m: [32mRequest completed[39m
+2025-09-13 15:59:26 +08:00: 2025-09-13 15:59:26:5926 [32minfo[39m: [32mRequest started[39m
+2025-09-13 15:59:26 +08:00: prisma:query SELECT 1
+2025-09-13 15:59:26 +08:00: prisma:query SELECT `main`.`users`.`id`, `main`.`users`.`username`, `main`.`users`.`email`, `main`.`users`.`password_hash`, `main`.`users`.`membership_level`, `main`.`users`.`membership_expires_at`, `main`.`users`.`is_active`, `main`.`users`.`email_verified`, `main`.`users`.`avatar_url`, `main`.`users`.`created_at` FROM `main`.`users` WHERE (`main`.`users`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
+2025-09-13 15:59:27 +08:00: prisma:query INSERT INTO `main`.`user_sessions` (`user_id`, `token`, `refresh_token`, `expires_at`, `ip_address`, `user_agent`, `is_active`, `created_at`) VALUES (?,?,?,?,?,?,?,?) RETURNING `id` AS `id`, `user_id` AS `user_id`, `token` AS `token`, `refresh_token` AS `refresh_token`, `expires_at` AS `expires_at`, `ip_address` AS `ip_address`, `user_agent` AS `user_agent`, `is_active` AS `is_active`, `created_at` AS `created_at`
+2025-09-13 15:59:27 +08:00: prisma:query UPDATE `main`.`users` SET `last_login_at` = ?, `updated_at` = ? WHERE (`main`.`users`.`id` = ? AND 1=1) RETURNING `id` AS `id`, `username` AS `username`, `email` AS `email`, `password_hash` AS `password_hash`, `google_id` AS `google_id`, `avatar_url` AS `avatar_url`, `phone` AS `phone`, `membership_level` AS `membership_level`, `membership_expires_at` AS `membership_expires_at`, `is_active` AS `is_active`, `email_verified` AS `email_verified`, `last_login_at` AS `last_login_at`, `preferences` AS `preferences`, `created_at` AS `created_at`, `updated_at` AS `updated_at`
+2025-09-13 15:59:27 +08:00: 2025-09-13 15:59:27:5927 [32minfo[39m: [32mUser logged in:[39m
+2025-09-13 15:59:27 +08:00: 2025-09-13 15:59:27:5927 [32minfo[39m: [32mRequest completed[39m
+2025-09-13 16:21:27 +08:00: 2025-09-13 16:21:27:2127 [32minfo[39m: [32mRequest started[39m
+2025-09-13 16:21:27 +08:00: 2025-09-13 16:21:27:2127 [33mwarn[39m: [33mClient error:[39m
+2025-09-13 16:21:27 +08:00: 2025-09-13 16:21:27:2127 [32minfo[39m: [32mRequest completed[39m
+2025-09-13 16:21:32 +08:00: 2025-09-13 16:21:32:2132 [32minfo[39m: [32mRequest started[39m
+2025-09-13 16:21:32 +08:00: 2025-09-13 16:21:32:2132 [33mwarn[39m: [33mClient error:[39m
+2025-09-13 16:21:32 +08:00: 2025-09-13 16:21:32:2132 [32minfo[39m: [32mRequest completed[39m
+2025-09-13 16:21:38 +08:00: 2025-09-13 16:21:38:2138 [32minfo[39m: [32mRequest started[39m
+2025-09-13 16:21:38 +08:00: 2025-09-13 16:21:38:2138 [33mwarn[39m: [33mClient error:[39m
+2025-09-13 16:21:38 +08:00: 2025-09-13 16:21:38:2138 [32minfo[39m: [32mRequest completed[39m
+2025-09-13 19:06:28 +08:00: 2025-09-13 19:06:28:628 [32minfo[39m: [32mRequest started[39m
+2025-09-13 19:06:28 +08:00: prisma:query SELECT 1
+2025-09-13 19:06:28 +08:00: prisma:query SELECT `main`.`users`.`id`, `main`.`users`.`username`, `main`.`users`.`email`, `main`.`users`.`password_hash`, `main`.`users`.`membership_level`, `main`.`users`.`membership_expires_at`, `main`.`users`.`is_active`, `main`.`users`.`email_verified`, `main`.`users`.`avatar_url`, `main`.`users`.`created_at` FROM `main`.`users` WHERE (`main`.`users`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
+2025-09-13 19:06:29 +08:00: prisma:query INSERT INTO `main`.`user_sessions` (`user_id`, `token`, `refresh_token`, `expires_at`, `ip_address`, `user_agent`, `is_active`, `created_at`) VALUES (?,?,?,?,?,?,?,?) RETURNING `id` AS `id`, `user_id` AS `user_id`, `token` AS `token`, `refresh_token` AS `refresh_token`, `expires_at` AS `expires_at`, `ip_address` AS `ip_address`, `user_agent` AS `user_agent`, `is_active` AS `is_active`, `created_at` AS `created_at`
+2025-09-13 19:06:29 +08:00: prisma:query UPDATE `main`.`users` SET `last_login_at` = ?, `updated_at` = ? WHERE (`main`.`users`.`id` = ? AND 1=1) RETURNING `id` AS `id`, `username` AS `username`, `email` AS `email`, `password_hash` AS `password_hash`, `google_id` AS `google_id`, `avatar_url` AS `avatar_url`, `phone` AS `phone`, `membership_level` AS `membership_level`, `membership_expires_at` AS `membership_expires_at`, `is_active` AS `is_active`, `email_verified` AS `email_verified`, `last_login_at` AS `last_login_at`, `preferences` AS `preferences`, `created_at` AS `created_at`, `updated_at` AS `updated_at`
+2025-09-13 19:06:29 +08:00: 2025-09-13 19:06:29:629 [32minfo[39m: [32mUser logged in:[39m
+2025-09-13 19:06:29 +08:00: 2025-09-13 19:06:29:629 [32minfo[39m: [32mRequest completed[39m
+2025-09-13 21:33:33 +08:00: 2025-09-13 21:33:33:3333 [32minfo[39m: [32mRequest started[39m
+2025-09-13 21:33:33 +08:00: 2025-09-13 21:33:33:3333 [33mwarn[39m: [33mClient error:[39m
+2025-09-13 21:33:33 +08:00: 2025-09-13 21:33:33:3333 [32minfo[39m: [32mRequest completed[39m
+2025-09-13 23:05:57 +08:00: 2025-09-13 23:05:57:557 [32minfo[39m: [32mRequest started[39m
+2025-09-13 23:05:57 +08:00: 2025-09-13 23:05:57:557 [33mwarn[39m: [33mClient error:[39m
+2025-09-13 23:05:57 +08:00: 2025-09-13 23:05:57:557 [32minfo[39m: [32mRequest completed[39m
+2025-09-13 23:06:04 +08:00: 2025-09-13 23:06:04:64 [32minfo[39m: [32mRequest started[39m
+2025-09-13 23:06:04 +08:00: 2025-09-13 23:06:04:64 [33mwarn[39m: [33mClient error:[39m
+2025-09-13 23:06:04 +08:00: 2025-09-13 23:06:04:64 [32minfo[39m: [32mRequest completed[39m
+2025-09-13 23:06:04 +08:00: 2025-09-13 23:06:04:64 [31merror[39m: [31mUnhandled error: Not allowed by CORS[39m
+2025-09-13 23:06:04 +08:00: Error: Not allowed by CORS
+2025-09-13 23:06:04 +08:00:     at origin (/root/trademe/backend/user-service/src/app.ts:86:20)
+2025-09-13 23:06:04 +08:00:     at /root/trademe/backend/user-service/node_modules/cors/lib/index.js:219:13
+2025-09-13 23:06:04 +08:00:     at optionsCallback (/root/trademe/backend/user-service/node_modules/cors/lib/index.js:199:9)
+2025-09-13 23:06:04 +08:00:     at corsMiddleware (/root/trademe/backend/user-service/node_modules/cors/lib/index.js:204:7)
+2025-09-13 23:06:04 +08:00:     at Layer.handle [as handle_request] (/root/trademe/backend/user-service/node_modules/express/lib/router/layer.js:95:5)
+2025-09-13 23:06:04 +08:00:     at trim_prefix (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:328:13)
+2025-09-13 23:06:04 +08:00:     at /root/trademe/backend/user-service/node_modules/express/lib/router/index.js:286:9
+2025-09-13 23:06:04 +08:00:     at Function.process_params (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:346:12)
+2025-09-13 23:06:04 +08:00:     at next (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:280:10)
+2025-09-13 23:06:04 +08:00:     at internalNext (/root/trademe/backend/user-service/node_modules/helmet/index.cjs:537:6)
+2025-09-13 23:06:04 +08:00: 2025-09-13 23:06:04:64 [31merror[39m: [31mServer error:[39m
+2025-09-13 23:06:04 +08:00: Error: Not allowed by CORS
+2025-09-13 23:06:04 +08:00:     at globalErrorHandler (/root/trademe/backend/user-service/src/middleware/errorHandler.ts:192:16)
+2025-09-13 23:06:04 +08:00:     at Layer.handle_error (/root/trademe/backend/user-service/node_modules/express/lib/router/layer.js:71:5)
+2025-09-13 23:06:04 +08:00:     at trim_prefix (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:326:13)
+2025-09-13 23:06:04 +08:00:     at /root/trademe/backend/user-service/node_modules/express/lib/router/index.js:286:9
+2025-09-13 23:06:04 +08:00:     at Function.process_params (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:346:12)
+2025-09-13 23:06:04 +08:00:     at next (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:280:10)
+2025-09-13 23:06:04 +08:00:     at Layer.handle_error (/root/trademe/backend/user-service/node_modules/express/lib/router/layer.js:67:12)
+2025-09-13 23:06:04 +08:00:     at trim_prefix (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:326:13)
+2025-09-13 23:06:04 +08:00:     at /root/trademe/backend/user-service/node_modules/express/lib/router/index.js:286:9
+2025-09-13 23:06:04 +08:00:     at Function.process_params (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:346:12)
+2025-09-13 23:06:04 +08:00: 2025-09-13 23:06:04:64 [32minfo[39m: [32mRequest started[39m
+2025-09-13 23:06:04 +08:00: 2025-09-13 23:06:04:64 [33mwarn[39m: [33mClient error:[39m
+2025-09-13 23:06:04 +08:00: 2025-09-13 23:06:04:64 [32minfo[39m: [32mRequest completed[39m
+2025-09-13 23:06:05 +08:00: 2025-09-13 23:06:05:65 [32minfo[39m: [32mRequest started[39m
+2025-09-13 23:06:05 +08:00: 2025-09-13 23:06:05:65 [33mwarn[39m: [33mClient error:[39m
+2025-09-13 23:06:05 +08:00: 2025-09-13 23:06:05:65 [32minfo[39m: [32mRequest completed[39m
+2025-09-13 23:06:05 +08:00: 2025-09-13 23:06:05:65 [31merror[39m: [31mUnhandled error: Not allowed by CORS[39m
+2025-09-13 23:06:05 +08:00: Error: Not allowed by CORS
+2025-09-13 23:06:05 +08:00:     at origin (/root/trademe/backend/user-service/src/app.ts:86:20)
+2025-09-13 23:06:05 +08:00:     at /root/trademe/backend/user-service/node_modules/cors/lib/index.js:219:13
+2025-09-13 23:06:05 +08:00:     at optionsCallback (/root/trademe/backend/user-service/node_modules/cors/lib/index.js:199:9)
+2025-09-13 23:06:05 +08:00:     at corsMiddleware (/root/trademe/backend/user-service/node_modules/cors/lib/index.js:204:7)
+2025-09-13 23:06:05 +08:00:     at Layer.handle [as handle_request] (/root/trademe/backend/user-service/node_modules/express/lib/router/layer.js:95:5)
+2025-09-13 23:06:05 +08:00:     at trim_prefix (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:328:13)
+2025-09-13 23:06:05 +08:00:     at /root/trademe/backend/user-service/node_modules/express/lib/router/index.js:286:9
+2025-09-13 23:06:05 +08:00:     at Function.process_params (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:346:12)
+2025-09-13 23:06:05 +08:00:     at next (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:280:10)
+2025-09-13 23:06:05 +08:00:     at internalNext (/root/trademe/backend/user-service/node_modules/helmet/index.cjs:537:6)
+2025-09-13 23:06:05 +08:00: 2025-09-13 23:06:05:65 [31merror[39m: [31mServer error:[39m
+2025-09-13 23:06:05 +08:00: Error: Not allowed by CORS
+2025-09-13 23:06:05 +08:00:     at globalErrorHandler (/root/trademe/backend/user-service/src/middleware/errorHandler.ts:192:16)
+2025-09-13 23:06:05 +08:00:     at Layer.handle_error (/root/trademe/backend/user-service/node_modules/express/lib/router/layer.js:71:5)
+2025-09-13 23:06:05 +08:00:     at trim_prefix (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:326:13)
+2025-09-13 23:06:05 +08:00:     at /root/trademe/backend/user-service/node_modules/express/lib/router/index.js:286:9
+2025-09-13 23:06:05 +08:00:     at Function.process_params (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:346:12)
+2025-09-13 23:06:05 +08:00:     at next (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:280:10)
+2025-09-13 23:06:05 +08:00:     at Layer.handle_error (/root/trademe/backend/user-service/node_modules/express/lib/router/layer.js:67:12)
+2025-09-13 23:06:05 +08:00:     at trim_prefix (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:326:13)
+2025-09-13 23:06:05 +08:00:     at /root/trademe/backend/user-service/node_modules/express/lib/router/index.js:286:9
+2025-09-13 23:06:05 +08:00:     at Function.process_params (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:346:12)
+2025-09-13 23:06:05 +08:00: 2025-09-13 23:06:05:65 [32minfo[39m: [32mRequest started[39m
+2025-09-13 23:06:05 +08:00: 2025-09-13 23:06:05:65 [33mwarn[39m: [33mClient error:[39m
+2025-09-13 23:06:05 +08:00: 2025-09-13 23:06:05:65 [32minfo[39m: [32mRequest completed[39m
+2025-09-13 23:20:15 +08:00: 2025-09-13 23:20:15:2015 [32minfo[39m: [32mRequest started[39m
+2025-09-13 23:20:15 +08:00: prisma:query SELECT 1
+2025-09-13 23:20:15 +08:00: prisma:query SELECT `main`.`users`.`id`, `main`.`users`.`username`, `main`.`users`.`email`, `main`.`users`.`password_hash`, `main`.`users`.`membership_level`, `main`.`users`.`membership_expires_at`, `main`.`users`.`is_active`, `main`.`users`.`email_verified`, `main`.`users`.`avatar_url`, `main`.`users`.`created_at` FROM `main`.`users` WHERE (`main`.`users`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
+2025-09-13 23:20:15 +08:00: prisma:query INSERT INTO `main`.`user_sessions` (`user_id`, `token`, `refresh_token`, `expires_at`, `ip_address`, `user_agent`, `is_active`, `created_at`) VALUES (?,?,?,?,?,?,?,?) RETURNING `id` AS `id`, `user_id` AS `user_id`, `token` AS `token`, `refresh_token` AS `refresh_token`, `expires_at` AS `expires_at`, `ip_address` AS `ip_address`, `user_agent` AS `user_agent`, `is_active` AS `is_active`, `created_at` AS `created_at`
+2025-09-13 23:20:15 +08:00: prisma:query UPDATE `main`.`users` SET `last_login_at` = ?, `updated_at` = ? WHERE (`main`.`users`.`id` = ? AND 1=1) RETURNING `id` AS `id`, `username` AS `username`, `email` AS `email`, `password_hash` AS `password_hash`, `google_id` AS `google_id`, `avatar_url` AS `avatar_url`, `phone` AS `phone`, `membership_level` AS `membership_level`, `membership_expires_at` AS `membership_expires_at`, `is_active` AS `is_active`, `email_verified` AS `email_verified`, `last_login_at` AS `last_login_at`, `preferences` AS `preferences`, `created_at` AS `created_at`, `updated_at` AS `updated_at`
+2025-09-13 23:20:15 +08:00: 2025-09-13 23:20:15:2015 [32minfo[39m: [32mUser logged in:[39m
+2025-09-13 23:20:15 +08:00: 2025-09-13 23:20:15:2015 [32minfo[39m: [32mRequest completed[39m
+2025-09-13 23:42:18 +08:00: 2025-09-13 23:42:18:4218 [32minfo[39m: [32mRequest started[39m
+2025-09-13 23:42:18 +08:00: 2025-09-13 23:42:18:4218 [33mwarn[39m: [33mClient error:[39m
+2025-09-13 23:42:18 +08:00: 2025-09-13 23:42:18:4218 [32minfo[39m: [32mRequest completed[39m
+2025-09-13 23:42:26 +08:00: 2025-09-13 23:42:26:4226 [32minfo[39m: [32mRequest started[39m
+2025-09-13 23:42:26 +08:00: 2025-09-13 23:42:26:4226 [33mwarn[39m: [33mClient error:[39m
+2025-09-13 23:42:26 +08:00: 2025-09-13 23:42:26:4226 [32minfo[39m: [32mRequest completed[39m
+2025-09-13 23:42:26 +08:00: 2025-09-13 23:42:26:4226 [31merror[39m: [31mUnhandled error: Not allowed by CORS[39m
+2025-09-13 23:42:26 +08:00: Error: Not allowed by CORS
+2025-09-13 23:42:26 +08:00:     at origin (/root/trademe/backend/user-service/src/app.ts:86:20)
+2025-09-13 23:42:26 +08:00:     at /root/trademe/backend/user-service/node_modules/cors/lib/index.js:219:13
+2025-09-13 23:42:26 +08:00:     at optionsCallback (/root/trademe/backend/user-service/node_modules/cors/lib/index.js:199:9)
+2025-09-13 23:42:26 +08:00:     at corsMiddleware (/root/trademe/backend/user-service/node_modules/cors/lib/index.js:204:7)
+2025-09-13 23:42:26 +08:00:     at Layer.handle [as handle_request] (/root/trademe/backend/user-service/node_modules/express/lib/router/layer.js:95:5)
+2025-09-13 23:42:26 +08:00:     at trim_prefix (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:328:13)
+2025-09-13 23:42:26 +08:00:     at /root/trademe/backend/user-service/node_modules/express/lib/router/index.js:286:9
+2025-09-13 23:42:26 +08:00:     at Function.process_params (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:346:12)
+2025-09-13 23:42:26 +08:00:     at next (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:280:10)
+2025-09-13 23:42:26 +08:00:     at internalNext (/root/trademe/backend/user-service/node_modules/helmet/index.cjs:537:6)
+2025-09-13 23:42:26 +08:00: 2025-09-13 23:42:26:4226 [31merror[39m: [31mServer error:[39m
+2025-09-13 23:42:26 +08:00: Error: Not allowed by CORS
+2025-09-13 23:42:26 +08:00:     at globalErrorHandler (/root/trademe/backend/user-service/src/middleware/errorHandler.ts:192:16)
+2025-09-13 23:42:26 +08:00:     at Layer.handle_error (/root/trademe/backend/user-service/node_modules/express/lib/router/layer.js:71:5)
+2025-09-13 23:42:26 +08:00:     at trim_prefix (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:326:13)
+2025-09-13 23:42:26 +08:00:     at /root/trademe/backend/user-service/node_modules/express/lib/router/index.js:286:9
+2025-09-13 23:42:26 +08:00:     at Function.process_params (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:346:12)
+2025-09-13 23:42:26 +08:00:     at next (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:280:10)
+2025-09-13 23:42:26 +08:00:     at Layer.handle_error (/root/trademe/backend/user-service/node_modules/express/lib/router/layer.js:67:12)
+2025-09-13 23:42:26 +08:00:     at trim_prefix (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:326:13)
+2025-09-13 23:42:26 +08:00:     at /root/trademe/backend/user-service/node_modules/express/lib/router/index.js:286:9
+2025-09-13 23:42:26 +08:00:     at Function.process_params (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:346:12)
+2025-09-13 23:42:27 +08:00: 2025-09-13 23:42:27:4227 [32minfo[39m: [32mRequest started[39m
+2025-09-13 23:42:27 +08:00: 2025-09-13 23:42:27:4227 [33mwarn[39m: [33mClient error:[39m
+2025-09-13 23:42:27 +08:00: 2025-09-13 23:42:27:4227 [32minfo[39m: [32mRequest completed[39m
+2025-09-13 23:42:28 +08:00: 2025-09-13 23:42:28:4228 [32minfo[39m: [32mRequest started[39m
+2025-09-13 23:42:28 +08:00: 2025-09-13 23:42:28:4228 [33mwarn[39m: [33mClient error:[39m
+2025-09-13 23:42:28 +08:00: 2025-09-13 23:42:28:4228 [32minfo[39m: [32mRequest completed[39m
+2025-09-13 23:42:29 +08:00: 2025-09-13 23:42:29:4229 [31merror[39m: [31mUnhandled error: Not allowed by CORS[39m
+2025-09-13 23:42:29 +08:00: Error: Not allowed by CORS
+2025-09-13 23:42:29 +08:00:     at origin (/root/trademe/backend/user-service/src/app.ts:86:20)
+2025-09-13 23:42:29 +08:00:     at /root/trademe/backend/user-service/node_modules/cors/lib/index.js:219:13
+2025-09-13 23:42:29 +08:00:     at optionsCallback (/root/trademe/backend/user-service/node_modules/cors/lib/index.js:199:9)
+2025-09-13 23:42:29 +08:00:     at corsMiddleware (/root/trademe/backend/user-service/node_modules/cors/lib/index.js:204:7)
+2025-09-13 23:42:29 +08:00:     at Layer.handle [as handle_request] (/root/trademe/backend/user-service/node_modules/express/lib/router/layer.js:95:5)
+2025-09-13 23:42:29 +08:00:     at trim_prefix (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:328:13)
+2025-09-13 23:42:29 +08:00:     at /root/trademe/backend/user-service/node_modules/express/lib/router/index.js:286:9
+2025-09-13 23:42:29 +08:00:     at Function.process_params (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:346:12)
+2025-09-13 23:42:29 +08:00:     at next (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:280:10)
+2025-09-13 23:42:29 +08:00:     at internalNext (/root/trademe/backend/user-service/node_modules/helmet/index.cjs:537:6)
+2025-09-13 23:42:29 +08:00: 2025-09-13 23:42:29:4229 [31merror[39m: [31mServer error:[39m
+2025-09-13 23:42:29 +08:00: Error: Not allowed by CORS
+2025-09-13 23:42:29 +08:00:     at globalErrorHandler (/root/trademe/backend/user-service/src/middleware/errorHandler.ts:192:16)
+2025-09-13 23:42:29 +08:00:     at Layer.handle_error (/root/trademe/backend/user-service/node_modules/express/lib/router/layer.js:71:5)
+2025-09-13 23:42:29 +08:00:     at trim_prefix (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:326:13)
+2025-09-13 23:42:29 +08:00:     at /root/trademe/backend/user-service/node_modules/express/lib/router/index.js:286:9
+2025-09-13 23:42:29 +08:00:     at Function.process_params (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:346:12)
+2025-09-13 23:42:29 +08:00:     at next (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:280:10)
+2025-09-13 23:42:29 +08:00:     at Layer.handle_error (/root/trademe/backend/user-service/node_modules/express/lib/router/layer.js:67:12)
+2025-09-13 23:42:29 +08:00:     at trim_prefix (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:326:13)
+2025-09-13 23:42:29 +08:00:     at /root/trademe/backend/user-service/node_modules/express/lib/router/index.js:286:9
+2025-09-13 23:42:29 +08:00:     at Function.process_params (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:346:12)
+2025-09-13 23:42:29 +08:00: 2025-09-13 23:42:29:4229 [32minfo[39m: [32mRequest started[39m
+2025-09-13 23:42:29 +08:00: 2025-09-13 23:42:29:4229 [33mwarn[39m: [33mClient error:[39m
+2025-09-13 23:42:29 +08:00: 2025-09-13 23:42:29:4229 [32minfo[39m: [32mRequest completed[39m
+2025-09-14 04:32:20 +08:00: 2025-09-14 04:32:20:3220 [32minfo[39m: [32mRequest started[39m
+2025-09-14 04:32:20 +08:00: 2025-09-14 04:32:20:3220 [33mwarn[39m: [33mClient error:[39m
+2025-09-14 04:32:20 +08:00: 2025-09-14 04:32:20:3220 [32minfo[39m: [32mRequest completed[39m
+2025-09-14 09:33:45 +08:00: 2025-09-14 09:33:45:3345 [32minfo[39m: [32mRequest started[39m
+2025-09-14 09:33:45 +08:00: 2025-09-14 09:33:45:3345 [33mwarn[39m: [33mClient error:[39m
+2025-09-14 09:33:45 +08:00: 2025-09-14 09:33:45:3345 [32minfo[39m: [32mRequest completed[39m
+2025-09-14 09:33:45 +08:00: 2025-09-14 09:33:45:3345 [32minfo[39m: [32mRequest started[39m
+2025-09-14 09:33:45 +08:00: 2025-09-14 09:33:45:3345 [33mwarn[39m: [33mClient error:[39m
+2025-09-14 09:33:45 +08:00: 2025-09-14 09:33:45:3345 [32minfo[39m: [32mRequest completed[39m
+2025-09-14 09:33:46 +08:00: 2025-09-14 09:33:46:3346 [32minfo[39m: [32mRequest started[39m
+2025-09-14 09:33:46 +08:00: 2025-09-14 09:33:46:3346 [33mwarn[39m: [33mClient error:[39m
+2025-09-14 09:33:46 +08:00: 2025-09-14 09:33:46:3346 [32minfo[39m: [32mRequest completed[39m
+2025-09-14 09:54:41 +08:00: 2025-09-14 09:54:41:5441 [32minfo[39m: [32mRequest started[39m
+2025-09-14 09:54:41 +08:00: 2025-09-14 09:54:41:5441 [33mwarn[39m: [33mClient error:[39m
+2025-09-14 09:54:41 +08:00: 2025-09-14 09:54:41:5441 [32minfo[39m: [32mRequest completed[39m
+2025-09-14 09:56:28 +08:00: 2025-09-14 09:56:28:5628 [32minfo[39m: [32mRequest started[39m
+2025-09-14 09:56:28 +08:00: 2025-09-14 09:56:28:5628 [33mwarn[39m: [33mClient error:[39m
+2025-09-14 09:56:28 +08:00: 2025-09-14 09:56:28:5628 [32minfo[39m: [32mRequest completed[39m
+2025-09-14 12:06:11 +08:00: 2025-09-14 12:06:11:611 [32minfo[39m: [32mRequest started[39m
+2025-09-14 12:06:11 +08:00: 2025-09-14 12:06:11:611 [33mwarn[39m: [33mClient error:[39m
+2025-09-14 12:06:11 +08:00: 2025-09-14 12:06:11:611 [32minfo[39m: [32mRequest completed[39m
+2025-09-14 12:18:06 +08:00: 2025-09-14 12:18:06:186 [32minfo[39m: [32mRequest started[39m
+2025-09-14 12:18:06 +08:00: 2025-09-14 12:18:06:186 [33mwarn[39m: [33mClient error:[39m
+2025-09-14 12:18:06 +08:00: 2025-09-14 12:18:06:186 [32minfo[39m: [32mRequest completed[39m
+2025-09-14 13:27:09 +08:00: 2025-09-14 13:27:09:279 [32minfo[39m: [32mRequest started[39m
+2025-09-14 13:27:09 +08:00: prisma:query SELECT 1
+2025-09-14 13:27:09 +08:00: prisma:query SELECT `main`.`users`.`id`, `main`.`users`.`username`, `main`.`users`.`email`, `main`.`users`.`password_hash`, `main`.`users`.`membership_level`, `main`.`users`.`membership_expires_at`, `main`.`users`.`is_active`, `main`.`users`.`email_verified`, `main`.`users`.`avatar_url`, `main`.`users`.`created_at` FROM `main`.`users` WHERE (`main`.`users`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
+2025-09-14 13:27:10 +08:00: prisma:query INSERT INTO `main`.`user_sessions` (`user_id`, `token`, `refresh_token`, `expires_at`, `ip_address`, `user_agent`, `is_active`, `created_at`) VALUES (?,?,?,?,?,?,?,?) RETURNING `id` AS `id`, `user_id` AS `user_id`, `token` AS `token`, `refresh_token` AS `refresh_token`, `expires_at` AS `expires_at`, `ip_address` AS `ip_address`, `user_agent` AS `user_agent`, `is_active` AS `is_active`, `created_at` AS `created_at`
+2025-09-14 13:27:10 +08:00: prisma:query UPDATE `main`.`users` SET `last_login_at` = ?, `updated_at` = ? WHERE (`main`.`users`.`id` = ? AND 1=1) RETURNING `id` AS `id`, `username` AS `username`, `email` AS `email`, `password_hash` AS `password_hash`, `google_id` AS `google_id`, `avatar_url` AS `avatar_url`, `phone` AS `phone`, `membership_level` AS `membership_level`, `membership_expires_at` AS `membership_expires_at`, `is_active` AS `is_active`, `email_verified` AS `email_verified`, `last_login_at` AS `last_login_at`, `preferences` AS `preferences`, `created_at` AS `created_at`, `updated_at` AS `updated_at`
+2025-09-14 13:27:10 +08:00: 2025-09-14 13:27:10:2710 [32minfo[39m: [32mUser logged in:[39m
+2025-09-14 13:27:10 +08:00: 2025-09-14 13:27:10:2710 [32minfo[39m: [32mRequest completed[39m
+2025-09-14 13:27:15 +08:00: 2025-09-14 13:27:15:2715 [32minfo[39m: [32mRequest started[39m
+2025-09-14 13:27:15 +08:00: prisma:query SELECT `main`.`users`.`id`, `main`.`users`.`username`, `main`.`users`.`email`, `main`.`users`.`password_hash`, `main`.`users`.`membership_level`, `main`.`users`.`membership_expires_at`, `main`.`users`.`is_active`, `main`.`users`.`email_verified`, `main`.`users`.`avatar_url`, `main`.`users`.`created_at` FROM `main`.`users` WHERE (`main`.`users`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
+2025-09-14 13:27:16 +08:00: prisma:query INSERT INTO `main`.`user_sessions` (`user_id`, `token`, `refresh_token`, `expires_at`, `ip_address`, `user_agent`, `is_active`, `created_at`) VALUES (?,?,?,?,?,?,?,?) RETURNING `id` AS `id`, `user_id` AS `user_id`, `token` AS `token`, `refresh_token` AS `refresh_token`, `expires_at` AS `expires_at`, `ip_address` AS `ip_address`, `user_agent` AS `user_agent`, `is_active` AS `is_active`, `created_at` AS `created_at`
+2025-09-14 13:27:16 +08:00: prisma:query UPDATE `main`.`users` SET `last_login_at` = ?, `updated_at` = ? WHERE (`main`.`users`.`id` = ? AND 1=1) RETURNING `id` AS `id`, `username` AS `username`, `email` AS `email`, `password_hash` AS `password_hash`, `google_id` AS `google_id`, `avatar_url` AS `avatar_url`, `phone` AS `phone`, `membership_level` AS `membership_level`, `membership_expires_at` AS `membership_expires_at`, `is_active` AS `is_active`, `email_verified` AS `email_verified`, `last_login_at` AS `last_login_at`, `preferences` AS `preferences`, `created_at` AS `created_at`, `updated_at` AS `updated_at`
+2025-09-14 13:27:16 +08:00: 2025-09-14 13:27:16:2716 [32minfo[39m: [32mUser logged in:[39m
+2025-09-14 13:27:16 +08:00: 2025-09-14 13:27:16:2716 [32minfo[39m: [32mRequest completed[39m
+2025-09-14 13:30:17 +08:00: 2025-09-14 13:30:17:3017 [32minfo[39m: [32mRequest started[39m
+2025-09-14 13:30:17 +08:00: prisma:query SELECT 1
+2025-09-14 13:30:17 +08:00: prisma:query SELECT `main`.`users`.`id`, `main`.`users`.`username`, `main`.`users`.`email`, `main`.`users`.`password_hash`, `main`.`users`.`membership_level`, `main`.`users`.`membership_expires_at`, `main`.`users`.`is_active`, `main`.`users`.`email_verified`, `main`.`users`.`avatar_url`, `main`.`users`.`created_at` FROM `main`.`users` WHERE (`main`.`users`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
+2025-09-14 13:30:17 +08:00: prisma:query INSERT INTO `main`.`user_sessions` (`user_id`, `token`, `refresh_token`, `expires_at`, `ip_address`, `user_agent`, `is_active`, `created_at`) VALUES (?,?,?,?,?,?,?,?) RETURNING `id` AS `id`, `user_id` AS `user_id`, `token` AS `token`, `refresh_token` AS `refresh_token`, `expires_at` AS `expires_at`, `ip_address` AS `ip_address`, `user_agent` AS `user_agent`, `is_active` AS `is_active`, `created_at` AS `created_at`
+2025-09-14 13:30:17 +08:00: prisma:query UPDATE `main`.`users` SET `last_login_at` = ?, `updated_at` = ? WHERE (`main`.`users`.`id` = ? AND 1=1) RETURNING `id` AS `id`, `username` AS `username`, `email` AS `email`, `password_hash` AS `password_hash`, `google_id` AS `google_id`, `avatar_url` AS `avatar_url`, `phone` AS `phone`, `membership_level` AS `membership_level`, `membership_expires_at` AS `membership_expires_at`, `is_active` AS `is_active`, `email_verified` AS `email_verified`, `last_login_at` AS `last_login_at`, `preferences` AS `preferences`, `created_at` AS `created_at`, `updated_at` AS `updated_at`
+2025-09-14 13:30:17 +08:00: 2025-09-14 13:30:17:3017 [32minfo[39m: [32mUser logged in:[39m
+2025-09-14 13:30:17 +08:00: 2025-09-14 13:30:17:3017 [32minfo[39m: [32mRequest completed[39m
+2025-09-14 13:33:25 +08:00: 2025-09-14 13:33:25:3325 [32minfo[39m: [32mRequest started[39m
+2025-09-14 13:33:25 +08:00: prisma:query SELECT 1
+2025-09-14 13:33:25 +08:00: prisma:query SELECT `main`.`users`.`id`, `main`.`users`.`username`, `main`.`users`.`email`, `main`.`users`.`password_hash`, `main`.`users`.`membership_level`, `main`.`users`.`membership_expires_at`, `main`.`users`.`is_active`, `main`.`users`.`email_verified`, `main`.`users`.`avatar_url`, `main`.`users`.`created_at` FROM `main`.`users` WHERE (`main`.`users`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
+2025-09-14 13:33:26 +08:00: prisma:query INSERT INTO `main`.`user_sessions` (`user_id`, `token`, `refresh_token`, `expires_at`, `ip_address`, `user_agent`, `is_active`, `created_at`) VALUES (?,?,?,?,?,?,?,?) RETURNING `id` AS `id`, `user_id` AS `user_id`, `token` AS `token`, `refresh_token` AS `refresh_token`, `expires_at` AS `expires_at`, `ip_address` AS `ip_address`, `user_agent` AS `user_agent`, `is_active` AS `is_active`, `created_at` AS `created_at`
+2025-09-14 13:33:26 +08:00: prisma:query UPDATE `main`.`users` SET `last_login_at` = ?, `updated_at` = ? WHERE (`main`.`users`.`id` = ? AND 1=1) RETURNING `id` AS `id`, `username` AS `username`, `email` AS `email`, `password_hash` AS `password_hash`, `google_id` AS `google_id`, `avatar_url` AS `avatar_url`, `phone` AS `phone`, `membership_level` AS `membership_level`, `membership_expires_at` AS `membership_expires_at`, `is_active` AS `is_active`, `email_verified` AS `email_verified`, `last_login_at` AS `last_login_at`, `preferences` AS `preferences`, `created_at` AS `created_at`, `updated_at` AS `updated_at`
+2025-09-14 13:33:26 +08:00: 2025-09-14 13:33:26:3326 [32minfo[39m: [32mUser logged in:[39m
+2025-09-14 13:33:26 +08:00: 2025-09-14 13:33:26:3326 [32minfo[39m: [32mRequest completed[39m
+2025-09-14 13:37:23 +08:00: 2025-09-14 13:37:23:3723 [32minfo[39m: [32mRequest started[39m
+2025-09-14 13:37:23 +08:00: prisma:query SELECT 1
+2025-09-14 13:37:23 +08:00: prisma:query SELECT `main`.`users`.`id`, `main`.`users`.`username`, `main`.`users`.`email`, `main`.`users`.`password_hash`, `main`.`users`.`membership_level`, `main`.`users`.`membership_expires_at`, `main`.`users`.`is_active`, `main`.`users`.`email_verified`, `main`.`users`.`avatar_url`, `main`.`users`.`created_at` FROM `main`.`users` WHERE (`main`.`users`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
+2025-09-14 13:37:23 +08:00: prisma:query INSERT INTO `main`.`user_sessions` (`user_id`, `token`, `refresh_token`, `expires_at`, `ip_address`, `user_agent`, `is_active`, `created_at`) VALUES (?,?,?,?,?,?,?,?) RETURNING `id` AS `id`, `user_id` AS `user_id`, `token` AS `token`, `refresh_token` AS `refresh_token`, `expires_at` AS `expires_at`, `ip_address` AS `ip_address`, `user_agent` AS `user_agent`, `is_active` AS `is_active`, `created_at` AS `created_at`
+2025-09-14 13:37:23 +08:00: prisma:query UPDATE `main`.`users` SET `last_login_at` = ?, `updated_at` = ? WHERE (`main`.`users`.`id` = ? AND 1=1) RETURNING `id` AS `id`, `username` AS `username`, `email` AS `email`, `password_hash` AS `password_hash`, `google_id` AS `google_id`, `avatar_url` AS `avatar_url`, `phone` AS `phone`, `membership_level` AS `membership_level`, `membership_expires_at` AS `membership_expires_at`, `is_active` AS `is_active`, `email_verified` AS `email_verified`, `last_login_at` AS `last_login_at`, `preferences` AS `preferences`, `created_at` AS `created_at`, `updated_at` AS `updated_at`
+2025-09-14 13:37:23 +08:00: 2025-09-14 13:37:23:3723 [32minfo[39m: [32mUser logged in:[39m
+2025-09-14 13:37:23 +08:00: 2025-09-14 13:37:23:3723 [32minfo[39m: [32mRequest completed[39m
+2025-09-14 13:47:56 +08:00: 2025-09-14 13:47:56:4756 [32minfo[39m: [32mRequest started[39m
+2025-09-14 13:47:56 +08:00: 2025-09-14 13:47:56:4756 [33mwarn[39m: [33mClient error:[39m
+2025-09-14 13:47:56 +08:00: 2025-09-14 13:47:56:4756 [32minfo[39m: [32mRequest completed[39m
+2025-09-14 13:48:16 +08:00: 2025-09-14 13:48:16:4816 [32minfo[39m: [32mRequest started[39m
+2025-09-14 13:48:16 +08:00: 2025-09-14 13:48:16:4816 [33mwarn[39m: [33mClient error:[39m
+2025-09-14 13:48:16 +08:00: 2025-09-14 13:48:16:4816 [32minfo[39m: [32mRequest completed[39m
+2025-09-14 13:48:35 +08:00: 2025-09-14 13:48:35:4835 [32minfo[39m: [32mReceived SIGTERM. Starting graceful shutdown...[39m
+2025-09-14 13:48:35 +08:00: 2025-09-14 13:48:35:4835 [32minfo[39m: [32mDatabase disconnected[39m
+2025-09-14 13:48:35 +08:00: 2025-09-14 13:48:35:4835 [32minfo[39m: [32mRedis client disconnected[39m
+2025-09-14 13:48:35 +08:00: 2025-09-14 13:48:35:4835 [32minfo[39m: [32mGraceful shutdown completed[39m
+2025-09-14 13:48:41 +08:00: 2025-09-14 13:48:41:4841 [32minfo[39m: [32mUpload directories initialized:[39m
+2025-09-14 13:48:41 +08:00: prisma:info Starting a sqlite pool with 3 connections.
+2025-09-14 13:48:41 +08:00: 2025-09-14 13:48:41:4841 [32minfo[39m: [32mDatabase connected successfully[39m
+2025-09-14 13:48:41 +08:00: 2025-09-14 13:48:41:4841 [32minfo[39m: [32mDatabase initialized successfully[39m
+2025-09-14 13:48:41 +08:00: 2025-09-14 13:48:41:4841 [32minfo[39m: [32mRedis client connected[39m
+2025-09-14 13:48:41 +08:00: 2025-09-14 13:48:41:4841 [32minfo[39m: [32mRedis initialized successfully[39m
+2025-09-14 13:48:41 +08:00: 2025-09-14 13:48:41:4841 [32minfo[39m: [32m🚀 User Service started successfully![39m
+2025-09-14 13:48:41 +08:00: 2025-09-14 13:48:41:4841 [32minfo[39m: [32m📡 Server running on port 3001 (all interfaces)[39m
+2025-09-14 13:48:41 +08:00: 2025-09-14 13:48:41:4841 [32minfo[39m: [32m🌍 Environment: development[39m
+2025-09-14 13:48:41 +08:00: 2025-09-14 13:48:41:4841 [32minfo[39m: [32m🔗 Health check: http://localhost:3001/health[39m
+2025-09-14 13:48:41 +08:00: 2025-09-14 13:48:41:4841 [32minfo[39m: [32m📚 API docs: http://localhost:3001/api/v1[39m
+2025-09-14 13:48:41 +08:00: 2025-09-14 13:48:41:4841 [32minfo[39m: [32mSystem Information[39m
+2025-09-14 13:48:42 +08:00: 2025-09-14 13:48:42:4842 [32minfo[39m: [32m邮件服务连接验证成功[39m
+2025-09-14 13:49:07 +08:00: 2025-09-14 13:49:07:497 [32minfo[39m: [32mRequest started[39m
+2025-09-14 13:49:07 +08:00: 2025-09-14 13:49:07:497 [33mwarn[39m: [33mClient error:[39m
+2025-09-14 13:49:07 +08:00: 2025-09-14 13:49:07:497 [32minfo[39m: [32mRequest completed[39m
+2025-09-14 13:49:17 +08:00: 2025-09-14 13:49:17:4917 [32minfo[39m: [32mRequest started[39m
+2025-09-14 13:49:17 +08:00: prisma:query SELECT 1
+2025-09-14 13:49:17 +08:00: prisma:query SELECT `main`.`users`.`id`, `main`.`users`.`username`, `main`.`users`.`email`, `main`.`users`.`password_hash`, `main`.`users`.`membership_level`, `main`.`users`.`membership_expires_at`, `main`.`users`.`is_active`, `main`.`users`.`email_verified`, `main`.`users`.`avatar_url`, `main`.`users`.`created_at` FROM `main`.`users` WHERE (`main`.`users`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
+2025-09-14 13:49:17 +08:00: prisma:query INSERT INTO `main`.`user_sessions` (`user_id`, `token`, `refresh_token`, `expires_at`, `ip_address`, `user_agent`, `is_active`, `created_at`) VALUES (?,?,?,?,?,?,?,?) RETURNING `id` AS `id`, `user_id` AS `user_id`, `token` AS `token`, `refresh_token` AS `refresh_token`, `expires_at` AS `expires_at`, `ip_address` AS `ip_address`, `user_agent` AS `user_agent`, `is_active` AS `is_active`, `created_at` AS `created_at`
+2025-09-14 13:49:17 +08:00: prisma:query UPDATE `main`.`users` SET `last_login_at` = ?, `updated_at` = ? WHERE (`main`.`users`.`id` = ? AND 1=1) RETURNING `id` AS `id`, `username` AS `username`, `email` AS `email`, `password_hash` AS `password_hash`, `google_id` AS `google_id`, `avatar_url` AS `avatar_url`, `phone` AS `phone`, `membership_level` AS `membership_level`, `membership_expires_at` AS `membership_expires_at`, `is_active` AS `is_active`, `email_verified` AS `email_verified`, `last_login_at` AS `last_login_at`, `preferences` AS `preferences`, `created_at` AS `created_at`, `updated_at` AS `updated_at`
+2025-09-14 13:49:17 +08:00: 2025-09-14 13:49:17:4917 [32minfo[39m: [32mUser logged in:[39m
+2025-09-14 13:49:17 +08:00: 2025-09-14 13:49:17:4917 [32minfo[39m: [32mRequest completed[39m
+2025-09-14 13:49:54 +08:00: 2025-09-14 13:49:54:4954 [32minfo[39m: [32mRequest started[39m
+2025-09-14 13:49:54 +08:00: prisma:query SELECT 1
+2025-09-14 13:49:54 +08:00: prisma:query SELECT `main`.`users`.`id`, `main`.`users`.`username`, `main`.`users`.`email`, `main`.`users`.`password_hash`, `main`.`users`.`membership_level`, `main`.`users`.`membership_expires_at`, `main`.`users`.`is_active`, `main`.`users`.`email_verified`, `main`.`users`.`avatar_url`, `main`.`users`.`created_at` FROM `main`.`users` WHERE (`main`.`users`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
+2025-09-14 13:49:55 +08:00: prisma:query INSERT INTO `main`.`user_sessions` (`user_id`, `token`, `refresh_token`, `expires_at`, `ip_address`, `user_agent`, `is_active`, `created_at`) VALUES (?,?,?,?,?,?,?,?) RETURNING `id` AS `id`, `user_id` AS `user_id`, `token` AS `token`, `refresh_token` AS `refresh_token`, `expires_at` AS `expires_at`, `ip_address` AS `ip_address`, `user_agent` AS `user_agent`, `is_active` AS `is_active`, `created_at` AS `created_at`
+2025-09-14 13:49:55 +08:00: prisma:query UPDATE `main`.`users` SET `last_login_at` = ?, `updated_at` = ? WHERE (`main`.`users`.`id` = ? AND 1=1) RETURNING `id` AS `id`, `username` AS `username`, `email` AS `email`, `password_hash` AS `password_hash`, `google_id` AS `google_id`, `avatar_url` AS `avatar_url`, `phone` AS `phone`, `membership_level` AS `membership_level`, `membership_expires_at` AS `membership_expires_at`, `is_active` AS `is_active`, `email_verified` AS `email_verified`, `last_login_at` AS `last_login_at`, `preferences` AS `preferences`, `created_at` AS `created_at`, `updated_at` AS `updated_at`
+2025-09-14 13:49:55 +08:00: 2025-09-14 13:49:55:4955 [32minfo[39m: [32mUser logged in:[39m
+2025-09-14 13:49:55 +08:00: 2025-09-14 13:49:55:4955 [32minfo[39m: [32mRequest completed[39m
+2025-09-14 13:49:55 +08:00: 2025-09-14 13:49:55:4955 [32minfo[39m: [32mRequest started[39m
+2025-09-14 13:49:55 +08:00: prisma:query SELECT `main`.`users`.`id`, `main`.`users`.`username`, `main`.`users`.`email`, `main`.`users`.`password_hash`, `main`.`users`.`membership_level`, `main`.`users`.`membership_expires_at`, `main`.`users`.`is_active`, `main`.`users`.`email_verified`, `main`.`users`.`avatar_url`, `main`.`users`.`created_at` FROM `main`.`users` WHERE (`main`.`users`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
+2025-09-14 13:49:55 +08:00: prisma:query INSERT INTO `main`.`user_sessions` (`user_id`, `token`, `refresh_token`, `expires_at`, `ip_address`, `user_agent`, `is_active`, `created_at`) VALUES (?,?,?,?,?,?,?,?) RETURNING `id` AS `id`, `user_id` AS `user_id`, `token` AS `token`, `refresh_token` AS `refresh_token`, `expires_at` AS `expires_at`, `ip_address` AS `ip_address`, `user_agent` AS `user_agent`, `is_active` AS `is_active`, `created_at` AS `created_at`
+2025-09-14 13:49:55 +08:00: prisma:error 
+2025-09-14 13:49:55 +08:00: Invalid `prisma.userSession.create()` invocation in
+2025-09-14 13:49:55 +08:00: /root/trademe/backend/user-service/src/controllers/auth.ts:276:30
+2025-09-14 13:49:55 +08:00: 
+2025-09-14 13:49:55 +08:00:   273 
+2025-09-14 13:49:55 +08:00:   274 // 创建会话
+2025-09-14 13:49:55 +08:00:   275 const sessionId = generateUUID();
+2025-09-14 13:49:55 +08:00: → 276 await prisma.userSession.create(
+2025-09-14 13:49:55 +08:00: Unique constraint failed on the fields: (`refresh_token`)
+2025-09-14 13:49:55 +08:00: 2025-09-14 13:49:55:4955 [31merror[39m: [31mPrisma error: [39m
+2025-09-14 13:49:55 +08:00: [31mInvalid `prisma.userSession.create()` invocation in[39m
+2025-09-14 13:49:55 +08:00: [31m/root/trademe/backend/user-service/src/controllers/auth.ts:276:30[39m
+2025-09-14 13:49:55 +08:00: 
+2025-09-14 13:49:55 +08:00: [31m  273 [39m
+2025-09-14 13:49:55 +08:00: [31m  274 // 创建会话[39m
+2025-09-14 13:49:55 +08:00: [31m  275 const sessionId = generateUUID();[39m
+2025-09-14 13:49:55 +08:00: [31m→ 276 await prisma.userSession.create([39m
+2025-09-14 13:49:55 +08:00: [31mUnique constraint failed on the fields: (`refresh_token`)[39m
+2025-09-14 13:49:55 +08:00: PrismaClientKnownRequestError: 
+2025-09-14 13:49:55 +08:00: Invalid `prisma.userSession.create()` invocation in
+2025-09-14 13:49:55 +08:00: /root/trademe/backend/user-service/src/controllers/auth.ts:276:30
+2025-09-14 13:49:55 +08:00: 
+2025-09-14 13:49:55 +08:00:   273 
+2025-09-14 13:49:55 +08:00:   274 // 创建会话
+2025-09-14 13:49:55 +08:00:   275 const sessionId = generateUUID();
+2025-09-14 13:49:55 +08:00: → 276 await prisma.userSession.create(
+2025-09-14 13:49:55 +08:00: Unique constraint failed on the fields: (`refresh_token`)
+2025-09-14 13:49:55 +08:00:     at $n.handleRequestError (/root/trademe/backend/user-service/node_modules/@prisma/client/runtime/library.js:121:7315)
+2025-09-14 13:49:55 +08:00:     at $n.handleAndLogRequestError (/root/trademe/backend/user-service/node_modules/@prisma/client/runtime/library.js:121:6623)
+2025-09-14 13:49:55 +08:00:     at $n.request (/root/trademe/backend/user-service/node_modules/@prisma/client/runtime/library.js:121:6307)
+2025-09-14 13:49:55 +08:00:     at l (/root/trademe/backend/user-service/node_modules/@prisma/client/runtime/library.js:130:9633)
+2025-09-14 13:49:55 +08:00:     at login (/root/trademe/backend/user-service/src/controllers/auth.ts:276:5)
+2025-09-14 13:49:55 +08:00: 2025-09-14 13:49:55:4955 [33mwarn[39m: [33mClient error:[39m
+2025-09-14 13:49:55 +08:00: 2025-09-14 13:49:55:4955 [32minfo[39m: [32mRequest completed[39m
+2025-09-14 15:07:01 +08:00: 2025-09-14 15:07:01:71 [32minfo[39m: [32mRequest started[39m
+2025-09-14 15:07:01 +08:00: 2025-09-14 15:07:01:71 [33mwarn[39m: [33mClient error:[39m
+2025-09-14 15:07:01 +08:00: 2025-09-14 15:07:01:71 [32minfo[39m: [32mRequest completed[39m
+2025-09-14 15:09:52 +08:00: 2025-09-14 15:09:52:952 [32minfo[39m: [32mRequest started[39m
+2025-09-14 15:09:52 +08:00: 2025-09-14 15:09:52:952 [33mwarn[39m: [33mClient error:[39m
+2025-09-14 15:09:52 +08:00: 2025-09-14 15:09:52:952 [32minfo[39m: [32mRequest completed[39m
+2025-09-14 16:04:23 +08:00: 2025-09-14 16:04:23:423 [32minfo[39m: [32mRequest started[39m
+2025-09-14 16:04:24 +08:00: prisma:query SELECT 1
+2025-09-14 16:04:24 +08:00: prisma:query SELECT `main`.`users`.`id`, `main`.`users`.`username`, `main`.`users`.`email`, `main`.`users`.`password_hash`, `main`.`users`.`membership_level`, `main`.`users`.`membership_expires_at`, `main`.`users`.`is_active`, `main`.`users`.`email_verified`, `main`.`users`.`avatar_url`, `main`.`users`.`created_at` FROM `main`.`users` WHERE (`main`.`users`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
+2025-09-14 16:04:24 +08:00: prisma:query INSERT INTO `main`.`user_sessions` (`user_id`, `token`, `refresh_token`, `expires_at`, `ip_address`, `user_agent`, `is_active`, `created_at`) VALUES (?,?,?,?,?,?,?,?) RETURNING `id` AS `id`, `user_id` AS `user_id`, `token` AS `token`, `refresh_token` AS `refresh_token`, `expires_at` AS `expires_at`, `ip_address` AS `ip_address`, `user_agent` AS `user_agent`, `is_active` AS `is_active`, `created_at` AS `created_at`
+2025-09-14 16:04:24 +08:00: prisma:query UPDATE `main`.`users` SET `last_login_at` = ?, `updated_at` = ? WHERE (`main`.`users`.`id` = ? AND 1=1) RETURNING `id` AS `id`, `username` AS `username`, `email` AS `email`, `password_hash` AS `password_hash`, `google_id` AS `google_id`, `avatar_url` AS `avatar_url`, `phone` AS `phone`, `membership_level` AS `membership_level`, `membership_expires_at` AS `membership_expires_at`, `is_active` AS `is_active`, `email_verified` AS `email_verified`, `last_login_at` AS `last_login_at`, `preferences` AS `preferences`, `created_at` AS `created_at`, `updated_at` AS `updated_at`
+2025-09-14 16:04:24 +08:00: 2025-09-14 16:04:24:424 [32minfo[39m: [32mUser logged in:[39m
+2025-09-14 16:04:24 +08:00: 2025-09-14 16:04:24:424 [32minfo[39m: [32mRequest completed[39m
+2025-09-14 16:13:32 +08:00: 2025-09-14 16:13:32:1332 [32minfo[39m: [32mRequest started[39m
+2025-09-14 16:13:32 +08:00: 2025-09-14 16:13:32:1332 [33mwarn[39m: [33mClient error:[39m
+2025-09-14 16:13:32 +08:00: 2025-09-14 16:13:32:1332 [32minfo[39m: [32mRequest completed[39m
+2025-09-14 16:13:41 +08:00: 2025-09-14 16:13:41:1341 [32minfo[39m: [32mRequest started[39m
+2025-09-14 16:13:41 +08:00: 2025-09-14 16:13:41:1341 [33mwarn[39m: [33mClient error:[39m
+2025-09-14 16:13:41 +08:00: 2025-09-14 16:13:41:1341 [32minfo[39m: [32mRequest completed[39m
+2025-09-14 16:13:47 +08:00: 2025-09-14 16:13:47:1347 [32minfo[39m: [32mRequest started[39m
+2025-09-14 16:13:47 +08:00: 2025-09-14 16:13:47:1347 [33mwarn[39m: [33mClient error:[39m
+2025-09-14 16:13:47 +08:00: 2025-09-14 16:13:47:1347 [32minfo[39m: [32mRequest completed[39m
+2025-09-14 17:08:01 +08:00: 2025-09-14 17:08:01:81 [32minfo[39m: [32mRequest started[39m
+2025-09-14 17:08:01 +08:00: 2025-09-14 17:08:01:81 [33mwarn[39m: [33mClient error:[39m
+2025-09-14 17:08:01 +08:00: 2025-09-14 17:08:01:81 [32minfo[39m: [32mRequest completed[39m
+2025-09-14 17:24:27 +08:00: 2025-09-14 17:24:27:2427 [32minfo[39m: [32mRequest started[39m
+2025-09-14 17:24:27 +08:00: prisma:query SELECT 1
+2025-09-14 17:24:27 +08:00: prisma:query SELECT 1
+2025-09-14 17:24:27 +08:00: 2025-09-14 17:24:27:2427 [32minfo[39m: [32mUpload service health check passed[39m
+2025-09-14 17:24:28 +08:00: 2025-09-14 17:24:28:2428 [32minfo[39m: [32mRequest completed[39m

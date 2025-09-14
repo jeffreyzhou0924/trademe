@@ -1,0 +1,37 @@
+{
+  "test_timestamp": "2025-09-14T15:00:38.698647",
+  "test_type": "simplified_deterministic_backtest",
+  "identified_issues": [
+    {
+      "issue": "random_seed_not_set",
+      "description": "随机种子未统一设置",
+      "fix": "在回测引擎初始化时设置全局随机种子",
+      "status": "fixed"
+    },
+    {
+      "issue": "floating_point_precision",
+      "description": "浮点数精度导致计算不一致",
+      "fix": "使用Decimal进行高精度计算",
+      "status": "fixed"
+    },
+    {
+      "issue": "database_query_ordering",
+      "description": "数据库查询结果排序不确定",
+      "fix": "添加复合排序字段(timestamp + id)",
+      "status": "fixed"
+    },
+    {
+      "issue": "state_pollution",
+      "description": "回测引擎状态污染",
+      "fix": "使用工厂方法创建独立实例",
+      "status": "fixed"
+    },
+    {
+      "issue": "signal_generation_inconsistency",
+      "description": "信号生成算法不确定",
+      "fix": "使用确定性的技术指标计算",
+      "status": "fixed"
+    }
+  ],
+  "test_passed": true
+}

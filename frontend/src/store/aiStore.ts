@@ -16,6 +16,13 @@ import type {
   CreateSessionRequest,
   UsageStats
 } from '../services/api/ai'
+import type {
+  AutoBacktestConfig,
+  BacktestProgress,
+  BacktestResults,
+  AIGeneratedStrategy,
+  BacktestHistoryItem
+} from '../types/aiBacktest'
 
 interface AIState {
   // 双模式会话管理
@@ -65,6 +72,14 @@ interface AIState {
   // 使用统计
   usageStats: UsageStats | null
   
+  // 新增：回测相关状态
+  generatedStrategy: AIGeneratedStrategy | null
+  showBacktestPrompt: boolean
+  backtestProgress: BacktestProgress | null
+  backtestResults: BacktestResults | null
+  showBacktestResults: boolean
+  isBacktestRunning: boolean
+  
   // 加载状态
   isLoading: boolean
   error: string | null
@@ -85,6 +100,7 @@ interface AIState {
   
   // 使用统计
   loadUsageStats: (days?: number) => Promise<void>
+  updateUsageStatsRealtime: (costUsd: number, tokensUsed: number) => void
   
   // 策略生成操作
   generateStrategy: (request: StrategyGenerationRequest) => Promise<GeneratedStrategy | null>
@@ -101,6 +117,18 @@ interface AIState {
   toggleWebSocket: () => void
   initializeWebSocket: () => Promise<boolean>
   sendMessageWebSocket: (message: string) => Promise<boolean>
+  
+  // 新增：回测相关方法
+  getLatestAIStrategy: (sessionId: string) => Promise<AIGeneratedStrategy | null>
+  autoBacktest: (config: AutoBacktestConfig) => Promise<boolean>
+  getBacktestProgress: (taskId: string) => Promise<BacktestProgress | null>
+  getBacktestResults: (taskId: string) => Promise<BacktestResults | null>
+  startBacktestMonitoring: (taskId: string) => void
+  stopBacktestMonitoring: () => void
+  handleStrategyGenerated: (sessionId: string) => Promise<void>
+  handleQuickBacktest: (config: Partial<AutoBacktestConfig>) => Promise<void>
+  setShowBacktestPrompt: (show: boolean) => void
+  setShowBacktestResults: (show: boolean) => void
   
   // 工具方法
   clearError: () => void
@@ -143,6 +171,14 @@ export const useAIStore = create<AIState>()(
       isAnalyzing: false,
       
       usageStats: null,
+      
+      // 回测相关状态初始值
+      generatedStrategy: null,
+      showBacktestPrompt: false,
+      backtestProgress: null,
+      backtestResults: null,
+      showBacktestResults: false,
+      isBacktestRunning: false,
       
       isLoading: false,
       error: null,
@@ -403,8 +439,11 @@ export const useAIStore = create<AIState>()(
             retryCount: 0
           }))
           
-          // 显示消耗信息
+          // 实时更新统计数据
           if (aiResponse.cost_usd > 0) {
+            get().updateUsageStatsRealtime(aiResponse.cost_usd, aiResponse.tokens_used || 0)
+            
+            // 显示消耗信息
             toast.success(`AI回复完成 (消耗 $${aiResponse.cost_usd.toFixed(4)})`, {
               icon: '🧠',
               duration: 3000
@@ -565,6 +604,41 @@ export const useAIStore = create<AIState>()(
           set({ error: message, isLoading: false })
           console.error('Load usage stats error:', error)
         }
+      },
+
+      // 实时更新使用统计
+      updateUsageStatsRealtime: (costUsd: number, tokensUsed: number) => {
+        set(state => {
+          if (!state.usageStats) {
+            // 如果还没有统计数据，创建初始结构
+            return {
+              usageStats: {
+                period_days: 1,
+                total_requests: 1,
+                total_cost_usd: costUsd,
+                daily_cost_usd: costUsd,
+                monthly_cost_usd: costUsd,
+                remaining_daily_quota: 1000,
+                remaining_monthly_quota: 30000,
+                by_feature: {},
+                by_session: {}
+              }
+            }
+          }
+
+          // 更新现有统计数据
+          return {
+            usageStats: {
+              ...state.usageStats,
+              total_requests: (state.usageStats.total_requests || 0) + 1,
+              total_cost_usd: (state.usageStats.total_cost_usd || 0) + costUsd,
+              daily_cost_usd: (state.usageStats.daily_cost_usd || 0) + costUsd,
+              monthly_cost_usd: (state.usageStats.monthly_cost_usd || 0) + costUsd
+            }
+          }
+        })
+
+        console.log(`💰 [AIStore] 实时更新统计: +$${costUsd.toFixed(4)}, +${tokensUsed} tokens`)
       },
 
       // 清空当前消息
@@ -1056,7 +1130,10 @@ export const useAIStore = create<AIState>()(
                   }
                 })
 
+                // 实时更新统计数据
                 if (data.cost_usd > 0) {
+                  get().updateUsageStatsRealtime(data.cost_usd, data.tokens_used || 0)
+                  
                   toast.success(`AI回复完成 (消耗 $${data.cost_usd.toFixed(4)}, ${data.tokens_used} tokens)`, {
                     icon: '🚀',
                     duration: 4000
@@ -1148,58 +1225,33 @@ export const useAIStore = create<AIState>()(
               onStreamEnd: (data) => {
                 console.log('✅ [AIStore] 流式结束:', data)
                 
+                // 🚨 立即强制触发React组件更新，绕过复杂的状态检查
                 set(state => {
-                  console.log('🔄 [AIStore] 流式结束前的状态:', {
-                    isTyping: state.isTyping,
-                    aiProgress: state.aiProgress,
-                    streamingMessage: state.streamingMessage
-                  })
-                  
-                  const { streamingMessage } = state
-                  if (!streamingMessage?.isStreaming || streamingMessage.messageIndex === undefined) {
-                    console.log('⚠️ [AIStore] 流式状态检查失败，直接清理状态')
-                    return {
-                      ...state,
-                      isTyping: false,
-                      streamingMessage: null,
-                      aiProgress: null
+                  console.log('🚀 [AIStore] 立即强制更新messages数组以触发React重新渲染')
+                  const newMessage = {
+                    role: 'assistant' as const,
+                    content: data.content || '流式消息完成',
+                    timestamp: new Date().toISOString(),
+                    metadata: {
+                      streamCompleted: true,
+                      completedAt: Date.now(),
+                      forceRender: Math.random() // 强制引用变化
                     }
                   }
                   
-                  // 完成流式消息，移除流式标记
-                  const updatedMessages = [...state.messages]
-                  if (updatedMessages[streamingMessage.messageIndex]) {
-                    const currentMessage = updatedMessages[streamingMessage.messageIndex]
-                    const finalContent = data.content || currentMessage.content || streamingMessage.accumulatedContent || ''
-                    
-                    updatedMessages[streamingMessage.messageIndex] = {
-                      ...currentMessage,
-                      content: finalContent,
-                      metadata: {
-                        // 移除isStreaming标记，表示已完成
-                        codeBlock: finalContent.includes('```') ? finalContent : undefined
-                      }
-                    }
-                  }
-                  
-                  const newState = {
-                    messages: updatedMessages,
+                  return {
+                    ...state,
+                    messages: [...state.messages, newMessage],
                     isTyping: false,
-                    streamingMessage: null,  // 清除流式状态
+                    streamingMessage: null,
                     aiProgress: null
                   }
-                  
-                  console.log('✅ [AIStore] 流式结束后的状态:', {
-                    isTyping: newState.isTyping,
-                    aiProgress: newState.aiProgress,
-                    streamingMessage: newState.streamingMessage,
-                    messageCount: newState.messages.length
-                  })
-                  
-                  return newState
                 })
                 
+                // 实时更新统计数据
                 if (data.cost_usd > 0) {
+                  get().updateUsageStatsRealtime(data.cost_usd, data.tokens_used || 0)
+                  
                   toast.success(`🌊 流式AI回复完成 (消耗 $${data.cost_usd.toFixed(4)}, ${data.tokens_used} tokens)`, {
                     icon: '🚀',
                     duration: 4000
@@ -1482,6 +1534,212 @@ export const useAIStore = create<AIState>()(
         }
 
         return '⚠️ 服务暂时不可用，请稍后重试'
+      },
+
+      // =============== 新增：回测相关方法 ===============
+
+      // 获取AI会话最新生成的策略
+      getLatestAIStrategy: async (sessionId: string) => {
+        set({ isLoading: true, error: null })
+        try {
+          const strategy = await aiApi.getLatestAIStrategy(sessionId)
+          set({ 
+            generatedStrategy: strategy,
+            isLoading: false 
+          })
+          return strategy
+        } catch (error: any) {
+          const message = get().getErrorMessage(error)
+          set({ error: message, isLoading: false })
+          toast.error(`获取策略失败: ${message}`)
+          return null
+        }
+      },
+
+      // 自动触发回测
+      autoBacktest: async (config: AutoBacktestConfig) => {
+        set({ isBacktestRunning: true, backtestProgress: null, error: null })
+        try {
+          const result = await aiApi.autoBacktest(config)
+          
+          if (result.success && result.task_id) {
+            // 开始监控回测进度
+            get().startBacktestMonitoring(result.task_id)
+            
+            toast.success('回测已启动，正在后台运行...', {
+              icon: '🚀',
+              duration: 4000
+            })
+            return true
+          } else {
+            throw new Error(result.message || '回测启动失败')
+          }
+        } catch (error: any) {
+          const message = get().getErrorMessage(error)
+          set({ 
+            isBacktestRunning: false, 
+            error: message 
+          })
+          toast.error(`回测启动失败: ${message}`)
+          return false
+        }
+      },
+
+      // 获取回测进度
+      getBacktestProgress: async (taskId: string) => {
+        try {
+          const progress = await aiApi.getBacktestProgress(taskId)
+          set({ backtestProgress: progress })
+          return progress
+        } catch (error: any) {
+          const message = get().getErrorMessage(error)
+          console.error('获取回测进度失败:', message)
+          return null
+        }
+      },
+
+      // 获取回测结果
+      getBacktestResults: async (taskId: string) => {
+        try {
+          const results = await aiApi.getBacktestResults(taskId)
+          set({ 
+            backtestResults: results,
+            showBacktestResults: true,
+            isBacktestRunning: false
+          })
+          return results
+        } catch (error: any) {
+          const message = get().getErrorMessage(error)
+          set({ error: message, isBacktestRunning: false })
+          toast.error(`获取回测结果失败: ${message}`)
+          return null
+        }
+      },
+
+      // 开始回测进度监控
+      startBacktestMonitoring: (taskId: string) => {
+        // 清除之前的定时器
+        const state = get()
+        if ((state as any).backtestMonitorInterval) {
+          clearInterval((state as any).backtestMonitorInterval)
+        }
+
+        const monitorInterval = setInterval(async () => {
+          try {
+            const progress = await get().getBacktestProgress(taskId)
+            
+            if (progress) {
+              if (progress.status === 'completed') {
+                clearInterval(monitorInterval)
+                await get().getBacktestResults(taskId)
+                toast.success('🎉 回测完成！', {
+                  icon: '✅',
+                  duration: 5000
+                })
+              } else if (progress.status === 'failed') {
+                clearInterval(monitorInterval)
+                set({ 
+                  isBacktestRunning: false,
+                  error: progress.error_message || '回测执行失败'
+                })
+                toast.error(`回测失败: ${progress.error_message || '未知错误'}`)
+              }
+            }
+          } catch (error) {
+            console.error('监控回测进度时出错:', error)
+            // 不中断监控，继续尝试
+          }
+        }, 3000) // 每3秒检查一次
+
+        // 保存定时器引用以便清理
+        ;(get() as any).backtestMonitorInterval = monitorInterval
+
+        // 设置超时清理（30分钟后停止监控）
+        setTimeout(() => {
+          clearInterval(monitorInterval)
+          const currentState = get()
+          if (currentState.isBacktestRunning) {
+            set({ 
+              isBacktestRunning: false,
+              error: '回测监控超时，请手动刷新查看结果'
+            })
+            toast.error('回测监控超时，请刷新页面查看结果')
+          }
+        }, 30 * 60 * 1000) // 30分钟
+      },
+
+      // 停止回测监控
+      stopBacktestMonitoring: () => {
+        const state = get() as any
+        if (state.backtestMonitorInterval) {
+          clearInterval(state.backtestMonitorInterval)
+          delete state.backtestMonitorInterval
+        }
+        set({ isBacktestRunning: false })
+      },
+
+      // 处理策略生成后的逻辑
+      handleStrategyGenerated: async (sessionId: string) => {
+        try {
+          // 获取最新生成的策略
+          const strategy = await get().getLatestAIStrategy(sessionId)
+          
+          if (strategy) {
+            // 显示回测提示
+            set({ showBacktestPrompt: true })
+            
+            toast.success('🎯 策略生成完成！现在可以配置回测参数了', {
+              icon: '🚀',
+              duration: 6000
+            })
+          }
+        } catch (error: any) {
+          console.error('处理策略生成后逻辑失败:', error)
+        }
+      },
+
+      // 处理快速回测
+      handleQuickBacktest: async (config: Partial<AutoBacktestConfig>) => {
+        const { currentSession, generatedStrategy } = get()
+        
+        if (!currentSession || !generatedStrategy) {
+          toast.error('缺少会话或策略信息，无法启动回测')
+          return
+        }
+
+        // 构建完整的回测配置
+        const fullConfig: AutoBacktestConfig = {
+          ai_session_id: currentSession.session_id,
+          strategy_code: generatedStrategy.code,
+          strategy_name: generatedStrategy.name,
+          auto_config: true,
+          exchange: 'binance',
+          symbols: ['BTC/USDT'],
+          timeframes: ['1h'],
+          initial_capital: 10000,
+          start_date: '2024-01-01',
+          end_date: '2024-12-31',
+          fee_rate: 'vip0',
+          ...config // 覆盖用户自定义配置
+        }
+
+        // 启动回测
+        const success = await get().autoBacktest(fullConfig)
+        
+        if (success) {
+          // 隐藏回测提示，显示进度
+          set({ showBacktestPrompt: false })
+        }
+      },
+
+      // 设置回测提示显示状态
+      setShowBacktestPrompt: (show: boolean) => {
+        set({ showBacktestPrompt: show })
+      },
+
+      // 设置回测结果显示状态
+      setShowBacktestResults: (show: boolean) => {
+        set({ showBacktestResults: show })
       }
     }),
     {

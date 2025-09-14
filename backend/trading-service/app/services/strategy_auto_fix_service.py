@@ -96,7 +96,7 @@ class StrategyAutoFixService:
                     "attempts_used": attempt
                 }
                 
-            response = await claude_client.create_message(
+            response = await claude_client.chat_completion(
                 messages=[{
                     "role": "user",
                     "content": fix_prompt
@@ -105,24 +105,42 @@ class StrategyAutoFixService:
                 temperature=0.3
             )
             
-            if not response["success"]:
+            # Handle chat_completion response format
+            try:
+                content = ""
+                if "content" in response and isinstance(response["content"], list):
+                    # Extract text from content array
+                    for item in response["content"]:
+                        if item.get("type") == "text":
+                            content = item.get("text", "")
+                            break
+                elif isinstance(response.get("content"), str):
+                    content = response["content"]
+                else:
+                    logger.error(f"Unexpected response format: {response}")
+                    return {
+                        "success": False,
+                        "fixed_code": code,
+                        "error": "AI响应格式异常",
+                        "attempts_used": attempt
+                    }
+                
+                if not content:
+                    return {
+                        "success": False,
+                        "fixed_code": code,
+                        "error": "AI返回空内容",
+                        "attempts_used": attempt
+                    }
+                    
+            except Exception as e:
+                logger.error(f"处理AI响应失败: {e}")
                 return {
                     "success": False,
                     "fixed_code": code,
-                    "error": f"AI修复调用失败: {response.get('error', '未知错误')}",
+                    "error": f"处理AI响应失败: {str(e)}",
                     "attempts_used": attempt
                 }
-            
-            # 提取修复后的代码
-            content = response["content"]
-            if isinstance(content, list) and len(content) > 0:
-                # Anthropic原始格式
-                content = content[0].get("text", "")
-            elif isinstance(content, str):
-                # 包装格式
-                pass
-            else:
-                content = str(content)
                 
             fixed_code = extract_python_code(content)
             
@@ -321,49 +339,58 @@ class UserStrategy(EnhancedBaseStrategy):
                     "error": "无法获取Claude客户端"
                 }
                 
-            response = await claude_client.create_message(
+            response = await claude_client.chat_completion(
                 messages=[{"role": "user", "content": improvement_prompt}],
                 system="你是资深的量化策略代码审查专家，提供专业的改进建议。",
                 temperature=0.4
             )
             
-            if response["success"]:
-                try:
-                    # 尝试解析JSON响应
-                    import json
+            # Handle chat_completion response format
+            try:
+                # 尝试解析JSON响应
+                import json
+                content = ""
+                if "content" in response and isinstance(response["content"], list):
+                    # Extract text from content array
+                    for item in response["content"]:
+                        if item.get("type") == "text":
+                            content = item.get("text", "")
+                            break
+                elif isinstance(response.get("content"), str):
                     content = response["content"]
-                    if isinstance(content, list) and len(content) > 0:
-                        # Anthropic原始格式
-                        content = content[0].get("text", "")
-                    elif isinstance(content, str):
-                        # 包装格式
-                        pass
-                    else:
-                        content = str(content)
-                    content = content.strip()
-                    if "```json" in content:
-                        content = content.split("```json")[1].split("```")[0].strip()
-                    elif "```" in content:
-                        content = content.split("```")[1].split("```")[0].strip()
-                    
-                    suggestions = json.loads(content)
+                else:
+                    logger.error(f"Unexpected response format: {response}")
                     return {
-                        "success": True,
-                        "suggestions": suggestions
+                        "success": False,
+                        "error": "AI响应格式异常"
                     }
-                except json.JSONDecodeError:
-                    # JSON解析失败时返回纯文本建议
-                    return {
-                        "success": True,
-                        "suggestions": {
-                            "general_advice": content,
-                            "overall_score": 7.0
-                        }
+                
+                content = content.strip()
+                if "```json" in content:
+                    content = content.split("```json")[1].split("```")[0].strip()
+                elif "```" in content:
+                    content = content.split("```")[1].split("```")[0].strip()
+                
+                suggestions = json.loads(content)
+                return {
+                    "success": True,
+                    "suggestions": suggestions
+                }
+                
+            except json.JSONDecodeError:
+                # JSON解析失败时返回纯文本建议
+                return {
+                    "success": True,
+                    "suggestions": {
+                        "general_advice": content,
+                        "overall_score": 7.0
                     }
-            else:
+                }
+            except Exception as e:
+                logger.error(f"处理AI响应失败: {e}")
                 return {
                     "success": False,
-                    "error": "AI建议生成失败"
+                    "error": f"处理AI响应失败: {str(e)}"
                 }
                 
         except Exception as e:

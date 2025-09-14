@@ -94,45 +94,48 @@ class StrategyIntentAnalyzer:
                 logger.error("无法获取Claude客户端")
                 return StrategyIntentAnalyzer._get_fallback_intent(user_input)
                 
-            response = await claude_client.create_message(
+            response = await claude_client.chat_completion(
                 messages=[{"role": "user", "content": intent_analysis_prompt}],
                 system="你是专业的量化策略分析师，精确提取用户需求信息。返回标准JSON格式。",
                 temperature=0.3
             )
             
-            if response["success"]:
-                try:
-                    # 提取JSON内容
+            # Handle chat_completion response format
+            try:
+                content = ""
+                if "content" in response and isinstance(response["content"], list):
+                    # Extract text from content array
+                    for item in response["content"]:
+                        if item.get("type") == "text":
+                            content = item.get("text", "")
+                            break
+                elif isinstance(response.get("content"), str):
                     content = response["content"]
-                    if isinstance(content, list) and len(content) > 0:
-                        # Anthropic原始格式
-                        content = content[0].get("text", "")
-                    elif isinstance(content, str):
-                        # 包装格式
-                        pass
-                    else:
-                        content = str(content)
-                    content = content.strip()
-                    if "```json" in content:
-                        content = content.split("```json")[1].split("```")[0].strip()
-                    elif "```" in content:
-                        content = content.split("```")[1].split("```")[0].strip()
-                    
-                    intent = json.loads(content)
-                    
-                    # 验证必需字段
-                    required_fields = ["strategy_type", "data_requirements", "template_compatibility"]
-                    for field in required_fields:
-                        if field not in intent:
-                            intent[field] = None
-                    
-                    return intent
-                    
-                except json.JSONDecodeError as e:
-                    logger.error(f"解析意图JSON失败: {e}, 内容: {content}")
+                else:
+                    logger.error(f"Unexpected response format: {response}")
                     return StrategyIntentAnalyzer._get_fallback_intent(user_input)
-            else:
-                logger.error(f"AI意图分析失败: {response}")
+                
+                content = content.strip()
+                if "```json" in content:
+                    content = content.split("```json")[1].split("```")[0].strip()
+                elif "```" in content:
+                    content = content.split("```")[1].split("```")[0].strip()
+                
+                intent = json.loads(content)
+                
+                # 验证必需字段
+                required_fields = ["strategy_type", "data_requirements", "template_compatibility"]
+                for field in required_fields:
+                    if field not in intent:
+                        intent[field] = None
+                
+                return intent
+                
+            except json.JSONDecodeError as e:
+                logger.error(f"解析意图JSON失败: {e}, 内容: {content}")
+                return StrategyIntentAnalyzer._get_fallback_intent(user_input)
+            except Exception as e:
+                logger.error(f"处理AI响应失败: {e}")
                 return StrategyIntentAnalyzer._get_fallback_intent(user_input)
                 
         except Exception as e:
@@ -244,15 +247,35 @@ class StrategyIntentAnalyzer:
         """
         
         try:
+            claude_client = await StrategyIntentAnalyzer._get_claude_client()
+            if not claude_client:
+                return StrategyIntentAnalyzer._get_default_guidance(compatibility_check)
+                
             response = await claude_client.chat_completion(
                 messages=[{"role": "user", "content": guidance_prompt}],
-                system_prompt="你是专业的量化策略顾问，善于引导用户完善策略设想。",
+                system="你是专业的量化策略顾问，善于引导用户完善策略设想。",
                 temperature=0.7
             )
             
-            if response["success"]:
-                return response["content"]
-            else:
+            # Handle chat_completion response format
+            try:
+                content = ""
+                if "content" in response and isinstance(response["content"], list):
+                    # Extract text from content array
+                    for item in response["content"]:
+                        if item.get("type") == "text":
+                            content = item.get("text", "")
+                            break
+                elif isinstance(response.get("content"), str):
+                    content = response["content"]
+                else:
+                    logger.error(f"Unexpected response format: {response}")
+                    return StrategyIntentAnalyzer._get_default_guidance(compatibility_check)
+                
+                return content.strip() if content else StrategyIntentAnalyzer._get_default_guidance(compatibility_check)
+                
+            except Exception as e:
+                logger.error(f"处理AI响应失败: {e}")
                 return StrategyIntentAnalyzer._get_default_guidance(compatibility_check)
                 
         except Exception as e:

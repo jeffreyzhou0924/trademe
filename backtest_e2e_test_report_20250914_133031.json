@@ -1,0 +1,160 @@
+{
+  "test_summary": {
+    "total_tests": 14,
+    "passed": 3,
+    "failed": 11,
+    "success_rate": "21.4%",
+    "test_time": "2025-09-14T13:30:31.234951"
+  },
+  "detailed_results": [
+    {
+      "test_name": "GET /health",
+      "success": true,
+      "message": "API调用成功 (200)",
+      "execution_time": "0.031s",
+      "error": null,
+      "data": {
+        "status": "healthy",
+        "service": "Trademe Claude Proxy Service",
+        "version": "1.0.0",
+        "timestamp": "2025-09-14T05:30:17.628475",
+        "features": {
+          "virtual_keys": true,
+          "streaming": true,
+          "intelligent_routing": true,
+          "cost_tracking": true
+        }
+      }
+    },
+    {
+      "test_name": "GET /api/v1/strategies",
+      "success": false,
+      "message": "API调用失败 (400)",
+      "execution_time": "0.007s",
+      "error": "{\"success\":false,\"message\":\"参数验证失败\",\"errors\":[\"字段 'name' 是必填的\",\"字段 'code' 是必填的\",\"字段 'symbols' 是必填的\",\"字段 'name' 是必填的\",\"字段 'code' 是必填的\",\"字段 'symbols' 是必填的\"],\"warnings\":[]}",
+      "data": null
+    },
+    {
+      "test_name": "GET /api/v1/backtests",
+      "success": true,
+      "message": "API调用成功 (200)",
+      "execution_time": "0.122s",
+      "error": null,
+      "data": {
+        "backtests": [],
+        "total": 1,
+        "skip": 0,
+        "limit": 20
+      }
+    },
+    {
+      "test_name": "GET /api/v1/realtime-backtest/status",
+      "success": false,
+      "message": "API调用失败 (404)",
+      "execution_time": "0.008s",
+      "error": "{\"detail\":\"Not Found\"}",
+      "data": null
+    },
+    {
+      "test_name": "GET /api/v1/market-data/exchanges",
+      "success": false,
+      "message": "API调用失败 (404)",
+      "execution_time": "0.007s",
+      "error": "{\"detail\":\"Not Found\"}",
+      "data": null
+    },
+    {
+      "test_name": "POST /api/v1/realtime-backtest/start",
+      "success": false,
+      "message": "API调用失败 (422)",
+      "execution_time": "0.017s",
+      "error": "{\"detail\":[{\"type\":\"string_type\",\"loc\":[\"body\",\"fee_rate\"],\"msg\":\"Input should be a valid string\",\"input\":0.001}]}",
+      "data": null
+    },
+    {
+      "test_name": "POST /api/v1/realtime-backtest/start",
+      "success": false,
+      "message": "API调用失败 (422)",
+      "execution_time": "0.019s",
+      "error": "{\"detail\":[{\"type\":\"string_type\",\"loc\":[\"body\",\"fee_rate\"],\"msg\":\"Input should be a valid string\",\"input\":0.001}]}",
+      "data": null
+    },
+    {
+      "test_name": "POST /api/v1/realtime-backtest/start",
+      "success": false,
+      "message": "API调用失败 (422)",
+      "execution_time": "0.007s",
+      "error": "{\"detail\":[{\"type\":\"string_type\",\"loc\":[\"body\",\"fee_rate\"],\"msg\":\"Input should be a valid string\",\"input\":0.001}]}",
+      "data": null
+    },
+    {
+      "test_name": "无效交易所错误处理",
+      "success": true,
+      "message": "✅ 正确拒绝无效交易所: {\"detail\":\"❌ BINANCE交易所的BTC/USDT 历史数据不足（仅0条记录，需要至少10条），无法进行有效回测。\\n💡 建议：目前系统只有OKX交易所的数据可用，请选择有充足数据的时间范围、交易所或交易对进行回测\"}",
+      "execution_time": "0.018s",
+      "error": "{\"detail\":\"❌ BINANCE交易所的BTC/USDT 历史数据不足（仅0条记录，需要至少10条），无法进行有效回测。\\n💡 建议：目前系统只有OKX交易所的数据可用，请选择有充足数据的时间范围、交易所或交易对进行回测\"}",
+      "data": null
+    },
+    {
+      "test_name": "无效时间范围错误处理",
+      "success": false,
+      "message": "❌ 应该拒绝无效时间范围但未拒绝",
+      "execution_time": "0.014s",
+      "error": null,
+      "data": {
+        "task_id": "3e223655-101f-46b2-96b8-92f3b4954af7",
+        "status": "started",
+        "message": "回测任务已启动"
+      }
+    },
+    {
+      "test_name": "无效策略代码错误处理",
+      "success": false,
+      "message": "❌ 应该拒绝无效策略代码但未拒绝",
+      "execution_time": "0.019s",
+      "error": null,
+      "data": {
+        "task_id": "db480c08-172f-4274-a102-b2abd22ff7d9",
+        "status": "started",
+        "message": "回测任务已启动"
+      }
+    },
+    {
+      "test_name": "WebSocket连接测试",
+      "success": false,
+      "message": "❌ WebSocket连接建立失败",
+      "execution_time": "0.000s",
+      "error": null,
+      "data": null
+    },
+    {
+      "test_name": "MACD策略执行测试",
+      "success": false,
+      "message": "❌ 数据不完整，缺少字段: ['total_return', 'total_trades', 'win_rate', 'max_drawdown']",
+      "execution_time": "0.022s",
+      "error": null,
+      "data": {
+        "task_id": "2264ce28-bbb8-4d04-89ae-e2cac56d5549",
+        "status": "started",
+        "message": "回测任务已启动"
+      }
+    },
+    {
+      "test_name": "简单移动平均策略执行测试",
+      "success": false,
+      "message": "❌ 数据不完整，缺少字段: ['total_return', 'total_trades', 'win_rate', 'max_drawdown']",
+      "execution_time": "0.325s",
+      "error": null,
+      "data": {
+        "task_id": "ad351153-bd5c-44d2-b898-675f55629157",
+        "status": "started",
+        "message": "回测任务已启动"
+      }
+    }
+  ],
+  "recommendations": [
+    "🔌 WebSocket问题：检查WebSocket服务和认证机制",
+    "⚙️ 策略执行问题：检查策略解析器和执行环境",
+    "🚨 多项测试失败，建议检查系统整体状态"
+  ]
+}

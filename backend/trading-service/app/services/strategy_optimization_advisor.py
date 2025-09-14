@@ -356,45 +356,54 @@ class StrategyOptimizationAdvisor:
                     "error": "无法获取Claude客户端"
                 }
                 
-            response = await claude_client.create_message(
+            response = await claude_client.chat_completion(
                 messages=[{"role": "user", "content": analysis_prompt}],
                 system="你是专业的量化策略分析师，具有丰富的策略优化经验。",
                 temperature=0.4
             )
             
-            if response["success"]:
-                try:
+            # Handle chat_completion response format
+            try:
+                content = ""
+                if "content" in response and isinstance(response["content"], list):
+                    # Extract text from content array
+                    for item in response["content"]:
+                        if item.get("type") == "text":
+                            content = item.get("text", "")
+                            break
+                elif isinstance(response.get("content"), str):
                     content = response["content"]
-                    if isinstance(content, list) and len(content) > 0:
-                        # Anthropic原始格式
-                        content = content[0].get("text", "")
-                    elif isinstance(content, str):
-                        # 包装格式
-                        pass
-                    else:
-                        content = str(content)
-                    content = content.strip()
-                    if "```json" in content:
-                        content = content.split("```json")[1].split("```")[0].strip()
-                    elif "```" in content:
-                        content = content.split("```")[1].split("```")[0].strip()
-                    
-                    analysis = json.loads(content)
-                    return {
-                        "success": True,
-                        "analysis": analysis
-                    }
-                except json.JSONDecodeError as e:
-                    logger.error(f"AI分析JSON解析失败: {e}")
+                else:
+                    logger.error(f"Unexpected response format: {response}")
                     return {
                         "success": False,
-                        "raw_response": content,
-                        "error": "JSON解析失败"
+                        "error": "AI响应格式异常"
                     }
-            else:
+                
+                content = content.strip()
+                if "```json" in content:
+                    content = content.split("```json")[1].split("```")[0].strip()
+                elif "```" in content:
+                    content = content.split("```")[1].split("```")[0].strip()
+                
+                analysis = json.loads(content)
+                return {
+                    "success": True,
+                    "analysis": analysis
+                }
+                
+            except json.JSONDecodeError as e:
+                logger.error(f"AI分析JSON解析失败: {e}, content: {content}")
                 return {
                     "success": False,
-                    "error": "AI分析生成失败"
+                    "raw_response": content,
+                    "error": "JSON解析失败"
+                }
+            except Exception as e:
+                logger.error(f"处理AI响应失败: {e}")
+                return {
+                    "success": False,
+                    "error": f"处理AI响应失败: {str(e)}"
                 }
                 
         except Exception as e:

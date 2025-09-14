@@ -201,48 +201,10 @@ class HybridBacktestEngine(BaseBacktestEngine):
     
     async def _analyze_market_volatility(self, symbol: str, start_date: datetime, end_date: datetime) -> List[Dict]:
         """分析市场波动状态"""
-        try:
-            # 获取分钟级数据用于波动率分析
-            # 这里简化实现，实际应该从数据库或API获取
-            days = (end_date - start_date).days
-            
-            segments = []
-            current_date = start_date
-            
-            for day in range(days):
-                day_end = current_date + timedelta(days=1)
-                
-                # 模拟计算当日波动率
-                daily_volatility = np.random.uniform(0.005, 0.08)  # 0.5% - 8%
-                
-                # 根据波动率确定精度级别
-                if daily_volatility < 0.02:
-                    volatility_level = 'low'
-                    precision = DataPrecision.KLINE
-                elif daily_volatility < 0.05:
-                    volatility_level = 'medium'
-                    precision = DataPrecision.SECOND
-                else:
-                    volatility_level = 'high'
-                    precision = DataPrecision.TICK_SIM
-                
-                segments.append({
-                    'start_date': current_date,
-                    'end_date': day_end,
-                    'volatility': daily_volatility,
-                    'volatility_level': volatility_level,
-                    'precision': precision,
-                    'volume_estimate': np.random.uniform(1000000, 10000000)
-                })
-                
-                current_date = day_end
-            
-            logger.info(f"市场波动分析完成: {len(segments)}个交易日段")
-            return segments
-            
-        except Exception as e:
-            logger.error(f"市场波动分析失败: {str(e)}")
-            return []
+        # 生产环境不应使用模拟数据
+        error_msg = "❌ 分层回测服务暂不支持，只能使用OKX交易所数据进行回测"
+        logger.error(error_msg)
+        raise ValueError(error_msg)
     
     async def _run_kline_segment(self, strategy: Strategy, segment: Dict, params: Dict) -> Dict:
         """运行K线数据段回测"""
@@ -277,11 +239,12 @@ class HybridBacktestEngine(BaseBacktestEngine):
         # 这里简化为基于分钟数据的高频模拟
         base_result = await self._run_kline_segment(strategy, segment, params)
         
-        # 增强精度模拟
+        # 生产环境不应该模拟精度提升
         performance = base_result.get('performance', {})
-        performance['total_return'] *= 1.02  # 模拟精度提升带来的收益改善
-        performance['sharpe_ratio'] *= 1.05
-        performance['max_drawdown'] *= 0.95
+        # 移除模拟的性能改善
+        # performance['total_return'] *= 1.02  # 已移除
+        # performance['sharpe_ratio'] *= 1.05  # 已移除
+        # performance['max_drawdown'] *= 0.95  # 已移除
         
         base_result.update({
             'segment_precision': 'second',

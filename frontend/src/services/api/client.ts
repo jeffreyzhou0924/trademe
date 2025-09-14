@@ -18,13 +18,20 @@ const createApiClient = (baseURL: string, serviceName = 'api'): AxiosInstance =>
       const authData = localStorage.getItem('auth-storage')
       if (authData) {
         try {
-          const { state } = JSON.parse(authData)
-          if (state?.token) {
-            config.headers.Authorization = `Bearer ${state.token}`
+          const parsedData = JSON.parse(authData)
+          // 兼容两种数据格式：直接存储token或嵌套在state中
+          const token = parsedData.state?.token || parsedData.token
+          if (token) {
+            config.headers.Authorization = `Bearer ${token}`
+            console.log(`🔑 [${serviceName}] Added token to request:`, token.substring(0, 20) + '...')
+          } else {
+            console.warn(`⚠️ [${serviceName}] No token found in auth data`)
           }
         } catch (error) {
-          console.error('Failed to parse auth data:', error)
+          console.error(`❌ [${serviceName}] Failed to parse auth data:`, error)
         }
+      } else {
+        console.warn(`⚠️ [${serviceName}] No auth data in localStorage`)
       }
       return config
     },
@@ -51,18 +58,27 @@ const createApiClient = (baseURL: string, serviceName = 'api'): AxiosInstance =>
             // 尝试刷新token
             const authData = localStorage.getItem('auth-storage')
             if (authData) {
-              const { state } = JSON.parse(authData)
-              if (state?.token) {
+              const parsedData = JSON.parse(authData)
+              // 兼容两种数据格式：直接存储token或嵌套在state中
+              const currentToken = parsedData.state?.token || parsedData.token
+              if (currentToken) {
                 // 调用refresh token API
                 const refreshResponse = await client.post('/auth/refresh', {
-                  token: state.token
+                  token: currentToken
                 })
                 
                 const newToken = refreshResponse.data.token
                 
-                // 更新localStorage中的token
-                const updatedState = { ...state, token: newToken }
-                localStorage.setItem('auth-storage', JSON.stringify({ state: updatedState }))
+                // 更新localStorage中的token（保持原有格式）
+                if (parsedData.state) {
+                  // 如果原来是嵌套格式，保持嵌套
+                  const updatedState = { ...parsedData.state, token: newToken }
+                  localStorage.setItem('auth-storage', JSON.stringify({ state: updatedState }))
+                } else {
+                  // 如果原来是平级格式，保持平级
+                  const updatedData = { ...parsedData, token: newToken }
+                  localStorage.setItem('auth-storage', JSON.stringify(updatedData))
+                }
                 
                 // 重新设置请求头
                 originalRequest.headers.Authorization = `Bearer ${newToken}`

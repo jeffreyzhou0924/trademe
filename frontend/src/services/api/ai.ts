@@ -11,6 +11,9 @@ export interface ChatMessage {
     isError?: boolean
     isStreaming?: boolean  // 支持流式消息标记
     isWaitingFirstChunk?: boolean  // 等待第一个数据块的标记
+    streamCompleted?: boolean  // 流式消息完成标记
+    completedAt?: number  // 完成时间戳
+    forceRender?: number  // 强制渲染标记
   }
 }
 
@@ -291,6 +294,150 @@ export const aiApi = {
       return handleApiResponse(response)
     } catch (error) {
       handleApiError(error)
+    }
+  },
+
+  // ========== 新增AI策略回测集成功能 ==========
+  
+  // 获取AI会话最新生成的策略
+  async getLatestAIStrategy(sessionId: string): Promise<{
+    strategy_id: number
+    name: string
+    description: string
+    code: string
+    parameters: Record<string, any>
+    strategy_type: string
+    ai_session_id: string
+    suggested_backtest_params: Record<string, any>
+    created_at: string
+  }> {
+    try {
+      const response = await tradingServiceClient.get(`/strategies/latest-ai-strategy/${sessionId}`)
+      return handleApiResponse(response)
+    } catch (error) {
+      handleApiError(error)
+      throw error
+    }
+  },
+
+  // 自动触发AI策略回测
+  async autoBacktest(config: {
+    ai_session_id: string
+    strategy_code: string
+    strategy_name?: string
+    auto_config?: boolean
+    exchange?: string
+    symbols?: string[]
+    timeframes?: string[]
+    initial_capital?: number
+    start_date?: string
+    end_date?: string
+    fee_rate?: string
+  }): Promise<{
+    success: boolean
+    task_id: string
+    strategy_id?: number
+    backtest_id?: number
+    message: string
+  }> {
+    try {
+      const response = await tradingServiceClient.post('/ai/strategy/auto-backtest', config)
+      return handleApiResponse(response)
+    } catch (error) {
+      handleApiError(error)
+      throw error
+    }
+  },
+
+  // 获取AI策略回测进度
+  async getBacktestProgress(taskId: string): Promise<{
+    task_id: string
+    status: 'pending' | 'running' | 'completed' | 'failed'
+    progress: number
+    current_step: string
+    logs: string[]
+    error_message?: string
+    started_at: string
+    completed_at?: string
+    ai_session_id?: string
+    strategy_name?: string
+    is_ai_strategy: boolean
+  }> {
+    try {
+      const response = await tradingServiceClient.get(`/realtime-backtest/ai-strategy/progress/${taskId}`)
+      return handleApiResponse(response)
+    } catch (error) {
+      handleApiError(error)
+      throw error
+    }
+  },
+
+  // 获取AI策略回测结果
+  async getBacktestResults(taskId: string): Promise<{
+    task_id: string
+    status: string
+    backtest_results: {
+      performance_metrics: {
+        total_return: number
+        sharpe_ratio: number
+        max_drawdown: number
+        win_rate: number
+        total_trades: number
+        profit_factor: number
+        annual_return?: number
+        volatility?: number
+      }
+      ai_analysis?: {
+        score: number
+        grade: 'A' | 'B' | 'C' | 'D' | 'F'
+        recommendations: string[]
+        strengths: string[]
+        weaknesses: string[]
+        summary: string
+      }
+      trade_details?: {
+        trades: any[]
+        daily_returns: number[]
+        cumulative_returns: number[]
+      }
+    }
+    strategy_info: {
+      strategy_id: number
+      strategy_name: string
+      ai_session_id: string
+    }
+  }> {
+    try {
+      const response = await tradingServiceClient.get(`/realtime-backtest/ai-strategy/results/${taskId}`)
+      return handleApiResponse(response)
+    } catch (error) {
+      handleApiError(error)
+      throw error
+    }
+  },
+
+  // 获取AI会话的回测历史记录
+  async getAISessionBacktestHistory(sessionId: string): Promise<{
+    success: boolean
+    ai_session_id: string
+    backtest_history: Array<{
+      strategy_id: number
+      strategy_name: string
+      backtest_id?: number
+      task_id?: string
+      status: string
+      performance_metrics?: Record<string, any>
+      ai_analysis?: Record<string, any>
+      created_at: string
+    }>
+    total_strategies: number
+  }> {
+    try {
+      const response = await tradingServiceClient.get(`/ai/strategy/backtest-history/${sessionId}`)
+      return handleApiResponse(response)
+    } catch (error) {
+      handleApiError(error)
+      throw error
     }
   }
 }

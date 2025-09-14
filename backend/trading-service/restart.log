@@ -1,0 +1,63 @@
+/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/pydantic/_internal/_config.py:373: UserWarning: Valid config keys have changed in V2:
+* 'schema_extra' has been renamed to 'json_schema_extra'
+  warnings.warn(message, UserWarning)
+warning: exhaustive rename detection was skipped due to too many files.
+warning: you may want to set your diff.renameLimit variable to at least 4989 and retry the command.
+2025-09-12 16:44:47.161 | INFO     | app.services.okx_service:__init__:116 - 🚀 OKX交易服务初始化完成
+INFO:app.services.wallet_generator:多链钱包生成器初始化完成
+INFO:app.security.crypto_manager:加密管理器初始化完成
+/root/trademe/backend/trading-service/venv/lib/python3.12/site-packages/pydantic/_internal/_config.py:373: UserWarning: Valid config keys have changed in V2:
+* 'schema_extra' has been renamed to 'json_schema_extra'
+  warnings.warn(message, UserWarning)
+✅ 使用logging.yaml配置文件
+✅ API验证中间件集成成功
+2025-09-12 16:44:47 | uvicorn.error | INFO | Started server process [3271477]
+2025-09-12 16:44:47 | uvicorn.error | INFO | Waiting for application startup.
+2025-09-12 16:44:47 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/auth/register, 字段数: 2
+2025-09-12 16:44:47 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/auth/login, 字段数: 2
+2025-09-12 16:44:47 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/trading/orders, 字段数: 5
+2025-09-12 16:44:47 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/strategies, 字段数: 3
+2025-09-12 16:44:47 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/ai/chat, 字段数: 3
+2025-09-12 16:44:47 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/market-data/klines, 字段数: 3
+2025-09-12 16:44:47 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/backtest, 字段数: 5
+2025-09-12 16:44:47 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/wallet/transfer, 字段数: 3
+2025-09-12 16:44:47 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/data/download, 字段数: 5
+✅ 数据库初始化成功
+📋 包含的表：用户、策略、回测、交易、API密钥、市场数据、Claude对话、交易心得
+📋 管理后台表：管理员、Claude代理池、USDT支付、数据采集
+✅ Redis连接成功
+🔑 OKX API认证成功，已连接到真实交易接口
+🚀 Trading Service 启动成功
+📊 环境: development
+🏠 Host: 0.0.0.0:8001
+2025-09-12 16:44:47 | uvicorn.error | INFO | Application startup complete.
+2025-09-12 16:44:47 | uvicorn.error | INFO | Uvicorn running on http://0.0.***.***.***:8001 (Press CTRL+C to quit)
+2025-09-12 16:44:49 | uvicorn.error | INFO | 52.192.***.***.***:0 - "WebSocket /api/v1/ai/ws/chat" [accepted]
+2025-09-12 16:44:49 | uvicorn.error | INFO | connection open
+2025-09-12 16:44:49 | app.api.v1.ai_websocket | INFO | 📨 收到WebSocket消息，类型: auth
+2025-09-12 16:44:49 | app.api.v1.ai_websocket | INFO | 🔐 开始处理认证消息
+2025-09-12 16:44:49 | app.api.v1.ai_websocket | INFO | 🔑 验证JWT令牌...
+2025-09-12 16:44:49 | app.api.v1.ai_websocket | INFO | ✅ JWT验证成功，用户ID: 6
+2025-09-12 16:44:49 | app.api.v1.ai_websocket | INFO | 📡 建立WebSocket连接管理...
+2025-09-12 16:44:49 | app.services.websocket_manager | INFO | 💓 WebSocket心跳监控已启动
+2025-09-12 16:44:49 | app.services.websocket_manager | INFO | 🧹 WebSocket清理监控已启动
+2025-09-12 16:44:49 | app.services.websocket_manager | INFO | 📊 WebSocket统计监控已启动
+2025-09-12 16:44:49 | app.services.websocket_manager | INFO | 🔗 用户 6 建立WebSocket连接: 8bcc72da-de3a-4059-b2b0-8da49efa6621 (总连接数: 1)
+2025-09-12 16:44:49 | app.api.v1.ai_websocket | INFO | ✅ 连接ID已创建: 8bcc72da-de3a-4059-b2b0-8da49efa6621
+2025-09-12 16:44:49 | app.api.v1.ai_websocket | INFO | 📤 发送认证成功响应: {'type': 'auth_success', 'connection_id': '8bcc72da-de3a-4059-b2b0-8da49efa6621', 'user_id': 6, 'message': '认证成功，AI对话已准备就绪'}
+2025-09-12 16:44:49 | app.api.v1.ai_websocket | INFO | ✅ 用户 6 通过WebSocket认证成功
+2025-09-12 16:45:20 | app.api.v1.ai_websocket | INFO | 📨 收到WebSocket消息，类型: ping
+2025-09-12 16:45:50 | app.api.v1.ai_websocket | INFO | 📨 收到WebSocket消息，类型: ping
+2025-09-12 16:46:20 | app.api.v1.ai_websocket | INFO | 📨 收到WebSocket消息，类型: ping
+2025-09-12 16:46:50 | app.api.v1.ai_websocket | INFO | 📨 收到WebSocket消息，类型: ping
+2025-09-12 16:47:20 | app.api.v1.ai_websocket | INFO | 📨 收到WebSocket消息，类型: ping
+2025-09-12 16:47:40 | uvicorn.error | INFO | Shutting down
+2025-09-12 16:47:40 | app.api.v1.ai_websocket | INFO | WebSocket连接断开: 8bcc72da-de3a-4059-b2b0-8da49efa6621
+2025-09-12 16:47:40 | app.services.websocket_manager | INFO | ❌ 用户 6 断开WebSocket连接: 8bcc72da-de3a-4059-b2b0-8da49efa6621 (原因: 连接关闭)
+2025-09-12 16:47:40 | uvicorn.error | INFO | connection closed
+2025-09-12 16:47:41 | uvicorn.error | INFO | Waiting for application shutdown.
+✅ 数据库连接已关闭
+✅ Redis连接已关闭
+👋 Trading Service 已关闭
+2025-09-12 16:47:41 | uvicorn.error | INFO | Application shutdown complete.
+2025-09-12 16:47:41 | uvicorn.error | INFO | Finished server process [3271477]

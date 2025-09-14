@@ -1,0 +1,220 @@
+{
+  "test_summary": {
+    "total_tests": 15,
+    "passed": 8,
+    "failed": 7,
+    "success_rate": "53.3%",
+    "test_time": "2025-09-14T13:33:32.564755",
+    "improvements": [
+      "✅ 修复fee_rate参数类型问题",
+      "✅ 修复回测结果获取逻辑",
+      "✅ 修复WebSocket端点测试",
+      "✅ 修复API端点验证"
+    ]
+  },
+  "detailed_results": [
+    {
+      "test_name": "GET /health",
+      "success": true,
+      "message": "API调用成功 (200)",
+      "execution_time": "0.004s",
+      "error": null,
+      "data": {
+        "status": "healthy",
+        "service": "Trademe Claude Proxy Service",
+        "version": "1.0.0",
+        "timestamp": "2025-09-14T05:33:26.338352",
+        "features": {
+          "virtual_keys": true,
+          "streaming": true,
+          "intelligent_routing": true,
+          "cost_tracking": true
+        }
+      }
+    },
+    {
+      "test_name": "GET /api/v1/backtests",
+      "success": true,
+      "message": "API调用成功 (200)",
+      "execution_time": "0.055s",
+      "error": null,
+      "data": {
+        "backtests": [],
+        "total": 1,
+        "skip": 0,
+        "limit": 20
+      }
+    },
+    {
+      "test_name": "GET /api/v1/realtime-backtest/active",
+      "success": true,
+      "message": "API调用成功 (200)",
+      "execution_time": "0.010s",
+      "error": null,
+      "data": {
+        "active_backtests": [
+          {
+            "task_id": "3e223655-101f-46b2-96b8-92f3b4954af7",
+            "status": "completed",
+            "progress": 100,
+            "current_step": "回测完成！",
+            "started_at": "2025-09-14T13:30:23.861922",
+            "ai_session_id": null,
+            "strategy_name": null,
+            "is_ai_strategy": false
+          },
+          {
+            "task_id": "db480c08-172f-4274-a102-b2abd22ff7d9",
+            "status": "failed",
+            "progress": 10,
+            "current_step": "验证策略代码...",
+            "started_at": "2025-09-14T13:30:23.881087",
+            "ai_session_id": null,
+            "strategy_name": null,
+            "is_ai_strategy": false
+          },
+          {
+            "task_id": "2264ce28-bbb8-4d04-89ae-e2cac56d5549",
+            "status": "failed",
+            "progress": 25,
+            "current_step": "准备历史数据...",
+            "started_at": "2025-09-14T13:30:26.901366",
+            "ai_session_id": null,
+            "strategy_name": null,
+            "is_ai_strategy": false
+          },
+          {
+            "task_id": "ad351153-bd5c-44d2-b898-675f55629157",
+            "status": "failed",
+            "progress": 25,
+            "current_step": "准备历史数据...",
+            "started_at": "2025-09-14T13:30:29.230859",
+            "ai_session_id": null,
+            "strategy_name": null,
+            "is_ai_strategy": false
+          }
+        ],
+        "total_count": 4
+      }
+    },
+    {
+      "test_name": "POST /api/v1/realtime-backtest/start",
+      "success": true,
+      "message": "API调用成功 (200)",
+      "execution_time": "0.022s",
+      "error": null,
+      "data": {
+        "task_id": "bda2bb8f-b295-42a3-b0ad-791de515050a",
+        "status": "started",
+        "message": "回测任务已启动"
+      }
+    },
+    {
+      "test_name": "回测失败-bda2bb8f",
+      "success": false,
+      "message": "❌ 回测执行失败",
+      "execution_time": "2.012s",
+      "error": "Unknown error",
+      "data": null
+    },
+    {
+      "test_name": "POST /api/v1/realtime-backtest/start",
+      "success": true,
+      "message": "API调用成功 (200)",
+      "execution_time": "0.012s",
+      "error": null,
+      "data": {
+        "task_id": "6301df98-6b01-4f65-8ed7-cd4fa5af4455",
+        "status": "started",
+        "message": "回测任务已启动"
+      }
+    },
+    {
+      "test_name": "回测失败-6301df98",
+      "success": false,
+      "message": "❌ 回测执行失败",
+      "execution_time": "2.013s",
+      "error": "Unknown error",
+      "data": null
+    },
+    {
+      "test_name": "无效交易所错误处理",
+      "success": true,
+      "message": "✅ 正确拒绝无效交易所: {\"detail\":\"❌ INVALID_EXCHANGE交易所的BTC/USDT 历史数据不足（仅0条记录，需要至少10条），无法进行有效回测。\\n💡 建议：目前系统只有OKX交易所的数据可用，请选择有充足数据的时间范围、交易所或交易对进行回测\"}",
+      "execution_time": "0.024s",
+      "error": "{\"detail\":\"❌ INVALID_EXCHANGE交易所的BTC/USDT 历史数据不足（仅0条记录，需要至少10条），无法进行有效回测。\\n💡 建议：目前系统只有OKX交易所的数据可用，请选择有充足数据的时间范围、交易所或交易对进行回测\"}",
+      "data": null
+    },
+    {
+      "test_name": "无效策略代码错误处理",
+      "success": true,
+      "message": "✅ 无效策略代码回测正确失败: Unknown error",
+      "execution_time": "0.018s",
+      "error": null,
+      "data": {
+        "task_id": "e5545e88-43f7-47dd-82bb-456667484311",
+        "status": "started",
+        "message": "回测任务已启动"
+      }
+    },
+    {
+      "test_name": "WebSocket连接测试-/ws/backtest-progress",
+      "success": false,
+      "message": "❌ WebSocket /ws/backtest-progress 连接失败",
+      "execution_time": "0.000s",
+      "error": "Handshake status 403 Forbidden -+-+- {'date': 'Sun, 14 Sep 2025 05:33:30 GMT', 'content-length': '0', 'content-type': 'text/plain', 'connection': 'close'} -+-+- b''",
+      "data": null
+    },
+    {
+      "test_name": "WebSocket连接测试-/ws/realtime-backtest",
+      "success": false,
+      "message": "❌ WebSocket /ws/realtime-backtest 连接失败",
+      "execution_time": "0.000s",
+      "error": "Handshake status 403 Forbidden -+-+- {'date': 'Sun, 14 Sep 2025 05:33:30 GMT', 'content-length': '0', 'content-type': 'text/plain', 'connection': 'close'} -+-+- b''",
+      "data": null
+    },
+    {
+      "test_name": "WebSocket连接测试-/ws/progress",
+      "success": false,
+      "message": "❌ WebSocket /ws/progress 连接失败",
+      "execution_time": "0.000s",
+      "error": "Handshake status 403 Forbidden -+-+- {'date': 'Sun, 14 Sep 2025 05:33:30 GMT', 'content-length': '0', 'content-type': 'text/plain', 'connection': 'close'} -+-+- b''",
+      "data": null
+    },
+    {
+      "test_name": "WebSocket连接测试-/ws",
+      "success": false,
+      "message": "❌ WebSocket /ws 连接失败",
+      "execution_time": "0.000s",
+      "error": "Handshake status 403 Forbidden -+-+- {'date': 'Sun, 14 Sep 2025 05:33:30 GMT', 'content-length': '0', 'content-type': 'text/plain', 'connection': 'close'} -+-+- b''",
+      "data": null
+    },
+    {
+      "test_name": "简单买入持有策略启动测试",
+      "success": true,
+      "message": "API调用成功 (200)",
+      "execution_time": "0.022s",
+      "error": null,
+      "data": {
+        "task_id": "f227dcec-19f6-4b98-b5f4-64e2bf40e057",
+        "status": "started",
+        "message": "回测任务已启动"
+      }
+    },
+    {
+      "test_name": "简单买入持有策略执行测试",
+      "success": false,
+      "message": "❌ 回测执行失败",
+      "execution_time": "2.014s",
+      "error": "Unknown error",
+      "data": null
+    }
+  ],
+  "recommendations": [
+    "🔌 WebSocket问题：检查WebSocket路由配置、认证机制和CORS设置",
+    "⚙️ 策略执行问题：检查策略代码解析、执行环境和错误处理",
+    "🎯 回测问题：检查数据质量、回测引擎和结果计算逻辑",
+    "🔍 建议检查服务日志获取详细错误信息",
+    "🛠️ 建议逐个修复失败测试，优先解决基础功能问题"
+  ]
+}

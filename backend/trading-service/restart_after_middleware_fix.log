@@ -1,0 +1,1654 @@
+INFO:     Will watch for changes in these directories: ['/root/trademe/backend/trading-service']
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+INFO:     Started reloader process [3767176] using StatReload
+/usr/local/lib/python3.12/dist-packages/pydantic/_internal/_config.py:373: UserWarning: Valid config keys have changed in V2:
+* 'schema_extra' has been renamed to 'json_schema_extra'
+  warnings.warn(message, UserWarning)
+2025-09-13 19:05:10.633 | INFO     | app.services.okx_service:__init__:116 - 🚀 OKX交易服务初始化完成
+INFO:app.services.wallet_generator:多链钱包生成器初始化完成
+INFO:app.security.crypto_manager:加密管理器初始化完成
+/usr/local/lib/python3.12/dist-packages/pydantic/_internal/_config.py:373: UserWarning: Valid config keys have changed in V2:
+* 'schema_extra' has been renamed to 'json_schema_extra'
+  warnings.warn(message, UserWarning)
+✅ 使用logging.yaml配置文件
+✅ API验证中间件集成成功
+2025-09-13 19:05:11 | uvicorn.error | INFO | Started server process [3767191]
+2025-09-13 19:05:11 | uvicorn.error | INFO | Waiting for application startup.
+2025-09-13 19:05:11 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/auth/register, 字段数: 2
+2025-09-13 19:05:11 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/auth/login, 字段数: 2
+2025-09-13 19:05:11 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/trading/orders, 字段数: 5
+2025-09-13 19:05:11 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/strategies, 字段数: 3
+2025-09-13 19:05:11 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/ai/chat, 字段数: 3
+2025-09-13 19:05:11 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/market-data/klines, 字段数: 3
+2025-09-13 19:05:11 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/backtest, 字段数: 5
+2025-09-13 19:05:11 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/wallet/transfer, 字段数: 3
+2025-09-13 19:05:11 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/data/download, 字段数: 5
+✅ 数据库初始化成功
+📋 包含的表：用户、策略、回测、交易、API密钥、市场数据、Claude对话、交易心得
+📋 管理后台表：管理员、Claude代理池、USDT支付、数据采集
+✅ Redis连接成功
+🔑 OKX API认证成功，已连接到真实交易接口
+🚀 Trading Service 启动成功
+📊 环境: development
+🏠 Host: 0.0.0.0:8001
+2025-09-13 19:05:11 | uvicorn.error | INFO | Application startup complete.
+2025-09-13 19:05:37 | app.middleware.api_validation_middleware | INFO | API请求: {"method": "POST", "url": "http://localhost:8001/api/v1/realtime-backtest/start", "path": "/api/v1/realtime-backtest/start", "client_ip": "127.0.***.***.***", "user_agent": "curl/8.5.0", "timestamp": "2025-09-13T11:05:37.168744", "headers": {"host": "localhost:8001", "user-agent": "curl/8.5.0", "accept": "*/*", "content-type": "application/json", "authorization": "Bearer eyJhbGciOi...KBnrAk", "content-length": "191"}, "body": {"exchange": "binance", "symbol": "BTC/USDT", "timeframe": "1h", "start_date": "2024-01-01", "end_date": "2024-12-31", "initial_capital": 10000, "strategy_code": "def generate_signals(df):\n    return 1"}}
+2025-09-13 19:05:37 | app.services.api_validation_service | WARNING | 端点验证配置不存在: /api/v1/realtime-backtest/start
+2025-09-13 19:05:37.174 | INFO     | app.middleware.structured_logging:log_request_start:139 - Request started
+2025-09-13 19:05:37.180 | WARNING  | app.middleware.structured_logging:log_request_end:181 - Client error: 401
+2025-09-13 19:05:37 | app.middleware.api_validation_middleware | INFO | API响应: {"method": "POST", "path": "/api/v1/realtime-backtest/start", "status_code": 401, "duration": 12.33, "timestamp": "2025-09-13T11:05:37.181018"}
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/__init__.py", line 464, in format
+    return self._format(record)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 460, in _format
+    return self._fmt % values
+           ~~~~~~~~~~^~~~~~~~
+KeyError: 'duration'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/handlers.py", line 73, in emit
+    if self.shouldRollover(record):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/handlers.py", line 196, in shouldRollover
+    msg = "%s\n" % self.format(record)
+                   ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 999, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 706, in format
+    s = self.formatMessage(record)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 675, in formatMessage
+    return self._style.format(record)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 466, in format
+    raise ValueError('Formatting field not found in record: %s' % e)
+ValueError: Formatting field not found in record: 'duration'
+Call stack:
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/server.py", line 67, in run
+    return asyncio.run(self.serve(sockets=sockets))
+  File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run
+    return runner.run(main)
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 674, in run_until_complete
+    self.run_forever()
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 641, in run_forever
+    self._run_once()
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 1987, in _run_once
+    handle._run()
+  File "/usr/lib/python3.12/asyncio/events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/protocols/http/h11_impl.py", line 403, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/base.py", line 185, in __call__
+    await response(scope, wrapped_receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/base.py", line 214, in __call__
+    await send(
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/errors.py", line 161, in _send
+    await send(message)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/protocols/http/h11_impl.py", line 473, in send
+    self.access_logger.info(
+Message: '%s - "%s %s HTTP/%s" %d'
+Arguments: ('127.0.0.1:47548', 'POST', '/api/v1/realtime-backtest/start', '1.1', 401)
+2025-09-13 19:06:36 | uvicorn.error | WARNING | Invalid HTTP request received.
+2025-09-13 19:06:44 | app.middleware.api_validation_middleware | INFO | API请求: {"method": "POST", "url": "http://localhost:8001/api/v1/realtime-backtest/start", "path": "/api/v1/realtime-backtest/start", "client_ip": "127.0.***.***.***", "user_agent": "curl/8.5.0", "timestamp": "2025-09-13T11:06:44.818144", "headers": {"host": "localhost:8001", "user-agent": "curl/8.5.0", "accept": "*/*", "content-type": "application/json", "authorization": "Bearer eyJhbGciOi...kyaaOo", "content-length": "191"}, "body": {"exchange": "binance", "symbol": "BTC/USDT", "timeframe": "1h", "start_date": "2024-01-01", "end_date": "2024-12-31", "initial_capital": 10000, "strategy_code": "def generate_signals(df):\n    return 1"}}
+2025-09-13 19:06:44 | app.services.api_validation_service | WARNING | 端点验证配置不存在: /api/v1/realtime-backtest/start
+2025-09-13 19:06:44.819 | INFO     | app.middleware.structured_logging:log_request_start:139 - Request started
+2025-09-13 19:06:44.823 | INFO     | app.middleware.structured_logging:log_request_end:181 - Request completed in 0.004s
+2025-09-13 19:06:44 | app.middleware.api_validation_middleware | INFO | API响应: {"method": "POST", "path": "/api/v1/realtime-backtest/start", "status_code": 200, "duration": 6.04, "timestamp": "2025-09-13T11:06:44.824129"}
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/__init__.py", line 464, in format
+    return self._format(record)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 460, in _format
+    return self._fmt % values
+           ~~~~~~~~~~^~~~~~~~
+KeyError: 'duration'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/handlers.py", line 73, in emit
+    if self.shouldRollover(record):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/handlers.py", line 196, in shouldRollover
+    msg = "%s\n" % self.format(record)
+                   ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 999, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 706, in format
+    s = self.formatMessage(record)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 675, in formatMessage
+    return self._style.format(record)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 466, in format
+    raise ValueError('Formatting field not found in record: %s' % e)
+ValueError: Formatting field not found in record: 'duration'
+Call stack:
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/server.py", line 67, in run
+    return asyncio.run(self.serve(sockets=sockets))
+  File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run
+    return runner.run(main)
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 674, in run_until_complete
+    self.run_forever()
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 641, in run_forever
+    self._run_once()
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 1987, in _run_once
+    handle._run()
+  File "/usr/lib/python3.12/asyncio/events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/protocols/http/h11_impl.py", line 403, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/base.py", line 185, in __call__
+    await response(scope, wrapped_receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/base.py", line 214, in __call__
+    await send(
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/errors.py", line 161, in _send
+    await send(message)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/protocols/http/h11_impl.py", line 473, in send
+    self.access_logger.info(
+Message: '%s - "%s %s HTTP/%s" %d'
+Arguments: ('127.0.0.1:53892', 'POST', '/api/v1/realtime-backtest/start', '1.1', 200)
+2025-09-13 19:06:46.835 | INFO     | app.api.v1.realtime_backtest:_prepare_data:599 - 📊 直接从数据库获取真实历史数据: 2024-01-01 00:00:00 - 2024-12-31 00:00:00
+2025-09-13 19:06:46.835 | INFO     | app.api.v1.realtime_backtest:_fetch_market_data:626 - 📊 查询数据库中的 BTC/USDT 数据...
+2025-09-13 19:06:46.952 | ERROR    | app.api.v1.realtime_backtest:_fetch_market_data:667 - ❌ BINANCE交易所的BTC/USDT 在指定时间范围(2024-01-01 到 2024-12-31)内历史数据不足（仅0条记录，需要至少10条），无法进行有效回测。
+💡 建议：目前系统只有OKX交易所的数据可用请选择有充足数据的时间范围、交易所或交易对进行回测
+2025-09-13 19:06:46.952 | ERROR    | app.api.v1.realtime_backtest:_fetch_market_data:672 - ❌ BTC/USDT 数据库查询失败: ❌ BINANCE交易所的BTC/USDT 在指定时间范围(2024-01-01 到 2024-12-31)内历史数据不足（仅0条记录，需要至少10条），无法进行有效回测。
+💡 建议：目前系统只有OKX交易所的数据可用请选择有充足数据的时间范围、交易所或交易对进行回测
+2025-09-13 19:06:46.952 | ERROR    | app.api.v1.realtime_backtest:_prepare_data:613 - ❌ 数据准备失败: ❌ BINANCE交易所的BTC/USDT 在指定时间范围(2024-01-01 到 2024-12-31)内历史数据不足（仅0条记录，需要至少10条），无法进行有效回测。
+💡 建议：目前系统只有OKX交易所的数据可用请选择有充足数据的时间范围、交易所或交易对进行回测
+2025-09-13 19:06:46.952 | ERROR    | app.api.v1.realtime_backtest:_execute_backtest:557 - 回测任务 360ba7c2-4073-401c-bfeb-37d72308f4f8 失败: 无法获取回测所需的历史数据: ❌ BINANCE交易所的BTC/USDT 在指定时间范围(2024-01-01 到 2024-12-31)内历史数据不足（仅0条记录，需要至少10条），无法进行有效回测。
+💡 建议：目前系统只有OKX交易所的数据可用请选择有充足数据的时间范围、交易所或交易对进行回测
+2025-09-13 19:06:46.954 | ERROR    | app.api.v1.realtime_backtest:_execute_backtest:558 - 完整错误堆栈: Traceback (most recent call last):
+  File "/root/trademe/backend/trading-service/app/api/v1/realtime_backtest.py", line 610, in _prepare_data
+    return await self._fetch_market_data(self.db_session, config, start_date, end_date)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/trademe/backend/trading-service/app/api/v1/realtime_backtest.py", line 673, in _fetch_market_data
+    raise e
+  File "/root/trademe/backend/trading-service/app/api/v1/realtime_backtest.py", line 668, in _fetch_market_data
+    raise Exception(error_msg)
+Exception: ❌ BINANCE交易所的BTC/USDT 在指定时间范围(2024-01-01 到 2024-12-31)内历史数据不足（仅0条记录，需要至少10条），无法进行有效回测。
+💡 建议：目前系统只有OKX交易所的数据可用请选择有充足数据的时间范围、交易所或交易对进行回测
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/trademe/backend/trading-service/app/api/v1/realtime_backtest.py", line 529, in _execute_backtest
+    step_result = await step_info["action"](config, backtest_data)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/trademe/backend/trading-service/app/api/v1/realtime_backtest.py", line 615, in _prepare_data
+    raise Exception(f"无法获取回测所需的历史数据: {str(e)}")
+Exception: 无法获取回测所需的历史数据: ❌ BINANCE交易所的BTC/USDT 在指定时间范围(2024-01-01 到 2024-12-31)内历史数据不足（仅0条记录，需要至少10条），无法进行有效回测。
+💡 建议：目前系统只有OKX交易所的数据可用请选择有充足数据的时间范围、交易所或交易对进行回测
+
+2025-09-13 19:06:47 | app.middleware.api_validation_middleware | INFO | API请求: {"method": "GET", "url": "http://43.167.***.***.***:8001/", "path": "/", "client_ip": "123.58.***.***.***", "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.***.***.*** Safari/537.36 Edg/120.0.***.***.***", "timestamp": "2025-09-13T11:06:47.345694", "headers": {"host": "43.167.***.***.***:8001", "accept-language": "zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6", "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.***.***.*** Safari/537.36 Edg/120.0.***.***.***"}, "query_params": {}}
+2025-09-13 19:06:47 | app.services.integrated_cache_manager | WARNING | 缓存管理器尚未初始化
+2025-09-13 19:06:47 | app.services.api_validation_service | WARNING | 端点验证配置不存在: /
+2025-09-13 19:06:47.346 | INFO     | app.middleware.structured_logging:log_request_start:139 - Request started
+2025-09-13 19:06:47.347 | INFO     | app.middleware.structured_logging:log_request_end:181 - Request completed in 0.001s
+2025-09-13 19:06:47 | app.middleware.api_validation_middleware | INFO | API响应: {"method": "GET", "path": "/", "status_code": 200, "duration": 1.85, "timestamp": "2025-09-13T11:06:47.347502"}
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/__init__.py", line 464, in format
+    return self._format(record)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 460, in _format
+    return self._fmt % values
+           ~~~~~~~~~~^~~~~~~~
+KeyError: 'duration'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/handlers.py", line 73, in emit
+    if self.shouldRollover(record):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/handlers.py", line 196, in shouldRollover
+    msg = "%s\n" % self.format(record)
+                   ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 999, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 706, in format
+    s = self.formatMessage(record)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 675, in formatMessage
+    return self._style.format(record)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 466, in format
+    raise ValueError('Formatting field not found in record: %s' % e)
+ValueError: Formatting field not found in record: 'duration'
+Call stack:
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/server.py", line 67, in run
+    return asyncio.run(self.serve(sockets=sockets))
+  File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run
+    return runner.run(main)
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 674, in run_until_complete
+    self.run_forever()
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 641, in run_forever
+    self._run_once()
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 1987, in _run_once
+    handle._run()
+  File "/usr/lib/python3.12/asyncio/events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/protocols/http/h11_impl.py", line 403, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/base.py", line 185, in __call__
+    await response(scope, wrapped_receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/base.py", line 214, in __call__
+    await send(
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/errors.py", line 161, in _send
+    await send(message)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/protocols/http/h11_impl.py", line 473, in send
+    self.access_logger.info(
+Message: '%s - "%s %s HTTP/%s" %d'
+Arguments: ('123.58.207.155:49440', 'GET', '/', '1.1', 200)
+2025-09-13 19:06:52.812 | INFO     | app.middleware.structured_logging:log_request_start:139 - Request started
+2025-09-13 19:06:52.813 | WARNING  | app.middleware.structured_logging:log_request_end:181 - Client error: 404
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/__init__.py", line 464, in format
+    return self._format(record)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 460, in _format
+    return self._fmt % values
+           ~~~~~~~~~~^~~~~~~~
+KeyError: 'duration'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/handlers.py", line 73, in emit
+    if self.shouldRollover(record):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/handlers.py", line 196, in shouldRollover
+    msg = "%s\n" % self.format(record)
+                   ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 999, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 706, in format
+    s = self.formatMessage(record)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 675, in formatMessage
+    return self._style.format(record)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 466, in format
+    raise ValueError('Formatting field not found in record: %s' % e)
+ValueError: Formatting field not found in record: 'duration'
+Call stack:
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/server.py", line 67, in run
+    return asyncio.run(self.serve(sockets=sockets))
+  File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run
+    return runner.run(main)
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 674, in run_until_complete
+    self.run_forever()
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 641, in run_forever
+    self._run_once()
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 1987, in _run_once
+    handle._run()
+  File "/usr/lib/python3.12/asyncio/events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/protocols/http/h11_impl.py", line 403, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/base.py", line 185, in __call__
+    await response(scope, wrapped_receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/base.py", line 214, in __call__
+    await send(
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/errors.py", line 161, in _send
+    await send(message)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/protocols/http/h11_impl.py", line 473, in send
+    self.access_logger.info(
+Message: '%s - "%s %s HTTP/%s" %d'
+Arguments: ('123.58.207.155:49458', 'GET', '/favicon.ico', '1.1', 404)
+2025-09-13 19:06:53 | app.middleware.api_validation_middleware | INFO | API请求: {"method": "GET", "url": "http://43.167.***.***.***:8001/robots.txt", "path": "/robots.txt", "client_ip": "123.58.***.***.***", "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_0) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.56 Safari/535.11", "timestamp": "2025-09-13T11:06:53.480260", "headers": {"host": "43.167.***.***.***:8001", "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_0) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.56 Safari/535.11", "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7", "accept-language": "zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6", "accept-encoding": "gzip"}, "query_params": {}}
+2025-09-13 19:06:53 | app.services.integrated_cache_manager | WARNING | 缓存管理器尚未初始化
+2025-09-13 19:06:53 | app.services.api_validation_service | WARNING | 端点验证配置不存在: /robots.txt
+2025-09-13 19:06:53.481 | INFO     | app.middleware.structured_logging:log_request_start:139 - Request started
+2025-09-13 19:06:53.482 | WARNING  | app.middleware.structured_logging:log_request_end:181 - Client error: 404
+2025-09-13 19:06:53 | app.middleware.api_validation_middleware | INFO | API响应: {"method": "GET", "path": "/robots.txt", "status_code": 404, "duration": 2.77, "timestamp": "2025-09-13T11:06:53.482993"}
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/__init__.py", line 464, in format
+    return self._format(record)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 460, in _format
+    return self._fmt % values
+           ~~~~~~~~~~^~~~~~~~
+KeyError: 'duration'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/handlers.py", line 73, in emit
+    if self.shouldRollover(record):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/handlers.py", line 196, in shouldRollover
+    msg = "%s\n" % self.format(record)
+                   ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 999, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 706, in format
+    s = self.formatMessage(record)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 675, in formatMessage
+    return self._style.format(record)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 466, in format
+    raise ValueError('Formatting field not found in record: %s' % e)
+ValueError: Formatting field not found in record: 'duration'
+Call stack:
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/server.py", line 67, in run
+    return asyncio.run(self.serve(sockets=sockets))
+  File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run
+    return runner.run(main)
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 674, in run_until_complete
+    self.run_forever()
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 641, in run_forever
+    self._run_once()
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 1987, in _run_once
+    handle._run()
+  File "/usr/lib/python3.12/asyncio/events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/protocols/http/h11_impl.py", line 403, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/base.py", line 185, in __call__
+    await response(scope, wrapped_receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/base.py", line 214, in __call__
+    await send(
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/errors.py", line 161, in _send
+    await send(message)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/protocols/http/h11_impl.py", line 473, in send
+    self.access_logger.info(
+Message: '%s - "%s %s HTTP/%s" %d'
+Arguments: ('123.58.207.155:49470', 'GET', '/robots.txt', '1.1', 404)
+2025-09-13 19:06:54 | app.middleware.api_validation_middleware | INFO | API请求: {"method": "GET", "url": "http://43.167.***.***.***:8001/sitemap.xml", "path": "/sitemap.xml", "client_ip": "123.58.***.***.***", "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_0) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.56 Safari/535.11", "timestamp": "2025-09-13T11:06:54.164276", "headers": {"host": "43.167.***.***.***:8001", "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_0) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.56 Safari/535.11", "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7", "accept-language": "zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6", "accept-encoding": "gzip"}, "query_params": {}}
+2025-09-13 19:06:54 | app.services.integrated_cache_manager | WARNING | 缓存管理器尚未初始化
+2025-09-13 19:06:54 | app.services.api_validation_service | WARNING | 端点验证配置不存在: /sitemap.xml
+2025-09-13 19:06:54.166 | INFO     | app.middleware.structured_logging:log_request_start:139 - Request started
+2025-09-13 19:06:54.168 | WARNING  | app.middleware.structured_logging:log_request_end:181 - Client error: 404
+2025-09-13 19:06:54 | app.middleware.api_validation_middleware | INFO | API响应: {"method": "GET", "path": "/sitemap.xml", "status_code": 404, "duration": 4.0, "timestamp": "2025-09-13T11:06:54.168212"}
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/__init__.py", line 464, in format
+    return self._format(record)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 460, in _format
+    return self._fmt % values
+           ~~~~~~~~~~^~~~~~~~
+KeyError: 'duration'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/handlers.py", line 73, in emit
+    if self.shouldRollover(record):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/handlers.py", line 196, in shouldRollover
+    msg = "%s\n" % self.format(record)
+                   ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 999, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 706, in format
+    s = self.formatMessage(record)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 675, in formatMessage
+    return self._style.format(record)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 466, in format
+    raise ValueError('Formatting field not found in record: %s' % e)
+ValueError: Formatting field not found in record: 'duration'
+Call stack:
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/server.py", line 67, in run
+    return asyncio.run(self.serve(sockets=sockets))
+  File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run
+    return runner.run(main)
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 674, in run_until_complete
+    self.run_forever()
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 641, in run_forever
+    self._run_once()
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 1987, in _run_once
+    handle._run()
+  File "/usr/lib/python3.12/asyncio/events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/protocols/http/h11_impl.py", line 403, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/base.py", line 185, in __call__
+    await response(scope, wrapped_receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/base.py", line 214, in __call__
+    await send(
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/errors.py", line 161, in _send
+    await send(message)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/protocols/http/h11_impl.py", line 473, in send
+    self.access_logger.info(
+Message: '%s - "%s %s HTTP/%s" %d'
+Arguments: ('123.58.207.155:49476', 'GET', '/sitemap.xml', '1.1', 404)
+2025-09-13 19:06:54 | app.middleware.api_validation_middleware | INFO | API请求: {"method": "GET", "url": "http://43.167.***.***.***:8001/config.json", "path": "/config.json", "client_ip": "123.58.***.***.***", "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_0) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.56 Safari/535.11", "timestamp": "2025-09-13T11:06:54.871918", "headers": {"host": "43.167.***.***.***:8001", "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_0) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.56 Safari/535.11", "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7", "accept-language": "zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6", "accept-encoding": "gzip"}, "query_params": {}}
+2025-09-13 19:06:54 | app.services.integrated_cache_manager | WARNING | 缓存管理器尚未初始化
+2025-09-13 19:06:54 | app.services.api_validation_service | WARNING | 端点验证配置不存在: /config.json
+2025-09-13 19:06:54.872 | INFO     | app.middleware.structured_logging:log_request_start:139 - Request started
+2025-09-13 19:06:54.873 | WARNING  | app.middleware.structured_logging:log_request_end:181 - Client error: 404
+2025-09-13 19:06:54 | app.middleware.api_validation_middleware | INFO | API响应: {"method": "GET", "path": "/config.json", "status_code": 404, "duration": 1.99, "timestamp": "2025-09-13T11:06:54.873877"}
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/__init__.py", line 464, in format
+    return self._format(record)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 460, in _format
+    return self._fmt % values
+           ~~~~~~~~~~^~~~~~~~
+KeyError: 'duration'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/handlers.py", line 73, in emit
+    if self.shouldRollover(record):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/handlers.py", line 196, in shouldRollover
+    msg = "%s\n" % self.format(record)
+                   ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 999, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 706, in format
+    s = self.formatMessage(record)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 675, in formatMessage
+    return self._style.format(record)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 466, in format
+    raise ValueError('Formatting field not found in record: %s' % e)
+ValueError: Formatting field not found in record: 'duration'
+Call stack:
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/server.py", line 67, in run
+    return asyncio.run(self.serve(sockets=sockets))
+  File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run
+    return runner.run(main)
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 674, in run_until_complete
+    self.run_forever()
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 641, in run_forever
+    self._run_once()
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 1987, in _run_once
+    handle._run()
+  File "/usr/lib/python3.12/asyncio/events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/protocols/http/h11_impl.py", line 403, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/base.py", line 185, in __call__
+    await response(scope, wrapped_receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/base.py", line 214, in __call__
+    await send(
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/errors.py", line 161, in _send
+    await send(message)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/protocols/http/h11_impl.py", line 473, in send
+    self.access_logger.info(
+Message: '%s - "%s %s HTTP/%s" %d'
+Arguments: ('123.58.207.155:49488', 'GET', '/config.json', '1.1', 404)
+2025-09-13 19:06:55 | app.middleware.api_validation_middleware | INFO | API请求: {"method": "GET", "url": "http://43.167.***.***.***:8001/sse", "path": "/sse", "client_ip": "123.58.***.***.***", "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_0) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.56 Safari/535.11", "timestamp": "2025-09-13T11:06:55.327005", "headers": {"host": "43.167.***.***.***:8001", "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_0) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.56 Safari/535.11", "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7", "accept-language": "zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6", "accept-encoding": "gzip"}, "query_params": {}}
+2025-09-13 19:06:55 | app.services.integrated_cache_manager | WARNING | 缓存管理器尚未初始化
+2025-09-13 19:06:55 | app.services.api_validation_service | WARNING | 端点验证配置不存在: /sse
+2025-09-13 19:06:55.328 | INFO     | app.middleware.structured_logging:log_request_start:139 - Request started
+2025-09-13 19:06:55.329 | WARNING  | app.middleware.structured_logging:log_request_end:181 - Client error: 404
+2025-09-13 19:06:55 | app.middleware.api_validation_middleware | INFO | API响应: {"method": "GET", "path": "/sse", "status_code": 404, "duration": 2.75, "timestamp": "2025-09-13T11:06:55.329730"}
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/__init__.py", line 464, in format
+    return self._format(record)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 460, in _format
+    return self._fmt % values
+           ~~~~~~~~~~^~~~~~~~
+KeyError: 'duration'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/handlers.py", line 73, in emit
+    if self.shouldRollover(record):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/handlers.py", line 196, in shouldRollover
+    msg = "%s\n" % self.format(record)
+                   ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 999, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 706, in format
+    s = self.formatMessage(record)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 675, in formatMessage
+    return self._style.format(record)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 466, in format
+    raise ValueError('Formatting field not found in record: %s' % e)
+ValueError: Formatting field not found in record: 'duration'
+Call stack:
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/server.py", line 67, in run
+    return asyncio.run(self.serve(sockets=sockets))
+  File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run
+    return runner.run(main)
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 674, in run_until_complete
+    self.run_forever()
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 641, in run_forever
+    self._run_once()
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 1987, in _run_once
+    handle._run()
+  File "/usr/lib/python3.12/asyncio/events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/protocols/http/h11_impl.py", line 403, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/base.py", line 185, in __call__
+    await response(scope, wrapped_receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/base.py", line 214, in __call__
+    await send(
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/errors.py", line 161, in _send
+    await send(message)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/protocols/http/h11_impl.py", line 473, in send
+    self.access_logger.info(
+Message: '%s - "%s %s HTTP/%s" %d'
+Arguments: ('123.58.207.155:49502', 'GET', '/sse', '1.1', 404)
+2025-09-13 19:06:55 | app.middleware.api_validation_middleware | INFO | API请求: {"method": "GET", "url": "http://43.167.***.***.***:8001/mcp", "path": "/mcp", "client_ip": "123.58.***.***.***", "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_0) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.56 Safari/535.11", "timestamp": "2025-09-13T11:06:55.794248", "headers": {"host": "43.167.***.***.***:8001", "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_0) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.56 Safari/535.11", "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7", "accept-language": "zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6", "accept-encoding": "gzip"}, "query_params": {}}
+2025-09-13 19:06:55 | app.services.integrated_cache_manager | WARNING | 缓存管理器尚未初始化
+2025-09-13 19:06:55 | app.services.api_validation_service | WARNING | 端点验证配置不存在: /mcp
+2025-09-13 19:06:55.795 | INFO     | app.middleware.structured_logging:log_request_start:139 - Request started
+2025-09-13 19:06:55.796 | WARNING  | app.middleware.structured_logging:log_request_end:181 - Client error: 404
+2025-09-13 19:06:55 | app.middleware.api_validation_middleware | INFO | API响应: {"method": "GET", "path": "/mcp", "status_code": 404, "duration": 2.85, "timestamp": "2025-09-13T11:06:55.797011"}
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/__init__.py", line 464, in format
+    return self._format(record)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 460, in _format
+    return self._fmt % values
+           ~~~~~~~~~~^~~~~~~~
+KeyError: 'duration'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/handlers.py", line 73, in emit
+    if self.shouldRollover(record):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/handlers.py", line 196, in shouldRollover
+    msg = "%s\n" % self.format(record)
+                   ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 999, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 706, in format
+    s = self.formatMessage(record)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 675, in formatMessage
+    return self._style.format(record)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 466, in format
+    raise ValueError('Formatting field not found in record: %s' % e)
+ValueError: Formatting field not found in record: 'duration'
+Call stack:
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/server.py", line 67, in run
+    return asyncio.run(self.serve(sockets=sockets))
+  File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run
+    return runner.run(main)
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 674, in run_until_complete
+    self.run_forever()
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 641, in run_forever
+    self._run_once()
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 1987, in _run_once
+    handle._run()
+  File "/usr/lib/python3.12/asyncio/events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/protocols/http/h11_impl.py", line 403, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/base.py", line 185, in __call__
+    await response(scope, wrapped_receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/base.py", line 214, in __call__
+    await send(
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/errors.py", line 161, in _send
+    await send(message)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/protocols/http/h11_impl.py", line 473, in send
+    self.access_logger.info(
+Message: '%s - "%s %s HTTP/%s" %d'
+Arguments: ('123.58.207.155:49504', 'GET', '/mcp', '1.1', 404)
+2025-09-13 19:06:56 | app.middleware.api_validation_middleware | INFO | API请求: {"method": "GET", "url": "http://43.167.***.***.***:8001/mcp-sse", "path": "/mcp-sse", "client_ip": "123.58.***.***.***", "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_0) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.56 Safari/535.11", "timestamp": "2025-09-13T11:06:56.243650", "headers": {"host": "43.167.***.***.***:8001", "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_0) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.56 Safari/535.11", "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7", "accept-language": "zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6", "accept-encoding": "gzip"}, "query_params": {}}
+2025-09-13 19:06:56 | app.services.integrated_cache_manager | WARNING | 缓存管理器尚未初始化
+2025-09-13 19:06:56 | app.services.api_validation_service | WARNING | 端点验证配置不存在: /mcp-sse
+2025-09-13 19:06:56.245 | INFO     | app.middleware.structured_logging:log_request_start:139 - Request started
+2025-09-13 19:06:56.246 | WARNING  | app.middleware.structured_logging:log_request_end:181 - Client error: 404
+2025-09-13 19:06:56 | app.middleware.api_validation_middleware | INFO | API响应: {"method": "GET", "path": "/mcp-sse", "status_code": 404, "duration": 2.96, "timestamp": "2025-09-13T11:06:56.246571"}
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/__init__.py", line 464, in format
+    return self._format(record)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 460, in _format
+    return self._fmt % values
+           ~~~~~~~~~~^~~~~~~~
+KeyError: 'duration'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/handlers.py", line 73, in emit
+    if self.shouldRollover(record):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/handlers.py", line 196, in shouldRollover
+    msg = "%s\n" % self.format(record)
+                   ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 999, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 706, in format
+    s = self.formatMessage(record)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 675, in formatMessage
+    return self._style.format(record)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 466, in format
+    raise ValueError('Formatting field not found in record: %s' % e)
+ValueError: Formatting field not found in record: 'duration'
+Call stack:
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/server.py", line 67, in run
+    return asyncio.run(self.serve(sockets=sockets))
+  File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run
+    return runner.run(main)
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 674, in run_until_complete
+    self.run_forever()
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 641, in run_forever
+    self._run_once()
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 1987, in _run_once
+    handle._run()
+  File "/usr/lib/python3.12/asyncio/events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/protocols/http/h11_impl.py", line 403, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/base.py", line 185, in __call__
+    await response(scope, wrapped_receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/base.py", line 214, in __call__
+    await send(
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/errors.py", line 161, in _send
+    await send(message)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/protocols/http/h11_impl.py", line 473, in send
+    self.access_logger.info(
+Message: '%s - "%s %s HTTP/%s" %d'
+Arguments: ('123.58.207.155:49514', 'GET', '/mcp-sse', '1.1', 404)
+2025-09-13 19:08:38 | app.middleware.api_validation_middleware | INFO | API请求: {"method": "GET", "url": "http://43.167.***.***.***/api/v1/ai/usage/stats?days=1", "path": "/api/v1/ai/usage/stats", "client_ip": "52.192.***.***.***", "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.***.***.*** Safari/537.36", "timestamp": "2025-09-13T11:08:38.208579", "headers": {"host": "43.167.***.***.***", "x-real-ip": "52.192.***.***.***", "x-forwarded-for": "52.192.***.***.***", "x-forwarded-proto": "http", "connection": "close", "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.***.***.*** Safari/537.36", "accept": "application/json, text/plain, */*", "accept-encoding": "gzip, deflate", "accept-language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7", "authorization": "Bearer eyJhbGciOi...VGkplk", "referer": "http://43.167.***.***.***/ai-chat"}, "query_params": {"days": "1"}}
+2025-09-13 19:08:38 | app.services.integrated_cache_manager | WARNING | 缓存管理器尚未初始化
+2025-09-13 19:08:38 | app.services.api_validation_service | WARNING | 端点验证配置不存在: /api/v1/ai/usage/stats
+2025-09-13 19:08:38.209 | INFO     | app.middleware.structured_logging:log_request_start:139 - Request started
+2025-09-13 19:08:38 | app.middleware.api_validation_middleware | INFO | API请求: {"method": "GET", "url": "http://43.167.***.***.***/api/v1/ai/sessions?ai_mode=trader", "path": "/api/v1/ai/sessions", "client_ip": "52.192.***.***.***", "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.***.***.*** Safari/537.36", "timestamp": "2025-09-13T11:08:38.212750", "headers": {"host": "43.167.***.***.***", "x-real-ip": "52.192.***.***.***", "x-forwarded-for": "52.192.***.***.***", "x-forwarded-proto": "http", "connection": "close", "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.***.***.*** Safari/537.36", "accept": "application/json, text/plain, */*", "accept-encoding": "gzip, deflate", "accept-language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7", "authorization": "Bearer eyJhbGciOi...VGkplk", "referer": "http://43.167.***.***.***/ai-chat"}, "query_params": {"ai_mode": "trader"}}
+2025-09-13 19:08:38 | app.services.integrated_cache_manager | WARNING | 缓存管理器尚未初始化
+2025-09-13 19:08:38 | app.services.api_validation_service | WARNING | 端点验证配置不存在: /api/v1/ai/sessions
+2025-09-13 19:08:38.213 | INFO     | app.middleware.structured_logging:log_request_start:139 - Request started
+2025-09-13 19:08:38.221 | INFO     | app.middleware.structured_logging:log_request_end:181 - Request completed in 0.012s
+2025-09-13 19:08:38 | app.middleware.api_validation_middleware | INFO | API响应: {"method": "GET", "path": "/api/v1/ai/usage/stats", "status_code": 200, "duration": 12.93, "timestamp": "2025-09-13T11:08:38.221484"}
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/__init__.py", line 464, in format
+    return self._format(record)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 460, in _format
+    return self._fmt % values
+           ~~~~~~~~~~^~~~~~~~
+KeyError: 'duration'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/handlers.py", line 73, in emit
+    if self.shouldRollover(record):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/handlers.py", line 196, in shouldRollover
+    msg = "%s\n" % self.format(record)
+                   ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 999, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 706, in format
+    s = self.formatMessage(record)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 675, in formatMessage
+    return self._style.format(record)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 466, in format
+    raise ValueError('Formatting field not found in record: %s' % e)
+ValueError: Formatting field not found in record: 'duration'
+Call stack:
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/server.py", line 67, in run
+    return asyncio.run(self.serve(sockets=sockets))
+  File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run
+    return runner.run(main)
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 674, in run_until_complete
+    self.run_forever()
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 641, in run_forever
+    self._run_once()
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 1987, in _run_once
+    handle._run()
+  File "/usr/lib/python3.12/asyncio/events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/protocols/http/h11_impl.py", line 403, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/base.py", line 185, in __call__
+    await response(scope, wrapped_receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/base.py", line 214, in __call__
+    await send(
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/errors.py", line 161, in _send
+    await send(message)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/protocols/http/h11_impl.py", line 473, in send
+    self.access_logger.info(
+Message: '%s - "%s %s HTTP/%s" %d'
+Arguments: ('52.192.119.253:0', 'GET', '/api/v1/ai/usage/stats?days=1', '1.0', 200)
+2025-09-13 19:08:38.224 | INFO     | app.middleware.structured_logging:log_request_end:181 - Request completed in 0.011s
+2025-09-13 19:08:38 | app.middleware.api_validation_middleware | INFO | API响应: {"method": "GET", "path": "/api/v1/ai/sessions", "status_code": 200, "duration": 11.88, "timestamp": "2025-09-13T11:08:38.224606"}
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/__init__.py", line 464, in format
+    return self._format(record)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 460, in _format
+    return self._fmt % values
+           ~~~~~~~~~~^~~~~~~~
+KeyError: 'duration'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/handlers.py", line 73, in emit
+    if self.shouldRollover(record):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/handlers.py", line 196, in shouldRollover
+    msg = "%s\n" % self.format(record)
+                   ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 999, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 706, in format
+    s = self.formatMessage(record)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 675, in formatMessage
+    return self._style.format(record)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 466, in format
+    raise ValueError('Formatting field not found in record: %s' % e)
+ValueError: Formatting field not found in record: 'duration'
+Call stack:
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/server.py", line 67, in run
+    return asyncio.run(self.serve(sockets=sockets))
+  File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run
+    return runner.run(main)
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 674, in run_until_complete
+    self.run_forever()
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 641, in run_forever
+    self._run_once()
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 1987, in _run_once
+    handle._run()
+  File "/usr/lib/python3.12/asyncio/events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/protocols/http/h11_impl.py", line 403, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/base.py", line 185, in __call__
+    await response(scope, wrapped_receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/base.py", line 214, in __call__
+    await send(
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/errors.py", line 161, in _send
+    await send(message)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/protocols/http/h11_impl.py", line 473, in send
+    self.access_logger.info(
+Message: '%s - "%s %s HTTP/%s" %d'
+Arguments: ('52.192.119.253:0', 'GET', '/api/v1/ai/sessions?ai_mode=trader', '1.0', 200)
+2025-09-13 19:08:47 | uvicorn.error | INFO | 52.192.***.***.***:0 - "WebSocket /api/v1/ai/ws/chat" [accepted]
+2025-09-13 19:08:47 | uvicorn.error | INFO | connection open
+2025-09-13 19:08:47 | app.api.v1.ai_websocket | INFO | 📨 收到WebSocket消息，类型: auth
+2025-09-13 19:08:47 | app.api.v1.ai_websocket | INFO | 🔐 开始处理认证消息
+2025-09-13 19:08:47 | app.api.v1.ai_websocket | INFO | 🔑 验证JWT令牌...
+2025-09-13 19:08:47 | app.api.v1.ai_websocket | INFO | ✅ JWT验证成功，用户ID: 6
+2025-09-13 19:08:47 | app.api.v1.ai_websocket | INFO | 📡 建立WebSocket连接管理...
+2025-09-13 19:08:47 | app.services.websocket_manager | INFO | 💓 WebSocket心跳监控已启动
+2025-09-13 19:08:47 | app.services.websocket_manager | INFO | 🧹 WebSocket清理监控已启动
+2025-09-13 19:08:47 | app.services.websocket_manager | INFO | 📊 WebSocket统计监控已启动
+2025-09-13 19:08:47 | app.services.websocket_manager | INFO | 🔗 用户 6 建立WebSocket连接: 8bf6e9cf-cbfd-4e95-9528-2f9d2ce2a506 (总连接数: 1)
+2025-09-13 19:08:47 | app.api.v1.ai_websocket | INFO | ✅ 连接ID已创建: 8bf6e9cf-cbfd-4e95-9528-2f9d2ce2a506
+2025-09-13 19:08:47 | app.api.v1.ai_websocket | INFO | 📤 发送认证成功响应: {'type': 'auth_success', 'connection_id': '8bf6e9cf-cbfd-4e95-9528-2f9d2ce2a506', 'user_id': 6, 'message': '认证成功，AI对话已准备就绪'}
+2025-09-13 19:08:47 | app.api.v1.ai_websocket | INFO | ✅ 用户 6 通过WebSocket认证成功
+2025-09-13 19:08:48 | app.api.v1.ai_websocket | INFO | WebSocket连接断开: 8bf6e9cf-cbfd-4e95-9528-2f9d2ce2a506
+2025-09-13 19:08:48 | app.services.websocket_manager | INFO | ❌ 用户 6 断开WebSocket连接: 8bf6e9cf-cbfd-4e95-9528-2f9d2ce2a506 (原因: 连接关闭)
+2025-09-13 19:08:48 | uvicorn.error | INFO | connection closed
+2025-09-13 19:08:50 | app.middleware.api_validation_middleware | INFO | API请求: {"method": "GET", "url": "http://43.167.***.***.***/api/v1/ai/usage/stats?days=1", "path": "/api/v1/ai/usage/stats", "client_ip": "52.192.***.***.***", "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.***.***.*** Safari/537.36", "timestamp": "2025-09-13T11:08:50.275879", "headers": {"host": "43.167.***.***.***", "x-real-ip": "52.192.***.***.***", "x-forwarded-for": "52.192.***.***.***", "x-forwarded-proto": "http", "connection": "close", "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.***.***.*** Safari/537.36", "accept": "application/json, text/plain, */*", "accept-encoding": "gzip, deflate", "accept-language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7", "authorization": "Bearer eyJhbGciOi...VGkplk", "referer": "http://43.167.***.***.***/ai-chat"}, "query_params": {"days": "1"}}
+2025-09-13 19:08:50 | app.services.integrated_cache_manager | WARNING | 缓存管理器尚未初始化
+2025-09-13 19:08:50 | app.services.api_validation_service | WARNING | 端点验证配置不存在: /api/v1/ai/usage/stats
+2025-09-13 19:08:50.276 | INFO     | app.middleware.structured_logging:log_request_start:139 - Request started
+2025-09-13 19:08:50 | app.middleware.api_validation_middleware | INFO | API请求: {"method": "GET", "url": "http://43.167.***.***.***/api/v1/ai/sessions?ai_mode=trader", "path": "/api/v1/ai/sessions", "client_ip": "52.192.***.***.***", "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.***.***.*** Safari/537.36", "timestamp": "2025-09-13T11:08:50.278072", "headers": {"host": "43.167.***.***.***", "x-real-ip": "52.192.***.***.***", "x-forwarded-for": "52.192.***.***.***", "x-forwarded-proto": "http", "connection": "close", "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.***.***.*** Safari/537.36", "accept": "application/json, text/plain, */*", "accept-encoding": "gzip, deflate", "accept-language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7", "authorization": "Bearer eyJhbGciOi...VGkplk", "referer": "http://43.167.***.***.***/ai-chat"}, "query_params": {"ai_mode": "trader"}}
+2025-09-13 19:08:50 | app.services.integrated_cache_manager | WARNING | 缓存管理器尚未初始化
+2025-09-13 19:08:50 | app.services.api_validation_service | WARNING | 端点验证配置不存在: /api/v1/ai/sessions
+2025-09-13 19:08:50.279 | INFO     | app.middleware.structured_logging:log_request_start:139 - Request started
+2025-09-13 19:08:50.283 | INFO     | app.middleware.structured_logging:log_request_end:181 - Request completed in 0.005s
+2025-09-13 19:08:50 | app.middleware.api_validation_middleware | INFO | API响应: {"method": "GET", "path": "/api/v1/ai/sessions", "status_code": 200, "duration": 5.73, "timestamp": "2025-09-13T11:08:50.283789"}
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/__init__.py", line 464, in format
+    return self._format(record)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 460, in _format
+    return self._fmt % values
+           ~~~~~~~~~~^~~~~~~~
+KeyError: 'duration'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/handlers.py", line 73, in emit
+    if self.shouldRollover(record):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/handlers.py", line 196, in shouldRollover
+    msg = "%s\n" % self.format(record)
+                   ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 999, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 706, in format
+    s = self.formatMessage(record)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 675, in formatMessage
+    return self._style.format(record)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 466, in format
+    raise ValueError('Formatting field not found in record: %s' % e)
+ValueError: Formatting field not found in record: 'duration'
+Call stack:
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/server.py", line 67, in run
+    return asyncio.run(self.serve(sockets=sockets))
+  File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run
+    return runner.run(main)
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 674, in run_until_complete
+    self.run_forever()
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 641, in run_forever
+    self._run_once()
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 1987, in _run_once
+    handle._run()
+  File "/usr/lib/python3.12/asyncio/events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/protocols/http/h11_impl.py", line 403, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/base.py", line 185, in __call__
+    await response(scope, wrapped_receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/base.py", line 214, in __call__
+    await send(
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/errors.py", line 161, in _send
+    await send(message)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/protocols/http/h11_impl.py", line 473, in send
+    self.access_logger.info(
+Message: '%s - "%s %s HTTP/%s" %d'
+Arguments: ('52.192.119.253:0', 'GET', '/api/v1/ai/sessions?ai_mode=trader', '1.0', 200)
+2025-09-13 19:08:50.286 | INFO     | app.middleware.structured_logging:log_request_end:181 - Request completed in 0.010s
+2025-09-13 19:08:50 | app.middleware.api_validation_middleware | INFO | API响应: {"method": "GET", "path": "/api/v1/ai/usage/stats", "status_code": 200, "duration": 10.79, "timestamp": "2025-09-13T11:08:50.286646"}
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/__init__.py", line 464, in format
+    return self._format(record)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 460, in _format
+    return self._fmt % values
+           ~~~~~~~~~~^~~~~~~~
+KeyError: 'duration'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/handlers.py", line 73, in emit
+    if self.shouldRollover(record):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/handlers.py", line 196, in shouldRollover
+    msg = "%s\n" % self.format(record)
+                   ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 999, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 706, in format
+    s = self.formatMessage(record)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 675, in formatMessage
+    return self._style.format(record)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 466, in format
+    raise ValueError('Formatting field not found in record: %s' % e)
+ValueError: Formatting field not found in record: 'duration'
+Call stack:
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/server.py", line 67, in run
+    return asyncio.run(self.serve(sockets=sockets))
+  File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run
+    return runner.run(main)
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 674, in run_until_complete
+    self.run_forever()
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 641, in run_forever
+    self._run_once()
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 1987, in _run_once
+    handle._run()
+  File "/usr/lib/python3.12/asyncio/events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/protocols/http/h11_impl.py", line 403, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/base.py", line 185, in __call__
+    await response(scope, wrapped_receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/base.py", line 214, in __call__
+    await send(
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/errors.py", line 161, in _send
+    await send(message)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/protocols/http/h11_impl.py", line 473, in send
+    self.access_logger.info(
+Message: '%s - "%s %s HTTP/%s" %d'
+Arguments: ('52.192.119.253:0', 'GET', '/api/v1/ai/usage/stats?days=1', '1.0', 200)
+2025-09-13 19:08:51 | uvicorn.error | INFO | 52.192.***.***.***:0 - "WebSocket /api/v1/ai/ws/chat" [accepted]
+2025-09-13 19:08:51 | uvicorn.error | INFO | connection open
+2025-09-13 19:08:51 | app.api.v1.ai_websocket | INFO | 📨 收到WebSocket消息，类型: auth
+2025-09-13 19:08:51 | app.api.v1.ai_websocket | INFO | 🔐 开始处理认证消息
+2025-09-13 19:08:51 | app.api.v1.ai_websocket | INFO | 🔑 验证JWT令牌...
+2025-09-13 19:08:51 | app.api.v1.ai_websocket | INFO | ✅ JWT验证成功，用户ID: 6
+2025-09-13 19:08:51 | app.api.v1.ai_websocket | INFO | 📡 建立WebSocket连接管理...
+2025-09-13 19:08:51 | app.services.websocket_manager | INFO | 💓 WebSocket心跳监控已启动
+2025-09-13 19:08:51 | app.services.websocket_manager | INFO | 🧹 WebSocket清理监控已启动
+2025-09-13 19:08:51 | app.services.websocket_manager | INFO | 📊 WebSocket统计监控已启动
+2025-09-13 19:08:51 | app.services.websocket_manager | INFO | 🔗 用户 6 建立WebSocket连接: 8470d9d1-3481-4b6d-be25-8678ca0e29e4 (总连接数: 1)
+2025-09-13 19:08:51 | app.api.v1.ai_websocket | INFO | ✅ 连接ID已创建: 8470d9d1-3481-4b6d-be25-8678ca0e29e4
+2025-09-13 19:08:51 | app.api.v1.ai_websocket | INFO | 📤 发送认证成功响应: {'type': 'auth_success', 'connection_id': '8470d9d1-3481-4b6d-be25-8678ca0e29e4', 'user_id': 6, 'message': '认证成功，AI对话已准备就绪'}
+2025-09-13 19:08:51 | app.api.v1.ai_websocket | INFO | ✅ 用户 6 通过WebSocket认证成功
+2025-09-13 19:08:52 | app.middleware.api_validation_middleware | INFO | API请求: {"method": "GET", "url": "http://43.167.***.***.***/api/v1/ai/chat/history?session_id=5be7cbc0-e982-4695-833b-6f983061cbf6&limit=20", "path": "/api/v1/ai/chat/history", "client_ip": "52.192.***.***.***", "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.***.***.*** Safari/537.36", "timestamp": "2025-09-13T11:08:52.392615", "headers": {"host": "43.167.***.***.***", "x-real-ip": "52.192.***.***.***", "x-forwarded-for": "52.192.***.***.***", "x-forwarded-proto": "http", "connection": "close", "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.***.***.*** Safari/537.36", "accept": "application/json, text/plain, */*", "accept-encoding": "gzip, deflate", "accept-language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7", "authorization": "Bearer eyJhbGciOi...VGkplk", "referer": "http://43.167.***.***.***/ai-chat"}, "query_params": {"session_id": "5be7cbc0-e982-4695-833b-6f983061cbf6", "limit": "20"}}
+2025-09-13 19:08:52 | app.services.integrated_cache_manager | WARNING | 缓存管理器尚未初始化
+2025-09-13 19:08:52 | app.services.api_validation_service | WARNING | 端点验证配置不存在: /api/v1/ai/chat/history
+2025-09-13 19:08:52.393 | INFO     | app.middleware.structured_logging:log_request_start:139 - Request started
+2025-09-13 19:08:52.399 | INFO     | app.middleware.structured_logging:log_request_end:181 - Request completed in 0.005s
+2025-09-13 19:08:52 | app.middleware.api_validation_middleware | INFO | API响应: {"method": "GET", "path": "/api/v1/ai/chat/history", "status_code": 200, "duration": 6.55, "timestamp": "2025-09-13T11:08:52.399148"}
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/__init__.py", line 464, in format
+    return self._format(record)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 460, in _format
+    return self._fmt % values
+           ~~~~~~~~~~^~~~~~~~
+KeyError: 'duration'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/handlers.py", line 73, in emit
+    if self.shouldRollover(record):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/handlers.py", line 196, in shouldRollover
+    msg = "%s\n" % self.format(record)
+                   ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 999, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 706, in format
+    s = self.formatMessage(record)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 675, in formatMessage
+    return self._style.format(record)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 466, in format
+    raise ValueError('Formatting field not found in record: %s' % e)
+ValueError: Formatting field not found in record: 'duration'
+Call stack:
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/server.py", line 67, in run
+    return asyncio.run(self.serve(sockets=sockets))
+  File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run
+    return runner.run(main)
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 674, in run_until_complete
+    self.run_forever()
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 641, in run_forever
+    self._run_once()
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 1987, in _run_once
+    handle._run()
+  File "/usr/lib/python3.12/asyncio/events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/protocols/http/h11_impl.py", line 403, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/base.py", line 185, in __call__
+    await response(scope, wrapped_receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/base.py", line 214, in __call__
+    await send(
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/errors.py", line 161, in _send
+    await send(message)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/protocols/http/h11_impl.py", line 473, in send
+    self.access_logger.info(
+Message: '%s - "%s %s HTTP/%s" %d'
+Arguments: ('52.192.119.253:0', 'GET', '/api/v1/ai/chat/history?session_id=5be7cbc0-e982-4695-833b-6f983061cbf6&limit=20', '1.0', 200)
+2025-09-13 19:08:56 | app.middleware.api_validation_middleware | INFO | API请求: {"method": "GET", "url": "http://43.167.***.***.***/api/v1/strategies/latest-ai-strategy/5be7cbc0-e982-4695-833b-6f983061cbf6", "path": "/api/v1/strategies/latest-ai-strategy/5be7cbc0-e982-4695-833b-6f983061cbf6", "client_ip": "52.192.***.***.***", "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.***.***.*** Safari/537.36", "timestamp": "2025-09-13T11:08:56.829765", "headers": {"host": "43.167.***.***.***", "x-real-ip": "52.192.***.***.***", "x-forwarded-for": "52.192.***.***.***", "x-forwarded-proto": "http", "connection": "close", "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.***.***.*** Safari/537.36", "accept": "application/json, text/plain, */*", "accept-encoding": "gzip, deflate", "accept-language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7", "authorization": "Bearer eyJhbGciOi...VGkplk", "referer": "http://43.167.***.***.***/ai-chat"}, "query_params": {}}
+2025-09-13 19:08:56 | app.services.integrated_cache_manager | WARNING | 缓存管理器尚未初始化
+2025-09-13 19:08:56 | app.services.api_validation_service | WARNING | 端点验证配置不存在: /api/v1/strategies/latest-ai-strategy/5be7cbc0-e982-4695-833b-6f983061cbf6
+2025-09-13 19:08:56.831 | INFO     | app.middleware.structured_logging:log_request_start:139 - Request started
+2025-09-13 19:08:56.839 | INFO     | app.middleware.structured_logging:log_request_end:181 - Request completed in 0.008s
+2025-09-13 19:08:56 | app.middleware.api_validation_middleware | INFO | API响应: {"method": "GET", "path": "/api/v1/strategies/latest-ai-strategy/5be7cbc0-e982-4695-833b-6f983061cbf6", "status_code": 200, "duration": 9.59, "timestamp": "2025-09-13T11:08:56.839348"}
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/__init__.py", line 464, in format
+    return self._format(record)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 460, in _format
+    return self._fmt % values
+           ~~~~~~~~~~^~~~~~~~
+KeyError: 'duration'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/handlers.py", line 73, in emit
+    if self.shouldRollover(record):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/handlers.py", line 196, in shouldRollover
+    msg = "%s\n" % self.format(record)
+                   ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 999, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 706, in format
+    s = self.formatMessage(record)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 675, in formatMessage
+    return self._style.format(record)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 466, in format
+    raise ValueError('Formatting field not found in record: %s' % e)
+ValueError: Formatting field not found in record: 'duration'
+Call stack:
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/server.py", line 67, in run
+    return asyncio.run(self.serve(sockets=sockets))
+  File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run
+    return runner.run(main)
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 674, in run_until_complete
+    self.run_forever()
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 641, in run_forever
+    self._run_once()
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 1987, in _run_once
+    handle._run()
+  File "/usr/lib/python3.12/asyncio/events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/protocols/http/h11_impl.py", line 403, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/base.py", line 185, in __call__
+    await response(scope, wrapped_receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/base.py", line 214, in __call__
+    await send(
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/errors.py", line 161, in _send
+    await send(message)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/protocols/http/h11_impl.py", line 473, in send
+    self.access_logger.info(
+Message: '%s - "%s %s HTTP/%s" %d'
+Arguments: ('52.192.119.253:0', 'GET', '/api/v1/strategies/latest-ai-strategy/5be7cbc0-e982-4695-833b-6f983061cbf6', '1.0', 200)
+2025-09-13 19:08:56 | app.middleware.api_validation_middleware | INFO | API请求: {"method": "POST", "url": "http://43.167.***.***.***/api/v1/realtime-backtest/start", "path": "/api/v1/realtime-backtest/start", "client_ip": "52.192.***.***.***", "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.***.***.*** Safari/537.36", "timestamp": "2025-09-13T11:08:56.942111", "headers": {"host": "43.167.***.***.***", "x-real-ip": "52.192.***.***.***", "x-forwarded-for": "52.192.***.***.***", "x-forwarded-proto": "http", "connection": "close", "content-length": "8167", "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.***.***.*** Safari/537.36", "accept": "application/json, text/plain, */*", "accept-encoding": "gzip, deflate", "accept-language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7", "authorization": "Bearer eyJhbGciOi...VGkplk", "content-type": "application/json", "origin": "http://43.167.***.***.***", "referer": "http://43.167.***.***.***/ai-chat"}, "body": {"strategy_code": "from app.core.enhanced_strategy import EnhancedBaseStrategy, DataRequest, DataType\nfrom app.core.strategy_engine import TradingSignal, SignalType\nfrom typing import List, Optional, Dict, Any\nfrom datetime import datetime\nimport pandas as pd\nimport numpy as np\n\nclass UserStrategy(EnhancedBaseStrategy):\n    \"\"\"优化的双均线交叉策略 - 结合KDJ指标过滤\"\"\"\n    \n    def get_data_requirements(self) -> List[DataRequest]:\n        \"\"\"定义策略所需的数据源\"\"\"\n        return [\n            DataRequest(\n                data_type=DataType.KLINE,\n                exchange=\"okx\",\n                symbol=\"BTC-USDT-SWAP\", \n                timeframe=\"1h\",\n                required=True\n            )\n        ]\n    \n    async def on_data_update(self, data_type: str, data: Dict[str, Any]) -> Optional[TradingSignal]:\n        \"\"\"数据更新处理 - 实现双均线交叉策略逻辑\"\"\"\n        if data_type != \"kline\":\n            return None\n            \n        # 获取K线数据\n        df = self.get_kline_data()\n        if df is None or len(df) < 50:  # 需要足够的历史数据\n            return None\n        \n        # 计算技术指标\n        sma5 = self.calculate_sma(df['close'], 5)\n        sma10 = self.calculate_sma(df['close'], 10)\n        \n        # 计算KDJ指标用于信号过滤\n        kdj_k, kdj_d, kdj_j = self.calculate_kdj(df['high'], df['low'], df['close'], 9, 3, 3)\n        \n        # 获取当前价格和仓位信息\n        current_price = df['close'].iloc[-1]\n        current_position = self.get_current_position()\n        \n        # 从参数中获取配置\n        position_size = self.context.parameters.get('position_size', 10.0) / 100.0  # 转换为比例\n        stop_loss_pct = self.context.parameters.get('stop_loss', 5.0) / 100.0\n        take_profit_pct = self.context.parameters.get('take_profit', 5.0) / 100.0\n        \n        # 检测均线交叉信号\n        golden_cross = self._detect_golden_cross(sma5, sma10)\n        death_cross = self._detect_death_cross(sma5, sma10)\n        \n        # 优化的信号生成逻辑\n        signal = None\n        \n        # 金叉信号 - 开多仓\n        if golden_cross:\n            # KDJ过滤：K值小于80且K>D时信号更可靠\n            if kdj_k[-1] < 80 and kdj_k[-1] > kdj_d[-1]:\n                # 如果有空仓，先平空再开多\n                if current_position and current_position < 0:\n                    # 系统会自动处理平仓逻辑\n                    pass\n                \n                signal = TradingSignal(\n                    signal_type=SignalType.BUY,\n                    symbol=\"BTC-USDT-SWAP\",\n                    price=current_price,\n                    quantity=position_size,\n                    stop_loss=current_price * (1 - stop_loss_pct),\n                    take_profit=current_price * (1 + take_profit_pct),\n                    metadata={\n                        'strategy': 'sma_cross_optimized',\n                        'signal_reason': 'golden_cross_with_kdj_filter',\n                        'sma5': sma5[-1],\n                        'sma10': sma10[-1],\n                        'kdj_k': kdj_k[-1],\n                        'kdj_d': kdj_d[-1]\n                    }\n                )\n        \n        # 死叉信号 - 开空仓\n        elif death_cross:\n            # KDJ过滤：K值大于20且K<D时信号更可靠\n            if kdj_k[-1] > 20 and kdj_k[-1] < kdj_d[-1]:\n                # 如果有多仓，先平多再开空\n                if current_position and current_position > 0:\n                    # 系统会自动处理平仓逻辑\n                    pass\n                \n                signal = TradingSignal(\n                    signal_type=SignalType.SELL,\n                    symbol=\"BTC-USDT-SWAP\",\n                    price=current_price,\n                    quantity=position_size,\n                    stop_loss=current_price * (1 + stop_loss_pct),\n                    take_profit=current_price * (1 - take_profit_pct),\n                    metadata={\n                        'strategy': 'sma_cross_optimized',\n                        'signal_reason': 'death_cross_with_kdj_filter',\n                        'sma5': sma5[-1],\n                        'sma10': sma10[-1],\n                        'kdj_k': kdj_k[-1],\n                        'kdj_d': kdj_d[-1]\n                    }\n                )\n        \n        # 动态止盈止损调整（趋势跟踪优化）\n        if current_position and signal is None:\n            signal = self._check_dynamic_exit(df, current_position, current_price, \n                                            sma5, sma10, kdj_k, kdj_d)\n        \n        return signal\n    \n    def _detect_golden_cross(self, sma5: pd.Series, sma10: pd.Series) -> bool:\n        \"\"\"检测金叉信号\"\"\"\n        if len(sma5) < 2 or len(sma10) < 2:\n            return False\n        \n        # 当前SMA5 > SMA10 且 前一根SMA5 <= SMA10\n        current_cross = sma5.iloc[-1] > sma10.iloc[-1]\n        previous_cross = sma5.iloc[-2] <= sma10.iloc[-2]\n        \n        return current_cross and previous_cross\n    \n    def _detect_death_cross(self, sma5: pd.Series, sma10: pd.Series) -> bool:\n        \"\"\"检测死叉信号\"\"\"\n        if len(sma5) < 2 or len(sma10) < 2:\n            return False\n        \n        # 当前SMA5 < SMA10 且 前一根SMA5 >= SMA10\n        current_cross = sma5.iloc[-1] < sma10.iloc[-1]\n        previous_cross = sma5.iloc[-2] >= sma10.iloc[-2]\n        \n        return current_cross and previous_cross\n    \n    def _check_dynamic_exit(self, df: pd.DataFrame, position: float, current_price: float,\n                          sma5: pd.Series, sma10: pd.Series, kdj_k: pd.Series, kdj_d: pd.Series) -> Optional[TradingSignal]:\n        \"\"\"动态出场逻辑 - 趋势跟踪优化\"\"\"\n        \n        # 多仓动态止盈逻辑\n        if position > 0:\n            # 趋势转弱信号：SMA5开始走平或KDJ超买\n            if (sma5.iloc[-1] <= sma5.iloc[-2] or kdj_k[-1] > 85) and kdj_k[-1] < kdj_d[-1]:\n                return TradingSignal(\n                    signal_type=SignalType.SELL,\n                    symbol=\"BTC-USDT-SWAP\",\n                    price=current_price,\n                    quantity=abs(position),\n                    metadata={\n                        'strategy': 'sma_cross_optimized',\n                        'signal_reason': 'dynamic_exit_long_trend_weak'\n                    }\n                )\n        \n        # 空仓动态止盈逻辑\n        elif position < 0:\n            # 趋势转强信号：SMA5开始上涨或KDJ超卖反弹\n            if (sma5.iloc[-1] >= sma5.iloc[-2] or kdj_k[-1] < 15) and kdj_k[-1] > kdj_d[-1]:\n                return TradingSignal(\n                    signal_type=SignalType.BUY,\n                    symbol=\"BTC-USDT-SWAP\",\n                    price=current_price,\n                    quantity=abs(position),\n                    metadata={\n                        'strategy': 'sma_cross_optimized',\n                        'signal_reason': 'dynamic_exit_short_trend_strong'\n                    }\n                )\n        \n        return None\n    \n    def calculate_kdj(self, high: pd.Series, low: pd.Series, close: pd.Series, \n                     k_period: int = 9, k_smooth: int = 3, d_smooth: int = 3) -> tuple:\n        \"\"\"计算KDJ指标\"\"\"\n        lowest_low = low.rolling(window=k_period).min()\n        highest_high = high.rolling(window=k_period).max()\n        \n        rsv = 100 * (close - lowest_low) / (highest_high - lowest_low)\n        rsv = rsv.fillna(50)  # 填充NaN值\n        \n        k = rsv.ewm(span=k_smooth).mean()\n        d = k.ewm(span=d_smooth).mean()\n        j = 3 * k - 2 * d\n        \n        return k, d, j", "exchange": "binance", "product_type": "spot", "symbols": ["BTC/USDT"], "timeframes": ["1h"], "fee_rate": "vip0", "initial_capital": 10000, "start_date": "2025-08-14", "end_date": "2025-09-13", "data_type": "kline"}}
+2025-09-13 19:08:56 | app.services.api_validation_service | WARNING | 端点验证配置不存在: /api/v1/realtime-backtest/start
+2025-09-13 19:08:56.949 | INFO     | app.middleware.structured_logging:log_request_start:139 - Request started
+2025-09-13 19:08:56.954 | INFO     | app.middleware.structured_logging:log_request_end:181 - Request completed in 0.005s
+2025-09-13 19:08:56 | app.middleware.api_validation_middleware | INFO | API响应: {"method": "POST", "path": "/api/v1/realtime-backtest/start", "status_code": 200, "duration": 12.56, "timestamp": "2025-09-13T11:08:56.954643"}
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/__init__.py", line 464, in format
+    return self._format(record)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 460, in _format
+    return self._fmt % values
+           ~~~~~~~~~~^~~~~~~~
+KeyError: 'duration'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/handlers.py", line 73, in emit
+    if self.shouldRollover(record):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/handlers.py", line 196, in shouldRollover
+    msg = "%s\n" % self.format(record)
+                   ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 999, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 706, in format
+    s = self.formatMessage(record)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 675, in formatMessage
+    return self._style.format(record)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 466, in format
+    raise ValueError('Formatting field not found in record: %s' % e)
+ValueError: Formatting field not found in record: 'duration'
+Call stack:
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/server.py", line 67, in run
+    return asyncio.run(self.serve(sockets=sockets))
+  File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run
+    return runner.run(main)
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 674, in run_until_complete
+    self.run_forever()
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 641, in run_forever
+    self._run_once()
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 1987, in _run_once
+    handle._run()
+  File "/usr/lib/python3.12/asyncio/events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/protocols/http/h11_impl.py", line 403, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/base.py", line 185, in __call__
+    await response(scope, wrapped_receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/base.py", line 214, in __call__
+    await send(
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/errors.py", line 161, in _send
+    await send(message)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/protocols/http/h11_impl.py", line 473, in send
+    self.access_logger.info(
+Message: '%s - "%s %s HTTP/%s" %d'
+Arguments: ('52.192.119.253:0', 'POST', '/api/v1/realtime-backtest/start', '1.0', 200)
+2025-09-13 19:08:57 | uvicorn.error | INFO | 52.192.***.***.***:0 - "WebSocket /api/v1/realtime-backtest/ws/d4bc9957-6dc8-49f8-a263-73d47ed33650" [accepted]
+2025-09-13 19:08:57 | uvicorn.error | INFO | connection open
+2025-09-13 19:08:58.956 | INFO     | app.api.v1.realtime_backtest:_prepare_data:599 - 📊 直接从数据库获取真实历史数据: 2025-08-14 00:00:00 - 2025-09-13 00:00:00
+2025-09-13 19:08:58.956 | INFO     | app.api.v1.realtime_backtest:_fetch_market_data:626 - 📊 查询数据库中的 BTC/USDT 数据...
+2025-09-13 19:08:58.959 | ERROR    | app.api.v1.realtime_backtest:_fetch_market_data:667 - ❌ BINANCE交易所的BTC/USDT 在指定时间范围(2025-08-14 到 2025-09-13)内历史数据不足（仅0条记录，需要至少10条），无法进行有效回测。
+💡 建议：目前系统只有OKX交易所的数据可用请选择有充足数据的时间范围、交易所或交易对进行回测
+2025-09-13 19:08:58.959 | ERROR    | app.api.v1.realtime_backtest:_fetch_market_data:672 - ❌ BTC/USDT 数据库查询失败: ❌ BINANCE交易所的BTC/USDT 在指定时间范围(2025-08-14 到 2025-09-13)内历史数据不足（仅0条记录，需要至少10条），无法进行有效回测。
+💡 建议：目前系统只有OKX交易所的数据可用请选择有充足数据的时间范围、交易所或交易对进行回测
+2025-09-13 19:08:58.959 | ERROR    | app.api.v1.realtime_backtest:_prepare_data:613 - ❌ 数据准备失败: ❌ BINANCE交易所的BTC/USDT 在指定时间范围(2025-08-14 到 2025-09-13)内历史数据不足（仅0条记录，需要至少10条），无法进行有效回测。
+💡 建议：目前系统只有OKX交易所的数据可用请选择有充足数据的时间范围、交易所或交易对进行回测
+2025-09-13 19:08:58.959 | ERROR    | app.api.v1.realtime_backtest:_execute_backtest:557 - 回测任务 d4bc9957-6dc8-49f8-a263-73d47ed33650 失败: 无法获取回测所需的历史数据: ❌ BINANCE交易所的BTC/USDT 在指定时间范围(2025-08-14 到 2025-09-13)内历史数据不足（仅0条记录，需要至少10条），无法进行有效回测。
+💡 建议：目前系统只有OKX交易所的数据可用请选择有充足数据的时间范围、交易所或交易对进行回测
+2025-09-13 19:08:58.960 | ERROR    | app.api.v1.realtime_backtest:_execute_backtest:558 - 完整错误堆栈: Traceback (most recent call last):
+  File "/root/trademe/backend/trading-service/app/api/v1/realtime_backtest.py", line 610, in _prepare_data
+    return await self._fetch_market_data(self.db_session, config, start_date, end_date)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/trademe/backend/trading-service/app/api/v1/realtime_backtest.py", line 673, in _fetch_market_data
+    raise e
+  File "/root/trademe/backend/trading-service/app/api/v1/realtime_backtest.py", line 668, in _fetch_market_data
+    raise Exception(error_msg)
+Exception: ❌ BINANCE交易所的BTC/USDT 在指定时间范围(2025-08-14 到 2025-09-13)内历史数据不足（仅0条记录，需要至少10条），无法进行有效回测。
+💡 建议：目前系统只有OKX交易所的数据可用请选择有充足数据的时间范围、交易所或交易对进行回测
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/trademe/backend/trading-service/app/api/v1/realtime_backtest.py", line 529, in _execute_backtest
+    step_result = await step_info["action"](config, backtest_data)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/trademe/backend/trading-service/app/api/v1/realtime_backtest.py", line 615, in _prepare_data
+    raise Exception(f"无法获取回测所需的历史数据: {str(e)}")
+Exception: 无法获取回测所需的历史数据: ❌ BINANCE交易所的BTC/USDT 在指定时间范围(2025-08-14 到 2025-09-13)内历史数据不足（仅0条记录，需要至少10条），无法进行有效回测。
+💡 建议：目前系统只有OKX交易所的数据可用请选择有充足数据的时间范围、交易所或交易对进行回测
+
+2025-09-13 19:09:21 | app.api.v1.ai_websocket | INFO | 📨 收到WebSocket消息，类型: ping
+/root/trademe/backend/trading-service/app/services/websocket_manager.py:369: SAWarning: The garbage collector is trying to clean up non-checked-in connection <AdaptedConnection <Connection(Thread-1, started daemon 127507045025472)>>, which will be dropped, as it cannot be safely terminated.  Please ensure that SQLAlchemy pooled connections are returned to the pool explicitly, either by calling ``close()`` or by using appropriate context managers to manage their lifecycle.
+  collected = gc.collect()
+/root/trademe/backend/trading-service/app/services/websocket_manager.py:369: SAWarning: The garbage collector is trying to clean up non-checked-in connection <AdaptedConnection <Connection(Thread-4, started daemon 127507003082432)>>, which will be dropped, as it cannot be safely terminated.  Please ensure that SQLAlchemy pooled connections are returned to the pool explicitly, either by calling ``close()`` or by using appropriate context managers to manage their lifecycle.
+  collected = gc.collect()
+2025-09-13 19:09:51 | app.api.v1.ai_websocket | INFO | 📨 收到WebSocket消息，类型: ping
+2025-09-13 19:10:21 | app.api.v1.ai_websocket | INFO | 📨 收到WebSocket消息，类型: ping
+2025-09-13 19:10:51 | app.api.v1.ai_websocket | INFO | 📨 收到WebSocket消息，类型: ping
+2025-09-13 19:11:21 | app.api.v1.ai_websocket | INFO | 📨 收到WebSocket消息，类型: ping
+2025-09-13 19:11:51 | app.api.v1.ai_websocket | INFO | 📨 收到WebSocket消息，类型: ping
+WARNING:  StatReload detected changes in 'app/api/v1/realtime_backtest.py'. Reloading...
+2025-09-13 19:12:40 | uvicorn.error | INFO | Shutting down
+2025-09-13 19:12:40 | app.api.v1.ai_websocket | INFO | WebSocket连接断开: 8470d9d1-3481-4b6d-be25-8678ca0e29e4
+2025-09-13 19:12:40 | app.services.websocket_manager | INFO | ❌ 用户 6 断开WebSocket连接: 8470d9d1-3481-4b6d-be25-8678ca0e29e4 (原因: 连接关闭)
+2025-09-13 19:12:40 | uvicorn.error | INFO | connection closed
+2025-09-13 19:12:40 | uvicorn.error | INFO | connection closed
+2025-09-13 19:12:40 | uvicorn.error | INFO | Waiting for application shutdown.
+✅ 数据库连接已关闭
+✅ Redis连接已关闭
+👋 Trading Service 已关闭
+2025-09-13 19:12:40 | uvicorn.error | INFO | Application shutdown complete.
+2025-09-13 19:12:40 | uvicorn.error | INFO | Finished server process [3767191]
+/usr/local/lib/python3.12/dist-packages/pydantic/_internal/_config.py:373: UserWarning: Valid config keys have changed in V2:
+* 'schema_extra' has been renamed to 'json_schema_extra'
+  warnings.warn(message, UserWarning)
+2025-09-13 19:12:43.748 | INFO     | app.services.okx_service:__init__:116 - 🚀 OKX交易服务初始化完成
+INFO:app.services.wallet_generator:多链钱包生成器初始化完成
+INFO:app.security.crypto_manager:加密管理器初始化完成
+/usr/local/lib/python3.12/dist-packages/pydantic/_internal/_config.py:373: UserWarning: Valid config keys have changed in V2:
+* 'schema_extra' has been renamed to 'json_schema_extra'
+  warnings.warn(message, UserWarning)
+✅ 使用logging.yaml配置文件
+✅ API验证中间件集成成功
+2025-09-13 19:12:44 | uvicorn.error | INFO | Started server process [3769864]
+2025-09-13 19:12:44 | uvicorn.error | INFO | Waiting for application startup.
+2025-09-13 19:12:44 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/auth/register, 字段数: 2
+2025-09-13 19:12:44 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/auth/login, 字段数: 2
+2025-09-13 19:12:44 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/trading/orders, 字段数: 5
+2025-09-13 19:12:44 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/strategies, 字段数: 3
+2025-09-13 19:12:44 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/ai/chat, 字段数: 3
+2025-09-13 19:12:44 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/market-data/klines, 字段数: 3
+2025-09-13 19:12:44 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/backtest, 字段数: 5
+2025-09-13 19:12:44 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/wallet/transfer, 字段数: 3
+2025-09-13 19:12:44 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/data/download, 字段数: 5
+✅ 数据库初始化成功
+📋 包含的表：用户、策略、回测、交易、API密钥、市场数据、Claude对话、交易心得
+📋 管理后台表：管理员、Claude代理池、USDT支付、数据采集
+✅ Redis连接成功
+🔑 OKX API认证成功，已连接到真实交易接口
+🚀 Trading Service 启动成功
+📊 环境: development
+🏠 Host: 0.0.0.0:8001
+2025-09-13 19:12:44 | uvicorn.error | INFO | Application startup complete.
+2025-09-13 19:12:46 | uvicorn.error | INFO | 52.192.***.***.***:0 - "WebSocket /api/v1/ai/ws/chat" [accepted]
+2025-09-13 19:12:46 | uvicorn.error | INFO | connection open
+2025-09-13 19:12:46 | app.api.v1.ai_websocket | INFO | 📨 收到WebSocket消息，类型: auth
+2025-09-13 19:12:46 | app.api.v1.ai_websocket | INFO | 🔐 开始处理认证消息
+2025-09-13 19:12:46 | app.api.v1.ai_websocket | INFO | 🔑 验证JWT令牌...
+2025-09-13 19:12:46 | app.api.v1.ai_websocket | INFO | ✅ JWT验证成功，用户ID: 6
+2025-09-13 19:12:46 | app.api.v1.ai_websocket | INFO | 📡 建立WebSocket连接管理...
+2025-09-13 19:12:46 | app.services.websocket_manager | INFO | 💓 WebSocket心跳监控已启动
+2025-09-13 19:12:46 | app.services.websocket_manager | INFO | 🧹 WebSocket清理监控已启动
+2025-09-13 19:12:46 | app.services.websocket_manager | INFO | 📊 WebSocket统计监控已启动
+2025-09-13 19:12:46 | app.services.websocket_manager | INFO | 🔗 用户 6 建立WebSocket连接: 0a2e48a2-e640-4940-807d-d6bcdde27390 (总连接数: 1)
+2025-09-13 19:12:46 | app.api.v1.ai_websocket | INFO | ✅ 连接ID已创建: 0a2e48a2-e640-4940-807d-d6bcdde27390
+2025-09-13 19:12:46 | app.api.v1.ai_websocket | INFO | 📤 发送认证成功响应: {'type': 'auth_success', 'connection_id': '0a2e48a2-e640-4940-807d-d6bcdde27390', 'user_id': 6, 'message': '认证成功，AI对话已准备就绪'}
+2025-09-13 19:12:46 | app.api.v1.ai_websocket | INFO | ✅ 用户 6 通过WebSocket认证成功
+2025-09-13 19:13:16 | app.api.v1.ai_websocket | INFO | 📨 收到WebSocket消息，类型: ping
+WARNING:  StatReload detected changes in 'app/api/v1/realtime_backtest.py'. Reloading...
+2025-09-13 19:13:21 | uvicorn.error | INFO | Shutting down
+2025-09-13 19:13:21 | app.api.v1.ai_websocket | INFO | WebSocket连接断开: 0a2e48a2-e640-4940-807d-d6bcdde27390
+2025-09-13 19:13:21 | app.services.websocket_manager | INFO | ❌ 用户 6 断开WebSocket连接: 0a2e48a2-e640-4940-807d-d6bcdde27390 (原因: 连接关闭)
+2025-09-13 19:13:21 | uvicorn.error | INFO | connection closed
+2025-09-13 19:13:21 | uvicorn.error | INFO | Waiting for application shutdown.
+✅ 数据库连接已关闭
+✅ Redis连接已关闭
+👋 Trading Service 已关闭
+2025-09-13 19:13:21 | uvicorn.error | INFO | Application shutdown complete.
+2025-09-13 19:13:21 | uvicorn.error | INFO | Finished server process [3769864]
+/usr/local/lib/python3.12/dist-packages/pydantic/_internal/_config.py:373: UserWarning: Valid config keys have changed in V2:
+* 'schema_extra' has been renamed to 'json_schema_extra'
+  warnings.warn(message, UserWarning)
+2025-09-13 19:13:24.426 | INFO     | app.services.okx_service:__init__:116 - 🚀 OKX交易服务初始化完成
+INFO:app.services.wallet_generator:多链钱包生成器初始化完成
+INFO:app.security.crypto_manager:加密管理器初始化完成
+/usr/local/lib/python3.12/dist-packages/pydantic/_internal/_config.py:373: UserWarning: Valid config keys have changed in V2:
+* 'schema_extra' has been renamed to 'json_schema_extra'
+  warnings.warn(message, UserWarning)
+✅ 使用logging.yaml配置文件
+✅ API验证中间件集成成功
+2025-09-13 19:13:25 | uvicorn.error | INFO | Started server process [3770090]
+2025-09-13 19:13:25 | uvicorn.error | INFO | Waiting for application startup.
+2025-09-13 19:13:25 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/auth/register, 字段数: 2
+2025-09-13 19:13:25 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/auth/login, 字段数: 2
+2025-09-13 19:13:25 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/trading/orders, 字段数: 5
+2025-09-13 19:13:25 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/strategies, 字段数: 3
+2025-09-13 19:13:25 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/ai/chat, 字段数: 3
+2025-09-13 19:13:25 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/market-data/klines, 字段数: 3
+2025-09-13 19:13:25 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/backtest, 字段数: 5
+2025-09-13 19:13:25 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/wallet/transfer, 字段数: 3
+2025-09-13 19:13:25 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/data/download, 字段数: 5
+✅ 数据库初始化成功
+📋 包含的表：用户、策略、回测、交易、API密钥、市场数据、Claude对话、交易心得
+📋 管理后台表：管理员、Claude代理池、USDT支付、数据采集
+✅ Redis连接成功
+🔑 OKX API认证成功，已连接到真实交易接口
+🚀 Trading Service 启动成功
+📊 环境: development
+🏠 Host: 0.0.0.0:8001
+2025-09-13 19:13:25 | uvicorn.error | INFO | Application startup complete.
+2025-09-13 19:13:25 | uvicorn.error | INFO | Shutting down
+2025-09-13 19:13:25 | uvicorn.error | INFO | Waiting for application shutdown.
+✅ 数据库连接已关闭
+✅ Redis连接已关闭
+👋 Trading Service 已关闭
+2025-09-13 19:13:25 | uvicorn.error | INFO | Application shutdown complete.
+2025-09-13 19:13:25 | uvicorn.error | INFO | Finished server process [3770090]
+INFO:     Stopping reloader process [3767176]

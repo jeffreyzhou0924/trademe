@@ -10,14 +10,15 @@ from .strategies import router as strategies_router
 from .strategy_templates import router as strategy_templates_router
 from .backtests import router as backtests_router
 from .trades import router as trades_router
-from .trading import router as trading_router
 from .market import router as market_router
 from .ai import router as ai_router
 from .exchanges import router as exchanges_router
 from .api_keys import router as api_keys_router
 from .tiered_backtests import router as tiered_backtests_router
-from .enhanced_trading import router as enhanced_trading_router
-from .trading_notes import router as trading_notes_router
+# 移除图表交易和交易心得模块 - 不作为生产环境1.0功能
+# from .trading import router as trading_router
+# from .enhanced_trading import router as enhanced_trading_router
+# from .trading_notes import router as trading_notes_router
 from .membership import router as membership_router
 from .admin.claude import router as admin_claude_router
 from .admin.users import router as admin_users_router
@@ -48,6 +49,8 @@ from .ai_websocket import router as ai_websocket_router
 from .anthropic_accounts import router as anthropic_accounts_router
 # 实时回测API - AI对话中的即时回测功能
 from .realtime_backtest import router as realtime_backtest_router
+# 数据完整性检查API - 回测前的数据验证
+from .data_integrity_check import router as data_integrity_check_router
 
 # 创建API路由器
 api_router = APIRouter()
@@ -59,14 +62,15 @@ api_router.include_router(strategy_templates_router, prefix="/strategy-templates
 api_router.include_router(backtests_router, prefix="/backtests", tags=["回测分析"])
 api_router.include_router(tiered_backtests_router, prefix="/tiered-backtests", tags=["分层回测"])
 api_router.include_router(trades_router, prefix="/trades", tags=["交易管理"])
-api_router.include_router(trading_router, prefix="/trading", tags=["实盘交易"])
 api_router.include_router(market_router, prefix="/market", tags=["市场数据"])
 api_router.include_router(ai_router, prefix="/ai", tags=["AI功能"])
 api_router.include_router(exchanges_router, prefix="/exchanges", tags=["交易所管理"])
 api_router.include_router(api_keys_router, prefix="/api-keys", tags=["API密钥管理"])
-api_router.include_router(trading_notes_router, tags=["交易心得"])  # prefix已在router定义中设置
+# 移除图表交易和交易心得模块的路由注册 - 不作为生产环境1.0功能
+# api_router.include_router(trading_router, prefix="/trading", tags=["实盘交易"])
+# api_router.include_router(trading_notes_router, tags=["交易心得"])  # prefix已在router定义中设置
+# api_router.include_router(enhanced_trading_router, tags=["增强版实盘交易"])  # 注意：prefix已在router定义中设置
 api_router.include_router(membership_router, tags=["会员管理"])  # prefix已在router定义中设置
-api_router.include_router(enhanced_trading_router, tags=["增强版实盘交易"])  # 注意：prefix已在router定义中设置
 api_router.include_router(admin_claude_router, tags=["Claude AI管理"])  # prefix已在router定义中设置
 api_router.include_router(admin_users_router, tags=["高级用户管理"])  # 企业级高级用户管理系统 - /admin/users
 api_router.include_router(admin_simple_router, tags=["简单管理员API"])  # 重新启用简单管理系统用于前端集成
@@ -104,3 +108,6 @@ api_router.include_router(anthropic_accounts_router, tags=["Anthropic官方API"]
 
 # 实时回测路由 - AI对话中的即时回测功能
 api_router.include_router(realtime_backtest_router, tags=["实时回测"])  # prefix已在router定义中设置
+
+# 数据完整性检查路由 - 回测前的数据验证
+api_router.include_router(data_integrity_check_router, tags=["数据完整性"])  # prefix已在router定义中设置

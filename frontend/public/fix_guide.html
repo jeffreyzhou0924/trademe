@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MACD策略回测修复指南 - Trademe</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes bounce {
+            0%, 20%, 53%, 80%, 100% { transform: translate3d(0,0,0); }
+            40%, 43% { transform: translate3d(0,-30px,0); }
+            70% { transform: translate3d(0,-15px,0); }
+            90% { transform: translate3d(0,-4px,0); }
+        }
+        .bounce { animation: bounce 1s ease infinite; }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .pulse { animation: pulse 2s infinite; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 via-white to-purple-50 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <!-- 头部 -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-900 mb-4">
+                🚀 MACD策略回测修复指南
+            </h1>
+            <p class="text-xl text-gray-600 mb-6">
+                您的MACD顶背离加仓策略已成功生成，以下是立即使用回测功能的方法
+            </p>
+            <div class="inline-flex items-center space-x-2 px-6 py-3 bg-green-100 text-green-800 rounded-full">
+                <div class="w-3 h-3 bg-green-500 rounded-full pulse"></div>
+                <span class="font-medium">策略状态：✅ 已就绪</span>
+            </div>
+        </div>
+
+        <!-- 方法选择 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <!-- 方法1：直接访问回测页面 -->
+            <div class="bg-white rounded-lg shadow-lg p-6 border-2 border-blue-200 hover:border-blue-400 transition-colors">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-xl font-semibold text-blue-900">方法1：直接回测</h3>
+                    <span class="px-3 py-1 bg-blue-100 text-blue-800 text-sm font-medium rounded-full">推荐</span>
+                </div>
+                <p class="text-gray-600 mb-4">
+                    点击下面的按钮直接进入专业回测界面，立即开始分析您的MACD策略。
+                </p>
+                <button onclick="window.open('/macd_backtest_fix.html', '_blank')" 
+                        class="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-blue-600 hover:to-purple-700 transition-all transform hover:scale-105">
+                    📊 立即开始回测
+                </button>
+            </div>
+
+            <!-- 方法2：注入修复脚本 -->
+            <div class="bg-white rounded-lg shadow-lg p-6 border-2 border-green-200 hover:border-green-400 transition-colors">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-xl font-semibold text-green-900">方法2：页面修复</h3>
+                    <span class="px-3 py-1 bg-green-100 text-green-800 text-sm font-medium rounded-full">技术</span>
+                </div>
+                <p class="text-gray-600 mb-4">
+                    在AI对话页面运行修复脚本，自动添加回测按钮到页面右下角。
+                </p>
+                <button onclick="injectScript()" 
+                        class="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-green-600 hover:to-emerald-700 transition-all transform hover:scale-105">
+                    🔧 注入修复脚本
+                </button>
+            </div>
+        </div>
+
+        <!-- 使用步骤 -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+            <h2 class="text-2xl font-semibold text-gray-900 mb-6 flex items-center">
+                <span class="mr-2">📋</span>
+                使用步骤
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="text-center">
+                    <div class="w-12 h-12 bg-blue-500 text-white rounded-full flex items-center justify-center mx-auto mb-4 font-bold text-xl">
+                        1
+                    </div>
+                    <h4 class="font-semibold text-gray-900 mb-2">选择方法</h4>
+                    <p class="text-sm text-gray-600">
+                        选择上面任一方法进入回测界面
+                    </p>
+                </div>
+                <div class="text-center">
+                    <div class="w-12 h-12 bg-green-500 text-white rounded-full flex items-center justify-center mx-auto mb-4 font-bold text-xl">
+                        2
+                    </div>
+                    <h4 class="font-semibold text-gray-900 mb-2">配置参数</h4>
+                    <p class="text-sm text-gray-600">
+                        设置交易对、时间框架、初始资金等参数
+                    </p>
+                </div>
+                <div class="text-center">
+                    <div class="w-12 h-12 bg-purple-500 text-white rounded-full flex items-center justify-center mx-auto mb-4 font-bold text-xl">
+                        3
+                    </div>
+                    <h4 class="font-semibold text-gray-900 mb-2">查看结果</h4>
+                    <p class="text-sm text-gray-600">
+                        分析收益率、夏普比率、最大回撤等指标
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 策略信息 -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+            <h2 class="text-2xl font-semibold text-gray-900 mb-6 flex items-center">
+                <span class="mr-2">🎯</span>
+                您的MACD策略信息
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h4 class="font-semibold text-gray-900 mb-3">策略特点</h4>
+                    <ul class="space-y-2 text-gray-600">
+                        <li class="flex items-center"><span class="text-green-500 mr-2">✓</span>MACD顶背离信号检测</li>
+                        <li class="flex items-center"><span class="text-green-500 mr-2">✓</span>智能加仓策略</li>
+                        <li class="flex items-center"><span class="text-green-500 mr-2">✓</span>风险控制机制</li>
+                        <li class="flex items-center"><span class="text-green-500 mr-2">✓</span>AI优化算法</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-gray-900 mb-3">技术指标</h4>
+                    <ul class="space-y-2 text-gray-600">
+                        <li class="flex items-center"><span class="text-blue-500 mr-2">📊</span>MACD (12, 26, 9)</li>
+                        <li class="flex items-center"><span class="text-blue-500 mr-2">📈</span>背离识别算法</li>
+                        <li class="flex items-center"><span class="text-blue-500 mr-2">⚖️</span>动态仓位管理</li>
+                        <li class="flex items-center"><span class="text-blue-500 mr-2">🛡️</span>止损止盈设置</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 浏览器控制台方法 -->
+        <div class="bg-gray-50 rounded-lg p-6 mb-8">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                <span class="mr-2">🔧</span>
+                高级用户：浏览器控制台方法
+            </h2>
+            <p class="text-gray-600 mb-4">
+                如果上述方法都无法使用，您可以打开浏览器开发者工具（F12），在控制台中运行以下代码：
+            </p>
+            <div class="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm overflow-x-auto">
+<pre>// 强制启用回测按钮
+if (window.enableMACDBacktest) {
+    window.enableMACDBacktest();
+} else {
+    // 直接打开回测页面
+    window.open('/macd_backtest_fix.html', '_blank');
+}</pre>
+            </div>
+        </div>
+
+        <!-- 问题反馈 -->
+        <div class="bg-white rounded-lg shadow-lg p-6 text-center">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">
+                遇到问题？
+            </h2>
+            <p class="text-gray-600 mb-4">
+                如果以上方法都无法正常使用，请联系技术支持团队
+            </p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <button onclick="window.open('/ai-chat', '_blank')" 
+                        class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors">
+                    返回AI对话页面
+                </button>
+                <button onclick="location.reload()" 
+                        class="bg-gray-500 text-white px-6 py-2 rounded-lg hover:bg-gray-600 transition-colors">
+                    刷新页面重试
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 注入修复脚本
+        function injectScript() {
+            const script = document.createElement('script');
+            script.src = '/quickfix_backtest.js';
+            script.onload = function() {
+                alert('✅ 修复脚本已注入！请返回AI对话页面查看右下角的回测按钮。');
+            };
+            script.onerror = function() {
+                alert('❌ 修复脚本加载失败，请使用方法1直接访问回测页面。');
+            };
+            document.head.appendChild(script);
+        }
+
+        // 页面加载动画
+        document.addEventListener('DOMContentLoaded', function() {
+            const elements = document.querySelectorAll('.shadow-lg');
+            elements.forEach((el, index) => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    el.style.transition = 'all 0.5s ease';
+                    el.style.opacity = '1';
+                    el.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+{
+  "timestamp": "2025-09-11T14:02:52.363710",
+  "summary": {
+    "total_tests": 8,
+    "passed_tests": 3,
+    "failed_tests": 5,
+    "success_rate": 37.5
+  },
+  "test_details": [
+    {
+      "test_name": "无效认证处理",
+      "status": "✅ PASSED",
+      "details": "正确处理的认证错误: 4/4",
+      "execution_time": "0.041s"
+    },
+    {
+      "test_name": "无效请求数据处理",
+      "status": "❌ FAILED",
+      "details": "正确验证的无效配置: 0/6",
+      "execution_time": "0.076s"
+    },
+    {
+      "test_name": "不存在资源处理",
+      "status": "❌ FAILED",
+      "details": "正确处理的不存在资源: 4/5",
+      "execution_time": "0.112s"
+    },
+    {
+      "test_name": "并发请求处理",
+      "status": "❌ FAILED",
+      "details": "成功请求: 0/10, 平均响应时间: 0.114s",
+      "execution_time": "0.203s"
+    },
+    {
+      "test_name": "请求超时处理",
+      "status": "✅ PASSED",
+      "details": "正确处理的超时场景: 3/3",
+      "execution_time": "0.140s"
+    },
+    {
+      "test_name": "格式错误JSON处理",
+      "status": "❌ FAILED",
+      "details": "正确处理的格式错误请求: 0/4",
+      "execution_time": "0.050s"
+    },
+    {
+      "test_name": "内存密集型操作处理",
+      "status": "✅ PASSED",
+      "details": "大型策略处理结果: 500",
+      "execution_time": "0.015s"
+    },
+    {
+      "test_name": "速率限制处理",
+      "status": "❌ FAILED",
+      "details": "成功请求: 0, 被限制请求: 0",
+      "execution_time": "0.396s"
+    }
+  ],
+  "error_scenarios": {
+    "invalid_auth": {
+      "total_scenarios": 4,
+      "passed_scenarios": 4,
+      "details": [
+        {
+          "name": "无token",
+          "token": null
+        },
+        {
+          "name": "无效token",
+          "token": "invalid_token"
+        },
+        {
+          "name": "过期token",
+          "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxIiwiZW1haWwiOiJ0ZXN0QGV4YW1wbGUuY29tIiwiaWF0IjoxNjAwMDAwMDAwLCJleHAiOjE2MDAwMDAwMDB9.invalid"
+        },
+        {
+          "name": "格式错误token",
+          "token": "Bearer invalid_format"
+        }
+      ]
+    },
+    "invalid_data": {
+      "total_configs": 6,
+      "passed_validations": 0,
+      "validation_rate": 0.0
+    },
+    "nonexistent_resources": {
+      "total_resources": 5,
+      "handled_correctly": 4
+    },
+    "timeout_handling": {
+      "total_scenarios": 3,
+      "handled_correctly": 3
+    },
+    "malformed_json": {
+      "total_requests": 4,
+      "handled_correctly": 0
+    }
+  },
+  "performance_under_stress": {
+    "concurrent_requests": {
+      "total_requests": 10,
+      "successful_requests": 0,
+      "failed_requests": 10,
+      "success_rate": 0.0,
+      "avg_response_time": 0.11394631862640381,
+      "max_response_time": 0.20255732536315918
+    },
+    "memory_intensive": {
+      "strategy_size_bytes": 6265,
+      "response_time": 0.015144586563110352,
+      "handled_successfully": true
+    },
+    "rate_limiting": {
+      "total_requests": 20,
+      "successful_requests": 0,
+      "rate_limited_requests": 0,
+      "requests_per_second": 50.538441193676285
+    }
+  }
+}

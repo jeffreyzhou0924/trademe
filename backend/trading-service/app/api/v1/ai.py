@@ -941,3 +941,114 @@ async def broadcast_message(
             
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"广播消息失败: {str(e)}")
+
+
+@router.post("/strategy/auto-backtest")
+async def auto_trigger_strategy_backtest(
+    strategy_data: dict,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    AI策略生成后自动触发回测
+    
+    前端在AI策略生成完成后调用此端点自动启动回测
+    """
+    try:
+        from app.services.ai_strategy_backtest_integration_service import ai_strategy_backtest_integration
+        
+        # 提取必要的参数
+        ai_session_id = strategy_data.get("ai_session_id")
+        strategy_code = strategy_data.get("strategy_code")
+        strategy_name = strategy_data.get("strategy_name", "AI Generated Strategy")
+        auto_config = strategy_data.get("auto_config", True)
+        
+        if not ai_session_id or not strategy_code:
+            raise HTTPException(
+                status_code=422,
+                detail="缺少必要参数: ai_session_id 和 strategy_code"
+            )
+        
+        # 调用集成服务
+        result = await ai_strategy_backtest_integration.auto_trigger_backtest_after_strategy_generation(
+            db=db,
+            user_id=current_user.id,
+            ai_session_id=ai_session_id,
+            strategy_code=strategy_code,
+            strategy_name=strategy_name,
+            membership_level=getattr(current_user, 'membership_level', 'basic'),
+            auto_config=auto_config
+        )
+        
+        return result
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"自动触发策略回测失败: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/strategy/backtest-history/{ai_session_id}")
+async def get_ai_session_backtest_history(
+    ai_session_id: str,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    获取AI会话的回测历史记录
+    """
+    try:
+        from app.services.ai_strategy_backtest_integration_service import ai_strategy_backtest_integration
+        
+        history = await ai_strategy_backtest_integration.get_ai_session_backtest_history(
+            db=db,
+            user_id=current_user.id,
+            ai_session_id=ai_session_id
+        )
+        
+        return {
+            "success": True,
+            "ai_session_id": ai_session_id,
+            "backtest_history": history,
+            "total_strategies": len(history)
+        }
+        
+    except Exception as e:
+        logger.error(f"获取AI会话回测历史失败: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/strategy/backtest-recommendations")
+async def get_backtest_optimization_recommendations(
+    request_data: dict,
+    current_user: User = Depends(get_current_user)
+):
+    """
+    获取回测优化建议
+    
+    基于策略代码和历史回测结果提供优化建议
+    """
+    try:
+        from app.services.ai_strategy_backtest_integration_service import ai_strategy_backtest_integration
+        
+        strategy_code = request_data.get("strategy_code")
+        previous_results = request_data.get("previous_results")
+        membership_level = getattr(current_user, 'membership_level', 'basic')
+        
+        if not strategy_code:
+            raise HTTPException(status_code=422, detail="缺少必要参数: strategy_code")
+        
+        recommendations = await ai_strategy_backtest_integration.recommend_backtest_optimization(
+            strategy_code=strategy_code,
+            previous_results=previous_results,
+            membership_level=membership_level
+        )
+        
+        return recommendations
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"获取回测优化建议失败: {e}")
+        raise HTTPException(status_code=500, detail=str(e))

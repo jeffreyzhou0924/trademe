@@ -1,0 +1,32 @@
+{
+  "consistent": true,
+  "successful_runs": 3,
+  "failed_runs": 0,
+  "inconsistencies": [],
+  "summary": {
+    "final_values": {
+      "all_values": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_count": 1,
+      "min": 0.0,
+      "max": 0.0,
+      "range": 0.0
+    },
+    "trade_counts": {
+      "all_counts": [
+        0,
+        0,
+        0
+      ],
+      "unique_count": 1,
+      "consistent": true
+    },
+    "trade_sequences": {
+      "unique_hashes": 1,
+      "consistent": true
+    }
+  }
+}

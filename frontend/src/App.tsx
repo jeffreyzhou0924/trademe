@@ -16,10 +16,11 @@ import StrategyLiveDetailsPage from './pages/StrategyLiveDetailsPage'
 import LiveStrategiesPage from './pages/LiveStrategiesPage'
 import BacktestPage from './pages/BacktestPage'
 import BacktestDetailsPage from './pages/BacktestDetailsPage'
-import TradingPage from './pages/TradingPage'
 import AIChatPage from './pages/AIChatPage'
 import APIManagementPage from './pages/APIManagementPage'
-import TradingNotesPage from './pages/TradingNotesPage'
+// 移除TradingPage和TradingNotesPage - 不作为生产环境1.0功能
+// import TradingPage from './pages/TradingPage'
+// import TradingNotesPage from './pages/TradingNotesPage'
 import ProfilePage from './pages/ProfilePage'
 import AdminDashboardPage from './pages/AdminDashboardPage'
 import UserManagementPage from './pages/UserManagementPage'
@@ -138,11 +139,12 @@ function App() {
         </ProtectedRoute>
       } />
 
-      <Route path="/trading" element={
+      {/* 移除TradingPage路由 - 不作为生产环境1.0功能 */}
+      {/* <Route path="/trading" element={
         <ProtectedRoute>
           <TradingPage />
         </ProtectedRoute>
-      } />
+      } /> */}
 
       <Route path="/ai-chat" element={
         <ProtectedRoute>
@@ -169,13 +171,14 @@ function App() {
         </ProtectedRoute>
       } />
 
-      <Route path="/trading-notes" element={
+      {/* 移除TradingNotesPage路由 - 不作为生产环境1.0功能 */}
+      {/* <Route path="/trading-notes" element={
         <ProtectedRoute>
           <MainLayout>
             <TradingNotesPage />
           </MainLayout>
         </ProtectedRoute>
-      } />
+      } /> */}
 
       <Route path="/profile" element={
         <ProtectedRoute>

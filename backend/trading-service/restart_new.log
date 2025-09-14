@@ -1,0 +1,691 @@
+INFO:     Will watch for changes in these directories: ['/root/trademe/backend/trading-service']
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+INFO:     Started reloader process [3761420] using StatReload
+/usr/local/lib/python3.12/dist-packages/pydantic/_internal/_config.py:373: UserWarning: Valid config keys have changed in V2:
+* 'schema_extra' has been renamed to 'json_schema_extra'
+  warnings.warn(message, UserWarning)
+2025-09-13 18:51:22.435 | INFO     | app.services.okx_service:__init__:116 - 🚀 OKX交易服务初始化完成
+INFO:app.services.wallet_generator:多链钱包生成器初始化完成
+INFO:app.security.crypto_manager:加密管理器初始化完成
+/usr/local/lib/python3.12/dist-packages/pydantic/_internal/_config.py:373: UserWarning: Valid config keys have changed in V2:
+* 'schema_extra' has been renamed to 'json_schema_extra'
+  warnings.warn(message, UserWarning)
+✅ 使用logging.yaml配置文件
+✅ API验证中间件集成成功
+2025-09-13 18:51:23 | uvicorn.error | INFO | Started server process [3761437]
+2025-09-13 18:51:23 | uvicorn.error | INFO | Waiting for application startup.
+2025-09-13 18:51:23 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/auth/register, 字段数: 2
+2025-09-13 18:51:23 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/auth/login, 字段数: 2
+2025-09-13 18:51:23 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/trading/orders, 字段数: 5
+2025-09-13 18:51:23 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/strategies, 字段数: 3
+2025-09-13 18:51:23 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/ai/chat, 字段数: 3
+2025-09-13 18:51:23 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/market-data/klines, 字段数: 3
+2025-09-13 18:51:23 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/backtest, 字段数: 5
+2025-09-13 18:51:23 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/wallet/transfer, 字段数: 3
+2025-09-13 18:51:23 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/data/download, 字段数: 5
+✅ 数据库初始化成功
+📋 包含的表：用户、策略、回测、交易、API密钥、市场数据、Claude对话、交易心得
+📋 管理后台表：管理员、Claude代理池、USDT支付、数据采集
+✅ Redis连接成功
+🔑 OKX API认证成功，已连接到真实交易接口
+🚀 Trading Service 启动成功
+📊 环境: development
+🏠 Host: 0.0.0.0:8001
+2025-09-13 18:51:23 | uvicorn.error | INFO | Application startup complete.
+2025-09-13 18:52:13 | app.middleware.api_validation_middleware | INFO | API请求: {"method": "POST", "url": "http://localhost:8001/api/v1/realtime-backtest/start", "path": "/api/v1/realtime-backtest/start", "client_ip": "127.0.***.***.***", "user_agent": "curl/8.5.0", "timestamp": "2025-09-13T10:52:13.079401", "headers": {"host": "localhost:8001", "user-agent": "curl/8.5.0", "accept": "*/*", "content-type": "application/json", "authorization": "Bearer eyJhbGciOi...4t5eH0", "content-length": "290"}, "body": {"strategy_code": "# Simple test strategy\ndef on_data(data):\n    return {\"signal\": \"hold\"}", "exchange": "binance", "symbols": ["BTC/USDT"], "timeframes": ["1h"], "initial_capital": 10000.0, "start_date": "2025-07-01", "end_date": "2025-07-31", "data_type": "kline"}}
+2025-09-13 18:52:13 | app.services.api_validation_service | WARNING | 端点验证配置不存在: /api/v1/realtime-backtest/start
+2025-09-13 18:52:13.081 | INFO     | app.middleware.structured_logging:log_request_start:139 - Request started
+2025-09-13 18:52:13.086 | INFO     | app.middleware.structured_logging:log_request_end:181 - Request completed in 0.005s
+2025-09-13 18:52:13 | app.middleware.api_validation_middleware | INFO | API响应: {"method": "POST", "path": "/api/v1/realtime-backtest/start", "status_code": 200, "duration": 7.25, "timestamp": "2025-09-13T10:52:13.086570"}
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/__init__.py", line 464, in format
+    return self._format(record)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 460, in _format
+    return self._fmt % values
+           ~~~~~~~~~~^~~~~~~~
+KeyError: 'duration'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/handlers.py", line 73, in emit
+    if self.shouldRollover(record):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/handlers.py", line 196, in shouldRollover
+    msg = "%s\n" % self.format(record)
+                   ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 999, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 706, in format
+    s = self.formatMessage(record)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 675, in formatMessage
+    return self._style.format(record)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 466, in format
+    raise ValueError('Formatting field not found in record: %s' % e)
+ValueError: Formatting field not found in record: 'duration'
+Call stack:
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/server.py", line 67, in run
+    return asyncio.run(self.serve(sockets=sockets))
+  File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run
+    return runner.run(main)
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 674, in run_until_complete
+    self.run_forever()
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 641, in run_forever
+    self._run_once()
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 1987, in _run_once
+    handle._run()
+  File "/usr/lib/python3.12/asyncio/events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/protocols/http/h11_impl.py", line 403, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/base.py", line 185, in __call__
+    await response(scope, wrapped_receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/base.py", line 214, in __call__
+    await send(
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/errors.py", line 161, in _send
+    await send(message)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/protocols/http/h11_impl.py", line 473, in send
+    self.access_logger.info(
+Message: '%s - "%s %s HTTP/%s" %d'
+Arguments: ('127.0.0.1:38138', 'POST', '/api/v1/realtime-backtest/start', '1.1', 200)
+2025-09-13 18:52:15.093 | INFO     | app.api.v1.realtime_backtest:_prepare_data:599 - 📊 直接从数据库获取真实历史数据: 2025-07-01 00:00:00 - 2025-07-31 00:00:00
+2025-09-13 18:52:15.093 | INFO     | app.api.v1.realtime_backtest:_fetch_market_data:626 - 📊 查询数据库中的 BTC/USDT 数据...
+2025-09-13 18:52:15.290 | ERROR    | app.api.v1.realtime_backtest:_fetch_market_data:667 - ❌ BINANCE交易所的BTC/USDT 在指定时间范围(2025-07-01 到 2025-07-31)内历史数据不足（仅0条记录，需要至少10条），无法进行有效回测。
+💡 建议：目前系统只有OKX交易所的数据可用请选择有充足数据的时间范围、交易所或交易对进行回测
+2025-09-13 18:52:15.290 | ERROR    | app.api.v1.realtime_backtest:_fetch_market_data:672 - ❌ BTC/USDT 数据库查询失败: ❌ BINANCE交易所的BTC/USDT 在指定时间范围(2025-07-01 到 2025-07-31)内历史数据不足（仅0条记录，需要至少10条），无法进行有效回测。
+💡 建议：目前系统只有OKX交易所的数据可用请选择有充足数据的时间范围、交易所或交易对进行回测
+2025-09-13 18:52:15.290 | ERROR    | app.api.v1.realtime_backtest:_prepare_data:613 - ❌ 数据准备失败: ❌ BINANCE交易所的BTC/USDT 在指定时间范围(2025-07-01 到 2025-07-31)内历史数据不足（仅0条记录，需要至少10条），无法进行有效回测。
+💡 建议：目前系统只有OKX交易所的数据可用请选择有充足数据的时间范围、交易所或交易对进行回测
+2025-09-13 18:52:15.290 | ERROR    | app.api.v1.realtime_backtest:_execute_backtest:557 - 回测任务 b83928ec-865b-4fef-bd98-9893118bd7be 失败: 无法获取回测所需的历史数据: ❌ BINANCE交易所的BTC/USDT 在指定时间范围(2025-07-01 到 2025-07-31)内历史数据不足（仅0条记录，需要至少10条），无法进行有效回测。
+💡 建议：目前系统只有OKX交易所的数据可用请选择有充足数据的时间范围、交易所或交易对进行回测
+2025-09-13 18:52:15.294 | ERROR    | app.api.v1.realtime_backtest:_execute_backtest:558 - 完整错误堆栈: Traceback (most recent call last):
+  File "/root/trademe/backend/trading-service/app/api/v1/realtime_backtest.py", line 610, in _prepare_data
+    return await self._fetch_market_data(self.db_session, config, start_date, end_date)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/trademe/backend/trading-service/app/api/v1/realtime_backtest.py", line 673, in _fetch_market_data
+    raise e
+  File "/root/trademe/backend/trading-service/app/api/v1/realtime_backtest.py", line 668, in _fetch_market_data
+    raise Exception(error_msg)
+Exception: ❌ BINANCE交易所的BTC/USDT 在指定时间范围(2025-07-01 到 2025-07-31)内历史数据不足（仅0条记录，需要至少10条），无法进行有效回测。
+💡 建议：目前系统只有OKX交易所的数据可用请选择有充足数据的时间范围、交易所或交易对进行回测
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/trademe/backend/trading-service/app/api/v1/realtime_backtest.py", line 529, in _execute_backtest
+    step_result = await step_info["action"](config, backtest_data)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/trademe/backend/trading-service/app/api/v1/realtime_backtest.py", line 615, in _prepare_data
+    raise Exception(f"无法获取回测所需的历史数据: {str(e)}")
+Exception: 无法获取回测所需的历史数据: ❌ BINANCE交易所的BTC/USDT 在指定时间范围(2025-07-01 到 2025-07-31)内历史数据不足（仅0条记录，需要至少10条），无法进行有效回测。
+💡 建议：目前系统只有OKX交易所的数据可用请选择有充足数据的时间范围、交易所或交易对进行回测
+
+2025-09-13 18:53:01 | app.middleware.api_validation_middleware | INFO | API请求: {"method": "POST", "url": "http://localhost:8001/api/v1/realtime-backtest/start", "path": "/api/v1/realtime-backtest/start", "client_ip": "127.0.***.***.***", "user_agent": "curl/8.5.0", "timestamp": "2025-09-13T10:53:01.950860", "headers": {"host": "localhost:8001", "user-agent": "curl/8.5.0", "accept": "*/*", "content-type": "application/json", "authorization": "Bearer eyJhbGciOi...4t5eH0", "content-length": "286"}, "body": {"strategy_code": "# Simple test strategy\ndef on_data(data):\n    return {\"signal\": \"hold\"}", "exchange": "okx", "symbols": ["BTC/USDT"], "timeframes": ["1h"], "initial_capital": 10000.0, "start_date": "2025-07-01", "end_date": "2025-07-31", "data_type": "kline"}}
+2025-09-13 18:53:01 | app.services.api_validation_service | WARNING | 端点验证配置不存在: /api/v1/realtime-backtest/start
+2025-09-13 18:53:01.952 | INFO     | app.middleware.structured_logging:log_request_start:139 - Request started
+2025-09-13 18:53:01.955 | INFO     | app.middleware.structured_logging:log_request_end:181 - Request completed in 0.003s
+2025-09-13 18:53:01 | app.middleware.api_validation_middleware | INFO | API响应: {"method": "POST", "path": "/api/v1/realtime-backtest/start", "status_code": 200, "duration": 4.77, "timestamp": "2025-09-13T10:53:01.955580"}
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/__init__.py", line 464, in format
+    return self._format(record)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 460, in _format
+    return self._fmt % values
+           ~~~~~~~~~~^~~~~~~~
+KeyError: 'duration'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/handlers.py", line 73, in emit
+    if self.shouldRollover(record):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/handlers.py", line 196, in shouldRollover
+    msg = "%s\n" % self.format(record)
+                   ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 999, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 706, in format
+    s = self.formatMessage(record)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 675, in formatMessage
+    return self._style.format(record)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 466, in format
+    raise ValueError('Formatting field not found in record: %s' % e)
+ValueError: Formatting field not found in record: 'duration'
+Call stack:
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/server.py", line 67, in run
+    return asyncio.run(self.serve(sockets=sockets))
+  File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run
+    return runner.run(main)
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 674, in run_until_complete
+    self.run_forever()
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 641, in run_forever
+    self._run_once()
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 1987, in _run_once
+    handle._run()
+  File "/usr/lib/python3.12/asyncio/events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/protocols/http/h11_impl.py", line 403, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/base.py", line 185, in __call__
+    await response(scope, wrapped_receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/base.py", line 214, in __call__
+    await send(
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/errors.py", line 161, in _send
+    await send(message)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/protocols/http/h11_impl.py", line 473, in send
+    self.access_logger.info(
+Message: '%s - "%s %s HTTP/%s" %d'
+Arguments: ('127.0.0.1:60864', 'POST', '/api/v1/realtime-backtest/start', '1.1', 200)
+2025-09-13 18:53:03.957 | INFO     | app.api.v1.realtime_backtest:_prepare_data:599 - 📊 直接从数据库获取真实历史数据: 2025-07-01 00:00:00 - 2025-07-31 00:00:00
+2025-09-13 18:53:03.957 | INFO     | app.api.v1.realtime_backtest:_fetch_market_data:626 - 📊 查询数据库中的 BTC/USDT 数据...
+/usr/lib/python3.12/selectors.py:468: SAWarning: The garbage collector is trying to clean up non-checked-in connection <AdaptedConnection <Connection(Thread-1, started daemon 139021235783360)>>, which will be dropped, as it cannot be safely terminated.  Please ensure that SQLAlchemy pooled connections are returned to the pool explicitly, either by calling ``close()`` or by using appropriate context managers to manage their lifecycle.
+  fd_event_list = self._selector.poll(timeout, max_ev)
+2025-09-13 18:53:07.695 | INFO     | app.api.v1.realtime_backtest:_fetch_market_data:655 - ✅ BTC/USDT 数据库真实数据加载成功: 113489 条记录
+2025-09-13 18:53:07.695 | INFO     | app.api.v1.realtime_backtest:_fetch_market_data:656 - 📈 数据范围: 2025-07-01 13:12:00 到 2025-07-31 00:00:00
+2025-09-13 18:53:09.972 | INFO     | app.api.v1.realtime_backtest:_run_backtest_logic:683 - 🧮 开始执行真实策略代码回测...
+2025-09-13 18:53:09.973 | INFO     | app.api.v1.realtime_backtest:_run_backtest_logic:703 - 📊 策略回测参数: {'strategy_code': '# Simple test strategy\ndef on_data(data):\n    return {"signal": "hold"}', 'exchange': 'okx', 'symbols': ['BTC/USDT'], 'timeframes': ['1h'], 'start_date': '2025-07-01', 'end_date': '2025-07-31', 'initial_capital': 10000.0, 'fee_rate': 'vip0', 'data_type': 'kline'}
+2025-09-13 18:53:09.973 | INFO     | app.services.backtest_service:execute_backtest:731 - 执行回测，参数: {'strategy_code': '# Simple test strategy\ndef on_data(data):\n    return {"signal": "hold"}', 'exchange': 'okx', 'symbols': ['BTC/USDT'], 'timeframes': ['1h'], 'start_date': '2025-07-01', 'end_date': '2025-07-31', 'initial_capital': 10000.0, 'fee_rate': 'vip0', 'data_type': 'kline'}
+2025-09-13 18:53:10.034 | INFO     | app.services.backtest_service:_get_historical_data:133 - 获取历史数据: okx BTC/USDT 1h 2025-07-01 00:00:00-2025-07-31 00:00:00
+2025-09-13 18:53:10.197 | INFO     | app.services.backtest_service:_get_historical_data:166 - ✅ 成功获取OKX历史数据: 4507条记录
+2025-09-13 18:53:10.197 | INFO     | app.services.backtest_service:_get_historical_data:167 -    数据时间范围: 2025-07-01 14:00:00 到 2025-09-12 16:00:00
+2025-09-13 18:53:10.232 | INFO     | app.services.backtest_service:execute_backtest:789 - 成功准备回测数据: 4507 条记录，时间范围: 2025-07-01 06:00:00 到 2025-09-12 08:00:00
+/root/trademe/backend/trading-service/app/services/backtest_service.py:262: RuntimeWarning: invalid value encountered in scalar divide
+  daily_return = (self.total_value - prev_value) / prev_value
+2025-09-13 18:53:11.445 | INFO     | app.services.backtest_service:execute_backtest:807 - 回测执行成功，总收益率: -100.00%
+2025-09-13 18:53:11.448 | INFO     | app.api.v1.realtime_backtest:_run_backtest_logic:727 - ✅ 策略代码回测执行成功
+2025-09-13 18:53:17.450 | INFO     | app.api.v1.realtime_backtest:_execute_backtest:553 - 回测任务 ba3a1aec-89cd-4db7-90af-89dc03f8d1c8 完成
+WARNING:  StatReload detected changes in 'app/api/v1/realtime_backtest.py'. Reloading...
+2025-09-13 18:53:58 | uvicorn.error | INFO | Shutting down
+2025-09-13 18:53:58 | uvicorn.error | INFO | Waiting for application shutdown.
+✅ 数据库连接已关闭
+✅ Redis连接已关闭
+👋 Trading Service 已关闭
+2025-09-13 18:53:58 | uvicorn.error | INFO | Application shutdown complete.
+2025-09-13 18:53:58 | uvicorn.error | INFO | Finished server process [3761437]
+/usr/local/lib/python3.12/dist-packages/pydantic/_internal/_config.py:373: UserWarning: Valid config keys have changed in V2:
+* 'schema_extra' has been renamed to 'json_schema_extra'
+  warnings.warn(message, UserWarning)
+2025-09-13 18:54:00.920 | INFO     | app.services.okx_service:__init__:116 - 🚀 OKX交易服务初始化完成
+INFO:app.services.wallet_generator:多链钱包生成器初始化完成
+INFO:app.security.crypto_manager:加密管理器初始化完成
+/usr/local/lib/python3.12/dist-packages/pydantic/_internal/_config.py:373: UserWarning: Valid config keys have changed in V2:
+* 'schema_extra' has been renamed to 'json_schema_extra'
+  warnings.warn(message, UserWarning)
+✅ 使用logging.yaml配置文件
+✅ API验证中间件集成成功
+2025-09-13 18:54:01 | uvicorn.error | INFO | Started server process [3762604]
+2025-09-13 18:54:01 | uvicorn.error | INFO | Waiting for application startup.
+2025-09-13 18:54:01 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/auth/register, 字段数: 2
+2025-09-13 18:54:01 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/auth/login, 字段数: 2
+2025-09-13 18:54:01 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/trading/orders, 字段数: 5
+2025-09-13 18:54:01 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/strategies, 字段数: 3
+2025-09-13 18:54:01 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/ai/chat, 字段数: 3
+2025-09-13 18:54:01 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/market-data/klines, 字段数: 3
+2025-09-13 18:54:01 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/backtest, 字段数: 5
+2025-09-13 18:54:01 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/wallet/transfer, 字段数: 3
+2025-09-13 18:54:01 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/data/download, 字段数: 5
+✅ 数据库初始化成功
+📋 包含的表：用户、策略、回测、交易、API密钥、市场数据、Claude对话、交易心得
+📋 管理后台表：管理员、Claude代理池、USDT支付、数据采集
+✅ Redis连接成功
+🔑 OKX API认证成功，已连接到真实交易接口
+🚀 Trading Service 启动成功
+📊 环境: development
+🏠 Host: 0.0.0.0:8001
+2025-09-13 18:54:01 | uvicorn.error | INFO | Application startup complete.
+2025-09-13 18:54:34 | app.middleware.api_validation_middleware | INFO | API请求: {"method": "POST", "url": "http://localhost:8001/api/v1/realtime-backtest/start", "path": "/api/v1/realtime-backtest/start", "client_ip": "127.0.***.***.***", "user_agent": "curl/8.5.0", "timestamp": "2025-09-13T10:54:34.675155", "headers": {"host": "localhost:8001", "user-agent": "curl/8.5.0", "accept": "*/*", "content-type": "application/json", "authorization": "Bearer eyJhbGciOi...HjcBnE", "content-length": "290"}, "body": {"strategy_code": "# Simple test strategy\ndef on_data(data):\n    return {\"signal\": \"hold\"}", "exchange": "binance", "symbols": ["BTC/USDT"], "timeframes": ["1h"], "initial_capital": 10000.0, "start_date": "2025-07-01", "end_date": "2025-07-31", "data_type": "kline"}}
+2025-09-13 18:54:34 | app.services.api_validation_service | WARNING | 端点验证配置不存在: /api/v1/realtime-backtest/start
+2025-09-13 18:54:34.677 | INFO     | app.middleware.structured_logging:log_request_start:139 - Request started
+2025-09-13 18:54:34.682 | INFO     | app.middleware.structured_logging:log_request_end:181 - Request completed in 0.005s
+2025-09-13 18:54:34 | app.middleware.api_validation_middleware | INFO | API响应: {"method": "POST", "path": "/api/v1/realtime-backtest/start", "status_code": 200, "duration": 7.35, "timestamp": "2025-09-13T10:54:34.682475"}
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/__init__.py", line 464, in format
+    return self._format(record)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 460, in _format
+    return self._fmt % values
+           ~~~~~~~~~~^~~~~~~~
+KeyError: 'duration'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/handlers.py", line 73, in emit
+    if self.shouldRollover(record):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/handlers.py", line 196, in shouldRollover
+    msg = "%s\n" % self.format(record)
+                   ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 999, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 706, in format
+    s = self.formatMessage(record)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 675, in formatMessage
+    return self._style.format(record)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 466, in format
+    raise ValueError('Formatting field not found in record: %s' % e)
+ValueError: Formatting field not found in record: 'duration'
+Call stack:
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/server.py", line 67, in run
+    return asyncio.run(self.serve(sockets=sockets))
+  File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run
+    return runner.run(main)
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 674, in run_until_complete
+    self.run_forever()
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 641, in run_forever
+    self._run_once()
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 1987, in _run_once
+    handle._run()
+  File "/usr/lib/python3.12/asyncio/events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/protocols/http/h11_impl.py", line 403, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/base.py", line 185, in __call__
+    await response(scope, wrapped_receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/base.py", line 214, in __call__
+    await send(
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/errors.py", line 161, in _send
+    await send(message)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/protocols/http/h11_impl.py", line 473, in send
+    self.access_logger.info(
+Message: '%s - "%s %s HTTP/%s" %d'
+Arguments: ('127.0.0.1:55694', 'POST', '/api/v1/realtime-backtest/start', '1.1', 200)
+2025-09-13 18:54:36.688 | INFO     | app.api.v1.realtime_backtest:_prepare_data:599 - 📊 直接从数据库获取真实历史数据: 2025-07-01 00:00:00 - 2025-07-31 00:00:00
+2025-09-13 18:54:36.691 | INFO     | app.api.v1.realtime_backtest:_fetch_market_data:626 - 📊 查询数据库中的 BTC/USDT 数据...
+2025-09-13 18:54:36.861 | ERROR    | app.api.v1.realtime_backtest:_fetch_market_data:667 - ❌ BINANCE交易所的BTC/USDT 在指定时间范围(2025-07-01 到 2025-07-31)内历史数据不足（仅0条记录，需要至少10条），无法进行有效回测。
+💡 建议：目前系统只有OKX交易所的数据可用请选择有充足数据的时间范围、交易所或交易对进行回测
+2025-09-13 18:54:36.862 | ERROR    | app.api.v1.realtime_backtest:_fetch_market_data:672 - ❌ BTC/USDT 数据库查询失败: ❌ BINANCE交易所的BTC/USDT 在指定时间范围(2025-07-01 到 2025-07-31)内历史数据不足（仅0条记录，需要至少10条），无法进行有效回测。
+💡 建议：目前系统只有OKX交易所的数据可用请选择有充足数据的时间范围、交易所或交易对进行回测
+2025-09-13 18:54:36.862 | ERROR    | app.api.v1.realtime_backtest:_prepare_data:613 - ❌ 数据准备失败: ❌ BINANCE交易所的BTC/USDT 在指定时间范围(2025-07-01 到 2025-07-31)内历史数据不足（仅0条记录，需要至少10条），无法进行有效回测。
+💡 建议：目前系统只有OKX交易所的数据可用请选择有充足数据的时间范围、交易所或交易对进行回测
+2025-09-13 18:54:36.862 | ERROR    | app.api.v1.realtime_backtest:_execute_backtest:557 - 回测任务 15f14dc8-ad6a-4853-bcd7-17b45fad17c5 失败: 无法获取回测所需的历史数据: ❌ BINANCE交易所的BTC/USDT 在指定时间范围(2025-07-01 到 2025-07-31)内历史数据不足（仅0条记录，需要至少10条），无法进行有效回测。
+💡 建议：目前系统只有OKX交易所的数据可用请选择有充足数据的时间范围、交易所或交易对进行回测
+2025-09-13 18:54:36.863 | ERROR    | app.api.v1.realtime_backtest:_execute_backtest:558 - 完整错误堆栈: Traceback (most recent call last):
+  File "/root/trademe/backend/trading-service/app/api/v1/realtime_backtest.py", line 610, in _prepare_data
+    return await self._fetch_market_data(self.db_session, config, start_date, end_date)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/trademe/backend/trading-service/app/api/v1/realtime_backtest.py", line 673, in _fetch_market_data
+    raise e
+  File "/root/trademe/backend/trading-service/app/api/v1/realtime_backtest.py", line 668, in _fetch_market_data
+    raise Exception(error_msg)
+Exception: ❌ BINANCE交易所的BTC/USDT 在指定时间范围(2025-07-01 到 2025-07-31)内历史数据不足（仅0条记录，需要至少10条），无法进行有效回测。
+💡 建议：目前系统只有OKX交易所的数据可用请选择有充足数据的时间范围、交易所或交易对进行回测
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/trademe/backend/trading-service/app/api/v1/realtime_backtest.py", line 529, in _execute_backtest
+    step_result = await step_info["action"](config, backtest_data)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/trademe/backend/trading-service/app/api/v1/realtime_backtest.py", line 615, in _prepare_data
+    raise Exception(f"无法获取回测所需的历史数据: {str(e)}")
+Exception: 无法获取回测所需的历史数据: ❌ BINANCE交易所的BTC/USDT 在指定时间范围(2025-07-01 到 2025-07-31)内历史数据不足（仅0条记录，需要至少10条），无法进行有效回测。
+💡 建议：目前系统只有OKX交易所的数据可用请选择有充足数据的时间范围、交易所或交易对进行回测
+
+WARNING:  StatReload detected changes in 'app/api/v1/realtime_backtest.py'. Reloading...
+2025-09-13 18:55:53 | uvicorn.error | INFO | Shutting down
+2025-09-13 18:55:53 | uvicorn.error | INFO | Waiting for application shutdown.
+✅ 数据库连接已关闭
+✅ Redis连接已关闭
+👋 Trading Service 已关闭
+2025-09-13 18:55:53 | uvicorn.error | INFO | Application shutdown complete.
+2025-09-13 18:55:53 | uvicorn.error | INFO | Finished server process [3762604]
+/usr/local/lib/python3.12/dist-packages/pydantic/_internal/_config.py:373: UserWarning: Valid config keys have changed in V2:
+* 'schema_extra' has been renamed to 'json_schema_extra'
+  warnings.warn(message, UserWarning)
+2025-09-13 18:55:56.396 | INFO     | app.services.okx_service:__init__:116 - 🚀 OKX交易服务初始化完成
+INFO:app.services.wallet_generator:多链钱包生成器初始化完成
+INFO:app.security.crypto_manager:加密管理器初始化完成
+/usr/local/lib/python3.12/dist-packages/pydantic/_internal/_config.py:373: UserWarning: Valid config keys have changed in V2:
+* 'schema_extra' has been renamed to 'json_schema_extra'
+  warnings.warn(message, UserWarning)
+✅ 使用logging.yaml配置文件
+✅ API验证中间件集成成功
+2025-09-13 18:55:57 | uvicorn.error | INFO | Started server process [3763432]
+2025-09-13 18:55:57 | uvicorn.error | INFO | Waiting for application startup.
+2025-09-13 18:55:57 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/auth/register, 字段数: 2
+2025-09-13 18:55:57 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/auth/login, 字段数: 2
+2025-09-13 18:55:57 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/trading/orders, 字段数: 5
+2025-09-13 18:55:57 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/strategies, 字段数: 3
+2025-09-13 18:55:57 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/ai/chat, 字段数: 3
+2025-09-13 18:55:57 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/market-data/klines, 字段数: 3
+2025-09-13 18:55:57 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/backtest, 字段数: 5
+2025-09-13 18:55:57 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/wallet/transfer, 字段数: 3
+2025-09-13 18:55:57 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/data/download, 字段数: 5
+✅ 数据库初始化成功
+📋 包含的表：用户、策略、回测、交易、API密钥、市场数据、Claude对话、交易心得
+📋 管理后台表：管理员、Claude代理池、USDT支付、数据采集
+✅ Redis连接成功
+🔑 OKX API认证成功，已连接到真实交易接口
+🚀 Trading Service 启动成功
+📊 环境: development
+🏠 Host: 0.0.0.0:8001
+2025-09-13 18:55:57 | uvicorn.error | INFO | Application startup complete.
+2025-09-13 18:55:58 | app.middleware.api_validation_middleware | INFO | API请求: {"method": "GET", "url": "http://localhost:8001/api/v1/realtime-backtest/start", "path": "/api/v1/realtime-backtest/start", "client_ip": "127.0.***.***.***", "user_agent": "curl/8.5.0", "timestamp": "2025-09-13T10:55:58.227604", "headers": {"host": "localhost:8001", "user-agent": "curl/8.5.0", "accept": "*/*"}, "query_params": {}}
+2025-09-13 18:55:58 | app.services.integrated_cache_manager | WARNING | 缓存管理器尚未初始化
+2025-09-13 18:55:58 | app.services.api_validation_service | WARNING | 端点验证配置不存在: /api/v1/realtime-backtest/start
+2025-09-13 18:55:58.228 | INFO     | app.middleware.structured_logging:log_request_start:139 - Request started
+2025-09-13 18:55:58.230 | WARNING  | app.middleware.structured_logging:log_request_end:181 - Client error: 401
+2025-09-13 18:55:58 | app.middleware.api_validation_middleware | INFO | API响应: {"method": "GET", "path": "/api/v1/realtime-backtest/start", "status_code": 401, "duration": 3.15, "timestamp": "2025-09-13T10:55:58.230709"}
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/__init__.py", line 464, in format
+    return self._format(record)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 460, in _format
+    return self._fmt % values
+           ~~~~~~~~~~^~~~~~~~
+KeyError: 'duration'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/handlers.py", line 73, in emit
+    if self.shouldRollover(record):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/handlers.py", line 196, in shouldRollover
+    msg = "%s\n" % self.format(record)
+                   ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 999, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 706, in format
+    s = self.formatMessage(record)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 675, in formatMessage
+    return self._style.format(record)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 466, in format
+    raise ValueError('Formatting field not found in record: %s' % e)
+ValueError: Formatting field not found in record: 'duration'
+Call stack:
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/server.py", line 67, in run
+    return asyncio.run(self.serve(sockets=sockets))
+  File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run
+    return runner.run(main)
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 674, in run_until_complete
+    self.run_forever()
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 641, in run_forever
+    self._run_once()
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 1987, in _run_once
+    handle._run()
+  File "/usr/lib/python3.12/asyncio/events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/protocols/http/h11_impl.py", line 403, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/base.py", line 185, in __call__
+    await response(scope, wrapped_receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/base.py", line 214, in __call__
+    await send(
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/errors.py", line 161, in _send
+    await send(message)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/protocols/http/h11_impl.py", line 473, in send
+    self.access_logger.info(
+Message: '%s - "%s %s HTTP/%s" %d'
+Arguments: ('127.0.0.1:35514', 'GET', '/api/v1/realtime-backtest/start', '1.1', 401)
+WARNING:  StatReload detected changes in 'app/api/v1/realtime_backtest.py'. Reloading...
+2025-09-13 18:56:45 | uvicorn.error | INFO | Shutting down
+2025-09-13 18:56:45 | uvicorn.error | INFO | Waiting for application shutdown.
+✅ 数据库连接已关闭
+✅ Redis连接已关闭
+👋 Trading Service 已关闭
+2025-09-13 18:56:45 | uvicorn.error | INFO | Application shutdown complete.
+2025-09-13 18:56:45 | uvicorn.error | INFO | Finished server process [3763432]
+/usr/local/lib/python3.12/dist-packages/pydantic/_internal/_config.py:373: UserWarning: Valid config keys have changed in V2:
+* 'schema_extra' has been renamed to 'json_schema_extra'
+  warnings.warn(message, UserWarning)
+2025-09-13 18:56:48.910 | INFO     | app.services.okx_service:__init__:116 - 🚀 OKX交易服务初始化完成
+INFO:app.services.wallet_generator:多链钱包生成器初始化完成
+INFO:app.security.crypto_manager:加密管理器初始化完成
+/usr/local/lib/python3.12/dist-packages/pydantic/_internal/_config.py:373: UserWarning: Valid config keys have changed in V2:
+* 'schema_extra' has been renamed to 'json_schema_extra'
+  warnings.warn(message, UserWarning)
+✅ 使用logging.yaml配置文件
+✅ API验证中间件集成成功
+2025-09-13 18:56:49 | uvicorn.error | INFO | Started server process [3763870]
+2025-09-13 18:56:49 | uvicorn.error | INFO | Waiting for application startup.
+2025-09-13 18:56:49 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/auth/register, 字段数: 2
+2025-09-13 18:56:49 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/auth/login, 字段数: 2
+2025-09-13 18:56:49 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/trading/orders, 字段数: 5
+2025-09-13 18:56:49 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/strategies, 字段数: 3
+2025-09-13 18:56:49 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/ai/chat, 字段数: 3
+2025-09-13 18:56:49 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/market-data/klines, 字段数: 3
+2025-09-13 18:56:49 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/backtest, 字段数: 5
+2025-09-13 18:56:49 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/wallet/transfer, 字段数: 3
+2025-09-13 18:56:49 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/data/download, 字段数: 5
+✅ 数据库初始化成功
+📋 包含的表：用户、策略、回测、交易、API密钥、市场数据、Claude对话、交易心得
+📋 管理后台表：管理员、Claude代理池、USDT支付、数据采集
+✅ Redis连接成功
+🔑 OKX API认证成功，已连接到真实交易接口
+🚀 Trading Service 启动成功
+📊 环境: development
+🏠 Host: 0.0.0.0:8001
+2025-09-13 18:56:49 | uvicorn.error | INFO | Application startup complete.
+2025-09-13 18:59:52 | app.middleware.api_validation_middleware | INFO | API请求: {"method": "POST", "url": "http://localhost:8001/api/v1/realtime-backtest/start", "path": "/api/v1/realtime-backtest/start", "client_ip": "127.0.***.***.***", "user_agent": "curl/8.5.0", "timestamp": "2025-09-13T10:59:52.790169", "headers": {"host": "localhost:8001", "user-agent": "curl/8.5.0", "accept": "*/*", "content-type": "application/json", "authorization": "Bearer eyJhbGciOi...KBnrAk", "content-length": "191"}, "body": {"exchange": "binance", "symbol": "BTC/USDT", "timeframe": "1h", "start_date": "2024-01-01", "end_date": "2024-12-31", "initial_capital": 10000, "strategy_code": "def generate_signals(df):\n    return 1"}}
+2025-09-13 18:59:52 | app.services.api_validation_service | WARNING | 端点验证配置不存在: /api/v1/realtime-backtest/start
+2025-09-13 18:59:52.792 | INFO     | app.middleware.structured_logging:log_request_start:139 - Request started
+2025-09-13 18:59:52.793 | WARNING  | app.middleware.structured_logging:log_request_end:181 - Client error: 401
+2025-09-13 18:59:52 | app.middleware.api_validation_middleware | INFO | API响应: {"method": "POST", "path": "/api/v1/realtime-backtest/start", "status_code": 401, "duration": 3.91, "timestamp": "2025-09-13T10:59:52.794039"}
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/__init__.py", line 464, in format
+    return self._format(record)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 460, in _format
+    return self._fmt % values
+           ~~~~~~~~~~^~~~~~~~
+KeyError: 'duration'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/logging/handlers.py", line 73, in emit
+    if self.shouldRollover(record):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/handlers.py", line 196, in shouldRollover
+    msg = "%s\n" % self.format(record)
+                   ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 999, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 706, in format
+    s = self.formatMessage(record)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 675, in formatMessage
+    return self._style.format(record)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/logging/__init__.py", line 466, in format
+    raise ValueError('Formatting field not found in record: %s' % e)
+ValueError: Formatting field not found in record: 'duration'
+Call stack:
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/server.py", line 67, in run
+    return asyncio.run(self.serve(sockets=sockets))
+  File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run
+    return runner.run(main)
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 674, in run_until_complete
+    self.run_forever()
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 641, in run_forever
+    self._run_once()
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 1987, in _run_once
+    handle._run()
+  File "/usr/lib/python3.12/asyncio/events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/protocols/http/h11_impl.py", line 403, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/base.py", line 185, in __call__
+    await response(scope, wrapped_receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/base.py", line 214, in __call__
+    await send(
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/errors.py", line 161, in _send
+    await send(message)
+  File "/usr/local/lib/python3.12/dist-packages/uvicorn/protocols/http/h11_impl.py", line 473, in send
+    self.access_logger.info(
+Message: '%s - "%s %s HTTP/%s" %d'
+Arguments: ('127.0.0.1:41452', 'POST', '/api/v1/realtime-backtest/start', '1.1', 401)
+WARNING:  StatReload detected changes in 'app/main.py'. Reloading...
+2025-09-13 19:03:55 | uvicorn.error | INFO | Shutting down
+2025-09-13 19:03:56 | uvicorn.error | INFO | Waiting for application shutdown.
+✅ 数据库连接已关闭
+✅ Redis连接已关闭
+👋 Trading Service 已关闭
+2025-09-13 19:03:56 | uvicorn.error | INFO | Application shutdown complete.
+2025-09-13 19:03:56 | uvicorn.error | INFO | Finished server process [3763870]
+/usr/local/lib/python3.12/dist-packages/pydantic/_internal/_config.py:373: UserWarning: Valid config keys have changed in V2:
+* 'schema_extra' has been renamed to 'json_schema_extra'
+  warnings.warn(message, UserWarning)
+2025-09-13 19:03:58.883 | INFO     | app.services.okx_service:__init__:116 - 🚀 OKX交易服务初始化完成
+INFO:app.services.wallet_generator:多链钱包生成器初始化完成
+INFO:app.security.crypto_manager:加密管理器初始化完成
+/usr/local/lib/python3.12/dist-packages/pydantic/_internal/_config.py:373: UserWarning: Valid config keys have changed in V2:
+* 'schema_extra' has been renamed to 'json_schema_extra'
+  warnings.warn(message, UserWarning)
+✅ 使用logging.yaml配置文件
+✅ API验证中间件集成成功
+2025-09-13 19:03:59 | uvicorn.error | INFO | Started server process [3766436]
+2025-09-13 19:03:59 | uvicorn.error | INFO | Waiting for application startup.
+2025-09-13 19:03:59 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/auth/register, 字段数: 2
+2025-09-13 19:03:59 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/auth/login, 字段数: 2
+2025-09-13 19:03:59 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/trading/orders, 字段数: 5
+2025-09-13 19:03:59 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/strategies, 字段数: 3
+2025-09-13 19:03:59 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/ai/chat, 字段数: 3
+2025-09-13 19:03:59 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/market-data/klines, 字段数: 3
+2025-09-13 19:03:59 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/backtest, 字段数: 5
+2025-09-13 19:03:59 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/wallet/transfer, 字段数: 3
+2025-09-13 19:03:59 | app.services.api_validation_service | INFO | 注册端点验证配置: /api/v1/data/download, 字段数: 5
+✅ 数据库初始化成功
+📋 包含的表：用户、策略、回测、交易、API密钥、市场数据、Claude对话、交易心得
+📋 管理后台表：管理员、Claude代理池、USDT支付、数据采集
+✅ Redis连接成功
+🔑 OKX API认证成功，已连接到真实交易接口
+🚀 Trading Service 启动成功
+📊 环境: development
+🏠 Host: 0.0.0.0:8001
+2025-09-13 19:03:59 | uvicorn.error | INFO | Application startup complete.
+2025-09-13 19:04:05 | uvicorn.error | INFO | Shutting down
+2025-09-13 19:04:05 | uvicorn.error | INFO | Waiting for application shutdown.
+✅ 数据库连接已关闭
+✅ Redis连接已关闭
+👋 Trading Service 已关闭
+2025-09-13 19:04:05 | uvicorn.error | INFO | Application shutdown complete.
+2025-09-13 19:04:05 | uvicorn.error | INFO | Finished server process [3766436]
+INFO:     Stopping reloader process [3761420]

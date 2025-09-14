@@ -10,15 +10,19 @@ from sqlalchemy.orm import declarative_base
 from sqlalchemy import MetaData
 import asyncio
 from typing import AsyncGenerator
+from loguru import logger
 
 from app.config import settings
 
-# 创建异步引擎
+# 创建异步引擎 - 优化连接池配置防止泄漏
 engine = create_async_engine(
     settings.database_url,
     echo=settings.debug,  # 在调试模式下显示SQL
     pool_pre_ping=True,   # 连接前检查
-    pool_recycle=3600,    # 1小时回收连接
+    pool_recycle=1800,    # 30分钟回收连接（缩短周期）
+    pool_timeout=30,      # 连接池获取连接超时30秒
+    pool_size=10,         # 连接池大小
+    max_overflow=20,      # 最大溢出连接数
     connect_args={
         "check_same_thread": False,  # SQLite多线程支持
         "timeout": 20,               # 连接超时20秒
@@ -41,7 +45,12 @@ metadata = MetaData()
 
 async def get_db() -> AsyncGenerator[AsyncSession, None]:
     """
-    获取数据库会话 - 修复事务处理逻辑
+    获取数据库会话 - 修复版（简化逻辑，确保连接必定释放）
+    
+    核心原则：
+    1. 无条件释放连接
+    2. 简化异常处理
+    3. 确保资源清理
     
     用法:
     async def some_function(db: AsyncSession = Depends(get_db)):
@@ -49,20 +58,13 @@ async def get_db() -> AsyncGenerator[AsyncSession, None]:
     """
     session = AsyncSessionLocal()
     try:
-        # 提供会话给业务逻辑
         yield session
-        
-        # 如果没有显式提交，则提交事务
-        if session.in_transaction():
-            await session.commit()
-            
-    except Exception as e:
-        # 发生异常时回滚事务
-        if session.in_transaction():
-            await session.rollback()
+    except Exception:
+        # 简化异常处理：只回滚，不做复杂判断
+        await session.rollback()
         raise
     finally:
-        # 确保会话关闭
+        # 无条件关闭会话 - 这是修复的关键
         await session.close()
 
 
@@ -112,21 +114,102 @@ async def check_db_connection():
         return False
 
 
-# 数据库健康检查
+# 数据库健康检查 - 增强版
 async def db_health_check():
-    """数据库健康检查"""
+    """数据库健康检查 - 包含连接池状态监控"""
+    import gc
+    import psutil
+    
     try:
         is_connected = await check_db_connection()
-        return {
-            "database": "healthy" if is_connected else "unhealthy",
-            "type": "SQLite",
-            "url": settings.database_url
+        
+        # 获取连接池状态
+        pool_stats = {
+            "pool_size": engine.pool.size(),
+            "checked_out": engine.pool.checkedout(),
+            "checked_in": engine.pool.checkedin(),
+            "overflow": engine.pool.overflow(),
+            "invalid": engine.pool.invalid(),
         }
+        
+        # 检查系统内存使用
+        memory_info = psutil.virtual_memory()
+        swap_info = psutil.swap_memory()
+        
+        # 计算健康评分
+        health_score = 100
+        warning_messages = []
+        
+        # 连接池健康检查
+        if pool_stats["checked_out"] / max(pool_stats["pool_size"], 1) > 0.8:
+            health_score -= 30
+            warning_messages.append("连接池使用率过高")
+        
+        if pool_stats["overflow"] > 5:
+            health_score -= 20
+            warning_messages.append("连接池溢出过多")
+            
+        # 内存健康检查
+        if memory_info.percent > 85:
+            health_score -= 25
+            warning_messages.append("系统内存使用率过高")
+            
+        if swap_info.percent > 50:
+            health_score -= 25
+            warning_messages.append("交换空间使用过多")
+        
+        # 垃圾收集统计
+        gc_stats = gc.get_stats()
+        leaked_sessions = sum(1 for obj in gc.get_objects() 
+                             if hasattr(obj, '__class__') and 'AsyncSession' in str(obj.__class__))
+        
+        if leaked_sessions > 10:
+            health_score -= 20
+            warning_messages.append(f"检测到{leaked_sessions}个可能泄漏的会话")
+        
+        status = "healthy" if health_score >= 70 else "warning" if health_score >= 40 else "critical"
+        
+        return {
+            "database": status,
+            "health_score": health_score,
+            "type": "SQLite",
+            "url": settings.database_url,
+            "pool_stats": pool_stats,
+            "memory_usage_percent": memory_info.percent,
+            "swap_usage_percent": swap_info.percent,
+            "leaked_sessions": leaked_sessions,
+            "warnings": warning_messages,
+            "recommendations": _get_health_recommendations(health_score, pool_stats, warning_messages)
+        }
+        
     except Exception as e:
         return {
             "database": "error",
-            "error": str(e)
+            "error": str(e),
+            "health_score": 0
         }
+
+
+def _get_health_recommendations(score, pool_stats, warnings):
+    """生成健康建议"""
+    recommendations = []
+    
+    if score < 70:
+        recommendations.append("建议重启交易服务以清理资源")
+    
+    if "连接池使用率过高" in warnings:
+        recommendations.append("考虑增加连接池大小或检查连接泄漏")
+    
+    if "系统内存使用率过高" in warnings:
+        recommendations.append("检查内存泄漏并考虑增加系统内存")
+        
+    if "交换空间使用过多" in warnings:
+        recommendations.append("系统内存不足，需要优化内存使用")
+        
+    if pool_stats.get("overflow", 0) > 5:
+        recommendations.append("连接池溢出过多，考虑优化数据库访问模式")
+    
+    return recommendations
 
 
 # 数据库工具函数

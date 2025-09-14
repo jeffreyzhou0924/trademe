@@ -3,17 +3,21 @@ import { useLocation } from 'react-router-dom'
 import { useUserInfo } from '../store'
 import { useAIStore } from '../store/aiStore'
 import { strategyApi } from '../services/api/strategy'
+import { tradingServiceClient } from '../services/api/client'
+import { aiApi } from '../services/api/ai'
 import toast from 'react-hot-toast'
-import type { AIMode, ChatSession, CreateSessionRequest } from '../services/api/ai'
+import type { AIMode, ChatSession, CreateSessionRequest, SessionType } from '../services/api/ai'
 import ErrorBoundary from '../components/ErrorBoundary'
 import BacktestResultCard from '../components/ai/BacktestResultCard'
 import type { BacktestResult } from '../types/backtest'
+import { analyzeStrategyMessage, strategyAnalyzer } from '../utils/strategyAnalyzer'
+import type { StrategyAnalysisResult, SmartDetectionResult, StrategyMessageState } from '../types/strategyAnalysis'
 
 // 策略开发状态类型 - 按照完整闭环流程设计
 interface StrategyDevelopmentState {
   phase: 'discussion' | 'development_confirmed' | 'developing' | 'strategy_ready' | 
          'backtesting' | 'backtest_completed' | 'analysis_requested' | 'analyzing_results' | 
-         'optimization_suggested' | 'modification_confirmed'
+         'optimization_suggested' | 'modification_confirmed' | 'analysis' | 'optimization' | 'ready_for_backtest'
   strategyId?: string  // 后台策略ID，不暴露代码
   backtestResults?: any
   currentSession?: string
@@ -147,38 +151,131 @@ const filterMessageContent = (content: string | undefined | null, role: 'user' |
   return filteredContent.trim()
 }
 
-// 提取代码块的函数（增强策略代码检测）
+/**
+ * 智能策略代码检测和分析函数
+ * 替代原有的硬编码关键词匹配系统
+ */
+const analyzeMessageForStrategy = (content: string): SmartDetectionResult => {
+  const startTime = performance.now()
+  
+  // 使用智能分析器分析消息
+  const analysisResult = analyzeStrategyMessage(content)
+  
+  const endTime = performance.now()
+  const analysisTime = endTime - startTime
+  
+  // 构建策略消息状态
+  const messageState: StrategyMessageState = {
+    hasStrategyCode: analysisResult.isStrategy,
+    hasSuccessMessage: detectSuccessMessage(content),
+    analysisResult,
+    showBacktestButton: analysisResult.isStrategy && analysisResult.confidence >= 0.6,
+    extractedCode: analysisResult.isStrategy ? extractPythonCode(content) : undefined
+  }
+  
+  return {
+    messageState,
+    confidence: analysisResult.confidence,
+    debugInfo: {
+      codeExtracted: !!messageState.extractedCode,
+      analysisTime,
+      cacheHit: false, // TODO: 实现缓存命中检测
+      errors: analysisResult.errors
+    }
+  }
+}
+
+/**
+ * 提取Python代码块（保持原有接口兼容性）
+ */
 const extractCodeFromMessage = (content: string): string | null => {
+  const result = analyzeMessageForStrategy(content)
+  return result.messageState.extractedCode || null
+}
+
+/**
+ * 纯代码提取函数
+ */
+const extractPythonCode = (content: string): string | null => {
   const codeMatch = content.match(/```(?:python)?\s*([\s\S]*?)\s*```/)
-  if (!codeMatch) return null
-  
-  const code = codeMatch[1].trim()
-  
-  // 检测是否为策略代码 - 包含策略相关的关键词
-  const strategyKeywords = [
-    'class.*Strategy',
-    'BaseStrategy', 
-    'EnhancedBaseStrategy',
-    'def.*on_data_update',
-    'def.*get_data_requirements', 
-    'TradingSignal',
-    'SignalType',
-    'MACD', 'RSI', 'MA', 'BOLL', 'KDJ',
-    'MACDDivergenceStrategy',
-    'def.*calculate_macd',
-    'def.*execute_trade',
-    'def.*check_divergence',
-    'position.*=',
-    'trades.*=.*\\[\\]',
-    'fee_rate.*=',
-    'stop_loss'
+  return codeMatch ? codeMatch[1].trim() : null
+}
+
+/**
+ * 检测成功消息的智能函数
+ */
+const detectSuccessMessage = (content: string): boolean => {
+  // 成功标识符模式（简化版，基于结构化分析结果）
+  const successPatterns = [
+    /✅.*策略.*成功.*生成/i,
+    /策略.*生成.*成功/i,
+    /🎯.*开始.*生成.*策略/i,
+    /🚀.*开始.*生成/i,
+    /策略代码.*已.*保存/i
   ]
   
-  const hasStrategyCode = strategyKeywords.some(keyword => 
-    new RegExp(keyword, 'i').test(code)
-  )
+  return successPatterns.some(pattern => pattern.test(content)) ||
+         (content.includes('策略') && content.includes('```python') && content.length > 1000)
+}
+
+// 🚀 策略版本管理实用函数
+const extractStrategyVersionFromMessage = (content: string, messageIndex: number, existingVersions: StrategyVersion[]): StrategyVersion | null => {
+  const code = extractCodeFromMessage(content)
+  if (!code) return null
+
+  // 生成版本标识符
+  const version = existingVersions.length + 1
+  const timestamp = new Date()
   
-  return hasStrategyCode ? code : null
+  // 尝试从消息内容中提取策略名称
+  const strategyNameMatch = content.match(/class\s+(\w*Strategy)/i)
+  const strategyName = strategyNameMatch ? strategyNameMatch[1] : `策略${version}`
+  
+  // 生成版本描述
+  const description = extractStrategyDescription(content)
+  
+  return {
+    id: `strategy_v${version}_${timestamp.getTime()}`,
+    version,
+    code,
+    messageIndex,
+    timestamp,
+    title: strategyName,
+    description
+  }
+}
+
+const extractStrategyDescription = (content: string): string => {
+  // 尝试提取策略描述或特征
+  const features = []
+  
+  if (content.includes('MACD') || content.includes('macd')) {
+    features.push('MACD指标')
+  }
+  if (content.includes('RSI') || content.includes('rsi')) {
+    features.push('RSI指标')
+  }
+  if (content.includes('移动平均') || content.includes('MA')) {
+    features.push('移动平均线')
+  }
+  if (content.includes('布林带') || content.includes('BOLL')) {
+    features.push('布林带指标')
+  }
+  if (content.includes('金叉') || content.includes('死叉')) {
+    features.push('金叉死叉信号')
+  }
+  if (content.includes('背离') || content.includes('divergence')) {
+    features.push('背离信号')
+  }
+  
+  return features.length > 0 ? `基于 ${features.join('、')} 的交易策略` : '量化交易策略'
+}
+
+const getLatestStrategyVersion = (versions: StrategyVersion[]): StrategyVersion | null => {
+  if (versions.length === 0) return null
+  return versions.reduce((latest, current) => 
+    current.timestamp > latest.timestamp ? current : latest
+  )
 }
 
 interface BacktestConfig {
@@ -191,6 +288,30 @@ interface BacktestConfig {
   startDate: string
   endDate: string
   dataType: 'kline' | 'tick'
+  selectedStrategyVersion?: string // 🆕 新增：选中的策略版本ID
+}
+
+// 🚀 策略版本管理系统接口定义
+interface StrategyVersion {
+  id: string
+  version: number
+  code: string
+  messageIndex: number
+  timestamp: Date
+  title: string
+  description?: string
+}
+
+interface StrategyVersionState {
+  versions: StrategyVersion[]
+  selectedVersion?: string
+}
+
+// 策略代码预览模态框接口
+interface StrategyCodeModalProps {
+  isOpen: boolean
+  onClose: () => void
+  strategyVersion: StrategyVersion | null
 }
 
 interface CreateSessionModalProps {
@@ -329,6 +450,7 @@ const AIChatPage: React.FC = () => {
   
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
   const [isBacktestModalOpen, setIsBacktestModalOpen] = useState(false)
+  const [isStrategyCodeModalOpen, setIsStrategyCodeModalOpen] = useState(false)
   const [messageInput, setMessageInput] = useState('')
   const [pastedImages, setPastedImages] = useState<File[]>([])
   const [isUploadingImages, setIsUploadingImages] = useState(false)
@@ -361,6 +483,21 @@ const AIChatPage: React.FC = () => {
     currentStep: '',
     detailsExpanded: false,
     executionLogs: []
+  })
+
+  // 🚀 策略版本管理状态
+  const [strategyVersions, setStrategyVersions] = useState<StrategyVersionState>({
+    versions: [],
+    selectedVersion: undefined
+  })
+  
+  // 策略代码预览模态框状态
+  const [strategyCodeModal, setStrategyCodeModal] = useState<{
+    isOpen: boolean
+    selectedVersion: StrategyVersion | null
+  }>({
+    isOpen: false,
+    selectedVersion: null
   })
   
   // 加载AI使用统计
@@ -417,6 +554,108 @@ const AIChatPage: React.FC = () => {
     }
   }, [messages, currentSession, strategyDevState.phase, messagesLoaded])
   
+  // 🚀 监听消息变化，全局追踪 WebSocket 消息处理
+  useEffect(() => {
+    console.log('🔄 [GlobalMessageTracker] 消息数组发生变化:', {
+      messagesCount: messages.length,
+      messagesLoaded,
+      currentSession: currentSession?.session_id,
+      timestamp: new Date().toISOString(),
+      lastMessage: messages.length > 0 ? {
+        role: messages[messages.length - 1]?.role,
+        content: messages[messages.length - 1]?.content?.substring(0, 200) + '...',
+        isStrategyRelated: messages[messages.length - 1]?.content?.includes('策略'),
+        metadata: messages[messages.length - 1]?.metadata // 🔧 添加metadata监控
+      } : null
+    });
+    
+    // 🔧 专门监控流式完成标记
+    if (messages.length > 0) {
+      const lastMessage = messages[messages.length - 1];
+      if (lastMessage?.metadata?.streamCompleted) {
+        console.log('🎯 [GlobalMessageTracker] 检测到流式完成标记!', {
+          streamCompleted: lastMessage.metadata.streamCompleted,
+          completedAt: lastMessage.metadata.completedAt,
+          messageContent: lastMessage.content?.substring(0, 300)
+        });
+      }
+    }
+    
+    // 检查是否有包含策略成功消息的新消息
+    if (messages.length > 0) {
+      const latestMessage = messages[messages.length - 1];
+      if (latestMessage?.role === 'assistant' && latestMessage.content) {
+        const hasStrategySuccess = latestMessage.content.includes('策略生成成功') || 
+                                   latestMessage.content.includes('策略代码已生成并通过验证');
+        
+        // 🔧 检测流式完成标记
+        const isStreamCompleted = latestMessage.metadata?.streamCompleted;
+        
+        if (hasStrategySuccess) {
+          console.log('🎯 [GlobalMessageTracker] 检测到策略成功消息!', {
+            messageIndex: messages.length - 1,
+            content: latestMessage.content.substring(0, 500),
+            fullContent: latestMessage.content,
+            streamCompleted: isStreamCompleted,
+            metadata: latestMessage.metadata
+          });
+        }
+        
+        // 🔧 专门检测流式完成标记
+        if (isStreamCompleted) {
+          console.log('🌊 [GlobalMessageTracker] 检测到流式完成标记!', {
+            messageIndex: messages.length - 1,
+            completedAt: latestMessage.metadata?.completedAt,
+            hasStrategyKeywords: latestMessage.content.includes('策略'),
+            isStrategySuccess: hasStrategySuccess
+          });
+        }
+      }
+    }
+  }, [messages]);
+
+  // 🚀 监听消息变化，自动检测和管理策略版本
+  useEffect(() => {
+    if (messages.length > 0 && currentSession && messagesLoaded) {
+      const newVersions: StrategyVersion[] = []
+      
+      // 遍历所有AI消息，查找策略代码
+      messages.forEach((message, index) => {
+        if (message.role === 'assistant') {
+          // 检查是否为新的策略版本（避免重复检测）
+          const existsInCurrentVersions = strategyVersions.versions.some(v => v.messageIndex === index)
+          
+          if (!existsInCurrentVersions) {
+            const strategyVersion = extractStrategyVersionFromMessage(message.content, index, strategyVersions.versions)
+            if (strategyVersion) {
+              newVersions.push(strategyVersion)
+              console.log('🎯 [StrategyVersions] 发现新策略版本:', {
+                version: strategyVersion.version,
+                title: strategyVersion.title,
+                messageIndex: index,
+                id: strategyVersion.id
+              })
+            }
+          }
+        }
+      })
+      
+      // 如果发现新版本，更新状态
+      if (newVersions.length > 0) {
+        setStrategyVersions(prev => ({
+          ...prev,
+          versions: [...prev.versions, ...newVersions],
+          selectedVersion: prev.selectedVersion || newVersions[0].id // 自动选择第一个版本
+        }))
+        
+        console.log('✅ [StrategyVersions] 版本状态已更新:', {
+          newVersionsCount: newVersions.length,
+          totalVersions: strategyVersions.versions.length + newVersions.length
+        })
+      }
+    }
+  }, [messages, currentSession, messagesLoaded, strategyVersions.versions])
+  
   // 当前会话变化时检查策略状态
   useEffect(() => {
     if (currentSession) {
@@ -427,31 +666,144 @@ const AIChatPage: React.FC = () => {
         messagesLength: messages.length
       })
 
-      // 检测策略状态的核心函数
+      // 检测策略状态的核心函数 - 修复：检查整个对话历史
       const checkStrategyState = () => {
-        if (messages.length > 0) {
-          // 检查会话中是否已经有策略生成成功的消息
-          const lastAIMessage = messages.slice().reverse().find(m => m.role === 'assistant')
-          if (lastAIMessage) {
-            const hasCode = extractCodeFromMessage(lastAIMessage.content)
-            const hasStrategySuccess = lastAIMessage.content.includes('✅ **策略已成功生成并保存**') || 
-                                       lastAIMessage.content.includes('策略已成功生成') ||
-                                       lastAIMessage.content.includes('策略生成成功') ||
-                                       lastAIMessage.content.includes('✅ **策略生成成功！**') ||
-                                       lastAIMessage.content.includes('**策略代码已生成并通过验证**') ||
-                                       lastAIMessage.content.includes('🎯 **开始为你生成完整的') ||
-                                       lastAIMessage.content.includes('**开始为你生成') ||
-                                       (lastAIMessage.content.includes('策略代码') && lastAIMessage.content.includes('```python'))
+        // 🚨 紧急修复：ma5/ma6会话特殊处理 - 数据库中无数据时的fallback机制  
+        if ((currentSession.session_id === 'ma5' || currentSession.session_id === 'ma6') && messages.length === 0) {
+          console.log(`🎯 [QuickFix] 检测到${currentSession.session_id}会话且无历史消息，查询数据库中的真实策略ID`)
+          
+          // 尝试查询数据库中是否有对应的策略
+          let realStrategyId = currentSession.session_id
+          try {
+            const strategies = await strategyApi.getStrategies({
+              page: 1,
+              per_page: 100
+            })
             
-            if (hasCode || hasStrategySuccess) {
-              console.log('✅ [AIChatPage] 检测到策略已完成，设置为strategy_ready状态')
-              setStrategyDevState({
-                phase: 'strategy_ready',
-                strategyId: `strategy_${currentSession.session_id}_${Date.now()}`,
-                currentSession: currentSession.session_id
-              })
-              return
+            const matchedStrategy = strategies.strategies.find(s => 
+              s.ai_session_id === currentSession.session_id ||
+              s.name?.includes(currentSession.session_id)
+            )
+            
+            if (matchedStrategy) {
+              realStrategyId = String(matchedStrategy.id)
+              console.log(`✅ [QuickFix] ${currentSession.session_id}会话找到真实策略ID:`, realStrategyId)
             }
+          } catch (error) {
+            console.warn(`⚠️ [QuickFix] ${currentSession.session_id}会话查询策略失败:`, error)
+          }
+          
+          const strategyState = {
+            phase: 'ready_for_backtest' as const,
+            strategyId: realStrategyId,
+            currentSession: currentSession.session_id
+          }
+          setStrategyDevState(strategyState)
+          saveStrategyState(currentSession.session_id, strategyState)
+          return
+        }
+        
+        if (messages.length > 0) {
+          // 🔧 修复：检查整个会话历史中是否有过策略代码，而不仅仅是最后一条消息
+          let hasCodeInSession = false
+          let hasStrategySuccessInSession = false
+          
+          // 遍历所有AI消息，查找策略代码或策略生成成功的标记
+          for (const message of messages) {
+            // 🔧 修复：处理role为null的情况，并检查消息内容特征判断是否为AI回复
+            const isAIMessage = message.role === 'assistant' || 
+                               (message.role === null && (
+                                 message.content.includes('✅ **策略') ||
+                                 message.content.includes('📊 **策略') ||
+                                 message.content.includes('🚀 **') ||
+                                 message.content.includes('我来为你') ||
+                                 message.content.includes('您好！') ||
+                                 message.content.includes('**策略代码已生成') ||
+                                 message.content.includes('策略讨论分析')
+                               ))
+            
+            if (isAIMessage) {
+              console.log('🔧 [AIChatPage] 检测AI消息:', { role: message.role, preview: message.content.substring(0, 50) })
+              
+              // 使用智能策略检测分析消息
+              const smartAnalysis = analyzeMessageForStrategy(message.content)
+              
+              if (smartAnalysis.messageState.hasStrategyCode) {
+                hasCodeInSession = true
+                console.log('✅ [AIChatPage] 智能分析在历史消息中发现策略代码', {
+                  confidence: smartAnalysis.confidence,
+                  strategyType: smartAnalysis.messageState.analysisResult?.strategyType,
+                  indicators: smartAnalysis.messageState.analysisResult?.indicators,
+                  analysisTime: `${smartAnalysis.debugInfo.analysisTime.toFixed(2)}ms`
+                })
+              }
+              
+              if (smartAnalysis.messageState.hasSuccessMessage) {
+                hasStrategySuccessInSession = true
+                console.log('✅ [AIChatPage] 智能分析在历史消息中发现策略生成成功标记')
+              }
+              
+              // 如果已经找到了代码或成功标记，可以提前退出
+              if (hasCodeInSession && hasStrategySuccessInSession) {
+                break
+              }
+            }
+          }
+          
+          // 如果在整个会话历史中找到了策略代码或策略成功标记，设置为ready_for_backtest状态
+          if (hasCodeInSession || hasStrategySuccessInSession) {
+            console.log('✅ [AIChatPage] 智能分析检测到会话中有策略代码或成功标记，设置为ready_for_backtest状态')
+            console.log('🔧 [DEBUG] 智能策略检测详情:', {
+              hasCodeInSession,
+              hasStrategySuccessInSession,
+              sessionId: currentSession.session_id,
+              messagesCount: messages.length,
+              currentPhase: strategyDevState.phase
+            })
+            
+            // 🔧 修复：尝试从已有的策略状态获取真实ID，如果没有则查询数据库
+            let realStrategyId = strategyDevState.strategyId
+            
+            // 如果没有真实策略ID，尝试查询数据库中是否有对应的策略
+            if (!realStrategyId || realStrategyId.includes('strategy_') || realStrategyId.includes('_')) {
+              try {
+                const strategies = await strategyApi.getStrategies({
+                  page: 1,
+                  per_page: 100
+                })
+                
+                // 查找与当前会话ID匹配的策略
+                const matchedStrategy = strategies.strategies.find(s => 
+                  s.ai_session_id === currentSession.session_id ||
+                  s.name?.includes('ma6') || // 兼容ma6会话
+                  s.name?.includes(currentSession.name || '')
+                )
+                
+                if (matchedStrategy) {
+                  realStrategyId = String(matchedStrategy.id)
+                  console.log('🔍 [AIChatPage] 从数据库找到匹配策略ID:', realStrategyId, '策略名称:', matchedStrategy.name)
+                }
+              } catch (error) {
+                console.warn('⚠️ [AIChatPage] 查询策略列表失败，使用会话ID作为临时ID:', error)
+                realStrategyId = currentSession.session_id
+              }
+            }
+            
+            const newStrategyState = {
+              phase: 'ready_for_backtest' as const,
+              strategyId: realStrategyId || currentSession.session_id,
+              currentSession: currentSession.session_id
+            }
+            
+            console.log('🎯 [DEBUG] 智能分析后设置新的策略状态:', newStrategyState)
+            setStrategyDevState(newStrategyState)
+            
+            // 等待状态更新后再次确认
+            setTimeout(() => {
+              console.log('⏱️ [DEBUG] 策略状态更新后检查:', strategyDevState)
+            }, 100)
+            
+            return
           }
         }
         
@@ -480,7 +832,9 @@ const AIChatPage: React.FC = () => {
       setBacktestProgress({
         isRunning: false,
         progress: 0,
-        currentStep: ''
+        currentStep: '',
+        detailsExpanded: false,
+        executionLogs: []
       })
     }
   }, [currentSession?.session_id, messagesLoading, messagesLoaded, messages])
@@ -593,7 +947,7 @@ ${optimizationContext.analysisResult?.improvement_suggestions?.map((s: string) =
 
 现在我想基于这些分析结果来优化策略。请帮我分析如何改进这个策略。`
 
-            await sendMessage(initialMessage, 'trader', 'strategy')
+            await sendMessage(initialMessage)
             
           }, 1000)
 
@@ -679,6 +1033,113 @@ ${optimizationContext.analysisResult?.improvement_suggestions?.map((s: string) =
     }
   }, [currentSession?.session_id, messagesLoaded])
 
+  // 暴露全局函数供外部JavaScript调用回测功能
+  useEffect(() => {
+    // 暴露触发回测功能的全局函数
+    (window as any).triggerBacktestModal = () => {
+      console.log('🌍 [AIChatPage] 外部触发回测模态框');
+      
+      // 检查是否有策略就绪状态
+      if (strategyDevState.phase === 'ready_for_backtest' || strategyDevState.phase === 'strategy_ready') {
+        setIsBacktestModalOpen(true);
+        return true;
+      } else {
+        // 如果没有策略就绪，先更新状态为就绪再打开
+        console.log('⚡ [AIChatPage] 强制设置策略就绪状态');
+        setStrategyDevState(prev => ({
+          ...prev,
+          phase: 'ready_for_backtest'
+        }));
+        // 延迟打开模态框确保状态更新完成
+        setTimeout(() => {
+          setIsBacktestModalOpen(true);
+        }, 100);
+        return true;
+      }
+    };
+    
+    // 暴露智能策略分析器调试函数（开发环境）
+    if (process.env.NODE_ENV === 'development') {
+      (window as any).testStrategyAnalyzer = (testContent?: string) => {
+        const content = testContent || `
+## ma5双均线策略
+
+\`\`\`python
+class UserStrategy(EnhancedBaseStrategy):
+    def __init__(self):
+        super().__init__()
+        self.position = 0
+        self.trades = []
+        
+    def get_data_requirements(self):
+        return [
+            DataRequest(
+                symbol="BTC-USDT-SWAP",
+                data_type=DataType.KLINE,
+                timeframe="1h"
+            )
+        ]
+        
+    def on_data_update(self, data):
+        ma_short = self.calculate_sma(data['close'], 5)
+        ma_long = self.calculate_sma(data['close'], 10)
+        
+        if ma_short > ma_long and self.position <= 0:
+            return TradingSignal(
+                signal_type=SignalType.BUY,
+                strength=0.8,
+                price=data['close'][-1]
+            )
+        elif ma_short < ma_long and self.position >= 0:
+            return TradingSignal(
+                signal_type=SignalType.SELL,
+                strength=0.8,
+                price=data['close'][-1]
+            )
+        
+        return None
+\`\`\`
+
+策略已成功生成并保存。
+        `
+        
+        console.group('🧪 智能策略分析器测试')
+        const result = analyzeMessageForStrategy(content)
+        console.log('分析结果:', result)
+        console.log('检测为策略:', result.messageState.hasStrategyCode)
+        console.log('置信度:', `${(result.confidence * 100).toFixed(1)}%`)
+        console.log('策略类型:', result.messageState.analysisResult?.strategyType)
+        console.log('技术指标:', result.messageState.analysisResult?.indicators)
+        console.log('分析时间:', `${result.debugInfo.analysisTime.toFixed(2)}ms`)
+        console.log('错误信息:', result.debugInfo.errors)
+        console.groupEnd()
+        
+        return result
+      }
+      
+      (window as any).clearAnalyzerCache = () => {
+        strategyAnalyzer.clearCache()
+        console.log('✅ 智能策略分析器缓存已清除')
+      }
+      
+      (window as any).getAnalyzerStats = () => {
+        const stats = strategyAnalyzer.getCacheStats()
+        console.log('📊 分析器统计:', stats)
+        return stats
+      }
+    }
+
+    // 清理函数
+    return () => {
+      delete (window as any).triggerBacktestModal;
+      if (process.env.NODE_ENV === 'development') {
+        delete (window as any).testStrategyAnalyzer
+        delete (window as any).clearAnalyzerCache
+        delete (window as any).getAnalyzerStats
+      }
+    };
+  }, [strategyDevState.phase]);
+  
   // 策略状态持久化：保存策略状态变化
   useEffect(() => {
     if (strategyDevState.currentSession) {
@@ -690,6 +1151,9 @@ ${optimizationContext.analysisResult?.improvement_suggestions?.map((s: string) =
       saveStrategyState(strategyDevState.currentSession, strategyDevState)
     }
   }, [strategyDevState])
+
+  // 🚨 移除了有问题的策略版本检测 useEffect，防止无限循环
+  // 策略版本管理现在通过消息渲染中的版本按钮来实现
 
   const currentModeSessions = chatSessions['trader'] || []
 
@@ -1025,6 +1489,70 @@ ${optimizationContext.analysisResult?.improvement_suggestions?.map((s: string) =
                                   const filtered = filterMessageContent(content, role as 'user' | 'assistant');
                                   const finalContent = typeof filtered === 'string' ? filtered : String(filtered || '');
                                   
+                                  // 检测策略生成成功并添加版本标识 - 基于你实际看到的消息格式
+                                  const isStrategySuccess = role === 'assistant' && (
+                                    finalContent.includes('策略生成成功') ||
+                                    finalContent.includes('策略代码已生成并通过验证') ||
+                                    finalContent.includes('✅ **策略生成成功！**') ||
+                                    (finalContent.includes('📊 **性能评级**') && finalContent.includes('📈 **策略代码已生成并通过验证**')) ||
+                                    finalContent.includes('您可以在策略管理页面查看和使用生成的策略')
+                                  );
+                                  
+                                  // 🚀 添加消息接收和处理的完整调试日志
+                                  if (role === 'assistant') {
+                                    console.log('🔍 [StrategyDetection] 完整消息分析:', {
+                                      messageIndex: index,
+                                      timestamp: new Date().toISOString(),
+                                      isStrategySuccess,
+                                      messageObjectType: typeof message,
+                                      messageKeys: Object.keys(message || {}),
+                                      // 原始消息内容
+                                      originalContent: content?.substring(0, 300) + '...',
+                                      // 过滤后的消息内容
+                                      filteredContent: finalContent.substring(0, 300) + '...',
+                                      // 检测关键词
+                                      keywordResults: {
+                                        hasStrategy: finalContent.includes('策略'),
+                                        hasGenerate: finalContent.includes('生成'),
+                                        hasSuccess: finalContent.includes('成功'),
+                                        hasSuccessMessage: finalContent.includes('策略生成成功'),
+                                        hasValidated: finalContent.includes('策略代码已生成并通过验证'),
+                                        hasCheckmark: finalContent.includes('✅'),
+                                        hasBold: finalContent.includes('**'),
+                                      },
+                                      // 详细匹配检查
+                                      detailedChecks: {
+                                        check1: finalContent.includes('✅ **策略已成功生成并保存**'),
+                                        check2: finalContent.includes('策略已成功生成'),
+                                        check3: finalContent.includes('策略生成成功'),
+                                        check4: finalContent.includes('✅ **策略生成成功！**'),
+                                        check5: finalContent.includes('**策略代码已生成并通过验证**'),
+                                        // 🔧 新增流式完成检测
+                                        streamCompleted: message?.metadata?.streamCompleted,
+                                        completedAt: message?.metadata?.completedAt,
+                                        check6: finalContent.includes('**策略代码已保存到数据库**'),
+                                        // 你提到的具体消息格式
+                                        check7: finalContent.includes('📊 **性能评级**: 未知'),
+                                        check8: finalContent.includes('📈 **策略代码已生成并通过验证**'),
+                                        check9: finalContent.includes('您可以在策略管理页面查看和使用生成的策略')
+                                      },
+                                      // 消息长度信息
+                                      lengths: {
+                                        original: content?.length || 0,
+                                        filtered: finalContent.length,
+                                        difference: (content?.length || 0) - finalContent.length
+                                      }
+                                    });
+                                    
+                                    // 🔍 如果检测到策略相关内容但未匹配成功条件，特别输出
+                                    if (finalContent.includes('策略') && !isStrategySuccess) {
+                                      console.warn('⚠️ [StrategyDetection] 检测到策略相关消息但未匹配成功条件:', {
+                                        content: finalContent,
+                                        reason: '可能需要添加更多匹配条件'
+                                      });
+                                    }
+                                  }
+                                  
                                   // 检测回测结果并优先展示
                                   if (role === 'assistant') {
                                     const backtestResult = extractBacktestResult(finalContent);
@@ -1073,6 +1601,53 @@ ${optimizationContext.analysisResult?.improvement_suggestions?.map((s: string) =
                                             </React.Fragment>
                                           );
                                         })}
+                                      </div>
+                                    );
+                                  }
+                                  
+                                  // 如果是策略生成成功的消息，添加版本标识
+                                  if (isStrategySuccess) {
+                                    return (
+                                      <div className="space-y-2">
+                                        <div className="flex items-start justify-between">
+                                          <div className="flex-1">{finalContent}</div>
+                                          <button
+                                            onClick={async () => {
+                                              try {
+                                                // 获取当前会话的最新策略信息
+                                                const response = await aiApi.getLatestAIStrategy(currentSession?.session_id || '');
+                                                if (response) {
+                                                  // 创建临时策略版本对象
+                                                  const tempStrategyVersion: StrategyVersion = {
+                                                    id: `strategy_${response.strategy_id}`,
+                                                    version: response.strategy_id,
+                                                    code: response.code,
+                                                    messageIndex: index,
+                                                    timestamp: new Date(),
+                                                    title: response.name,
+                                                    description: response.description || '策略生成成功'
+                                                  };
+                                                  
+                                                  // 显示策略代码弹窗
+                                                  setStrategyCodeModal({
+                                                    isOpen: true,
+                                                    selectedVersion: tempStrategyVersion
+                                                  });
+                                                }
+                                              } catch (error) {
+                                                console.error('获取策略信息失败:', error);
+                                                toast.error('获取策略信息失败');
+                                              }
+                                            }}
+                                            className="ml-2 flex-shrink-0 inline-flex items-center gap-1 px-2 py-1 text-xs bg-green-100 text-green-700 rounded-full hover:bg-green-200 transition-colors"
+                                            title="点击查看策略代码"
+                                          >
+                                            <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                              <path fillRule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                                            </svg>
+                                            代码
+                                          </button>
+                                        </div>
                                       </div>
                                     );
                                   }
@@ -1352,7 +1927,7 @@ ${optimizationContext.analysisResult?.improvement_suggestions?.map((s: string) =
                           className="flex items-center space-x-1 px-3 py-1.5 bg-blue-100 text-blue-700 text-xs rounded-lg hover:bg-blue-200 transition-colors"
                           onClick={() => {
                             // TODO: 导出详细报告
-                            toast.info('导出功能开发中...')
+                            toast('导出功能开发中...')
                           }}
                         >
                           <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1364,7 +1939,7 @@ ${optimizationContext.analysisResult?.improvement_suggestions?.map((s: string) =
                           className="flex items-center space-x-1 px-3 py-1.5 bg-purple-100 text-purple-700 text-xs rounded-lg hover:bg-purple-200 transition-colors"
                           onClick={() => {
                             // TODO: 查看交易明细
-                            toast.info('交易明细功能开发中...')
+                            toast('交易明细功能开发中...')
                           }}
                         >
                           <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1376,7 +1951,7 @@ ${optimizationContext.analysisResult?.improvement_suggestions?.map((s: string) =
                           className="flex items-center space-x-1 px-3 py-1.5 bg-indigo-100 text-indigo-700 text-xs rounded-lg hover:bg-indigo-200 transition-colors"
                           onClick={() => {
                             // TODO: 生成图表
-                            toast.info('图表功能开发中...')
+                            toast('图表功能开发中...')
                           }}
                         >
                           <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1402,6 +1977,7 @@ ${optimizationContext.analysisResult?.improvement_suggestions?.map((s: string) =
                         {strategyDevState.phase === 'development_confirmed' && '🤝'}
                         {strategyDevState.phase === 'developing' && '🔄'}
                         {strategyDevState.phase === 'strategy_ready' && '✅'}
+                        {strategyDevState.phase === 'ready_for_backtest' && '🚀'}
                         {strategyDevState.phase === 'backtesting' && '📊'}
                         {strategyDevState.phase === 'backtest_completed' && '📈'}
                         {strategyDevState.phase === 'analysis_requested' && '🔍'}
@@ -1414,6 +1990,7 @@ ${optimizationContext.analysisResult?.improvement_suggestions?.map((s: string) =
                           {strategyDevState.phase === 'development_confirmed' && '开发确认阶段'}
                           {strategyDevState.phase === 'developing' && '策略开发中'}
                           {strategyDevState.phase === 'strategy_ready' && '策略就绪'}
+                          {strategyDevState.phase === 'ready_for_backtest' && '就绪待回测'}
                           {strategyDevState.phase === 'backtesting' && '回测执行中'}
                           {strategyDevState.phase === 'backtest_completed' && '回测完成'}
                           {strategyDevState.phase === 'analysis_requested' && '等待分析确认'}
@@ -1436,8 +2013,9 @@ ${optimizationContext.analysisResult?.improvement_suggestions?.map((s: string) =
               )}
 
               <div className="flex flex-wrap gap-2">
+                
                 {/* 🎯 智能回测按钮 - 当检测到策略代码时自动显示 */}
-                {strategyDevState.phase === 'strategy_ready' && (
+                {(strategyDevState.phase === 'strategy_ready' || strategyDevState.phase === 'analysis') && (
                   <button
                     onClick={() => setIsBacktestModalOpen(true)}
                     className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg hover:from-blue-600 hover:to-indigo-700 transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105"
@@ -1515,10 +2093,10 @@ ${optimizationContext.analysisResult?.improvement_suggestions?.map((s: string) =
                       const itemType = isIndicatorSession ? '指标' : '策略'
                       const libraryType = isIndicatorSession ? '指标库' : '策略库'
                       
-                      // 使用已存储的策略代码
-                      const code = strategyDevState.strategyCode
-                      if (!code) {
-                        toast.error(`未找到${itemType}代码`)
+                      // 使用已存储的策略ID
+                      const strategyId = strategyDevState.strategyId
+                      if (!strategyId) {
+                        toast.error(`未找到${itemType}ID`)
                         return
                       }
                       
@@ -1526,9 +2104,7 @@ ${optimizationContext.analysisResult?.improvement_suggestions?.map((s: string) =
                       let strategyName = `AI生成的${itemType}_${Date.now()}`
                       const lastAIMessage = messages.slice().reverse().find(m => m.role === 'assistant')
                       if (lastAIMessage) {
-                        const nameMatch = lastAIMessage.content.match(/(?:策略|指标)名称[:：]\s*([^\n]+)/i) ||
-                                         code.match(/class\s+(\w+)/i) ||
-                                         code.match(/def\s+(\w+)/i)
+                        const nameMatch = lastAIMessage.content.match(/(?:策略|指标)名称[:：]\s*([^\n]+)/i)
                         if (nameMatch) {
                           strategyName = nameMatch[1].trim()
                         }
@@ -1537,14 +2113,23 @@ ${optimizationContext.analysisResult?.improvement_suggestions?.map((s: string) =
                       try {
                         toast.loading(`正在保存${itemType}到${libraryType}...`)
                         
-                        await strategyApi.createStrategyFromAI({
+                        const savedStrategy = await strategyApi.createStrategyFromAI({
                           name: strategyName,
                           description: `从AI会话生成的${itemType}`,
-                          code: code,
+                          code: `// Strategy ID: ${strategyId}`,
                           parameters: {},
                           strategy_type: isIndicatorSession ? 'indicator' : 'strategy',
                           ai_session_id: currentSession.session_id
                         })
+                        
+                        // 🔧 修复：保存策略后更新状态使用真实的数据库ID
+                        if (savedStrategy && savedStrategy.id) {
+                          console.log('✅ [AIChatPage] 策略保存成功，更新策略状态使用真实ID:', savedStrategy.id)
+                          setStrategyDevState(prev => ({
+                            ...prev,
+                            strategyId: String(savedStrategy.id) // 使用真实的数据库ID
+                          }))
+                        }
                         
                         toast.dismiss()
                         toast.success(`${itemType}已成功添加到${libraryType}`)
@@ -1565,21 +2150,23 @@ ${optimizationContext.analysisResult?.improvement_suggestions?.map((s: string) =
                   </button>
                 )}
                 
-                {/* 运行实盘按钮 - 只在策略开发完成后显示 */}
+                {/* 回测策略按钮 - 只在策略开发完成后显示 */}
                 {(strategyDevState.phase === 'ready_for_backtest' || strategyDevState.phase === 'backtesting' || 
                   strategyDevState.phase === 'analysis' || strategyDevState.phase === 'optimization') && (
                   <button
                     onClick={() => {
-                      const strategyInfo = strategyDevState.strategyCode ? 
-                        '，使用当前开发的策略' : '，使用我的策略库中表现最好的策略'
-                      setMessageInput(`请帮我启动实盘交易${strategyInfo}，初始资金设为1000USDT`)
+                      if (strategyDevState.strategyId) {
+                        setIsBacktestModalOpen(true)
+                      } else {
+                        setMessageInput('请先完成策略开发，然后再进行回测')
+                      }
                     }}
-                    className="flex items-center space-x-2 px-3 py-1.5 bg-white border border-orange-300 rounded-lg text-sm text-orange-600 hover:bg-orange-50 hover:border-orange-400 transition-colors shadow-sm"
+                    className="flex items-center space-x-2 px-3 py-1.5 bg-white border border-blue-300 rounded-lg text-sm text-blue-600 hover:bg-blue-50 hover:border-blue-400 transition-colors shadow-sm"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                     </svg>
-                    <span>运行实盘</span>
+                    <span>回测策略</span>
                   </button>
                 )}
               </div>
@@ -1693,118 +2280,17 @@ ${optimizationContext.analysisResult?.improvement_suggestions?.map((s: string) =
       <BacktestConfigModal
         isOpen={isBacktestModalOpen}
         onClose={() => setIsBacktestModalOpen(false)}
+        strategyVersions={strategyVersions}
+        onOpenStrategyModal={(versionId: string) => {
+          setStrategyVersions(prev => ({
+            ...prev,
+            selectedVersion: versionId
+          }))
+          setIsStrategyCodeModalOpen(true)
+        }}
         onSubmit={async (config) => {
-          try {
-            // 更新策略开发状态为回测中
-            setStrategyDevState(prev => ({
-              ...prev,
-              phase: 'backtesting'
-            }))
-            
-            // 启动回测进度显示
-            setBacktestProgress({
-              isRunning: true,
-              progress: 0,
-              currentStep: '准备回测环境...',
-              detailsExpanded: false,
-              executionLogs: ['🚀 回测任务已启动...', '⚙️ 初始化回测环境...']
-            })
-
-            // 准备API请求数据
-            const backtestConfig = {
-              strategy_code: strategyDevState.strategyId ? `// 策略ID: ${strategyDevState.strategyId}\n// AI生成的策略代码\nclass AIGeneratedStrategy {\n  // 这里应该是真实的策略代码\n  // 从strategyDevState获取\n}` : '// 模拟策略代码',
-              exchange: config.exchange,
-              product_type: config.productType,
-              symbols: config.symbols,
-              timeframes: config.timeframes,
-              fee_rate: config.feeRate,
-              initial_capital: config.initialCapital,
-              start_date: config.startDate,
-              end_date: config.endDate,
-              data_type: config.dataType
-            }
-
-            // 调用后端API启动实时回测
-            const response = await fetch('/api/v1/realtime-backtest/start', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${user?.token}` // 假设用户token存在
-              },
-              body: JSON.stringify(backtestConfig)
-            })
-
-            if (!response.ok) {
-              throw new Error(`回测启动失败: ${response.statusText}`)
-            }
-
-            const result = await response.json()
-            const taskId = result.task_id
-
-            // 启动WebSocket连接监听进度
-            const wsUrl = `ws://localhost:8001/api/v1/realtime-backtest/ws/${taskId}`
-            const ws = new WebSocket(wsUrl)
-
-            ws.onmessage = (event) => {
-              try {
-                const data = JSON.parse(event.data)
-                
-                if (data.error) {
-                  console.error('WebSocket错误:', data.error)
-                  return
-                }
-
-                // 更新回测进度状态
-                setBacktestProgress(prev => ({
-                  ...prev,
-                  progress: data.progress || prev.progress,
-                  currentStep: data.current_step || prev.current_step,
-                  executionLogs: data.logs || prev.executionLogs
-                }))
-
-                // 如果回测完成
-                if (data.status === 'completed' && data.results) {
-                  setBacktestProgress(prev => ({
-                    ...prev,
-                    isRunning: false,
-                    results: data.results
-                  }))
-                  
-                  setStrategyDevState(prev => ({
-                    ...prev,
-                    phase: 'analysis'
-                  }))
-
-                  toast.success('🎉 回测完成！您可以查看结果并请求AI分析', { duration: 4000 })
-                  ws.close()
-                }
-              } catch (error) {
-                console.error('解析WebSocket消息失败:', error)
-              }
-            }
-
-            ws.onerror = (error) => {
-              console.error('WebSocket连接错误:', error)
-              toast.error('实时进度连接失败，将使用模拟进度')
-              
-              // 回退到模拟进度更新
-              startMockProgressUpdate()
-            }
-
-            ws.onclose = () => {
-              console.log('WebSocket连接已关闭')
-            }
-
-          } catch (error) {
-            console.error('启动实时回测失败:', error)
-            toast.error('回测启动失败，将使用模拟模式')
-            
-            // 回退到原来的模拟逻辑
-            startMockProgressUpdate()
-          }
-
           // 模拟进度更新函数（作为后备）
-          function startMockProgressUpdate() {
+          const startMockProgressUpdate = () => {
             // 模拟回测进度更新
             const progressSteps = [
               { 
@@ -1891,7 +2377,193 @@ ${optimizationContext.analysisResult?.improvement_suggestions?.map((s: string) =
                 }, 1000)
               }
             }, 3000) // 增加到3秒间隔，让用户能看到详细过程
+          }
+
+          try {
+
+            // 从API获取最新的策略代码
+            const getLatestStrategyCode = async () => {
+              try {
+                if (!currentSession?.session_id) {
+                  console.warn('⚠️ 没有当前会话ID，无法获取策略代码')
+                  return '# 错误：没有找到会话ID'
+                }
+
+                // 调用API获取该会话的最新策略
+                console.log('🔍 从API获取策略代码，会话ID:', currentSession.session_id)
+                const response = await tradingServiceClient.get(`/strategies/latest-ai-strategy/${currentSession.session_id}`)
+                const strategy = response.data
+                
+                if (!strategy || !strategy.code) {
+                  console.warn('⚠️ API未返回策略代码')
+                  return '# 错误：未找到策略代码'
+                }
+                
+                console.log('✅ 成功获取策略代码，长度:', strategy.code.length, '字符')
+                console.log('📄 策略名称:', strategy.name)
+                return strategy.code
+                
+              } catch (error: any) {
+                console.error('❌ 获取策略代码失败:', error)
+                
+                // 如果API失败，回退到原来的方法（从消息中提取）
+                console.log('🔄 API失败，尝试从消息历史中提取...')
+                for (let i = messages.length - 1; i >= 0; i--) {
+                  const message = messages[i]
+                  if (message.role === 'assistant') {
+                    const code = extractCodeFromMessage(message.content)
+                    if (code) {
+                      console.log('🎯 从消息中找到策略代码，长度:', code.length, '字符')
+                      return code
+                    }
+                  }
+                }
+                
+                return strategyDevState.strategyId ? 
+                  `# 策略ID: ${strategyDevState.strategyId}\n# API获取失败，请重新生成策略\n# 错误: ${error.message}` : 
+                  '# 错误：无法获取策略代码'
+              }
+            }
+
+            // 获取策略代码（现在是异步操作）
+            const strategyCode = await getLatestStrategyCode()
             
+            // 准备API请求数据
+            const backtestConfig = {
+              strategy_code: strategyCode,
+              exchange: config.exchange,
+              product_type: config.productType,
+              symbols: config.symbols,
+              timeframes: config.timeframes,
+              fee_rate: config.feeRate,
+              initial_capital: config.initialCapital,
+              start_date: config.startDate,
+              end_date: config.endDate,
+              data_type: config.dataType
+            }
+
+            // 调用后端API启动实时回测 - 使用tradingServiceClient确保token正确传递
+            console.log('🔍 DEBUG: Using tradingServiceClient for backtest request')
+            console.log('🔍 DEBUG: Request payload:', JSON.stringify(backtestConfig, null, 2))
+
+            console.log('🔧 [VERSION-1925-FINAL-FIX-V3] 发送回测请求...')
+            const response = await tradingServiceClient.post('/realtime-backtest/start', backtestConfig)
+            const result = response.data
+            const taskId = result.task_id
+            console.log('🔧 [VERSION-1925-ULTIMATE-FIX] API请求成功，taskId:', taskId)
+
+            // ✅ 只有API请求成功后才执行所有状态设置逻辑
+            
+            // 更新策略开发状态为回测中
+            setStrategyDevState(prev => ({
+              ...prev,
+              phase: 'backtesting'
+            }))
+            
+            // 启动回测进度显示
+            setBacktestProgress({
+              isRunning: true,
+              progress: 0,
+              currentStep: '准备回测环境...',
+              detailsExpanded: false,
+              executionLogs: ['🚀 回测任务已启动...', '⚙️ 初始化回测环境...']
+            })
+            
+            // 启动WebSocket连接监听进度
+            // 使用Nginx代理路径，不直接连接8001端口
+            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
+            const host = window.location.host // 使用完整的host:port
+            const token = localStorage.getItem('token') || sessionStorage.getItem('token')
+            
+            // 添加token到查询参数中
+            const wsUrl = `${protocol}//${host}/api/v1/realtime-backtest/ws/${taskId}?token=${encodeURIComponent(token || '')}`
+            console.log('🔍 DEBUG: WebSocket URL (token masked):', wsUrl.replace(/token=[^&]+/, 'token=***'))
+            const ws = new WebSocket(wsUrl)
+
+            ws.onmessage = (event) => {
+              try {
+                const data = JSON.parse(event.data)
+                
+                // 处理认证成功响应
+                if (data.type === 'auth_success') {
+                  console.log('✅ WebSocket认证成功:', data.message)
+                  toast.success('实时进度连接已建立')
+                  return
+                }
+                
+                // 处理错误消息
+                if (data.error) {
+                  console.error('WebSocket错误:', data.error, 'Code:', data.code)
+                  
+                  // 根据错误代码显示不同的错误信息
+                  if (data.code === 4001) {
+                    toast.error('认证超时，请重新登录')
+                  } else if (data.code === 4003) {
+                    toast.error('缺少认证信息')
+                  } else if (data.code === 4004) {
+                    if (data.error.includes('回测任务不存在')) {
+                      toast.error('回测任务不存在或已过期')
+                    } else {
+                      toast.error('认证失败，请重新登录')
+                    }
+                  } else {
+                    toast.error(`连接错误: ${data.error}`)
+                  }
+                  
+                  // 对于认证失败，回退到模拟进度
+                  if (data.code >= 4001 && data.code <= 4005) {
+                    startMockProgressUpdate()
+                  }
+                  return
+                }
+
+                // 处理任务完成消息
+                if (data.type === 'task_finished') {
+                  console.log('📋 回测任务完成:', data.final_status)
+                  return
+                }
+
+                // 更新回测进度状态
+                setBacktestProgress(prev => ({
+                  ...prev,
+                  progress: data.progress || prev.progress,
+                  currentStep: data.current_step || data.currentStep || prev.currentStep,
+                  executionLogs: data.logs || prev.executionLogs
+                }))
+
+                // 如果回测完成
+                if (data.status === 'completed' && data.results) {
+                  setBacktestProgress(prev => ({
+                    ...prev,
+                    isRunning: false,
+                    results: data.results
+                  }))
+                  
+                  setStrategyDevState(prev => ({
+                    ...prev,
+                    phase: 'analysis'
+                  }))
+
+                  toast.success('🎉 回测完成！您可以查看结果并请求AI分析', { duration: 4000 })
+                  ws.close()
+                }
+              } catch (error) {
+                console.error('解析WebSocket消息失败:', error)
+              }
+            }
+
+            ws.onerror = (error) => {
+              console.error('WebSocket连接错误:', error)
+              toast.error('实时进度连接失败，将使用模拟进度')
+              
+              // 回退到模拟进度更新
+              startMockProgressUpdate()
+            }
+
+            ws.onclose = () => {
+              console.log('WebSocket连接已关闭')
+            }
+
             const message = `🚀 正在执行回测分析...
 
 **回测配置**：
@@ -1906,26 +2578,77 @@ ${optimizationContext.analysisResult?.improvement_suggestions?.map((s: string) =
 
 回测正在后台执行中，您可以在下方查看实时进度。回测完成后，我将为您详细分析结果并提供优化建议。`
             
-            // 关闭弹窗
+            console.log('🔧 [VERSION-1925-FINAL-FIX-V3] 添加成功消息并启动进度监控')
+            
+            // ✅ 关闭弹窗 - 只在成功时执行
             setIsBacktestModalOpen(false)
-          }
           
-          // 启动模拟进度更新
-          startMockProgressUpdate()
-        } catch (error) {
-          console.error('回测执行失败:', error)
-          toast.error('回测启动失败，请重试')
-          setBacktestProgress({
-            isRunning: false,
-            progress: 0,
-            currentStep: ''
-          })
-          setStrategyDevState(prev => ({
-            ...prev,
-            phase: 'strategy_ready'
-          }))
-        }
+            // ✅ 启动模拟进度更新 - 只在成功时执行
+            startMockProgressUpdate()
+            
+          } catch (error) {
+            console.error('🔧 [VERSION-1925-FINAL-FIX-V4] 启动实时回测失败:', error)
+            
+            // 检查是否是数据验证错误 - 支持多种错误格式
+            const isValidationError = (
+              // 标准axios错误格式
+              (error.response && (error.response.status === 400 || error.response.status === 422)) ||
+              // 自定义错误格式
+              (error.code === 400 || error.code === 422) ||
+              // 验证类型错误
+              (error.type === 'validation' && error.code === 400)
+            )
+            
+            console.log('🔧 [VERSION-1925-FINAL-FIX-V4] 错误类型检测:', {
+              isValidationError,
+              errorType: error.type,
+              errorCode: error.code,
+              responseStatus: error.response?.status,
+              fullError: error
+            })
+            
+            if (isValidationError) {
+              // 获取错误信息 - 支持多种格式
+              const errorMessage = 
+                error.response?.data?.detail || 
+                error.details?.message || 
+                error.message || 
+                '数据验证失败'
+              
+              console.log('🔧 [VERSION-1925-FINAL-FIX-V4] 验证错误处理 - 只关闭弹窗，绝不启动任何回测逻辑:', errorMessage)
+              toast.error(errorMessage, { duration: 5000 })
+              
+              // ✅ 验证错误时：只关闭弹窗，绝不进入任何回测状态
+              setIsBacktestModalOpen(false)
+              // ✅ 明确return，避免执行后续任何逻辑
+              return
+            }
+            
+            // 其他错误（网络错误等）才使用模拟模式
+            console.log('🔧 [VERSION-1925-FINAL-FIX-V4] 非验证错误，启动模拟模式')
+            toast.error('回测启动失败，将使用模拟模式')
+            
+            // ✅ 关闭弹窗后才启动模拟模式
+            setIsBacktestModalOpen(false)
+            
+            // 回退到原来的模拟逻辑
+            startMockProgressUpdate()
+          }
         }}
+      />
+
+      {/* 策略版本管理模态框 */}
+      <StrategyCodeModal
+        isOpen={isStrategyCodeModalOpen}
+        onClose={() => setIsStrategyCodeModalOpen(false)}
+        strategyVersion={strategyVersions.versions.find(v => v.id === strategyVersions.selectedVersion) || null}
+      />
+      
+      {/* 新的策略代码弹窗 - 从AI对话消息中触发 */}
+      <StrategyCodeModal
+        isOpen={strategyCodeModal.isOpen}
+        onClose={() => setStrategyCodeModal({ isOpen: false, selectedVersion: null })}
+        strategyVersion={strategyCodeModal.selectedVersion}
       />
     </div>
   )
@@ -1936,9 +2659,11 @@ interface BacktestConfigModalProps {
   isOpen: boolean
   onClose: () => void
   onSubmit: (config: BacktestConfig) => Promise<void>
+  strategyVersions: StrategyVersionState
+  onOpenStrategyModal: (versionId: string) => void
 }
 
-const BacktestConfigModal: React.FC<BacktestConfigModalProps> = ({ isOpen, onClose, onSubmit }) => {
+const BacktestConfigModal: React.FC<BacktestConfigModalProps> = ({ isOpen, onClose, onSubmit, strategyVersions, onOpenStrategyModal }) => {
   const { user } = useUserInfo()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [config, setConfig] = useState<BacktestConfig>({
@@ -1976,12 +2701,42 @@ const BacktestConfigModal: React.FC<BacktestConfigModalProps> = ({ isOpen, onClo
     { value: '1d', label: '1天' }
   ]
 
-  const feeRates = [
-    { value: 'vip0', label: 'VIP0 (0.1%/0.1%)' },
-    { value: 'vip1', label: 'VIP1 (0.09%/0.09%)' },
-    { value: 'vip2', label: 'VIP2 (0.08%/0.08%)' },
-    { value: 'vip3', label: 'VIP3 (0.07%/0.07%)' }
-  ]
+  // 智能手续费率配置 - 基于产品类型动态切换
+  const feeRateOptions = {
+    spot: [
+      { value: 'vip0', label: 'VIP0 现货 (0.1%/0.1%)' },
+      { value: 'vip1', label: 'VIP1 现货 (0.09%/0.09%)' },
+      { value: 'vip2', label: 'VIP2 现货 (0.08%/0.08%)' },
+      { value: 'vip3', label: 'VIP3 现货 (0.07%/0.07%)' },
+      { value: 'vip4', label: 'VIP4 现货 (0.06%/0.06%)' }
+    ],
+    perpetual: [
+      { value: 'vip0_perp', label: 'VIP0 合约 (0.02%/0.04%)' },
+      { value: 'vip1_perp', label: 'VIP1 合约 (0.016%/0.04%)' },
+      { value: 'vip2_perp', label: 'VIP2 合约 (0.012%/0.035%)' },
+      { value: 'vip3_perp', label: 'VIP3 合约 (0.008%/0.03%)' },
+      { value: 'vip4_perp', label: 'VIP4 合约 (0.004%/0.025%)' }
+    ],
+    delivery: [
+      { value: 'vip0_delivery', label: 'VIP0 交割 (0.02%/0.05%)' },
+      { value: 'vip1_delivery', label: 'VIP1 交割 (0.016%/0.045%)' },
+      { value: 'vip2_delivery', label: 'VIP2 交割 (0.012%/0.04%)' },
+      { value: 'vip3_delivery', label: 'VIP3 交割 (0.008%/0.035%)' },
+      { value: 'vip4_delivery', label: 'VIP4 交割 (0.004%/0.03%)' }
+    ]
+  }
+
+  // 获取当前产品类型对应的手续费率选项
+  const getCurrentFeeRates = () => {
+    return feeRateOptions[config.productType as keyof typeof feeRateOptions] || feeRateOptions.spot
+  }
+
+  // 产品类型默认手续费率映射
+  const defaultFeeRates = {
+    spot: 'vip0',
+    perpetual: 'vip0_perp',
+    delivery: 'vip0_delivery'
+  }
 
   const popularSymbols = [
     'BTC/USDT', 'ETH/USDT', 'BNB/USDT', 'ADA/USDT', 'DOT/USDT',
@@ -2082,7 +2837,16 @@ const BacktestConfigModal: React.FC<BacktestConfigModalProps> = ({ isOpen, onClo
               <label className="block text-sm font-medium text-gray-700 mb-2">品种类型</label>
               <select
                 value={config.productType}
-                onChange={(e) => setConfig(prev => ({ ...prev, productType: e.target.value }))}
+                onChange={(e) => {
+                  const newProductType = e.target.value
+                  const newFeeRate = defaultFeeRates[newProductType as keyof typeof defaultFeeRates]
+                  setConfig(prev => ({ 
+                    ...prev, 
+                    productType: newProductType,
+                    feeRate: newFeeRate // 🚀 智能切换：根据产品类型自动调整手续费率
+                  }))
+                  console.log(`💰 [BacktestConfig] 产品类型切换: ${newProductType}, 自动调整手续费率: ${newFeeRate}`)
+                }}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 {productTypes.map(type => (
@@ -2139,18 +2903,29 @@ const BacktestConfigModal: React.FC<BacktestConfigModalProps> = ({ isOpen, onClo
               </div>
             </div>
 
-            {/* 手续费率等级 */}
+            {/* 智能手续费率等级选择 */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">手续费率等级</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                手续费率等级
+                <span className="text-sm font-normal text-gray-500 ml-2">
+                  ({config.productType === 'spot' ? '现货' : 
+                    config.productType === 'perpetual' ? '永续合约' : '交割合约'}专用费率)
+                </span>
+              </label>
               <select
                 value={config.feeRate}
                 onChange={(e) => setConfig(prev => ({ ...prev, feeRate: e.target.value }))}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                {feeRates.map(rate => (
+                {getCurrentFeeRates().map(rate => (
                   <option key={rate.value} value={rate.value}>{rate.label}</option>
                 ))}
               </select>
+              <div className="text-xs text-gray-500 mt-1">
+                {config.productType === 'spot' 
+                  ? '💡 现货交易：Maker费率/Taker费率' 
+                  : '💡 合约交易：Maker费率/Taker费率，通常更低'}
+              </div>
             </div>
 
             {/* 初始资金 */}
@@ -2166,26 +2941,87 @@ const BacktestConfigModal: React.FC<BacktestConfigModalProps> = ({ isOpen, onClo
               />
             </div>
 
-            {/* 回测开始时间 */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">开始时间</label>
-              <input
-                type="date"
-                value={config.startDate}
-                onChange={(e) => setConfig(prev => ({ ...prev, startDate: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
+            {/* 增强的时间选择界面 */}
+            <div className="space-y-4">
+              <label className="block text-sm font-medium text-gray-700 mb-3">回测时间期间</label>
+              
+              {/* 预设时间段按钮 */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4">
+                {[
+                  { label: '1个月', months: 1 },
+                  { label: '3个月', months: 3 },
+                  { label: '6个月', months: 6 },
+                  { label: '1年', months: 12 }
+                ].map(({ label, months }) => (
+                  <button
+                    key={months}
+                    type="button"
+                    onClick={() => {
+                      const now = new Date()
+                      const startDate = new Date(now)
+                      startDate.setMonth(now.getMonth() - months)
+                      setConfig(prev => ({
+                        ...prev,
+                        startDate: startDate.toISOString().split('T')[0],
+                        endDate: now.toISOString().split('T')[0]
+                      }))
+                    }}
+                    className="px-3 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
 
-            {/* 回测结束时间 */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">结束时间</label>
-              <input
-                type="date"
-                value={config.endDate}
-                onChange={(e) => setConfig(prev => ({ ...prev, endDate: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
+              {/* 自定义时间选择 */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-600 mb-2">开始时间</label>
+                  <input
+                    type="date"
+                    value={config.startDate}
+                    onChange={(e) => setConfig(prev => ({ ...prev, startDate: e.target.value }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-600 mb-2">结束时间</label>
+                  <input
+                    type="date"
+                    value={config.endDate}
+                    onChange={(e) => setConfig(prev => ({ ...prev, endDate: e.target.value }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+              </div>
+
+              {/* 时间范围验证提示 */}
+              {(() => {
+                const startDateObj = new Date(config.startDate)
+                const endDateObj = new Date(config.endDate)
+                const diffDays = Math.floor((endDateObj.getTime() - startDateObj.getTime()) / (1000 * 60 * 60 * 24))
+                
+                if (startDateObj >= endDateObj) {
+                  return (
+                    <div className="flex items-center text-red-600 text-sm">
+                      <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                      </svg>
+                      请确保结束时间晚于开始时间
+                    </div>
+                  )
+                } else if (diffDays > 0) {
+                  return (
+                    <div className="flex items-center text-green-600 text-sm">
+                      <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
+                      回测期间：{diffDays} 天 ({Math.floor(diffDays / 30)} 个月 {diffDays % 30} 天)
+                    </div>
+                  )
+                }
+                return null
+              })()}
             </div>
           </div>
 
@@ -2233,6 +3069,67 @@ const BacktestConfigModal: React.FC<BacktestConfigModalProps> = ({ isOpen, onClo
             </div>
           </div>
 
+          {/* 🚀 策略版本选择 */}
+          {strategyVersions.versions.length > 0 && (
+            <div className="mt-6">
+              <label className="block text-sm font-medium text-gray-700 mb-3">
+                策略版本选择 ({strategyVersions.versions.length} 个版本可用)
+              </label>
+              <div className="space-y-2">
+                {strategyVersions.versions.map((version, index) => (
+                  <div
+                    key={version.id}
+                    className={`border rounded-lg p-3 cursor-pointer transition-colors ${
+                      config.selectedStrategyVersion === version.id
+                        ? 'border-blue-500 bg-blue-50'
+                        : 'border-gray-300 bg-white hover:border-gray-400 hover:bg-gray-50'
+                    }`}
+                    onClick={() => setConfig(prev => ({ ...prev, selectedStrategyVersion: version.id }))}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                          config.selectedStrategyVersion === version.id
+                            ? 'bg-blue-500 text-white'
+                            : 'bg-gray-300 text-gray-600'
+                        }`}>
+                          V{version.version}
+                        </div>
+                        <div>
+                          <div className="font-medium text-gray-900">{version.title}</div>
+                          <div className="text-sm text-gray-500">{version.description}</div>
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <span className="text-xs text-gray-400">
+                          {version.timestamp.toLocaleString()}
+                        </span>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            onOpenStrategyModal(version.id)
+                          }}
+                          className="text-blue-600 hover:text-blue-800 text-sm underline"
+                        >
+                          查看代码
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              
+              {!config.selectedStrategyVersion && strategyVersions.versions.length > 0 && (
+                <div className="mt-2 text-sm text-amber-600 flex items-center">
+                  <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                  </svg>
+                  请选择一个策略版本进行回测
+                </div>
+              )}
+            </div>
+          )}
+
           {/* 操作按钮 */}
           <div className="flex justify-end space-x-3 mt-8 pt-6 border-t border-gray-200">
             <button
@@ -2257,6 +3154,75 @@ const BacktestConfigModal: React.FC<BacktestConfigModalProps> = ({ isOpen, onClo
               )}
             </button>
           </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// 🚀 策略代码预览模态框组件
+const StrategyCodeModal: React.FC<StrategyCodeModalProps> = ({ isOpen, onClose, strategyVersion }) => {
+  if (!isOpen || !strategyVersion) return null
+
+  const handleCopyCode = () => {
+    navigator.clipboard.writeText(strategyVersion.code)
+    toast.success('策略代码已复制到剪贴板', { icon: '📋' })
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
+      <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
+        <div className="flex items-center justify-between p-6 border-b border-gray-200">
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold">
+              V{strategyVersion.version}
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900">{strategyVersion.title}</h3>
+              <p className="text-sm text-gray-500">{strategyVersion.description}</p>
+            </div>
+          </div>
+          <button
+            onClick={onClose}
+            className="text-gray-400 hover:text-gray-600"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <div className="p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center space-x-4 text-sm text-gray-600">
+              <span>创建时间: {strategyVersion.timestamp.toLocaleString()}</span>
+              <span>代码长度: {strategyVersion.code.length} 字符</span>
+            </div>
+            <button
+              onClick={handleCopyCode}
+              className="flex items-center space-x-2 px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-md text-sm text-gray-700 transition-colors"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+              </svg>
+              <span>复制代码</span>
+            </button>
+          </div>
+
+          <div className="bg-gray-900 rounded-lg overflow-hidden">
+            <pre className="p-4 text-sm text-gray-100 overflow-auto max-h-96 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800">
+              <code className="language-python">{strategyVersion.code}</code>
+            </pre>
+          </div>
+        </div>
+
+        <div className="flex justify-end p-6 border-t border-gray-200">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors"
+          >
+            关闭
+          </button>
         </div>
       </div>
     </div>

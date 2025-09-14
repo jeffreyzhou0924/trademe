@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>回测按钮调试工具</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .success { background-color: #d4edda; color: #155724; }
+        .error { background-color: #f8d7da; color: #721c24; }
+        .warning { background-color: #fff3cd; color: #856404; }
+        .info { background-color: #d1ecf1; color: #0c5460; }
+        pre {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            border: 1px solid #e9ecef;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+        }
+        .test-button {
+            background: linear-gradient(to right, #007bff, #6610f2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            opacity: 0.9;
+        }
+        iframe {
+            width: 100%;
+            height: 300px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 AI对话回测按钮问题调试工具</h1>
+        <p>这个工具用于分析为什么回测按钮不显示的问题</p>
+        
+        <div class="test-section">
+            <h2>1. URL 路径检测测试</h2>
+            <div id="url-test-result"></div>
+            <button class="test-button" onclick="testURLDetection()">测试URL检测逻辑</button>
+        </div>
+
+        <div class="test-section">
+            <h2>2. 消息格式匹配测试</h2>
+            <div id="message-test-result"></div>
+            <button class="test-button" onclick="testMessageMatching()">测试消息匹配</button>
+        </div>
+
+        <div class="test-section">
+            <h2>3. DOM结构检查</h2>
+            <div id="dom-test-result"></div>
+            <button class="test-button" onclick="testDOMStructure()">检查DOM结构</button>
+        </div>
+
+        <div class="test-section">
+            <h2>4. 实时页面检查</h2>
+            <div id="live-test-result"></div>
+            <button class="test-button" onclick="testLivePage()">检查实时页面</button>
+            <iframe id="ai-chat-iframe" src="http://43.167.252.120/ai-chat" style="display: none;"></iframe>
+        </div>
+
+        <div class="test-section">
+            <h2>5. 脚本注入测试</h2>
+            <div id="injection-test-result"></div>
+            <button class="test-button" onclick="testScriptInjection()">测试脚本注入</button>
+        </div>
+    </div>
+
+    <script>
+        // 模拟嵌入脚本的URL检测逻辑
+        function testURLDetection() {
+            const result = document.getElementById('url-test-result');
+            result.innerHTML = '';
+            
+            const tests = [
+                { url: 'http://43.167.252.120/ai-chat', expected: true },
+                { url: 'http://43.167.252.120/ai-chat#session123', expected: true },
+                { url: 'http://43.167.252.120/#/ai-chat', expected: true },
+                { url: 'http://43.167.252.120/login', expected: false },
+                { url: window.location.href, expected: false }
+            ];
+            
+            tests.forEach((test, index) => {
+                const isAiChatPage = test.url.includes('/ai-chat') || test.url.includes('#ai-chat') || test.url.includes('#/ai-chat');
+                const passed = isAiChatPage === test.expected;
+                
+                result.innerHTML += `
+                    <div class="${passed ? 'success' : 'error'} status">
+                        测试 ${index + 1}: ${test.url}<br>
+                        预期: ${test.expected ? '匹配' : '不匹配'}, 实际: ${isAiChatPage ? '匹配' : '不匹配'} 
+                        ${passed ? '✅' : '❌'}
+                    </div>
+                `;
+            });
+        }
+
+        // 测试消息格式匹配
+        function testMessageMatching() {
+            const result = document.getElementById('message-test-result');
+            result.innerHTML = '';
+            
+            const testMessages = [
+                '✅ **策略生成成功！**',
+                '🚀 **开始生成MACD顶背离加仓策略代码！**',
+                '策略代码已生成',
+                '策略生成成功',
+                'MACD顶背离加仓策略',
+                '普通对话消息，不应该匹配',
+                '✅ **策略已成功生成并保存**',
+                '**策略代码已生成并通过验证**'
+            ];
+            
+            testMessages.forEach((message, index) => {
+                const matches = message.includes('🚀 **开始生成MACD顶背离加仓策略代码！**') ||
+                               message.includes('🚀 **开始生成') ||
+                               message.includes('策略代码已生成') ||
+                               message.includes('策略生成成功') ||
+                               message.includes('✅ **策略生成成功！**') ||
+                               message.includes('MACD顶背离加仓策略') ||
+                               message.includes('✅ **策略已成功生成并保存**') ||
+                               message.includes('**策略代码已生成并通过验证**');
+                
+                const shouldMatch = index !== 5; // 第6个消息不应该匹配
+                const passed = matches === shouldMatch;
+                
+                result.innerHTML += `
+                    <div class="${passed ? 'success' : 'error'} status">
+                        消息 ${index + 1}: "${message.substring(0, 50)}..."<br>
+                        匹配结果: ${matches ? '✅ 匹配' : '❌ 不匹配'} ${passed ? '' : '(错误!)'}
+                    </div>
+                `;
+            });
+        }
+
+        // 测试DOM结构检查
+        function testDOMStructure() {
+            const result = document.getElementById('dom-test-result');
+            result.innerHTML = '';
+            
+            // 模拟可能的DOM结构
+            const testContainer = document.createElement('div');
+            testContainer.innerHTML = `
+                <div class="bg-gray-50">这是一个消息容器</div>
+                <div class="bg-blue-50">✅ **策略生成成功！**</div>
+                <div class="flex flex-wrap gap-2">按钮容器</div>
+                <div class="space-x-2">另一个按钮容器</div>
+            `;
+            
+            const messageElements = testContainer.querySelectorAll('.bg-gray-50, .bg-blue-50, [class*="message"], [class*="chat"]');
+            const buttonContainers = testContainer.querySelectorAll('.flex.flex-wrap.gap-2, [class*="button"], [class*="action"], .space-x-2');
+            
+            let foundStrategy = false;
+            for (let element of messageElements) {
+                const text = element.textContent || element.innerText || '';
+                if (text.includes('策略生成成功') || text.includes('✅ **策略生成成功！**')) {
+                    foundStrategy = true;
+                    break;
+                }
+            }
+            
+            result.innerHTML = `
+                <div class="${foundStrategy ? 'success' : 'warning'} status">
+                    消息元素检测: 找到 ${messageElements.length} 个消息元素<br>
+                    策略消息检测: ${foundStrategy ? '✅ 找到策略生成消息' : '❌ 未找到策略消息'}
+                </div>
+                <div class="${buttonContainers.length > 0 ? 'success' : 'error'} status">
+                    按钮容器检测: 找到 ${buttonContainers.length} 个可能的按钮容器
+                </div>
+            `;
+        }
+
+        // 测试实时页面检查（通过iframe）
+        function testLivePage() {
+            const result = document.getElementById('live-test-result');
+            const iframe = document.getElementById('ai-chat-iframe');
+            
+            result.innerHTML = '<div class="info status">正在加载AI对话页面...</div>';
+            iframe.style.display = 'block';
+            
+            setTimeout(() => {
+                try {
+                    // 注意：由于跨域限制，可能无法直接访问iframe内容
+                    // 这里主要是测试iframe是否能加载
+                    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                    if (iframeDoc) {
+                        result.innerHTML = '<div class="success status">✅ 页面加载成功，可以访问iframe内容</div>';
+                    } else {
+                        result.innerHTML = '<div class="warning status">⚠️ 无法访问iframe内容（跨域限制），但页面可能正常加载</div>';
+                    }
+                } catch (error) {
+                    result.innerHTML = `<div class="warning status">⚠️ 跨域限制：${error.message}</div>`;
+                }
+            }, 3000);
+        }
+
+        // 测试脚本注入（模拟实际网站环境）
+        function testScriptInjection() {
+            const result = document.getElementById('injection-test-result');
+            result.innerHTML = '<div class="info status">正在测试脚本注入...</div>';
+            
+            // 创建测试环境
+            const testDiv = document.createElement('div');
+            testDiv.innerHTML = `
+                <div class="bg-blue-50 message-content">
+                    ✅ **策略生成成功！**
+                    <p>MACD顶背离加仓策略已经成功生成并保存到数据库。</p>
+                </div>
+                <div class="flex flex-wrap gap-2 button-container"></div>
+            `;
+            document.body.appendChild(testDiv);
+            
+            // 模拟脚本执行
+            setTimeout(() => {
+                const messageElements = testDiv.querySelectorAll('.bg-gray-50, .bg-blue-50, [class*="message"], [class*="chat"]');
+                let strategyFound = false;
+                
+                for (let element of messageElements) {
+                    const text = element.textContent || element.innerText || '';
+                    if (text.includes('策略生成成功') || text.includes('✅ **策略生成成功！**')) {
+                        strategyFound = true;
+                        
+                        // 尝试添加回测按钮
+                        const buttonContainer = testDiv.querySelector('.flex.flex-wrap.gap-2, [class*="button"], [class*="action"], .space-x-2');
+                        if (buttonContainer) {
+                            const backtestButton = document.createElement('button');
+                            backtestButton.className = 'flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg hover:from-blue-600 hover:to-indigo-700 transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105';
+                            backtestButton.innerHTML = '🚀 测试回测按钮';
+                            backtestButton.onclick = () => alert('回测按钮工作正常！');
+                            buttonContainer.appendChild(backtestButton);
+                        }
+                        break;
+                    }
+                }
+                
+                const buttonAdded = testDiv.querySelector('button');
+                result.innerHTML = `
+                    <div class="${strategyFound ? 'success' : 'error'} status">
+                        策略消息检测: ${strategyFound ? '✅ 找到策略消息' : '❌ 未找到策略消息'}
+                    </div>
+                    <div class="${buttonAdded ? 'success' : 'error'} status">
+                        按钮创建: ${buttonAdded ? '✅ 成功创建回测按钮' : '❌ 未能创建按钮'}
+                    </div>
+                `;
+                
+                if (buttonAdded) {
+                    result.innerHTML += '<div class="info status">👆 上方应该显示一个蓝色的测试回测按钮</div>';
+                }
+                
+                // 清理测试元素（3秒后）
+                setTimeout(() => {
+                    document.body.removeChild(testDiv);
+                }, 3000);
+            }, 1000);
+        }
+
+        // 页面加载完成后自动运行一些测试
+        window.onload = function() {
+            console.log('🔧 回测按钮调试工具已加载');
+        };
+    </script>
+</body>
+</html>

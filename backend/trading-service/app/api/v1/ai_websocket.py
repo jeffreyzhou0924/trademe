@@ -254,6 +254,41 @@ class AIWebSocketHandler:
                         
                         logger.info(f"✅ AI流式对话完成 - Tokens: {tokens_used}, 成本: ${cost_usd:.6f}")
                         
+                        # 🔧 保存用户消息和AI回复到数据库 (修复消息丢失问题)
+                        try:
+                            from app.models.claude_conversation import ClaudeConversation
+                            import json
+                            
+                            # 保存用户消息
+                            user_conversation = ClaudeConversation(
+                                user_id=user_id,
+                                session_id=session_id or stream_chunk.get("session_id", f"ws_{request_id}"),
+                                message_type="user",
+                                content=content,  # 原始用户输入
+                                tokens_used=0,
+                                model=stream_chunk.get("model", "claude-sonnet-4")
+                            )
+                            db.add(user_conversation)
+                            
+                            # 保存AI回复消息
+                            ai_conversation = ClaudeConversation(
+                                user_id=user_id,
+                                session_id=session_id or stream_chunk.get("session_id", f"ws_{request_id}"),
+                                message_type="assistant", 
+                                content=content_full,
+                                tokens_used=tokens_used,
+                                model=stream_chunk.get("model", "claude-sonnet-4")
+                            )
+                            db.add(ai_conversation)
+                            
+                            # 提交数据库事务
+                            await db.commit()
+                            logger.info(f"💾 WebSocket消息已保存到数据库 - Session: {session_id}")
+                            
+                        except Exception as save_error:
+                            logger.error(f"❌ WebSocket消息保存失败: {save_error}")
+                            # 不中断流程，只记录错误
+                        
                         await self.websocket_manager.send_to_user(user_id, {
                             "type": "ai_stream_end",
                             "request_id": request_id,
@@ -676,21 +711,26 @@ async def ai_websocket_endpoint(
                 continue
             
             message_type = message.get("type")
+            logger.info(f"📨 收到WebSocket消息，类型: {message_type}")
             
-            # 处理认证消息
-            if message_type == "authenticate":
+            # 处理认证消息 - 支持 'auth' 和 'authenticate' 两种类型
+            if message_type in ["auth", "authenticate"]:
+                logger.info(f"🔐 开始处理认证消息")
                 try:
                     token = message.get("token")
                     if not token:
+                        logger.warning("❌ 认证失败：缺少token")
                         await websocket.send_json({
                             "type": "auth_error",
                             "message": "缺少认证令牌"
                         })
                         continue
                     
+                    logger.info(f"🔑 验证JWT令牌...")
                     # 验证JWT令牌
                     token_payload = verify_token(token)
                     if not token_payload:
+                        logger.warning("❌ 认证失败：JWT令牌无效")
                         await websocket.send_json({
                             "type": "auth_error",
                             "message": "无效的JWT令牌"
@@ -698,24 +738,31 @@ async def ai_websocket_endpoint(
                         continue
                     
                     user_id = int(token_payload.user_id)
+                    logger.info(f"✅ JWT验证成功，用户ID: {user_id}")
                     
                     # 建立WebSocket连接管理
+                    logger.info(f"📡 建立WebSocket连接管理...")
                     connection_id = await websocket_manager.connect(
                         websocket=websocket,
                         user_id=user_id,
                         session_id=message.get("session_id")
                     )
+                    logger.info(f"✅ 连接ID已创建: {connection_id}")
                     
-                    await websocket.send_json({
+                    # 发送认证成功响应
+                    auth_response = {
                         "type": "auth_success",
                         "connection_id": connection_id,
                         "user_id": user_id,
                         "message": "认证成功，AI对话已准备就绪"
-                    })
+                    }
+                    logger.info(f"📤 发送认证成功响应: {auth_response}")
+                    await websocket.send_json(auth_response)
                     
-                    logger.info(f"用户 {user_id} 通过WebSocket认证成功")
+                    logger.info(f"✅ 用户 {user_id} 通过WebSocket认证成功")
                     
                 except Exception as e:
+                    logger.error(f"❌ 认证异常: {e}", exc_info=True)
                     await websocket.send_json({
                         "type": "auth_error",
                         "message": f"认证失败: {str(e)}"

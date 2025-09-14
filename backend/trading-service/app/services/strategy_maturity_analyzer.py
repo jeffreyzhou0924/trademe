@@ -139,23 +139,25 @@ class StrategyMaturityAnalyzer:
                 logger.error("无法获取Claude客户端")
                 return StrategyMaturityAnalyzer._get_fallback_analysis()
                 
-            response = await claude_client.create_message(
+            response = await claude_client.chat_completion(
                 messages=[{"role": "user", "content": analysis_prompt}],
                 system="你是专业的量化策略分析师，精确评估策略讨论的完整性。返回标准JSON格式。",
                 temperature=0.3
             )
             
-            if response["success"]:
+            if response and not response.get("error"):
                 try:
-                    content = response["content"]
-                    if isinstance(content, list) and len(content) > 0:
-                        # Anthropic原始格式
-                        content = content[0].get("text", "")
-                    elif isinstance(content, str):
-                        # 包装格式
-                        pass
+                    # chat_completion返回的是直接的API响应格式
+                    if "content" in response and isinstance(response["content"], list):
+                        # Anthropic API原始格式
+                        content_blocks = response["content"]
+                        content = ""
+                        for block in content_blocks:
+                            if block.get("type") == "text":
+                                content += block.get("text", "")
                     else:
-                        content = str(content)
+                        # 其他格式
+                        content = str(response.get("content", ""))
                     content = content.strip()
                     if "```json" in content:
                         content = content.split("```json")[1].split("```")[0].strip()
@@ -176,7 +178,8 @@ class StrategyMaturityAnalyzer:
                     logger.error(f"解析成熟度分析JSON失败: {e}")
                     return StrategyMaturityAnalyzer._get_fallback_analysis()
             else:
-                logger.error(f"策略成熟度分析失败: {response}")
+                error_message = response.get("error", "未知错误") if response else "无响应"
+                logger.error(f"策略成熟度分析失败: {error_message}")
                 return StrategyMaturityAnalyzer._get_fallback_analysis()
                 
         except Exception as e:
@@ -191,9 +194,32 @@ class StrategyMaturityAnalyzer:
             
         formatted_messages = []
         for msg in conversation_history[-10:]:  # 只取最近10条消息
-            role = "用户" if msg.get("message_type") == "user" else "AI助手"
-            content = msg.get("content", "")[:200]  # 限制长度
-            formatted_messages.append(f"{role}: {content}")
+            try:
+                # 处理SQLAlchemy对象或字典
+                if hasattr(msg, 'message_type'):
+                    # SQLAlchemy对象 - 使用属性访问
+                    role = "用户" if msg.message_type == "user" else "AI助手"
+                    content = str(msg.content)[:200] if msg.content else ""
+                elif isinstance(msg, dict):
+                    # 字典对象 - 使用字典访问
+                    role = "用户" if msg.get("message_type") == "user" else "AI助手"
+                    content = msg.get("content", "")[:200]
+                else:
+                    # 其他类型，尝试转换为字典
+                    if hasattr(msg, '__dict__'):
+                        msg_dict = msg.__dict__
+                        role = "用户" if msg_dict.get("message_type") == "user" else "AI助手"
+                        content = str(msg_dict.get("content", ""))[:200]
+                    else:
+                        role = "系统"
+                        content = str(msg)[:200]
+                
+                formatted_messages.append(f"{role}: {content}")
+                
+            except Exception as e:
+                logger.warning(f"处理对话消息时出错: {e}, msg type: {type(msg)}")
+                # 跳过有问题的消息
+                continue
             
         return "\n".join(formatted_messages)
     

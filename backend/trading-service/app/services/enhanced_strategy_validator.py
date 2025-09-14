@@ -453,29 +453,38 @@ class EnhancedStrategyValidator:
             if not claude_client:
                 return {"suggestions": ["无法获取Claude客户端，请人工审核风险控制"]}
                 
-            response = await claude_client.create_message(
+            response = await claude_client.chat_completion(
                 messages=[{"role": "user", "content": prompt}],
                 system="你是专业的量化风险管理专家，提供精确的风险分析建议。",
                 temperature=0.2
             )
             
-            if response["success"]:
-                try:
+            # Handle chat_completion response format
+            try:
+                content = ""
+                if "content" in response and isinstance(response["content"], list):
+                    # Extract text from content array
+                    for item in response["content"]:
+                        if item.get("type") == "text":
+                            content = item.get("text", "")
+                            break
+                elif isinstance(response.get("content"), str):
                     content = response["content"]
-                    if isinstance(content, list) and len(content) > 0:
-                        # Anthropic原始格式
-                        content = content[0].get("text", "")
-                    elif isinstance(content, str):
-                        # 包装格式
-                        pass
-                    else:
-                        content = str(content)
-                    content = content.strip()
-                    if "```json" in content:
-                        content = content.split("```json")[1].split("```")[0]
-                    return json.loads(content)
-                except json.JSONDecodeError:
-                    return {"suggestions": ["AI分析解析失败，建议人工复核风险控制"]}
+                else:
+                    logger.error(f"Unexpected response format: {response}")
+                    return {"suggestions": ["AI响应格式异常，建议人工复核风险控制"]}
+                
+                content = content.strip()
+                if "```json" in content:
+                    content = content.split("```json")[1].split("```")[0]
+                return json.loads(content)
+                
+            except json.JSONDecodeError as e:
+                logger.error(f"JSON解析失败: {e}, content: {content}")
+                return {"suggestions": ["AI分析解析失败，建议人工复核风险控制"]}
+            except Exception as e:
+                logger.error(f"处理AI响应失败: {e}")
+                return {"suggestions": ["AI响应处理失败，建议人工复核风险控制"]}
             
         except Exception as e:
             logger.error(f"AI风险分析失败: {e}")

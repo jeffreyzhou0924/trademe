@@ -358,36 +358,46 @@ class AIOptimizationConversationHandler:
                 logger.error("无法获取Claude客户端")
                 return
                 
-            response = await claude_client.create_message(
+            response = await claude_client.chat_completion(
                 messages=[{"role": "user", "content": optimization_prompt}],
                 system="你是专业的量化策略优化师，擅长根据回测结果优化交易策略。",
                 temperature=0.3
             )
             
-            if response.get("success") and response.get("content"):
-                # 处理响应格式兼容性
-                content = response["content"]
-                if isinstance(content, list) and len(content) > 0:
-                    # Anthropic原始格式
-                    content = content[0].get("text", "")
-                elif isinstance(content, str):
-                    # 包装格式
-                    pass
+            # Handle chat_completion response format
+            try:
+                content = ""
+                if "content" in response and isinstance(response["content"], list):
+                    # Extract text from content array
+                    for item in response["content"]:
+                        if item.get("type") == "text":
+                            content = item.get("text", "")
+                            break
+                elif isinstance(response.get("content"), str):
+                    content = response["content"]
                 else:
-                    content = str(content)
+                    content = str(response.get("content", ""))
+                
+                if content:
+                    optimized_code = self._extract_optimized_code(content)
                     
-                optimized_code = self._extract_optimized_code(content)
-                
-                # 保存优化结果
+                    # 保存优化结果
+                    self.conversation_states[session_id].update({
+                        "optimized_code": optimized_code,
+                        "optimization_complete": True,
+                        "stage": "optimization_complete"
+                    })
+                    
+                    logger.info(f"策略自动优化完成: session={session_id}")
+                else:
+                    logger.error("AI返回空内容")
+                    
+            except Exception as e:
+                logger.error(f"处理AI优化响应失败: {e}")
                 self.conversation_states[session_id].update({
-                    "optimized_code": optimized_code,
-                    "optimization_complete": True,
-                    "stage": "optimization_complete"
+                    "optimization_error": str(e),
+                    "stage": "optimization_error"
                 })
-                
-                logger.info(f"策略自动优化完成: session={session_id}")
-            else:
-                logger.error(f"AI优化失败: {response}")
                 
         except Exception as e:
             logger.error(f"执行自动优化异常: {e}")

@@ -345,20 +345,28 @@ class CollaborativeStrategyOptimizer:
                     "message": "让我们继续讨论您关心的问题。您希望优先解决哪个方面的问题？"
                 }
             
-            response = await claude_client.create_message(
+            response = await claude_client.chat_completion(
                 messages=[{"role": "user", "content": context_prompt}],
                 system="你是一位经验丰富的量化交易策略顾问，擅长教育性地指导用户优化交易策略。",
                 temperature=0.7
             )
             
-            # 处理响应格式
-            content = response.get("content", "")
-            if isinstance(content, list) and len(content) > 0:
-                ai_response = content[0].get("text", "")
-            elif isinstance(content, str):
-                ai_response = content
-            else:
-                ai_response = str(content)
+            # Handle chat_completion response format
+            ai_response = ""
+            try:
+                if "content" in response and isinstance(response["content"], list):
+                    # Extract text from content array
+                    for item in response["content"]:
+                        if item.get("type") == "text":
+                            ai_response = item.get("text", "")
+                            break
+                elif isinstance(response.get("content"), str):
+                    ai_response = response["content"]
+                else:
+                    ai_response = str(response.get("content", ""))
+            except Exception as e:
+                logger.error(f"处理AI响应失败: {e}")
+                ai_response = ""
             
             if ai_response:
                 # 添加引导性结尾
@@ -582,20 +590,28 @@ class CollaborativeStrategyOptimizer:
                     "message": "让我们继续细化方案的具体实施步骤。您更倾向于哪种改进方式？"
                 }
             
-            response = await claude_client.create_message(
+            response = await claude_client.chat_completion(
                 messages=[{"role": "user", "content": prompt}],
                 system="你是量化交易策略优化专家，擅长引导用户制定具体的改进方案。",
                 temperature=0.6
             )
             
-            # 处理响应格式
-            content = response.get("content", "")
-            if isinstance(content, list) and len(content) > 0:
-                ai_response = content[0].get("text", "")
-            elif isinstance(content, str):
-                ai_response = content
-            else:
-                ai_response = str(content)
+            # Handle chat_completion response format
+            ai_response = ""
+            try:
+                if "content" in response and isinstance(response["content"], list):
+                    # Extract text from content array
+                    for item in response["content"]:
+                        if item.get("type") == "text":
+                            ai_response = item.get("text", "")
+                            break
+                elif isinstance(response.get("content"), str):
+                    ai_response = response["content"]
+                else:
+                    ai_response = str(response.get("content", ""))
+            except Exception as e:
+                logger.error(f"处理AI响应失败: {e}")
+                ai_response = ""
             
             if ai_response:
                 ai_response += "\n\n您对这个方案还有什么疑问，或者我们是否可以确定具体的实施细节？"
@@ -746,50 +762,61 @@ class CollaborativeStrategyOptimizer:
             """
             
             # 获取正确的Claude客户端
-            claude_client = await cls._get_claude_client()
+            claude_client = await self._get_claude_client()
             if not claude_client:
-                return {
-                    "success": False,
-                    "error": "无法获取Claude客户端",
-                    "strategy_code": original_code  # 返回原始代码
-                }
+                state.update({
+                    "code_generation_error": "无法获取Claude客户端",
+                    "stage": "generation_error"
+                })
+                return
             
-            response = await claude_client.create_message(
+            response = await claude_client.chat_completion(
                 messages=[{"role": "user", "content": optimization_prompt}],
                 system="你是专业的量化策略优化师，严格按照用户确认的方案生成优化代码。",
                 temperature=0.3
             )
             
-            # 处理Anthropic原始API响应格式
-            if response.get("success"):
-                content = response["content"]
-                if isinstance(content, list) and len(content) > 0:
-                    # Anthropic原始格式
-                    content = content[0].get("text", "")
-                elif isinstance(content, str):
-                    # 包装格式
-                    pass
+            # Handle chat_completion response format
+            try:
+                content = ""
+                if "content" in response and isinstance(response["content"], list):
+                    # Extract text from content array
+                    for item in response["content"]:
+                        if item.get("type") == "text":
+                            content = item.get("text", "")
+                            break
+                elif isinstance(response.get("content"), str):
+                    content = response["content"]
                 else:
-                    content = str(content)
+                    content = str(response.get("content", ""))
+                
+                if content:
                     
-                optimized_code = self._extract_code_from_response(content)
-                
-                # 保存优化结果
+                    optimized_code = self._extract_code_from_response(content)
+                    
+                    # 保存优化结果
+                    state.update({
+                        "optimized_code": optimized_code,
+                        "optimization_explanation": content,
+                        "code_generation_complete": True,
+                        "stage": "code_generated"
+                    })
+                    
+                    # 自动触发回测
+                    await self._trigger_automated_backtest(session_id, state)
+                    
+                    logger.info(f"协作代码生成完成: session={session_id}")
+                else:
+                    logger.error("空响应内容")
+                    state.update({
+                        "code_generation_error": "AI返回空内容",
+                        "stage": "generation_error"
+                    })
+                    
+            except Exception as e:
+                logger.error(f"处理AI响应失败: {e}")
                 state.update({
-                    "optimized_code": optimized_code,
-                    "optimization_explanation": content,
-                    "code_generation_complete": True,
-                    "stage": "code_generated"
-                })
-                
-                # 自动触发回测
-                await self._trigger_automated_backtest(session_id, state)
-                
-                logger.info(f"协作代码生成完成: session={session_id}")
-            else:
-                logger.error(f"协作代码生成失败: {response}")
-                state.update({
-                    "code_generation_error": "AI代码生成失败",
+                    "code_generation_error": f"处理AI响应失败: {str(e)}",
                     "stage": "generation_error"
                 })
                 

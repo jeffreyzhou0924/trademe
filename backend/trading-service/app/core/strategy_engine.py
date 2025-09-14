@@ -40,15 +40,23 @@ class SignalType(Enum):
 @dataclass
 class TradingSignal:
     """交易信号数据类"""
-    strategy_id: int
-    symbol: str
     signal_type: SignalType
+    symbol: str
     price: float
     quantity: float
-    timestamp: datetime
+    strategy_id: int = 0
+    timestamp: datetime = None
     reason: str = ""
     confidence: float = 1.0
     metadata: Dict[str, Any] = None
+    stop_loss: Optional[float] = None
+    take_profit: Optional[float] = None
+    
+    def __post_init__(self):
+        if self.timestamp is None:
+            self.timestamp = datetime.now()
+        if self.metadata is None:
+            self.metadata = {}
     
     def to_dict(self) -> Dict[str, Any]:
         """转换为字典"""
