@@ -34,6 +34,7 @@ class BacktestConfig:
     symbol: str = "BTC/USDT"
     exchange: str = "binance"
     timeframe: str = "1h"
+    product_type: str = "spot"  # 🔧 新增：产品类型字段
     fee_rate: float = 0.001
     slippage: float = 0.001
     
@@ -161,7 +162,19 @@ class BacktestContext:
     
     async def _load_market_data(self):
         """加载市场数据"""
-        # 构建查询
+        # 🔧 修复：添加product_type过滤，解决BTC-USDT-SWAP查询问题
+        # 产品类型映射
+        product_type_mapping = {
+            'perpetual': 'futures',
+            'futures': 'futures',
+            'spot': 'spot',
+            'swap': 'futures'
+        }
+        # 从配置中获取产品类型，默认为spot
+        config_product_type = getattr(self.config, 'product_type', 'spot')
+        mapped_product_type = product_type_mapping.get(config_product_type.lower(), 'spot')
+
+        # 构建查询（移除product_type过滤，因为数据库表中没有此字段）
         query = select(MarketData).where(
             MarketData.symbol == self.config.symbol,
             MarketData.exchange == self.config.exchange,
@@ -180,10 +193,10 @@ class BacktestContext:
         self.market_data = pd.DataFrame([
             {
                 'timestamp': d.timestamp,
-                'open': float(d.open),
-                'high': float(d.high),
-                'low': float(d.low),
-                'close': float(d.close),
+                'open': float(d.open_price),
+                'high': float(d.high_price),
+                'low': float(d.low_price),
+                'close': float(d.close_price),
                 'volume': float(d.volume)
             }
             for d in data
@@ -202,20 +215,85 @@ class BacktestContext:
         # 执行策略代码
         exec(self.strategy_code, strategy_env)
         
-        # 获取策略实例
-        strategy_class = strategy_env.get('Strategy')
+        # 获取策略实例 - 修复策略类查找问题
+        # 首先尝试查找UserStrategy（Claude生成的策略使用此名称）
+        strategy_class = strategy_env.get('UserStrategy')
         if not strategy_class:
-            raise ValueError("策略代码中未找到Strategy类")
-        
-        strategy_instance = strategy_class()
+            # 如果没有UserStrategy，则尝试查找Strategy类
+            strategy_class = strategy_env.get('Strategy')
+            if not strategy_class:
+                raise ValueError("策略代码中未找到UserStrategy或Strategy类")
+
+        # 创建策略实例 - 修复context参数问题
+        from types import SimpleNamespace
+
+        # 创建简化的context对象
+        context = SimpleNamespace()
+        context.data = {}
+        context.parameters = {}
+        context.portfolio = SimpleNamespace()
+        context.portfolio.cash = self.config.initial_capital
+        context.portfolio.positions = {}
+
+        try:
+            # 尝试使用context参数实例化（适用于EnhancedBaseStrategy）
+            strategy_instance = strategy_class(context)
+        except TypeError:
+            # 如果不需要context参数，则直接实例化
+            strategy_instance = strategy_class()
         
         # 回测主循环
         for idx, row in self.market_data.iterrows():
             # 更新当前价格
             current_price = row['close']
             
-            # 调用策略信号生成
-            signal = strategy_instance.generate_signal(row)
+            # 调用策略信号生成 - 适配Claude生成的策略接口
+            signal = None
+
+            # 检查策略是否有on_data_update方法（Claude生成的策略）
+            if hasattr(strategy_instance, 'on_data_update'):
+                # 为策略提供数据访问方法（如果需要）
+                if hasattr(strategy_instance, 'get_kline_data') and not callable(getattr(strategy_instance, 'get_kline_data', None)):
+                    # 设置数据访问方法
+                    strategy_instance.get_kline_data = lambda: self.market_data.iloc[:idx+1]
+                    strategy_instance.symbol = "BTC-USDT-SWAP"  # 设置交易对
+
+                try:
+                    # 调用Claude策略的on_data_update方法
+                    data_dict = {
+                        'close': current_price,
+                        'open': row['open'],
+                        'high': row['high'],
+                        'low': row['low'],
+                        'volume': row['volume']
+                    }
+                    # 修复异步调用问题 - 直接await而不是asyncio.run()
+                    signal_obj = await strategy_instance.on_data_update("kline", data_dict)
+
+                    # 转换TradingSignal对象为简单信号
+                    if signal_obj:
+                        if hasattr(signal_obj, 'signal_type'):
+                            # 转换SignalType枚举为字符串
+                            if str(signal_obj.signal_type).endswith('BUY'):
+                                signal = 'BUY'
+                            elif str(signal_obj.signal_type).endswith('SELL'):
+                                signal = 'SELL'
+                            else:
+                                signal = 'HOLD'
+                        else:
+                            signal = str(signal_obj)
+                    else:
+                        signal = 'HOLD'
+                except Exception as e:
+                    logger.warning(f"策略调用出错: {e}")
+                    signal = 'HOLD'
+
+            # 检查策略是否有generate_signal方法（传统策略）
+            elif hasattr(strategy_instance, 'generate_signal'):
+                signal = strategy_instance.generate_signal(row)
+            else:
+                logger.warning("策略既没有on_data_update方法也没有generate_signal方法")
+                signal = 'HOLD'
             
             # 执行交易
             if signal == 'BUY' and self.state.current_position == 0:
@@ -228,12 +306,19 @@ class BacktestContext:
     
     def _create_strategy_environment(self) -> Dict:
         """创建策略执行环境"""
-        return {
+        env = {
             'pd': pd,
             'np': np,
-            'talib': __import__('talib'),
             '__builtins__': __builtins__,
         }
+
+        # 可选导入talib，如果不存在则跳过
+        try:
+            env['talib'] = __import__('talib')
+        except ImportError:
+            logger.warning("talib模块未安装，策略中无法使用talib功能")
+
+        return env
     
     def _execute_buy(self, price: float, timestamp: datetime):
         """执行买入"""

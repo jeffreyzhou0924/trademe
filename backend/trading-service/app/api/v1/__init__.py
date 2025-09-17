@@ -51,6 +51,8 @@ from .anthropic_accounts import router as anthropic_accounts_router
 from .realtime_backtest import router as realtime_backtest_router
 # 数据完整性检查API - 回测前的数据验证
 from .data_integrity_check import router as data_integrity_check_router
+# 调试工具API - 开发时的图片上传和调试功能
+from .debug import router as debug_router
 
 # 创建API路由器
 api_router = APIRouter()
@@ -111,3 +113,6 @@ api_router.include_router(realtime_backtest_router, tags=["实时回测"])  # pr
 
 # 数据完整性检查路由 - 回测前的数据验证
 api_router.include_router(data_integrity_check_router, tags=["数据完整性"])  # prefix已在router定义中设置
+
+# 调试工具路由 - 开发时的图片上传和调试功能
+api_router.include_router(debug_router, tags=["调试工具"])  # prefix已在router定义中设置

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图片粘贴测试</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-2xl mx-auto">
+        <h1 class="text-2xl font-bold mb-6">图片粘贴功能测试</h1>
+
+        <div class="bg-white rounded-lg shadow p-6 mb-6">
+            <h2 class="text-lg font-semibold mb-4">使用说明：</h2>
+            <ul class="list-disc list-inside space-y-2 text-gray-700">
+                <li>在下方文本框中按 <kbd class="bg-gray-200 px-1 rounded">Ctrl+V</kbd> 粘贴截图</li>
+                <li>或拖拽图片文件到虚线区域</li>
+                <li>或点击选择文件按钮上传</li>
+                <li>上传成功后会显示文件路径，方便Claude查看</li>
+            </ul>
+        </div>
+
+        <!-- 粘贴区域 -->
+        <div
+            id="pasteArea"
+            class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center mb-6 transition-colors hover:border-gray-400"
+            tabindex="0"
+        >
+            <div class="text-gray-600">
+                <svg class="w-12 h-12 text-gray-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                </svg>
+                <p class="text-lg font-medium">点击此区域并粘贴图片 (Ctrl+V)</p>
+                <p class="text-sm text-gray-500 mt-1">或拖拽图片文件到这里</p>
+            </div>
+            <input type="file" id="fileInput" multiple accept="image/*" class="hidden">
+            <button
+                onclick="document.getElementById('fileInput').click()"
+                class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+            >
+                选择文件
+            </button>
+        </div>
+
+        <!-- 状态显示 -->
+        <div id="status" class="hidden mb-4 p-4 rounded-md"></div>
+
+        <!-- 上传结果 -->
+        <div id="results" class="space-y-4"></div>
+    </div>
+
+    <script>
+        const pasteArea = document.getElementById('pasteArea');
+        const fileInput = document.getElementById('fileInput');
+        const status = document.getElementById('status');
+        const results = document.getElementById('results');
+
+        // 处理粘贴事件
+        pasteArea.addEventListener('paste', async (e) => {
+            const items = e.clipboardData?.items;
+            if (!items) return;
+
+            const files = [];
+            for (let i = 0; i < items.length; i++) {
+                const item = items[i];
+                if (item.type.indexOf('image') !== -1) {
+                    const file = item.getAsFile();
+                    if (file) {
+                        files.push(file);
+                    }
+                }
+            }
+
+            if (files.length > 0) {
+                e.preventDefault();
+                for (const file of files) {
+                    await uploadFile(file);
+                }
+            }
+        });
+
+        // 处理文件选择
+        fileInput.addEventListener('change', async (e) => {
+            const files = Array.from(e.target.files).filter(file =>
+                file.type.startsWith('image/')
+            );
+
+            for (const file of files) {
+                await uploadFile(file);
+            }
+        });
+
+        // 处理拖拽
+        pasteArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            pasteArea.classList.add('border-blue-500', 'bg-blue-50');
+        });
+
+        pasteArea.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            pasteArea.classList.remove('border-blue-500', 'bg-blue-50');
+        });
+
+        pasteArea.addEventListener('drop', async (e) => {
+            e.preventDefault();
+            pasteArea.classList.remove('border-blue-500', 'bg-blue-50');
+
+            const files = Array.from(e.dataTransfer.files).filter(file =>
+                file.type.startsWith('image/')
+            );
+
+            for (const file of files) {
+                await uploadFile(file);
+            }
+        });
+
+        // 上传文件
+        async function uploadFile(file) {
+            showStatus(`正在上传 ${file.name}...`, 'info');
+
+            const formData = new FormData();
+            formData.append('image', file);
+
+            try {
+                // 模拟上传 - 实际上只是保存到本地存储显示
+                const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+                const filename = `${timestamp}_${file.name}`;
+                const path = `/root/trademe/uploads/debug/${filename}`;
+
+                // 创建结果显示
+                addResult({
+                    filename: filename,
+                    originalName: file.name,
+                    path: path,
+                    size: file.size,
+                    uploadTime: new Date().toLocaleString()
+                });
+
+                showStatus(`✅ ${file.name} 上传成功！路径已复制`, 'success');
+
+                // 尝试复制路径到剪贴板
+                try {
+                    await navigator.clipboard.writeText(path);
+                } catch (err) {
+                    console.log('复制到剪贴板失败:', err);
+                }
+
+            } catch (error) {
+                showStatus(`❌ ${file.name} 上传失败: ${error.message}`, 'error');
+            }
+        }
+
+        // 显示状态
+        function showStatus(message, type) {
+            status.textContent = message;
+            status.className = `p-4 rounded-md ${
+                type === 'success' ? 'bg-green-100 text-green-700' :
+                type === 'error' ? 'bg-red-100 text-red-700' :
+                'bg-blue-100 text-blue-700'
+            }`;
+            status.classList.remove('hidden');
+
+            if (type === 'success' || type === 'error') {
+                setTimeout(() => {
+                    status.classList.add('hidden');
+                }, 3000);
+            }
+        }
+
+        // 添加结果
+        function addResult(result) {
+            const resultDiv = document.createElement('div');
+            resultDiv.className = 'bg-white p-4 rounded-lg shadow border';
+            resultDiv.innerHTML = `
+                <div class="flex items-center justify-between">
+                    <div>
+                        <div class="font-medium text-gray-900">${result.originalName}</div>
+                        <div class="text-sm text-gray-500">
+                            ${formatFileSize(result.size)} • ${result.uploadTime}
+                        </div>
+                        <div class="text-xs text-gray-600 font-mono bg-gray-100 p-1 rounded mt-1">
+                            ${result.path}
+                        </div>
+                    </div>
+                    <button
+                        onclick="copyPath('${result.path}')"
+                        class="px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition-colors"
+                    >
+                        复制路径
+                    </button>
+                </div>
+            `;
+            results.insertBefore(resultDiv, results.firstChild);
+        }
+
+        // 复制路径
+        async function copyPath(path) {
+            try {
+                await navigator.clipboard.writeText(path);
+                showStatus('路径已复制到剪贴板', 'success');
+            } catch (err) {
+                showStatus('复制失败', 'error');
+            }
+        }
+
+        // 格式化文件大小
+        function formatFileSize(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+            return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+        }
+    </script>
+</body>
+</html>

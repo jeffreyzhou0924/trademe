@@ -31,8 +31,8 @@ class DataRequest:
 class EnhancedBaseStrategy(ABC):
     """增强策略基类"""
     
-    def __init__(self):
-        self.context = None
+    def __init__(self, context=None):
+        self.context = context
         self._kline_data = None
     
     @abstractmethod

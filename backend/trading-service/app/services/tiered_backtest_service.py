@@ -19,7 +19,7 @@ from loguru import logger
 from app.models.user import User
 from app.models.strategy import Strategy
 from app.models.backtest import Backtest
-from app.services.backtest_service import BacktestEngine
+from app.services.backtest_service import create_backtest_engine
 from app.utils.data_validation import DataValidator
 
 
@@ -86,7 +86,7 @@ class BasicBacktestEngine(BaseBacktestEngine):
     
     def __init__(self):
         super().__init__(UserTier.BASIC)
-        self.engine = BacktestEngine()  # 复用现有引擎
+        self.engine = create_backtest_engine()  # 使用工厂方法创建无状态引擎
         
     async def run_backtest(self, strategy: Strategy, params: Dict[str, Any]) -> Dict[str, Any]:
         """运行K线级回测"""
@@ -146,7 +146,7 @@ class HybridBacktestEngine(BaseBacktestEngine):
     
     def __init__(self):
         super().__init__(UserTier.PRO)
-        self.basic_engine = BacktestEngine()
+        self.basic_engine = create_backtest_engine()
         
     async def run_backtest(self, strategy: Strategy, params: Dict[str, Any]) -> Dict[str, Any]:
         """运行混合精度回测"""

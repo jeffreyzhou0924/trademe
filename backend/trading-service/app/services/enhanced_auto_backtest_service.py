@@ -11,9 +11,10 @@ from datetime import datetime, timedelta
 from decimal import Decimal
 from loguru import logger
 
-from app.services.backtest_service import BacktestEngine, BacktestService
+from app.services.backtest_engine_stateless import StatelessBacktestEngine, BacktestConfig
 from app.services.strategy_optimization_advisor import StrategyOptimizationAdvisor
 from app.services.auto_backtest_service import calculate_performance_grade, check_performance_targets
+from app.database import get_db
 
 
 class EnhancedAutoBacktestService:
@@ -123,41 +124,68 @@ class EnhancedAutoBacktestService:
     @staticmethod
     async def _run_base_backtest(
         strategy_code: str,
-        intent: Dict[str, Any], 
+        intent: Dict[str, Any],
         user_id: int,
         config: Dict[str, Any]
     ) -> Dict[str, Any]:
-        """运行基础回测"""
-        
-        # 构建回测参数
-        backtest_config = {
-            "symbol": config.get("symbol", "BTC-USDT-SWAP"),
-            "start_date": datetime.now() - timedelta(days=config.get("days_back", 30)),
-            "end_date": datetime.now(),
-            "initial_capital": config.get("initial_capital", 10000),
-            "timeframe": config.get("timeframe", "1h")
-        }
-        
-        # 这里应该调用实际的回测引擎
-        # 为演示目的，返回模拟结果
-        
-        mock_performance = {
-            "total_return": 0.08,      # 8% 收益率
-            "sharpe_ratio": 0.45,      # 较低的夏普比率
-            "max_drawdown": -0.25,     # 25% 回撤（较高）
-            "win_rate": 0.35,          # 35% 胜率（较低）
-            "total_trades": 45,
-            "profit_factor": 0.85,     # 盈亏比小于1
-            "avg_return_per_trade": 0.0018,
-            "volatility": 0.18
-        }
-        
-        return {
-            "success": True,
-            "performance": mock_performance,
-            "config": backtest_config,
-            "trade_details": []
-        }
+        """运行基础回测 - 使用修复后的无状态引擎"""
+        try:
+            logger.info("🚀 使用无状态回测引擎执行真实回测")
+
+            # 构建回测配置
+            start_date = datetime.now() - timedelta(days=config.get("days_back", 30))
+            end_date = datetime.now()
+
+            backtest_config = BacktestConfig(
+                strategy_code=strategy_code,
+                symbol=config.get("symbol", "BTC-USDT-SWAP"),
+                exchange="okx",
+                timeframe=config.get("timeframe", "1h"),
+                start_date=start_date,
+                end_date=end_date,
+                initial_capital=config.get("initial_capital", 10000.0),
+                user_id=user_id
+            )
+
+            # 获取数据库连接并运行回测
+            async for db in get_db():
+                try:
+                    result = await StatelessBacktestEngine.run_backtest(backtest_config, db)
+
+                    if result.success:
+                        logger.info("✅ 无状态引擎回测成功")
+                        return {
+                            "success": True,
+                            "performance": result.metrics,
+                            "config": {
+                                "symbol": backtest_config.symbol,
+                                "start_date": start_date,
+                                "end_date": end_date,
+                                "initial_capital": backtest_config.initial_capital,
+                                "timeframe": backtest_config.timeframe
+                            },
+                            "trade_details": result.trades
+                        }
+                    else:
+                        logger.error(f"❌ 回测失败: {result.error}")
+                        return {
+                            "success": False,
+                            "error": f"回测执行失败: {result.error}",
+                            "performance": {},
+                            "trade_details": []
+                        }
+                finally:
+                    await db.close()
+                    break
+
+        except Exception as e:
+            logger.error(f"❌ 回测执行异常: {e}")
+            return {
+                "success": False,
+                "error": f"回测执行异常: {str(e)}",
+                "performance": {},
+                "trade_details": []
+            }
     
     @staticmethod
     def _generate_performance_summary(

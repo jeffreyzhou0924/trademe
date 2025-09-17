@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { useAuthStore } from '../../store/authStore'
 import { useThemeStore } from '../../store/themeStore'
 import { useLanguageStore } from '../../store/languageStore'
+import ImagePasteButton from '../debug/ImagePasteButton'
 
 interface MainLayoutProps {
   children: ReactNode
@@ -181,6 +182,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         <main className="p-8">
           {children}
         </main>
+
+        {/* 图片粘贴调试按钮 - 支持开发和生产环境 */}
+        <ImagePasteButton />
       </div>
     </div>
   )

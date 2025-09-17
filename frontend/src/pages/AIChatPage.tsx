@@ -13,6 +13,22 @@ import type { BacktestResult } from '../types/backtest'
 import { analyzeStrategyMessage, strategyAnalyzer } from '../utils/strategyAnalyzer'
 import type { StrategyAnalysisResult, SmartDetectionResult, StrategyMessageState } from '../types/strategyAnalysis'
 
+// 格式化估计时间函数
+const formatEstimatedTime = (seconds?: number): string => {
+  if (!seconds || seconds < 0) return '计算中...'
+
+  if (seconds < 60) {
+    return `${Math.round(seconds)} 秒`
+  } else if (seconds < 3600) {
+    const minutes = Math.round(seconds / 60)
+    return `${minutes} 分钟`
+  } else {
+    const hours = Math.floor(seconds / 3600)
+    const minutes = Math.round((seconds % 3600) / 60)
+    return `${hours}小时${minutes}分钟`
+  }
+}
+
 // 策略开发状态类型 - 按照完整闭环流程设计
 interface StrategyDevelopmentState {
   phase: 'discussion' | 'development_confirmed' | 'developing' | 'strategy_ready' | 
@@ -146,7 +162,7 @@ const filterMessageContent = (content: string | undefined | null, role: 'user' |
   }
 
   // 替换代码块为策略开发状态提示
-  let filteredContent = content.replace(codeBlockRegex, '\n🎯 **策略开发完成**\n\n策略已在后台生成并保存至系统。您现在可以：\n• 点击下方"配置回测"来验证策略性能\n• 回测完成后，我将帮您分析结果并提供优化建议\n• 根据分析结果，我们可以进一步优化策略\n')
+  let filteredContent = content.replace(codeBlockRegex, '\n🎯 **策略开发完成**\n\n策略已在后台生成并保存至系统。您现在可以：\n• 点击下方"回测策略"来验证策略性能\n• 回测完成后，我将帮您分析结果并提供优化建议\n• 根据分析结果，我们可以进一步优化策略\n')
   
   return filteredContent.trim()
 }
@@ -477,6 +493,7 @@ const AIChatPage: React.FC = () => {
     detailsExpanded: boolean
     results?: any
     executionLogs?: string[]
+    estimatedRemainingSeconds?: number
   }>({
     isRunning: false,
     progress: 0,
@@ -667,11 +684,11 @@ const AIChatPage: React.FC = () => {
       })
 
       // 检测策略状态的核心函数 - 修复：检查整个对话历史
-      const checkStrategyState = () => {
-        // 🚨 紧急修复：ma5/ma6会话特殊处理 - 数据库中无数据时的fallback机制  
+      const checkStrategyState = async () => {
+        // 🚨 紧急修复：ma5/ma6会话特殊处理 - 数据库中无数据时的fallback机制
         if ((currentSession.session_id === 'ma5' || currentSession.session_id === 'ma6') && messages.length === 0) {
           console.log(`🎯 [QuickFix] 检测到${currentSession.session_id}会话且无历史消息，查询数据库中的真实策略ID`)
-          
+
           // 尝试查询数据库中是否有对应的策略
           let realStrategyId = currentSession.session_id
           try {
@@ -679,9 +696,8 @@ const AIChatPage: React.FC = () => {
               page: 1,
               per_page: 100
             })
-            
-            const matchedStrategy = strategies.strategies.find(s => 
-              s.ai_session_id === currentSession.session_id ||
+
+            const matchedStrategy = strategies.strategies.find(s =>
               s.name?.includes(currentSession.session_id)
             )
             
@@ -773,10 +789,10 @@ const AIChatPage: React.FC = () => {
                 })
                 
                 // 查找与当前会话ID匹配的策略
-                const matchedStrategy = strategies.strategies.find(s => 
-                  s.ai_session_id === currentSession.session_id ||
+                const matchedStrategy = strategies.strategies.find(s =>
                   s.name?.includes('ma6') || // 兼容ma6会话
-                  s.name?.includes(currentSession.name || '')
+                  s.name?.includes(currentSession.name || '') ||
+                  s.name?.includes(currentSession.session_id)
                 )
                 
                 if (matchedStrategy) {
@@ -818,7 +834,7 @@ const AIChatPage: React.FC = () => {
       // 等待消息加载完成后再进行状态检测
       if (messagesLoaded) {
         console.log('✅ [AIChatPage] 消息加载完成，开始策略状态检测')
-        checkStrategyState()
+        checkStrategyState().catch(console.error)
       } else if (!messagesLoading && messages.length === 0) {
         // 如果没有消息在加载且消息为空，直接设置为discussion状态
         console.log('📝 [AIChatPage] 没有消息且不在加载中，直接设置为discussion状态')
@@ -1756,7 +1772,7 @@ class UserStrategy(EnhancedBaseStrategy):
                   
                   {/* 预计剩余时间 */}
                   <div className="flex items-center justify-between text-xs text-blue-600">
-                    <span>预计剩余时间: {Math.round((100 - backtestProgress.progress) / 10)} 分钟</span>
+                    <span>预计剩余时间: {formatEstimatedTime(backtestProgress.estimatedRemainingSeconds)}</span>
                     <span>{new Date().toLocaleTimeString()}</span>
                   </div>
 
@@ -2014,21 +2030,6 @@ class UserStrategy(EnhancedBaseStrategy):
 
               <div className="flex flex-wrap gap-2">
                 
-                {/* 🎯 智能回测按钮 - 当检测到策略代码时自动显示 */}
-                {(strategyDevState.phase === 'strategy_ready' || strategyDevState.phase === 'analysis') && (
-                  <button
-                    onClick={() => setIsBacktestModalOpen(true)}
-                    className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg hover:from-blue-600 hover:to-indigo-700 transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105"
-                  >
-                    <div className="w-5 h-5 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
-                      <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                    <span className="font-medium">立即回测</span>
-                    <span className="px-2 py-0.5 bg-white bg-opacity-20 text-xs rounded-full">AI生成</span>
-                  </button>
-                )}
 
                 {/* 策略优化循环按钮 - 在分析阶段显示 */}
                 {strategyDevState.phase === 'analysis' && (
@@ -2066,18 +2067,6 @@ class UserStrategy(EnhancedBaseStrategy):
                   </button>
                 )}
                 
-                {/* 回测分析按钮 - 只在策略就绪后显示 */}
-                {strategyDevState.phase === 'ready_for_backtest' && (
-                  <button
-                    onClick={() => setIsBacktestModalOpen(true)}
-                    className="flex items-center space-x-2 px-3 py-1.5 bg-white border border-blue-300 rounded-lg text-sm text-blue-600 hover:bg-blue-50 hover:border-blue-400 transition-colors shadow-sm"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 00-2-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                    </svg>
-                    <span>配置回测</span>
-                  </button>
-                )}
                 
                 {/* 添加到策略库按钮 - 只在有策略代码时显示 */}
                 {(strategyDevState.phase === 'ready_for_backtest' || strategyDevState.phase === 'backtesting' || 
@@ -2428,12 +2417,25 @@ class UserStrategy(EnhancedBaseStrategy):
             // 获取策略代码（现在是异步操作）
             const strategyCode = await getLatestStrategyCode()
             
+            // 🔧 修复symbol格式映射问题
+            const convertSymbolsForBackend = (symbols: string[], productType: string, exchange: string): string[] => {
+              return symbols.map(symbol => {
+                // 对于OKX永续合约，需要转换格式
+                if (exchange === 'okx' && productType === 'perpetual') {
+                  // BTC/USDT -> BTC-USDT-SWAP
+                  return symbol.replace('/', '-') + '-SWAP'
+                }
+                // 其他情况保持原格式
+                return symbol
+              })
+            }
+
             // 准备API请求数据
             const backtestConfig = {
               strategy_code: strategyCode,
               exchange: config.exchange,
               product_type: config.productType,
-              symbols: config.symbols,
+              symbols: convertSymbolsForBackend(config.symbols, config.productType, config.exchange),
               timeframes: config.timeframes,
               fee_rate: config.feeRate,
               initial_capital: config.initialCapital,
@@ -2473,7 +2475,18 @@ class UserStrategy(EnhancedBaseStrategy):
             // 使用Nginx代理路径，不直接连接8001端口
             const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
             const host = window.location.host // 使用完整的host:port
-            const token = localStorage.getItem('token') || sessionStorage.getItem('token')
+            // 正确获取token，与API client保持一致
+            let token = null
+            const authData = localStorage.getItem('auth-storage')
+            if (authData) {
+              try {
+                const parsedData = JSON.parse(authData)
+                // 兼容两种数据格式：直接存储token或嵌套在state中
+                token = parsedData.state?.token || parsedData.token
+              } catch (error) {
+                console.error('解析认证数据失败:', error)
+              }
+            }
             
             // 添加token到查询参数中
             const wsUrl = `${protocol}//${host}/api/v1/realtime-backtest/ws/${taskId}?token=${encodeURIComponent(token || '')}`
@@ -2528,7 +2541,8 @@ class UserStrategy(EnhancedBaseStrategy):
                   ...prev,
                   progress: data.progress || prev.progress,
                   currentStep: data.current_step || data.currentStep || prev.currentStep,
-                  executionLogs: data.logs || prev.executionLogs
+                  executionLogs: data.logs || prev.executionLogs,
+                  estimatedRemainingSeconds: data.estimated_remaining_seconds || data.estimatedRemainingSeconds
                 }))
 
                 // 如果回测完成
@@ -2564,12 +2578,13 @@ class UserStrategy(EnhancedBaseStrategy):
               console.log('WebSocket连接已关闭')
             }
 
+            // 🔧 修复显示格式：显示原始选择，但后端使用转换后的格式
             const message = `🚀 正在执行回测分析...
 
 **回测配置**：
 • 交易所：${config.exchange}
 • 品种类型：${config.productType}
-• 交易品种：${config.symbols.join(', ')}
+• 交易品种：${config.symbols.join(', ')} ${config.exchange === 'okx' && config.productType === 'perpetual' ? '(已转换为OKX永续合约格式)' : ''}
 • 时间周期：${config.timeframes.join(', ')}
 • 数据类型：${config.dataType === 'tick' ? 'Tick数据回测（高精度）' : 'K线数据回测（标准）'}
 • 手续费率：${config.feeRate}

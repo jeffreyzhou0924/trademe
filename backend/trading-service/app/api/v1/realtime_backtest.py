@@ -107,8 +107,30 @@ class BacktestStatus(BaseModel):
         extra = "allow"
 
 
-# 全局任务存储
+# 🔧 修复全局状态污染：使用线程安全的任务存储
+import threading
+from concurrent.futures import ThreadPoolExecutor
+
+# 线程安全的任务存储，避免并发状态污染
+_backtest_lock = threading.RLock()
 active_backtests: Dict[str, BacktestStatus] = {}
+
+def safe_get_backtest_status(task_id: str) -> Optional[BacktestStatus]:
+    """线程安全获取回测状态"""
+    with _backtest_lock:
+        return active_backtests.get(task_id)
+
+def safe_set_backtest_status(task_id: str, status: BacktestStatus):
+    """线程安全设置回测状态"""
+    with _backtest_lock:
+        active_backtests[task_id] = status
+
+def safe_update_backtest_status(task_id: str, **updates):
+    """线程安全更新回测状态"""
+    with _backtest_lock:
+        if task_id in active_backtests:
+            for key, value in updates.items():
+                setattr(active_backtests[task_id], key, value)
 
 
 class RealtimeBacktestManager:
@@ -122,7 +144,11 @@ class RealtimeBacktestManager:
     async def start_backtest(self, config: RealtimeBacktestConfig, user_id: int) -> str:
         """启动实时回测"""
         task_id = str(uuid.uuid4())
-        
+
+        # 🔧 强制启用确定性回测，确保结果一致性
+        config.deterministic = True
+        config.random_seed = 42  # 固定随机种子
+
         # 创建回测状态
         status = BacktestStatus(
             task_id=task_id,
@@ -133,24 +159,28 @@ class RealtimeBacktestManager:
             started_at=datetime.now()
         )
         
-        active_backtests[task_id] = status
-        
+        safe_set_backtest_status(task_id, status)
+
         # 启动后台任务
         asyncio.create_task(self._execute_backtest(task_id, config, user_id))
         
         return task_id
     
     async def start_ai_strategy_backtest(
-        self, 
-        config: RealtimeBacktestConfig, 
-        user_id: int, 
+        self,
+        config: RealtimeBacktestConfig,
+        user_id: int,
         membership_level: str,
         ai_session_id: Optional[str] = None,
         strategy_name: Optional[str] = None
     ) -> str:
         """启动AI策略专用回测"""
         task_id = str(uuid.uuid4())
-        
+
+        # 🔧 强制启用确定性回测，确保AI策略结果一致性
+        config.deterministic = True
+        config.random_seed = 42  # 固定随机种子
+
         # 创建增强的回测状态，包含AI策略相关信息
         status = BacktestStatus(
             task_id=task_id,
@@ -173,7 +203,7 @@ class RealtimeBacktestManager:
         status.membership_level = membership_level
         status.is_ai_strategy = True
         
-        active_backtests[task_id] = status
+        safe_set_backtest_status(task_id, status)
         
         # 启动AI策略专用的后台任务
         asyncio.create_task(self._execute_ai_strategy_backtest(task_id, config, user_id, membership_level))
@@ -183,7 +213,9 @@ class RealtimeBacktestManager:
     async def _execute_ai_strategy_backtest(self, task_id: str, config: RealtimeBacktestConfig, user_id: int, membership_level: str):
         """执行AI策略专用回测的后台任务"""
         try:
-            status = active_backtests[task_id]
+            status = safe_get_backtest_status(task_id)
+            if not status:
+                raise HTTPException(status_code=404, detail="回测任务不存在")
             
             # AI策略回测的增强步骤
             steps = [
@@ -288,7 +320,7 @@ class RealtimeBacktestManager:
     async def _validate_ai_strategy_code(self, config: RealtimeBacktestConfig, data: Dict) -> Dict:
         """验证AI策略代码（增强版 - 包含数据完整性检查）"""
         from app.services.data_validation_service import BacktestDataValidator
-        from app.database import get_db
+        from app.database import get_db_session
         
         # 1. AI策略代码验证
         validation_result = await self.strategy_service.validate_strategy_code(config.strategy_code, detailed=True)
@@ -530,7 +562,9 @@ class RealtimeBacktestManager:
     async def _execute_backtest(self, task_id: str, config: RealtimeBacktestConfig, user_id: int):
         """执行回测的后台任务"""
         try:
-            status = active_backtests[task_id]
+            status = safe_get_backtest_status(task_id)
+            if not status:
+                raise HTTPException(status_code=404, detail="回测任务不存在")
             
             # 回测执行步骤
             steps = [
@@ -671,23 +705,56 @@ class RealtimeBacktestManager:
         
         # 为每个交易对获取真实数据
         market_data = {}
+
+        def normalize_symbol_for_db(symbol: str) -> list:
+            """智能转换symbol格式以匹配数据库"""
+            formats = []
+            symbol = symbol.replace(' ', '').upper()
+            if '/' in symbol:
+                base, quote = symbol.split('/')
+                formats.extend([
+                    f"{base}/{quote}",
+                    f"{base}-{quote}",
+                    f"{base}{quote}",
+                    f"{base}-{quote}-SWAP"
+                ])
+            else:
+                formats.append(symbol)
+            return formats
+
         for symbol in config.symbols:
             try:
                 logger.info(f"📊 查询数据库中的 {symbol} 数据...")
-                
-                # 直接查询数据库获取真实历史数据
-                query = select(MarketData).where(
-                    and_(
-                        MarketData.exchange == config.exchange.lower(),  # 精确匹配交易所
-                        MarketData.symbol == symbol,
-                        MarketData.timeframe == config.timeframes[0],  # 🔧 添加时间框架过滤
-                        MarketData.timestamp >= start_date,
-                        MarketData.timestamp <= end_date
-                    )
-                ).order_by(MarketData.timestamp.asc())
-                
-                result = await db_session.execute(query)
-                market_records = result.scalars().all()
+
+                # 🔧 修复：使用符号变体查询，解决BTC-USDT-SWAP查询问题
+                symbol_variants = normalize_symbol_for_db(symbol)
+                logger.info(f"🔄 尝试符号变体: {symbol_variants}")
+
+                market_records = []
+                found_symbol = None
+
+                # 尝试所有符号变体直到找到数据
+                for symbol_variant in symbol_variants:
+                    query = select(MarketData).where(
+                        and_(
+                            MarketData.exchange == config.exchange.lower(),
+                            MarketData.symbol == symbol_variant,
+                            MarketData.timeframe == config.timeframes[0],
+                            MarketData.timestamp >= start_date,
+                            MarketData.timestamp <= end_date
+                        )
+                    ).order_by(MarketData.timestamp.asc())
+
+                    result = await db_session.execute(query)
+                    records = result.scalars().all()
+
+                    if records and len(records) > 10:
+                        market_records = records
+                        found_symbol = symbol_variant
+                        logger.info(f"✅ 找到数据: {symbol_variant}, {len(records)} 条记录")
+                        break
+                    else:
+                        logger.info(f"❌ 无数据: {symbol_variant}, {len(records)} 条记录")
                 
                 if market_records and len(market_records) > 10:  # 至少需要10条数据才能进行有效回测
                     # 转换为DataFrame格式
@@ -755,7 +822,8 @@ class RealtimeBacktestManager:
                 'end_date': config.end_date,
                 'initial_capital': config.initial_capital,
                 'fee_rate': getattr(config, 'fee_rate', 'vip0'),
-                'data_type': getattr(config, 'data_type', 'kline')
+                'data_type': getattr(config, 'data_type', 'kline'),
+                'product_type': getattr(config, 'product_type', 'spot')  # 🔧 关键修复：添加产品类型参数
             }
             
             logger.info(f"📊 策略回测参数: {backtest_params}")
@@ -938,42 +1006,85 @@ async def start_realtime_backtest(
         
         logger.info(f"🔧 收到回测请求，用户: {user_id}, 交易所: {config.exchange}, 交易对: {config.symbols}, 确定性模式: {config.deterministic}")
         
-        # ✅ 预先验证数据可用性
+        # ✅ 预先验证数据可用性 - 使用智能格式转换和产品类型映射
         async for db_session in get_db():
             try:
+                # 产品类型映射函数
+                def map_product_type(product_type: str) -> str:
+                    """将前端产品类型映射到数据库存储格式"""
+                    mapping = {
+                        'perpetual': 'futures',  # 永续合约映射到futures
+                        'futures': 'futures',
+                        'spot': 'spot',
+                        'swap': 'futures'
+                    }
+                    return mapping.get(product_type.lower(), 'spot')
+
+                # 符号格式转换函数
+                def normalize_symbol_for_db(symbol: str) -> list:
+                    """智能转换symbol格式以匹配数据库"""
+                    formats = []
+                    symbol = symbol.replace(' ', '').upper()
+                    if '/' in symbol:
+                        base, quote = symbol.split('/')
+                        formats.extend([
+                            f"{base}/{quote}",
+                            f"{base}-{quote}",
+                            f"{base}{quote}",
+                            f"{base}-{quote}-SWAP"
+                        ])
+                    else:
+                        formats.append(symbol)
+                    return formats
+
+                mapped_product_type = map_product_type(config.product_type)
+                logger.info(f"🔄 产品类型映射: {config.product_type} → {mapped_product_type}")
+
                 # 检查数据可用性
                 for symbol in config.symbols:
                     for timeframe in config.timeframes:
-                        # 检查是否有足够的历史数据
-                        query = select(MarketData).where(
-                            MarketData.exchange == config.exchange.lower(),
-                            MarketData.symbol == symbol,
-                            MarketData.timeframe == timeframe
-                        ).limit(10)
-                        
-                        result = await db_session.execute(query)
-                        records = result.scalars().all()
-                        
-                        logger.info(f"🔍 数据检查: {config.exchange.upper()}-{symbol}-{timeframe} 找到 {len(records)} 条记录")
-                        
-                        if len(records) < 10:
+                        symbol_variants = normalize_symbol_for_db(symbol)
+                        logger.info(f"🔄 符号格式变体: {symbol} → {symbol_variants}")
+
+                        found_data = False
+                        for symbol_variant in symbol_variants:
+                            # 检查是否有足够的历史数据
+                            query = select(MarketData).where(
+                                MarketData.exchange == config.exchange.lower(),
+                                MarketData.symbol == symbol_variant,
+                                MarketData.timeframe == timeframe
+                                # MarketData.product_type == mapped_product_type  # 移除：数据库表中没有此字段
+                            ).limit(10)
+
+                            result = await db_session.execute(query)
+                            records = result.scalars().all()
+
+                            if len(records) >= 10:
+                                found_data = True
+                                logger.info(f"✅ 数据检查成功: {config.exchange.upper()}-{symbol_variant}-{timeframe}-{mapped_product_type} 找到 {len(records)} 条记录")
+                                break
+                            else:
+                                logger.info(f"🔍 数据检查: {config.exchange.upper()}-{symbol_variant}-{timeframe}-{mapped_product_type} 找到 {len(records)} 条记录")
+
+                        if not found_data:
                             # 更友好的错误信息
                             available_exchanges = ["OKX"]  # 当前可用的交易所
                             available_symbols = ["BTC/USDT", "ETH/USDT"]  # 当前有数据的交易对示例
-                            
+
                             error_msg = f"📊 历史数据不足无法回测\n\n" \
                                       f"🔍 检查结果:\n" \
                                       f"• 交易所: {config.exchange.upper()}\n" \
                                       f"• 交易对: {symbol}\n" \
                                       f"• 时间框架: {timeframe}\n" \
-                                      f"• 可用数据: {len(records)} 条（需要至少10条）\n\n" \
+                                      f"• 产品类型: {config.product_type} → {mapped_product_type}\n" \
+                                      f"• 可用数据: 0 条（需要至少10条）\n\n" \
                                       f"💡 解决方案:\n" \
                                       f"• 选择有数据的交易所: {', '.join(available_exchanges)}\n" \
                                       f"• 推荐交易对: {', '.join(available_symbols)}\n" \
                                       f"• 调整时间范围到有数据的区间\n" \
                                       f"• 联系管理员补充所需数据"
-                            
-                            logger.warning(f"数据验证失败: 用户{user_id} 请求{config.exchange}-{symbol}-{timeframe}，仅{len(records)}条记录")
+
+                            logger.warning(f"数据验证失败: 用户{user_id} 请求{config.exchange}-{symbol}-{timeframe}-{mapped_product_type}，无可用数据")
                             raise HTTPException(status_code=400, detail=error_msg)
                 
                 # 数据验证通过，创建回测任务
@@ -1113,20 +1224,19 @@ async def start_ai_strategy_backtest(
 @router.get("/status/{task_id}", response_model=BacktestStatus)
 async def get_backtest_status(task_id: str):
     """获取回测状态"""
-    if task_id not in active_backtests:
+    status = safe_get_backtest_status(task_id)
+    if not status:
         raise HTTPException(status_code=404, detail="回测任务不存在")
-    
-    return active_backtests[task_id]
+    return status
 
 
 @router.get("/results/{task_id}")
 async def get_backtest_results(task_id: str):
     """获取回测结果"""
-    if task_id not in active_backtests:
+    status = safe_get_backtest_status(task_id)
+    if not status:
         raise HTTPException(status_code=404, detail="回测任务不存在")
-    
-    status = active_backtests[task_id]
-    
+
     if status.status != "completed":
         raise HTTPException(status_code=400, detail="回测尚未完成")
     
@@ -1145,11 +1255,10 @@ async def get_ai_strategy_backtest_results(task_id: str):
     
     包含AI策略专有的分析数据和建议
     """
-    if task_id not in active_backtests:
+    status = safe_get_backtest_status(task_id)
+    if not status:
         raise HTTPException(status_code=404, detail="AI策略回测任务不存在")
-    
-    status = active_backtests[task_id]
-    
+
     if status.status not in ["completed", "failed"]:
         raise HTTPException(status_code=400, detail="AI策略回测尚未完成")
     
@@ -1180,15 +1289,22 @@ async def get_ai_strategy_backtest_progress(task_id: str):
     
     专为AI策略回测优化，提供更详细的进度信息
     """
-    if task_id not in active_backtests:
+    status = safe_get_backtest_status(task_id)
+    if not status:
         raise HTTPException(status_code=404, detail="AI策略回测任务不存在")
     
-    status = active_backtests[task_id]
-    
-    # 计算预计剩余时间
-    estimated_total_time = 12  # AI策略回测预计总时间（秒）
+    # 计算预计剩余时间 - 优化算法
     elapsed_time = (datetime.now() - status.started_at).total_seconds()
-    estimated_remaining = max(0, estimated_total_time * (100 - status.progress) / 100) if status.progress > 0 else estimated_total_time
+
+    if status.progress > 5:  # 有足够的进度数据时使用实际性能
+        # 基于实际执行时间估计总时间
+        estimated_total_time = elapsed_time * 100 / status.progress
+        estimated_remaining = max(0, estimated_total_time - elapsed_time)
+    else:
+        # 初始阶段使用基础估计（基于数据量和复杂度）
+        base_time = 30  # 基础时间30秒
+        # 根据实际情况调整（可根据数据量、时间范围等动态调整）
+        estimated_remaining = base_time
     
     return {
         "task_id": task_id,
@@ -1213,14 +1329,81 @@ async def get_ai_strategy_backtest_progress(task_id: str):
     }
 
 
+@router.get("/progress/{task_id}")
+async def get_backtest_progress(task_id: str):
+    """
+    获取回测的实时进度
+
+    通用的回测进度查询端点，支持所有类型的回测任务
+    """
+    status = safe_get_backtest_status(task_id)
+    if not status:
+        raise HTTPException(status_code=404, detail="回测任务不存在")
+
+    # 计算预计剩余时间
+    elapsed_time = (datetime.now() - status.started_at).total_seconds()
+
+    if status.progress > 5:  # 有足够的进度数据时使用实际性能
+        # 基于实际执行时间估计总时间
+        estimated_total_time = elapsed_time * 100 / status.progress
+        estimated_remaining = max(0, estimated_total_time - elapsed_time)
+    else:
+        # 初始阶段使用基础估计
+        estimated_remaining = 120.0  # 2分钟的默认估计
+
+    return {
+        "task_id": task_id,
+        "status": status.status,
+        "progress": status.progress,
+        "current_step": status.current_step,
+        "logs": status.logs[-5:],  # 返回最近5条日志
+        "started_at": status.started_at,
+        "elapsed_seconds": elapsed_time,
+        "estimated_remaining_seconds": estimated_remaining,
+        "results_preview": status.results if status.status == "completed" else None,
+        "error_message": status.error_message if status.status == "failed" else None
+    }
+
+
+@router.get("/results/{task_id}")
+async def get_backtest_results(task_id: str):
+    """
+    获取回测任务的详细结果
+
+    支持已完成的回测任务结果查询，即使WebSocket连接断开也能获取结果
+    """
+    status = safe_get_backtest_status(task_id)
+    if not status:
+        raise HTTPException(status_code=404, detail="回测任务不存在")
+
+    if status.status != "completed":
+        raise HTTPException(status_code=400, detail=f"回测任务尚未完成，当前状态: {status.status}")
+
+    return {
+        "task_id": task_id,
+        "status": status.status,
+        "progress": status.progress,
+        "started_at": status.started_at,
+        "completed_at": status.completed_at,
+        "total_duration": (status.completed_at - status.started_at).total_seconds() if status.completed_at else None,
+        "results": status.results,
+        "logs": status.logs,
+        "error_message": status.error_message,
+        "ai_metadata": {
+            "ai_session_id": getattr(status, 'ai_session_id', None),
+            "strategy_name": getattr(status, 'strategy_name', None),
+            "membership_level": getattr(status, 'membership_level', None),
+            "is_ai_strategy": getattr(status, 'is_ai_strategy', False)
+        }
+    }
+
+
 @router.delete("/cancel/{task_id}")
 async def cancel_backtest(task_id: str):
     """取消回测任务"""
-    if task_id not in active_backtests:
+    status = safe_get_backtest_status(task_id)
+    if not status:
         raise HTTPException(status_code=404, detail="回测任务不存在")
-    
-    # 标记为已取消
-    status = active_backtests[task_id]
     if status.status == "running":
         status.status = "cancelled"
         status.logs.append("❌ 回测任务已被用户取消")
@@ -1269,7 +1452,9 @@ async def cleanup_completed_tasks():
                 to_remove.append(task_id)
     
     for task_id in to_remove:
-        del active_backtests[task_id]
+        with _backtest_lock:
+            if task_id in active_backtests:
+                del active_backtests[task_id]
         logger.info(f"清理完成的回测任务: {task_id}")
 
 
@@ -1341,11 +1526,10 @@ async def get_backtest_status(
 ):
     """获取回测状态"""
     try:
-        if task_id not in active_backtests:
+        status = safe_get_backtest_status(task_id)
+        if not status:
             raise HTTPException(status_code=404, detail="回测任务不存在")
-        
-        status = active_backtests[task_id]
-        
+
         return {
             "task_id": task_id,
             "status": status.status,
@@ -1374,10 +1558,10 @@ async def cancel_backtest(
 ):
     """取消回测任务"""
     try:
-        if task_id not in active_backtests:
+        status = safe_get_backtest_status(task_id)
+        if not status:
             raise HTTPException(status_code=404, detail="回测任务不存在")
-        
-        status = active_backtests[task_id]
+
         if status.status in ["completed", "failed", "cancelled"]:
             return {"message": "任务已经完成，无法取消"}
         
@@ -1448,30 +1632,29 @@ async def websocket_backtest_stream(websocket: WebSocket, task_id: str):
     """WebSocket实时推送回测进度流"""
     try:
         while True:
-            if task_id in active_backtests:
-                status = active_backtests[task_id]
-                
-                # 发送当前状态
+            status = safe_get_backtest_status(task_id)
+            if not status:
+                await websocket.send_json({"error": "回测任务不存在"})
+                break
+
+            # 发送当前状态
+            await websocket.send_json({
+                "task_id": task_id,
+                "progress": status.progress,
+                "current_step": status.current_step,
+                "status": status.status,
+                "logs": status.logs[-10:],  # 只发送最近10条日志
+                "results": status.results if status.status == "completed" else None
+            })
+
+            # 如果任务完成或失败，结束连接
+            if status.status in ["completed", "failed", "cancelled"]:
                 await websocket.send_json({
+                    "type": "task_finished",
                     "task_id": task_id,
-                    "progress": status.progress,
-                    "current_step": status.current_step,
-                    "status": status.status,
-                    "logs": status.logs[-10:],  # 只发送最近10条日志
-                    "results": status.results if status.status == "completed" else None
+                    "final_status": status.status,
+                    "message": "任务已完成，连接将关闭"
                 })
-                
-                # 如果任务完成或失败，结束连接
-                if status.status in ["completed", "failed", "cancelled"]:
-                    await websocket.send_json({
-                        "type": "task_finished",
-                        "task_id": task_id,
-                        "final_status": status.status,
-                        "message": "任务已完成，连接将关闭"
-                    })
-                    break
-            else:
-                await websocket.send_json({"error": "Task not found"})
                 break
             
             await asyncio.sleep(1)  # 每秒推送一次
@@ -1498,7 +1681,7 @@ async def websocket_backtest_progress(websocket: WebSocket, task_id: str):
         logger.info(f"用户 {user_info['user_id']} 通过WebSocket认证，连接任务 {task_id}")
         
         # 验证任务存在
-        if task_id not in active_backtests:
+        if not safe_get_backtest_status(task_id):
             await websocket.send_json({"error": "回测任务不存在", "code": 4004})
             await websocket.close(code=4004, reason="Task not found")
             return

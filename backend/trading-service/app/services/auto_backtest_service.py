@@ -11,8 +11,9 @@ from datetime import datetime, timedelta
 from decimal import Decimal
 from loguru import logger
 
-from app.services.backtest_service import BacktestEngine, BacktestService
+from app.services.backtest_engine_stateless import StatelessBacktestEngine, BacktestConfig
 from app.services.strategy_template_validator import StrategyTemplateValidator
+from app.database import get_db
 
 
 def calculate_performance_grade(performance: Dict[str, Any]) -> str:
@@ -161,24 +162,48 @@ class AutoBacktestService:
                 'name': 'AI生成策略-回测中'
             })
             
-            # 执行回测
-            from app.database import AsyncSessionLocal
-            async with AsyncSessionLocal() as db:
-                engine = BacktestEngine()
-                
-                # 使用增强版回测执行
-                results = await AutoBacktestService._execute_enhanced_backtest(
-                    engine=engine,
-                    strategy_code=strategy_code,
-                    user_id=user_id,
-                    start_date=start_date,
-                    end_date=end_date,
-                    initial_capital=backtest_config["initial_capital"],
-                    symbol=backtest_config["symbol"],
-                    exchange=backtest_config["exchange"],
-                    timeframe=backtest_config["timeframe"],
-                    db=db
-                )
+            # 执行回测 - 使用修复后的无状态引擎
+            async for db in get_db():
+                try:
+                    # 构建回测配置
+                    config = BacktestConfig(
+                        strategy_code=strategy_code,
+                        symbol=backtest_config.get("symbol", "BTC-USDT-SWAP"),
+                        exchange="okx",
+                        timeframe=backtest_config.get("timeframe", "1h"),
+                        start_date=start_date,
+                        end_date=end_date,
+                        initial_capital=backtest_config["initial_capital"],
+                        user_id=user_id
+                    )
+
+                    # 使用无状态引擎执行回测
+                    result = await StatelessBacktestEngine.run_backtest(config, db)
+
+                    if result.success:
+                        results = {
+                            "success": True,
+                            "performance": result.metrics,
+                            "trades": result.trades,
+                            "config": {
+                                "symbol": config.symbol,
+                                "start_date": start_date,
+                                "end_date": end_date,
+                                "initial_capital": config.initial_capital,
+                                "timeframe": config.timeframe
+                            }
+                        }
+                    else:
+                        logger.error(f"❌ 无状态回测失败: {result.error}")
+                        results = {
+                            "success": False,
+                            "error": result.error,
+                            "performance": {},
+                            "trades": []
+                        }
+                finally:
+                    await db.close()
+                    break
             
             # 计算性能等级
             performance_grade = calculate_performance_grade(results["performance"])
@@ -210,77 +235,6 @@ class AutoBacktestService:
                 "meets_expectations": False,
                 "results": None
             }
-    
-    @staticmethod
-    async def _execute_enhanced_backtest(
-        engine: BacktestEngine,
-        strategy_code: str,
-        user_id: int,
-        start_date: datetime,
-        end_date: datetime,
-        initial_capital: float,
-        symbol: str,
-        exchange: str,
-        timeframe: str,
-        db
-    ) -> Dict[str, Any]:
-        """执行增强版回测"""
-        
-        from app.models.strategy import Strategy
-        from sqlalchemy import select, delete
-        import uuid
-        
-        # 生成唯一的临时策略ID
-        temp_strategy_id = int(str(uuid.uuid4().int)[-9:])  # 使用UUID后9位作为ID
-        
-        # 创建临时策略记录
-        temp_strategy = Strategy(
-            id=temp_strategy_id,
-            user_id=user_id,
-            name=f'AI生成策略-临时-{temp_strategy_id}',
-            description='临时回测策略，将在回测完成后删除',
-            code=strategy_code,
-            parameters='{}',
-            strategy_type='strategy',
-            ai_session_id=f'temp_backtest_{temp_strategy_id}',
-            is_active=True
-        )
-        
-        try:
-            # 保存临时策略到数据库
-            db.add(temp_strategy)
-            await db.commit()
-            await db.refresh(temp_strategy)
-            
-            # 运行回测
-            results = await engine.run_backtest(
-                strategy_id=temp_strategy_id,
-                user_id=user_id,
-                start_date=start_date,
-                end_date=end_date,
-                initial_capital=initial_capital,
-                symbol=symbol,
-                exchange=exchange,
-                timeframe=timeframe,
-                db=db
-            )
-            
-            return results
-            
-        except Exception as e:
-            logger.error(f"增强回测执行失败: {e}")
-            raise
-            
-        finally:
-            # 清理临时策略记录
-            try:
-                # 删除临时策略
-                delete_stmt = delete(Strategy).where(Strategy.id == temp_strategy_id)
-                await db.execute(delete_stmt)
-                await db.commit()
-                logger.info(f"已清理临时策略记录 {temp_strategy_id}")
-            except Exception as cleanup_error:
-                logger.warning(f"清理临时策略记录失败: {cleanup_error}")
     
     @staticmethod
     async def _generate_backtest_report(

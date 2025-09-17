@@ -176,6 +176,7 @@ class StatelessBacktestAdapter:
             symbol=symbols[0] if symbols else "BTC/USDT",
             exchange=exchange,
             timeframe=timeframes[0] if timeframes else "1h",
+            product_type=params.get('product_type', 'spot'),  # 🔧 关键修复：添加产品类型参数
             fee_rate=0.001,
             ai_session_id=params.get('ai_session_id'),
             is_ai_generated=params.get('is_ai_generated', False),
@@ -196,8 +197,9 @@ class StatelessBacktestAdapter:
             description="API回测临时策略",
             code=strategy_code,
             user_id=user_id,
-            status="active",
-            is_temp=True
+            strategy_type="strategy",
+            is_active=True,
+            is_public=False
         )
         
         db.add(temp_strategy)
