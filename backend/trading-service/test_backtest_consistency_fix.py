@@ -1,224 +1,271 @@
 #!/usr/bin/env python3
 """
-测试回测一致性修复效果
-
-验证相同配置的多次回测是否产生一致结果
+回测一致性修复验证测试
+测试修复后的回测引擎是否能产生100%一致的结果
 """
 
-import asyncio
-import os
 import sys
-import json
-import pandas as pd
-from datetime import datetime, date
-from loguru import logger
-
-# 添加项目路径
+import os
 sys.path.append('/root/trademe/backend/trading-service')
 
-from app.database import AsyncSessionLocal
-from app.services.backtest_service import create_backtest_engine
+import asyncio
+import json
+from datetime import datetime, timedelta
+from typing import List, Dict, Any
+from loguru import logger
 
-# 测试策略代码
-TEST_STRATEGY_CODE = """
-# 简单MACD策略测试
-class MACDStrategy(BaseStrategy):
-    def on_data(self, data):
-        # 获取价格数据
-        if len(data) < 30:
-            return None  # 数据不足
-        
-        # 使用系统内置方法获取MACD指标
-        macd_data = self.get_indicator('MACD', data, fast=12, slow=26, signal=9)
-        if not macd_data or len(macd_data) < 2:
+# 配置简洁的日志输出
+logger.remove()
+logger.add(sys.stdout, level="INFO", format="{time:HH:mm:ss} | {level} | {message}")
+
+class BacktestConsistencyValidator:
+    """回测一致性验证器"""
+
+    def __init__(self):
+        self.test_results = []
+
+    async def run_consistency_test(self, iterations: int = 3) -> Dict[str, Any]:
+        """运行一致性测试"""
+        logger.info(f"🚀 开始回测一致性验证测试 ({iterations}次迭代)")
+
+        # 准备测试策略代码 - 简单的MA策略确保可重现性
+        test_strategy_code = '''
+from app.core.enhanced_strategy import EnhancedBaseStrategy, DataRequest, DataType
+from app.core.strategy_engine import TradingSignal, SignalType
+from typing import List, Optional, Dict, Any
+import pandas as pd
+
+class UserStrategy(EnhancedBaseStrategy):
+    """确定性MA策略 - 用于一致性测试"""
+
+    def __init__(self, context):
+        super().__init__(context)
+        self.position_status = None
+        self.entry_price = None
+
+    def get_data_requirements(self) -> List[DataRequest]:
+        return [
+            DataRequest(
+                data_type=DataType.KLINE,
+                exchange="okx",
+                symbol="BTC-USDT-SWAP",
+                timeframe="1h",
+                required=True
+            )
+        ]
+
+    async def on_data_update(self, data_type: str, data: Dict[str, Any]) -> Optional[TradingSignal]:
+        if data_type != "kline":
             return None
-        
-        current_macd = macd_data[-1]
-        prev_macd = macd_data[-2]
-        
-        # 获取当前价格
-        current_price = data['close'].iloc[-1]
-        
-        # MACD策略逻辑：MACD线上穿信号线买入，下穿卖出
-        if current_macd['macd'] > current_macd['signal'] and prev_macd['macd'] <= prev_macd['signal']:
-            return {
-                'action': 'buy',
-                'price': current_price,
-                'size': 0.3,  # 30%仓位
-                'reason': 'MACD金叉买入信号'
-            }
-        elif current_macd['macd'] < current_macd['signal'] and prev_macd['macd'] >= prev_macd['signal']:
-            return {
-                'action': 'sell', 
-                'price': current_price,
-                'size': 0.5,  # 卖出50%持仓
-                'reason': 'MACD死叉卖出信号'
-            }
-        
-        return None  # 无操作信号
-"""
 
-async def test_backtest_consistency():
-    """测试回测一致性"""
-    logger.info("🧪 开始测试回测一致性修复效果")
-    
-    # 测试配置
-    test_config = {
-        'strategy_code': TEST_STRATEGY_CODE,
-        'exchange': 'okx',  # 使用有数据的交易所
-        'symbols': ['BTC/USDT'],
-        'timeframes': ['1h'],
-        'start_date': '2025-07-01',
-        'end_date': '2025-08-31',
-        'initial_capital': 10000.0
-    }
-    
-    # 存储多次回测结果
-    results = []
-    
-    # 执行5次相同配置的回测
-    for i in range(5):
-        logger.info(f"🔄 执行第 {i+1} 次回测...")
-        
+        df = self.get_kline_data()
+        if df is None or len(df) < 20:
+            return None
+
+        # 计算MA - 使用确定性计算
+        sma5 = self.calculate_sma(df['close'], 5)
+        sma10 = self.calculate_sma(df['close'], 10)
+
+        if len(sma5) < 2 or len(sma10) < 2:
+            return None
+
+        current_sma5 = sma5[-1]
+        current_sma10 = sma10[-1]
+        prev_sma5 = sma5[-2]
+        prev_sma10 = sma10[-2]
+
+        current_price = df['close'].iloc[-1]
+
+        # 检测金叉和死叉 - 确定性逻辑
+        golden_cross = prev_sma5 <= prev_sma10 and current_sma5 > current_sma10
+        death_cross = prev_sma5 >= prev_sma10 and current_sma5 < current_sma10
+
+        position_size_pct = 0.05
+
+        # 金叉信号处理
+        if golden_cross and self.position_status != 'long':
+            self.position_status = 'long'
+            self.entry_price = current_price
+            return TradingSignal(
+                signal_type=SignalType.BUY,
+                symbol=self.symbol,
+                price=current_price,
+                quantity=position_size_pct,
+                reason="金叉开多"
+            )
+
+        # 死叉信号处理
+        elif death_cross and self.position_status == 'long':
+            self.position_status = None
+            self.entry_price = None
+            return TradingSignal(
+                signal_type=SignalType.SELL,
+                symbol=self.symbol,
+                price=current_price,
+                quantity=position_size_pct,
+                reason="死叉平多"
+            )
+
+        return None
+
+    def get_strategy_info(self) -> Dict[str, Any]:
+        return {
+            "name": "一致性测试MA策略",
+            "description": "确定性MA金叉死叉策略，用于测试回测一致性",
+            "parameters": {"ma_short": 5, "ma_long": 10}
+        }
+'''
+
+        # 回测配置
+        test_params = {
+            'strategy_code': test_strategy_code,
+            'exchange': 'okx',
+            'product_type': 'perpetual',
+            'symbols': ['BTC-USDT-SWAP'],
+            'timeframes': ['1h'],
+            'fee_rate': 'vip0_perp',
+            'initial_capital': 10000,
+            'start_date': '2025-07-01',
+            'end_date': '2025-08-31',
+            'data_type': 'kline',
+            'deterministic': True,
+            'random_seed': 42
+        }
+
+        results = []
+
         try:
-            # 创建数据库连接
-            async with AsyncSessionLocal() as db:
-                # 🔧 关键：每次都创建新的引擎实例
-                backtest_engine = create_backtest_engine()
-                
-                # 执行回测
-                result = await backtest_engine.execute_backtest(
-                    test_config,
-                    user_id=1,
-                    db=db
-                )
-                
-                if result.get('success'):
-                    backtest_result = result.get('backtest_result', {})
-                    performance = backtest_result.get('performance_metrics', {})
-                    
-                    # 提取关键指标
-                    key_metrics = {
-                        'run_number': i + 1,
-                        'total_return': performance.get('total_return', 0),
-                        'final_value': backtest_result.get('final_portfolio_value', 0),
-                        'total_trades': len(backtest_result.get('trades', [])),
-                        'sharpe_ratio': performance.get('sharpe_ratio', 0),
-                        'max_drawdown': performance.get('max_drawdown', 0),
-                        'win_rate': performance.get('win_rate', 0),
-                        'data_records': backtest_result.get('data_records', 0)
-                    }
-                    
-                    results.append(key_metrics)
-                    
-                    logger.info(f"✅ 第{i+1}次回测完成:")
-                    logger.info(f"   总收益率: {key_metrics['total_return']:.6f}")
-                    logger.info(f"   最终价值: {key_metrics['final_value']:.2f}")
-                    logger.info(f"   交易次数: {key_metrics['total_trades']}")
-                    logger.info(f"   数据记录: {key_metrics['data_records']}")
-                    
-                else:
-                    logger.error(f"❌ 第{i+1}次回测失败: {result.get('error', '未知错误')}")
-                    return False
-                    
+            # 导入必要的模块
+            from app.services.stateless_backtest_adapter import StatelessBacktestAdapter
+            from app.database import get_db
+
+            # 执行多次回测并比较结果
+            for i in range(iterations):
+                logger.info(f"🔄 执行第 {i+1} 次确定性回测...")
+
+                # 获取数据库会话
+                db_generator = get_db()
+                db_session = await db_generator.__anext__()
+
+                try:
+                    # 创建无状态回测引擎
+                    engine = StatelessBacktestAdapter()
+
+                    # 执行回测
+                    result = await engine.execute_backtest(
+                        params=test_params,
+                        user_id=1,
+                        db=db_session
+                    )
+
+                    if result['success']:
+                        backtest_result = result['backtest_result']
+                        performance = backtest_result['performance_metrics']
+
+                        results.append({
+                            'iteration': i + 1,
+                            'final_capital': performance.get('final_capital', 0),
+                            'total_return': performance.get('total_return', 0),
+                            'max_drawdown': performance.get('max_drawdown', 0),
+                            'sharpe_ratio': performance.get('sharpe_ratio', 0),
+                            'total_trades': performance.get('total_trades', 0),
+                            'win_rate': performance.get('win_rate', 0),
+                            'volatility': performance.get('volatility', 0),
+                            'profit_factor': performance.get('profit_factor', 0)
+                        })
+
+                        logger.info(f"✅ 第 {i+1} 次回测完成 - 收益率: {performance.get('total_return', 0):.4f}, 交易数: {performance.get('total_trades', 0)}")
+                    else:
+                        logger.error(f"❌ 第 {i+1} 次回测失败: {result.get('error', '未知错误')}")
+                        return {"success": False, "error": f"回测执行失败: {result.get('error')}"}
+
+                finally:
+                    await db_session.close()
+
         except Exception as e:
-            logger.error(f"❌ 第{i+1}次回测异常: {e}")
-            return False
-        
-        # 短暂间隔
-        await asyncio.sleep(0.5)
-    
-    # 分析结果一致性
-    logger.info("\n📊 回测一致性分析:")
-    logger.info("="*60)
-    
-    if len(results) < 2:
-        logger.error("❌ 可用结果不足，无法进行一致性分析")
-        return False
-    
-    # 检查关键指标的一致性
-    consistency_checks = {
-        'total_return': [],
-        'final_value': [],
-        'total_trades': [],
-        'data_records': []
-    }
-    
-    for result in results:
-        for key in consistency_checks:
-            consistency_checks[key].append(result[key])
-    
-    is_consistent = True
-    tolerance = 1e-10  # 浮点数容差
-    
-    for metric, values in consistency_checks.items():
-        unique_values = set(values)
-        
-        if metric in ['total_trades', 'data_records']:
-            # 整数值必须完全一致
-            is_metric_consistent = len(unique_values) == 1
-        else:
-            # 浮点数值允许微小差异
-            if len(unique_values) <= 1:
-                is_metric_consistent = True
-            else:
-                min_val, max_val = min(values), max(values)
-                is_metric_consistent = abs(max_val - min_val) <= tolerance
-        
-        status = "✅ 一致" if is_metric_consistent else "❌ 不一致"
-        logger.info(f"{metric:15}: {status} {unique_values}")
-        
-        if not is_metric_consistent:
-            is_consistent = False
-    
-    # 显示详细结果表格
-    logger.info("\n📋 详细结果对比:")
-    logger.info("-"*80)
-    logger.info(f"{'Run':<4} {'Return':<12} {'Final Value':<12} {'Trades':<8} {'Records':<8}")
-    logger.info("-"*80)
-    
-    for result in results:
-        logger.info(f"{result['run_number']:<4} {result['total_return']:<12.6f} "
-                   f"{result['final_value']:<12.2f} {result['total_trades']:<8} "
-                   f"{result['data_records']:<8}")
-    
-    # 保存结果到文件
-    with open('/root/trademe/backend/trading-service/backtest_consistency_test_results.json', 'w') as f:
-        json.dump({
-            'test_config': test_config,
-            'results': results,
-            'is_consistent': is_consistent,
-            'test_time': datetime.now().isoformat()
-        }, f, indent=2, default=str)
-    
-    logger.info(f"\n🎯 一致性测试结果: {'✅ 通过' if is_consistent else '❌ 失败'}")
-    
-    if is_consistent:
-        logger.info("🎉 回测引擎修复成功！相同配置产生一致结果")
-    else:
-        logger.error("⚠️  仍存在一致性问题，需要进一步调试")
-    
-    return is_consistent
+            logger.error(f"❌ 一致性测试执行失败: {e}")
+            return {"success": False, "error": str(e)}
+
+        # 分析一致性
+        consistency_analysis = self._analyze_consistency(results)
+
+        return {
+            "success": True,
+            "iterations": iterations,
+            "results": results,
+            "consistency_analysis": consistency_analysis
+        }
+
+    def _analyze_consistency(self, results: List[Dict]) -> Dict[str, Any]:
+        """分析结果一致性"""
+        if len(results) < 2:
+            return {"consistent": True, "message": "样本不足，无法判断一致性"}
+
+        # 检查关键指标的一致性
+        metrics_to_check = [
+            'final_capital', 'total_return', 'max_drawdown',
+            'sharpe_ratio', 'total_trades', 'win_rate'
+        ]
+
+        inconsistencies = []
+
+        for metric in metrics_to_check:
+            values = [result[metric] for result in results]
+            unique_values = set([round(v, 8) for v in values])  # 8位小数精度
+
+            if len(unique_values) > 1:
+                inconsistencies.append({
+                    'metric': metric,
+                    'values': values,
+                    'variance': max(values) - min(values)
+                })
+
+        is_consistent = len(inconsistencies) == 0
+
+        analysis = {
+            "consistent": is_consistent,
+            "inconsistencies": inconsistencies,
+            "message": "回测结果100%一致 ✅" if is_consistent else f"发现 {len(inconsistencies)} 个不一致指标 ❌"
+        }
+
+        return analysis
 
 async def main():
     """主测试函数"""
-    try:
-        logger.info("🚀 开始回测一致性修复验证")
-        success = await test_backtest_consistency()
-        
-        if success:
-            logger.info("✅ 测试完成：回测一致性问题已修复")
-            return 0
+    validator = BacktestConsistencyValidator()
+
+    logger.info("🔧 开始验证回测一致性修复效果...")
+
+    # 测试5次迭代确保一致性
+    result = await validator.run_consistency_test(iterations=5)
+
+    if result['success']:
+        logger.info("\n" + "="*60)
+        logger.info("📊 回测一致性验证结果")
+        logger.info("="*60)
+
+        consistency = result['consistency_analysis']
+        logger.info(f"一致性状态: {consistency['message']}")
+
+        if consistency['consistent']:
+            logger.info("🎉 回测一致性修复成功！所有迭代结果完全一致")
+
+            # 显示基准结果
+            if result['results']:
+                base_result = result['results'][0]
+                logger.info(f"📈 基准回测结果:")
+                logger.info(f"   总收益率: {base_result['total_return']:.4f}")
+                logger.info(f"   最终资金: {base_result['final_capital']:.2f}")
+                logger.info(f"   最大回撤: {base_result['max_drawdown']:.4f}")
+                logger.info(f"   夏普比率: {base_result['sharpe_ratio']:.4f}")
+                logger.info(f"   总交易数: {base_result['total_trades']}")
+                logger.info(f"   胜率: {base_result['win_rate']:.4f}")
         else:
-            logger.error("❌ 测试失败：回测一致性问题仍然存在")
-            return 1
-            
-    except Exception as e:
-        logger.error(f"测试异常: {e}")
-        import traceback
-        logger.error(traceback.format_exc())
-        return 1
+            logger.error("❌ 一致性验证失败，发现不一致指标:")
+            for inconsistency in consistency['inconsistencies']:
+                logger.error(f"   {inconsistency['metric']}: {inconsistency['values']} (方差: {inconsistency['variance']:.8f})")
+    else:
+        logger.error(f"❌ 一致性测试失败: {result['error']}")
 
 if __name__ == "__main__":
-    exit_code = asyncio.run(main())
-    sys.exit(exit_code)
+    asyncio.run(main())

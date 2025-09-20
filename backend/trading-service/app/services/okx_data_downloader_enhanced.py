@@ -560,10 +560,13 @@ class EnhancedOKXDataDownloader:
                             if not (start_dt <= dt_obj <= end_dt):
                                 continue
                             
+                            # 按符号写法自动判断产品类型：*-SWAP 视为永续(futures)，否则视为现货(spot)
+                            product_type = 'futures' if symbol.upper().endswith('-USDT-SWAP') or symbol.upper().endswith('-SWAP') else 'spot'
                             market_record = MarketData(
                                 exchange="okx",
                                 symbol=symbol,
                                 timeframe=timeframe,
+                                product_type=product_type,
                                 open_price=float(kline[1]),
                                 high_price=float(kline[2]),
                                 low_price=float(kline[3]), 

@@ -1,6 +1,7 @@
 # Repository Guidelines
 - 使用中文回答问题
 - 在经过我同意之前不要修改代码
+- 每次修改完代码之后,更新项目文档
 This concise guide helps contributors work effectively on the Trademe monorepo.
 
 ## Project Structure & Module Organization

@@ -344,7 +344,7 @@ class TieredDataStorage:
     def __init__(self):
         self.storage_layers = {
             "hot": RedisTimeSeriesStorage(),      # 热数据：最近7天tick
-            "warm": InfluxDBStorage(),            # 温数据：最近6个月秒级
+            "warm": OptionalTimeSeriesStorage(),  # 温数据（可选，默认禁用 InfluxDB）
             "cold": S3ArchiveStorage(),           # 冷数据：历史K线数据
             "archive": GlacierStorage()           # 归档：长期tick数据
         }
@@ -387,7 +387,7 @@ class TieredDataStorage:
   
   秒级数据:
     - 压缩率: 5:1 (OHLCV聚合)
-    - 存储格式: InfluxDB Line Protocol
+    - 存储格式: （可选）时序存储协议（默认不启用）
     - 保留策略: 6个月热存储
   
   K线数据:

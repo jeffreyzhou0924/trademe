@@ -91,7 +91,9 @@ async def create_backtest(
         
         backtest = await BacktestService.create_backtest(db, backtest_data, current_user.id)
         
-        # 异步启动回测任务
+        # 异步启动回测任务（传递用户配置的交易所/交易对/周期）
+        # 旧实现中 start_backtest_task 只是占位；实际任务在 create_backtest 中启动
+        # 这里保持调用以兼容日志，但无需再次创建任务
         await BacktestService.start_backtest_task(backtest.id)
         
         return backtest

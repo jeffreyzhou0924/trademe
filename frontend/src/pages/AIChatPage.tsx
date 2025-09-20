@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { useUserInfo } from '../store'
 import { useAIStore } from '../store/aiStore'
 import { strategyApi } from '../services/api/strategy'
@@ -466,6 +466,8 @@ const AIChatPage: React.FC = () => {
   
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
   const [isBacktestModalOpen, setIsBacktestModalOpen] = useState(false)
+  const [lastBacktestConfig, setLastBacktestConfig] = useState<BacktestConfig | null>(null)
+  const navigate = useNavigate()
   const [isStrategyCodeModalOpen, setIsStrategyCodeModalOpen] = useState(false)
   const [messageInput, setMessageInput] = useState('')
   const [pastedImages, setPastedImages] = useState<File[]>([])
@@ -2082,13 +2084,31 @@ class UserStrategy(EnhancedBaseStrategy):
                       const itemType = isIndicatorSession ? '指标' : '策略'
                       const libraryType = isIndicatorSession ? '指标库' : '策略库'
                       
-                      // 使用已存储的策略ID
-                      const strategyId = strategyDevState.strategyId
-                      if (!strategyId) {
-                        toast.error(`未找到${itemType}ID`)
+                      // 获取最新策略代码（优先通过API，否则从消息中提取）
+                      const fetchLatestStrategyCode = async (): Promise<string> => {
+                        try {
+                          if (!currentSession?.session_id) throw new Error('Missing session id')
+                          const resp = await tradingServiceClient.get(`/strategies/latest-ai-strategy/${currentSession.session_id}`)
+                          const strategy = resp.data
+                          if (strategy?.code) return strategy.code
+                        } catch (e) {
+                          // fallback: 从消息中提取
+                          for (let i = messages.length - 1; i >= 0; i--) {
+                            const m = messages[i]
+                            if (m.role === 'assistant') {
+                              const code = extractCodeFromMessage(m.content)
+                              if (code) return code
+                            }
+                          }
+                        }
+                        return ''
+                      }
+                      const strategyCode = await fetchLatestStrategyCode()
+                      if (!strategyCode) {
+                        toast.error(`未找到可保存的${itemType}代码`)
                         return
                       }
-                      
+
                       // 从代码或对话中提取名称
                       let strategyName = `AI生成的${itemType}_${Date.now()}`
                       const lastAIMessage = messages.slice().reverse().find(m => m.role === 'assistant')
@@ -2098,14 +2118,14 @@ class UserStrategy(EnhancedBaseStrategy):
                           strategyName = nameMatch[1].trim()
                         }
                       }
-                      
+                       
                       try {
                         toast.loading(`正在保存${itemType}到${libraryType}...`)
                         
                         const savedStrategy = await strategyApi.createStrategyFromAI({
                           name: strategyName,
                           description: `从AI会话生成的${itemType}`,
-                          code: `// Strategy ID: ${strategyId}`,
+                          code: strategyCode,
                           parameters: {},
                           strategy_type: isIndicatorSession ? 'indicator' : 'strategy',
                           ai_session_id: currentSession.session_id
@@ -2138,17 +2158,104 @@ class UserStrategy(EnhancedBaseStrategy):
                     </span>
                   </button>
                 )}
-                
+
+                {/* 保存并创建标准回测（持久化） */}
+                {(strategyDevState.phase === 'analysis' || strategyDevState.phase === 'backtesting' || strategyDevState.phase === 'ready_for_backtest') && (
+                  <button
+                    onClick={async () => {
+                      if (!currentSession) {
+                        toast.error('请先选择会话')
+                        return
+                      }
+                      if (!lastBacktestConfig) {
+                        toast.error('请先在AI对话中执行一次回测，以便复用参数创建标准回测')
+                        return
+                      }
+                      try {
+                        // 保存策略（真实代码）
+                        const fetchLatestStrategyCode = async (): Promise<string> => {
+                          try {
+                            const resp = await tradingServiceClient.get(`/strategies/latest-ai-strategy/${currentSession.session_id}`)
+                            const strategy = resp.data
+                            if (strategy?.code) return strategy.code
+                          } catch {}
+                          for (let i = messages.length - 1; i >= 0; i--) {
+                            const m = messages[i]
+                            if (m.role === 'assistant') {
+                              const code = extractCodeFromMessage(m.content)
+                              if (code) return code
+                            }
+                          }
+                          return ''
+                        }
+                        const code = await fetchLatestStrategyCode()
+                        if (!code) {
+                          toast.error('未找到可保存的策略代码')
+                          return
+                        }
+                        const name = `AI生成的策略_${Date.now()}`
+                        toast.loading('正在保存策略...')
+                        const saved = await strategyApi.createStrategyFromAI({
+                          name,
+                          description: '从AI会话生成的策略',
+                          code,
+                          parameters: {},
+                          strategy_type: 'strategy',
+                          ai_session_id: currentSession.session_id
+                        })
+                        toast.dismiss()
+                        if (!saved?.id) {
+                          toast.error('保存策略失败')
+                          return
+                        }
+                        // 创建标准回测
+                        const payload = {
+                          strategy_id: saved.id,
+                          start_date: lastBacktestConfig.startDate,
+                          end_date: lastBacktestConfig.endDate,
+                          initial_capital: lastBacktestConfig.initialCapital,
+                          exchange: lastBacktestConfig.exchange,
+                          symbol: ((): string => {
+                            const sym = lastBacktestConfig.symbols?.[0] || 'BTC/USDT'
+                            if (lastBacktestConfig.exchange === 'okx' && lastBacktestConfig.productType === 'perpetual') {
+                              return sym.replace('/', '-') + '-SWAP'
+                            }
+                            return sym
+                          })(),
+                          timeframe: lastBacktestConfig.timeframes?.[0] || '1h'
+                        }
+                        toast.loading('正在创建标准回测...')
+                        const resp = await tradingServiceClient.post('/backtests', payload)
+                        toast.dismiss()
+                        const backtest = resp.data
+                        if (!backtest?.id) {
+                          toast.error('创建标准回测失败')
+                          return
+                        }
+                        toast.success('已保存策略并创建标准回测')
+                        navigate(`/backtest/${backtest.id}/details`)
+                      } catch (err: any) {
+                        toast.dismiss()
+                        console.error('保存并创建回测失败:', err)
+                        const msg = err?.response?.data?.detail || err?.message || '操作失败'
+                        toast.error(msg)
+                      }
+                    }}
+                    className="flex items-center space-x-2 px-3 py-1.5 bg-white border border-blue-300 rounded-lg text-sm text-blue-600 hover:bg-blue-50 hover:border-blue-400 transition-colors shadow-sm"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                    </svg>
+                    <span>保存并创建标准回测</span>
+                  </button>
+                )}
+
                 {/* 回测策略按钮 - 只在策略开发完成后显示 */}
                 {(strategyDevState.phase === 'ready_for_backtest' || strategyDevState.phase === 'backtesting' || 
                   strategyDevState.phase === 'analysis' || strategyDevState.phase === 'optimization') && (
                   <button
                     onClick={() => {
-                      if (strategyDevState.strategyId) {
-                        setIsBacktestModalOpen(true)
-                      } else {
-                        setMessageInput('请先完成策略开发，然后再进行回测')
-                      }
+                      setIsBacktestModalOpen(true)
                     }}
                     className="flex items-center space-x-2 px-3 py-1.5 bg-white border border-blue-300 rounded-lg text-sm text-blue-600 hover:bg-blue-50 hover:border-blue-400 transition-colors shadow-sm"
                   >
@@ -2278,6 +2385,7 @@ class UserStrategy(EnhancedBaseStrategy):
           setIsStrategyCodeModalOpen(true)
         }}
         onSubmit={async (config) => {
+          setLastBacktestConfig(config)
           // 模拟进度更新函数（作为后备）
           const startMockProgressUpdate = () => {
             // 模拟回测进度更新
@@ -2444,6 +2552,62 @@ class UserStrategy(EnhancedBaseStrategy):
               data_type: config.dataType
             }
 
+            // 改为标准回测：保存策略 → 创建标准回测（持久化）
+            const fetchLatestStrategyCodeForSave = async (): Promise<string> => {
+              try {
+                const resp = await tradingServiceClient.get(`/strategies/latest-ai-strategy/${currentSession?.session_id}`)
+                const strategy = resp.data
+                if (strategy?.code) return strategy.code
+              } catch {}
+              for (let i = messages.length - 1; i >= 0; i--) {
+                const m = messages[i]
+                if (m.role === 'assistant') {
+                  const code = extractCodeFromMessage(m.content)
+                  if (code) return code
+                }
+              }
+              return ''
+            }
+
+            try {
+              toast.loading('正在保存策略并创建标准回测...')
+              const codeToSave = await fetchLatestStrategyCodeForSave()
+              if (!codeToSave) throw new Error('未找到可保存的策略代码')
+              const saved = await strategyApi.createStrategyFromAI({
+                name: `AI生成的策略_${Date.now()}`,
+                description: '从AI会话生成的策略',
+                code: codeToSave,
+                parameters: {},
+                strategy_type: 'strategy',
+                ai_session_id: currentSession?.session_id || ''
+              })
+              if (!saved?.id) throw new Error('保存策略失败')
+              const stdPayload = {
+                strategy_id: saved.id,
+                start_date: config.startDate,
+                end_date: config.endDate,
+                initial_capital: config.initialCapital,
+                exchange: config.exchange,
+                symbol: convertSymbolsForBackend(config.symbols, config.productType, config.exchange)[0],
+                timeframe: config.timeframes[0]
+              }
+              const stdResp = await tradingServiceClient.post('/backtests', stdPayload)
+              toast.dismiss()
+              const stdBacktest = stdResp.data
+              if (!stdBacktest?.id) throw new Error('创建标准回测失败')
+              toast.success('标准回测已创建，正在跳转详情')
+              setIsBacktestModalOpen(false)
+              navigate(`/backtest/${stdBacktest.id}/details`)
+              return
+            } catch (stdErr: any) {
+              toast.dismiss()
+              console.error('标准回测创建失败:', stdErr)
+              const msg = stdErr?.response?.data?.detail || stdErr?.message || '操作失败'
+              toast.error(msg)
+              setIsBacktestModalOpen(false)
+              return
+            }
+
             // 调用后端API启动实时回测 - 使用tradingServiceClient确保token正确传递
             console.log('🔍 DEBUG: Using tradingServiceClient for backtest request')
             console.log('🔍 DEBUG: Request payload:', JSON.stringify(backtestConfig, null, 2))
@@ -2523,10 +2687,7 @@ class UserStrategy(EnhancedBaseStrategy):
                     toast.error(`连接错误: ${data.error}`)
                   }
                   
-                  // 对于认证失败，回退到模拟进度
-                  if (data.code >= 4001 && data.code <= 4005) {
-                    startMockProgressUpdate()
-                  }
+                  // 认证失败：不再使用模拟进度，直接提示错误
                   return
                 }
 
@@ -2568,10 +2729,7 @@ class UserStrategy(EnhancedBaseStrategy):
 
             ws.onerror = (error) => {
               console.error('WebSocket连接错误:', error)
-              toast.error('实时进度连接失败，将使用模拟进度')
-              
-              // 回退到模拟进度更新
-              startMockProgressUpdate()
+              toast.error('实时进度连接失败，请稍后重试')
             }
 
             ws.onclose = () => {
@@ -2598,8 +2756,7 @@ class UserStrategy(EnhancedBaseStrategy):
             // ✅ 关闭弹窗 - 只在成功时执行
             setIsBacktestModalOpen(false)
           
-            // ✅ 启动模拟进度更新 - 只在成功时执行
-            startMockProgressUpdate()
+            // 不再启动模拟进度，依赖真实WebSocket进度
             
           } catch (error) {
             console.error('🔧 [VERSION-1925-FINAL-FIX-V4] 启动实时回测失败:', error)
@@ -2639,15 +2796,10 @@ class UserStrategy(EnhancedBaseStrategy):
               return
             }
             
-            // 其他错误（网络错误等）才使用模拟模式
-            console.log('🔧 [VERSION-1925-FINAL-FIX-V4] 非验证错误，启动模拟模式')
-            toast.error('回测启动失败，将使用模拟模式')
-            
-            // ✅ 关闭弹窗后才启动模拟模式
+            // 其他错误（网络错误等）：不再使用模拟模式
+            console.log('🔧 [VERSION-1925-FINAL-FIX-V4] 非验证错误，终止回测，不使用模拟模式')
+            toast.error('回测启动失败，请稍后重试')
             setIsBacktestModalOpen(false)
-            
-            // 回退到原来的模拟逻辑
-            startMockProgressUpdate()
           }
         }}
       />

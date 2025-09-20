@@ -13,6 +13,10 @@ class BacktestCreate(BaseModel):
     start_date: date = Field(..., description="回测开始日期")
     end_date: date = Field(..., description="回测结束日期")
     initial_capital: Decimal = Field(..., gt=0, description="初始资金")
+    # 扩展参数：使用真实K线数据所需
+    exchange: str = Field(default="binance", description="交易所标识，如 binance/okx")
+    symbol: str = Field(default="BTC/USDT", description="交易对，例如 BTC/USDT 或 BTC-USDT-SWAP")
+    timeframe: str = Field(default="1h", description="时间周期，例如 1m/5m/15m/1h/4h/1d")
 
 
 class BacktestResponse(BaseModel):

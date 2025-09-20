@@ -1198,3 +1198,280 @@ address`, `user_agent`, `is_active`, `created_at`) VALUES (?,?,?,?,?,?,?,?) RETU
 2025-09-17 17:42:18 +08:00: 2025-09-17 17:42:18:4218 [32minfo[39m: [32mRequest started[39m
 2025-09-17 17:42:18 +08:00: 2025-09-17 17:42:18:4218 [33mwarn[39m: [33mClient error:[39m
 2025-09-17 17:42:18 +08:00: 2025-09-17 17:42:18:4218 [32minfo[39m: [32mRequest completed[39m
+2025-09-17 20:39:56 +08:00: 2025-09-17 20:39:56:3956 [32minfo[39m: [32mRequest started[39m
+2025-09-17 20:39:56 +08:00: 2025-09-17 20:39:56:3956 [33mwarn[39m: [33mClient error:[39m
+2025-09-17 20:39:56 +08:00: 2025-09-17 20:39:56:3956 [32minfo[39m: [32mRequest completed[39m
+2025-09-17 20:46:23 +08:00: 2025-09-17 20:46:23:4623 [32minfo[39m: [32mRequest started[39m
+2025-09-17 20:46:23 +08:00: 2025-09-17 20:46:23:4623 [33mwarn[39m: [33mClient error:[39m
+2025-09-17 20:46:23 +08:00: 2025-09-17 20:46:23:4623 [32minfo[39m: [32mRequest completed[39m
+2025-09-18 13:27:22 +08:00: 2025-09-18 13:27:22:2722 [32minfo[39m: [32mRequest started[39m
+2025-09-18 13:27:22 +08:00: 2025-09-18 13:27:22:2722 [33mwarn[39m: [33mClient error:[39m
+2025-09-18 13:27:22 +08:00: 2025-09-18 13:27:22:2722 [32minfo[39m: [32mRequest completed[39m
+2025-09-18 13:28:34 +08:00: 2025-09-18 13:28:34:2834 [32minfo[39m: [32mRequest started[39m
+2025-09-18 13:28:34 +08:00: 2025-09-18 13:28:34:2834 [33mwarn[39m: [33mClient error:[39m
+2025-09-18 13:28:34 +08:00: 2025-09-18 13:28:34:2834 [32minfo[39m: [32mRequest completed[39m
+2025-09-18 13:40:20 +08:00: 2025-09-18 13:40:20:4020 [32minfo[39m: [32mRequest started[39m
+2025-09-18 13:40:20 +08:00: 2025-09-18 13:40:20:4020 [33mwarn[39m: [33mClient error:[39m
+2025-09-18 13:40:20 +08:00: 2025-09-18 13:40:20:4020 [32minfo[39m: [32mRequest completed[39m
+2025-09-18 13:40:32 +08:00: 2025-09-18 13:40:32:4032 [32minfo[39m: [32mRequest started[39m
+2025-09-18 13:40:32 +08:00: 2025-09-18 13:40:32:4032 [33mwarn[39m: [33mClient error:[39m
+2025-09-18 13:40:32 +08:00: 2025-09-18 13:40:32:4032 [32minfo[39m: [32mRequest completed[39m
+2025-09-18 13:40:34 +08:00: 2025-09-18 13:40:34:4034 [31merror[39m: [31mUnhandled error: Not allowed by CORS[39m
+2025-09-18 13:40:34 +08:00: Error: Not allowed by CORS
+2025-09-18 13:40:34 +08:00:     at origin (/root/trademe/backend/user-service/src/app.ts:86:20)
+2025-09-18 13:40:34 +08:00:     at /root/trademe/backend/user-service/node_modules/cors/lib/index.js:219:13
+2025-09-18 13:40:34 +08:00:     at optionsCallback (/root/trademe/backend/user-service/node_modules/cors/lib/index.js:199:9)
+2025-09-18 13:40:34 +08:00:     at corsMiddleware (/root/trademe/backend/user-service/node_modules/cors/lib/index.js:204:7)
+2025-09-18 13:40:34 +08:00:     at Layer.handle [as handle_request] (/root/trademe/backend/user-service/node_modules/express/lib/router/layer.js:95:5)
+2025-09-18 13:40:34 +08:00:     at trim_prefix (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:328:13)
+2025-09-18 13:40:34 +08:00:     at /root/trademe/backend/user-service/node_modules/express/lib/router/index.js:286:9
+2025-09-18 13:40:34 +08:00:     at Function.process_params (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:346:12)
+2025-09-18 13:40:34 +08:00:     at next (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:280:10)
+2025-09-18 13:40:34 +08:00:     at internalNext (/root/trademe/backend/user-service/node_modules/helmet/index.cjs:537:6)
+2025-09-18 13:40:34 +08:00: 2025-09-18 13:40:34:4034 [31merror[39m: [31mServer error:[39m
+2025-09-18 13:40:34 +08:00: Error: Not allowed by CORS
+2025-09-18 13:40:34 +08:00:     at globalErrorHandler (/root/trademe/backend/user-service/src/middleware/errorHandler.ts:192:16)
+2025-09-18 13:40:34 +08:00:     at Layer.handle_error (/root/trademe/backend/user-service/node_modules/express/lib/router/layer.js:71:5)
+2025-09-18 13:40:34 +08:00:     at trim_prefix (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:326:13)
+2025-09-18 13:40:34 +08:00:     at /root/trademe/backend/user-service/node_modules/express/lib/router/index.js:286:9
+2025-09-18 13:40:34 +08:00:     at Function.process_params (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:346:12)
+2025-09-18 13:40:34 +08:00:     at next (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:280:10)
+2025-09-18 13:40:34 +08:00:     at Layer.handle_error (/root/trademe/backend/user-service/node_modules/express/lib/router/layer.js:67:12)
+2025-09-18 13:40:34 +08:00:     at trim_prefix (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:326:13)
+2025-09-18 13:40:34 +08:00:     at /root/trademe/backend/user-service/node_modules/express/lib/router/index.js:286:9
+2025-09-18 13:40:34 +08:00:     at Function.process_params (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:346:12)
+2025-09-18 13:42:50 +08:00: 2025-09-18 13:42:50:4250 [32minfo[39m: [32mRequest started[39m
+2025-09-18 13:42:50 +08:00: 2025-09-18 13:42:50:4250 [33mwarn[39m: [33mClient error:[39m
+2025-09-18 13:42:50 +08:00: 2025-09-18 13:42:50:4250 [32minfo[39m: [32mRequest completed[39m
+2025-09-18 13:42:50 +08:00: 2025-09-18 13:42:50:4250 [31merror[39m: [31mUnhandled error: Not allowed by CORS[39m
+2025-09-18 13:42:50 +08:00: Error: Not allowed by CORS
+2025-09-18 13:42:50 +08:00:     at origin (/root/trademe/backend/user-service/src/app.ts:86:20)
+2025-09-18 13:42:50 +08:00:     at /root/trademe/backend/user-service/node_modules/cors/lib/index.js:219:13
+2025-09-18 13:42:50 +08:00:     at optionsCallback (/root/trademe/backend/user-service/node_modules/cors/lib/index.js:199:9)
+2025-09-18 13:42:50 +08:00:     at corsMiddleware (/root/trademe/backend/user-service/node_modules/cors/lib/index.js:204:7)
+2025-09-18 13:42:50 +08:00:     at Layer.handle [as handle_request] (/root/trademe/backend/user-service/node_modules/express/lib/router/layer.js:95:5)
+2025-09-18 13:42:50 +08:00:     at trim_prefix (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:328:13)
+2025-09-18 13:42:50 +08:00:     at /root/trademe/backend/user-service/node_modules/express/lib/router/index.js:286:9
+2025-09-18 13:42:50 +08:00:     at Function.process_params (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:346:12)
+2025-09-18 13:42:50 +08:00:     at next (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:280:10)
+2025-09-18 13:42:50 +08:00:     at internalNext (/root/trademe/backend/user-service/node_modules/helmet/index.cjs:537:6)
+2025-09-18 13:42:50 +08:00: 2025-09-18 13:42:50:4250 [31merror[39m: [31mServer error:[39m
+2025-09-18 13:42:50 +08:00: Error: Not allowed by CORS
+2025-09-18 13:42:50 +08:00:     at globalErrorHandler (/root/trademe/backend/user-service/src/middleware/errorHandler.ts:192:16)
+2025-09-18 13:42:50 +08:00:     at Layer.handle_error (/root/trademe/backend/user-service/node_modules/express/lib/router/layer.js:71:5)
+2025-09-18 13:42:50 +08:00:     at trim_prefix (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:326:13)
+2025-09-18 13:42:50 +08:00:     at /root/trademe/backend/user-service/node_modules/express/lib/router/index.js:286:9
+2025-09-18 13:42:50 +08:00:     at Function.process_params (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:346:12)
+2025-09-18 13:42:50 +08:00:     at next (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:280:10)
+2025-09-18 13:42:50 +08:00:     at Layer.handle_error (/root/trademe/backend/user-service/node_modules/express/lib/router/layer.js:67:12)
+2025-09-18 13:42:50 +08:00:     at trim_prefix (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:326:13)
+2025-09-18 13:42:50 +08:00:     at /root/trademe/backend/user-service/node_modules/express/lib/router/index.js:286:9
+2025-09-18 13:42:50 +08:00:     at Function.process_params (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:346:12)
+2025-09-18 16:11:11 +08:00: 2025-09-18 16:11:11:1111 [32minfo[39m: [32mRequest started[39m
+2025-09-18 16:11:11 +08:00: 2025-09-18 16:11:11:1111 [33mwarn[39m: [33mClient error:[39m
+2025-09-18 16:11:11 +08:00: 2025-09-18 16:11:11:1111 [32minfo[39m: [32mRequest completed[39m
+2025-09-18 16:11:17 +08:00: 2025-09-18 16:11:17:1117 [32minfo[39m: [32mRequest started[39m
+2025-09-18 16:11:17 +08:00: 2025-09-18 16:11:17:1117 [33mwarn[39m: [33mClient error:[39m
+2025-09-18 16:11:17 +08:00: 2025-09-18 16:11:17:1117 [32minfo[39m: [32mRequest completed[39m
+2025-09-18 16:11:17 +08:00: 2025-09-18 16:11:17:1117 [31merror[39m: [31mUnhandled error: Not allowed by CORS[39m
+2025-09-18 16:11:17 +08:00: Error: Not allowed by CORS
+2025-09-18 16:11:17 +08:00:     at origin (/root/trademe/backend/user-service/src/app.ts:86:20)
+2025-09-18 16:11:17 +08:00:     at /root/trademe/backend/user-service/node_modules/cors/lib/index.js:219:13
+2025-09-18 16:11:17 +08:00:     at optionsCallback (/root/trademe/backend/user-service/node_modules/cors/lib/index.js:199:9)
+2025-09-18 16:11:17 +08:00:     at corsMiddleware (/root/trademe/backend/user-service/node_modules/cors/lib/index.js:204:7)
+2025-09-18 16:11:17 +08:00:     at Layer.handle [as handle_request] (/root/trademe/backend/user-service/node_modules/express/lib/router/layer.js:95:5)
+2025-09-18 16:11:17 +08:00:     at trim_prefix (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:328:13)
+2025-09-18 16:11:17 +08:00:     at /root/trademe/backend/user-service/node_modules/express/lib/router/index.js:286:9
+2025-09-18 16:11:17 +08:00:     at Function.process_params (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:346:12)
+2025-09-18 16:11:17 +08:00:     at next (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:280:10)
+2025-09-18 16:11:17 +08:00:     at internalNext (/root/trademe/backend/user-service/node_modules/helmet/index.cjs:537:6)
+2025-09-18 16:11:17 +08:00: 2025-09-18 16:11:17:1117 [31merror[39m: [31mServer error:[39m
+2025-09-18 16:11:17 +08:00: Error: Not allowed by CORS
+2025-09-18 16:11:17 +08:00:     at globalErrorHandler (/root/trademe/backend/user-service/src/middleware/errorHandler.ts:192:16)
+2025-09-18 16:11:17 +08:00:     at Layer.handle_error (/root/trademe/backend/user-service/node_modules/express/lib/router/layer.js:71:5)
+2025-09-18 16:11:17 +08:00:     at trim_prefix (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:326:13)
+2025-09-18 16:11:17 +08:00:     at /root/trademe/backend/user-service/node_modules/express/lib/router/index.js:286:9
+2025-09-18 16:11:17 +08:00:     at Function.process_params (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:346:12)
+2025-09-18 16:11:17 +08:00:     at next (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:280:10)
+2025-09-18 16:11:17 +08:00:     at Layer.handle_error (/root/trademe/backend/user-service/node_modules/express/lib/router/layer.js:67:12)
+2025-09-18 16:11:17 +08:00:     at trim_prefix (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:326:13)
+2025-09-18 16:11:17 +08:00:     at /root/trademe/backend/user-service/node_modules/express/lib/router/index.js:286:9
+2025-09-18 16:11:17 +08:00:     at Function.process_params (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:346:12)
+2025-09-18 16:11:18 +08:00: 2025-09-18 16:11:18:1118 [32minfo[39m: [32mRequest started[39m
+2025-09-18 16:11:18 +08:00: 2025-09-18 16:11:18:1118 [33mwarn[39m: [33mClient error:[39m
+2025-09-18 16:11:18 +08:00: 2025-09-18 16:11:18:1118 [32minfo[39m: [32mRequest completed[39m
+2025-09-18 16:11:18 +08:00: 2025-09-18 16:11:18:1118 [32minfo[39m: [32mRequest started[39m
+2025-09-18 16:11:18 +08:00: 2025-09-18 16:11:18:1118 [33mwarn[39m: [33mClient error:[39m
+2025-09-18 16:11:18 +08:00: 2025-09-18 16:11:18:1118 [32minfo[39m: [32mRequest completed[39m
+2025-09-18 16:11:18 +08:00: 2025-09-18 16:11:18:1118 [31merror[39m: [31mUnhandled error: Not allowed by CORS[39m
+2025-09-18 16:11:18 +08:00: Error: Not allowed by CORS
+2025-09-18 16:11:18 +08:00:     at origin (/root/trademe/backend/user-service/src/app.ts:86:20)
+2025-09-18 16:11:18 +08:00:     at /root/trademe/backend/user-service/node_modules/cors/lib/index.js:219:13
+2025-09-18 16:11:18 +08:00:     at optionsCallback (/root/trademe/backend/user-service/node_modules/cors/lib/index.js:199:9)
+2025-09-18 16:11:18 +08:00:     at corsMiddleware (/root/trademe/backend/user-service/node_modules/cors/lib/index.js:204:7)
+2025-09-18 16:11:18 +08:00:     at Layer.handle [as handle_request] (/root/trademe/backend/user-service/node_modules/express/lib/router/layer.js:95:5)
+2025-09-18 16:11:18 +08:00:     at trim_prefix (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:328:13)
+2025-09-18 16:11:18 +08:00:     at /root/trademe/backend/user-service/node_modules/express/lib/router/index.js:286:9
+2025-09-18 16:11:18 +08:00:     at Function.process_params (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:346:12)
+2025-09-18 16:11:18 +08:00:     at next (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:280:10)
+2025-09-18 16:11:18 +08:00:     at internalNext (/root/trademe/backend/user-service/node_modules/helmet/index.cjs:537:6)
+2025-09-18 16:11:18 +08:00: 2025-09-18 16:11:18:1118 [31merror[39m: [31mServer error:[39m
+2025-09-18 16:11:18 +08:00: Error: Not allowed by CORS
+2025-09-18 16:11:18 +08:00:     at globalErrorHandler (/root/trademe/backend/user-service/src/middleware/errorHandler.ts:192:16)
+2025-09-18 16:11:18 +08:00:     at Layer.handle_error (/root/trademe/backend/user-service/node_modules/express/lib/router/layer.js:71:5)
+2025-09-18 16:11:18 +08:00:     at trim_prefix (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:326:13)
+2025-09-18 16:11:18 +08:00:     at /root/trademe/backend/user-service/node_modules/express/lib/router/index.js:286:9
+2025-09-18 16:11:18 +08:00:     at Function.process_params (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:346:12)
+2025-09-18 16:11:18 +08:00:     at next (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:280:10)
+2025-09-18 16:11:18 +08:00:     at Layer.handle_error (/root/trademe/backend/user-service/node_modules/express/lib/router/layer.js:67:12)
+2025-09-18 16:11:18 +08:00:     at trim_prefix (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:326:13)
+2025-09-18 16:11:18 +08:00:     at /root/trademe/backend/user-service/node_modules/express/lib/router/index.js:286:9
+2025-09-18 16:11:18 +08:00:     at Function.process_params (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:346:12)
+2025-09-18 16:11:19 +08:00: 2025-09-18 16:11:19:1119 [32minfo[39m: [32mRequest started[39m
+2025-09-18 16:11:19 +08:00: 2025-09-18 16:11:19:1119 [33mwarn[39m: [33mClient error:[39m
+2025-09-18 16:11:19 +08:00: 2025-09-18 16:11:19:1119 [32minfo[39m: [32mRequest completed[39m
+2025-09-18 16:40:32 +08:00: 2025-09-18 16:40:32:4032 [32minfo[39m: [32mRequest started[39m
+2025-09-18 16:40:32 +08:00: 2025-09-18 16:40:32:4032 [33mwarn[39m: [33mClient error:[39m
+2025-09-18 16:40:32 +08:00: 2025-09-18 16:40:32:4032 [32minfo[39m: [32mRequest completed[39m
+2025-09-18 16:40:41 +08:00: 2025-09-18 16:40:41:4041 [32minfo[39m: [32mRequest started[39m
+2025-09-18 16:40:41 +08:00: 2025-09-18 16:40:41:4041 [33mwarn[39m: [33mClient error:[39m
+2025-09-18 16:40:41 +08:00: 2025-09-18 16:40:41:4041 [32minfo[39m: [32mRequest completed[39m
+2025-09-18 16:40:53 +08:00: 2025-09-18 16:40:53:4053 [32minfo[39m: [32mRequest started[39m
+2025-09-18 16:40:53 +08:00: 2025-09-18 16:40:53:4053 [33mwarn[39m: [33mClient error:[39m
+2025-09-18 16:40:53 +08:00: 2025-09-18 16:40:53:4053 [32minfo[39m: [32mRequest completed[39m
+2025-09-18 17:10:17 +08:00: 2025-09-18 17:10:17:1017 [32minfo[39m: [32mRequest started[39m
+2025-09-18 17:10:17 +08:00: 2025-09-18 17:10:17:1017 [33mwarn[39m: [33mClient error:[39m
+2025-09-18 17:10:17 +08:00: 2025-09-18 17:10:17:1017 [32minfo[39m: [32mRequest completed[39m
+2025-09-18 17:10:24 +08:00: 2025-09-18 17:10:24:1024 [32minfo[39m: [32mRequest started[39m
+2025-09-18 17:10:24 +08:00: 2025-09-18 17:10:24:1024 [33mwarn[39m: [33mClient error:[39m
+2025-09-18 17:10:24 +08:00: 2025-09-18 17:10:24:1024 [32minfo[39m: [32mRequest completed[39m
+2025-09-18 17:10:24 +08:00: 2025-09-18 17:10:24:1024 [31merror[39m: [31mUnhandled error: Not allowed by CORS[39m
+2025-09-18 17:10:24 +08:00: Error: Not allowed by CORS
+2025-09-18 17:10:24 +08:00:     at origin (/root/trademe/backend/user-service/src/app.ts:86:20)
+2025-09-18 17:10:24 +08:00:     at /root/trademe/backend/user-service/node_modules/cors/lib/index.js:219:13
+2025-09-18 17:10:24 +08:00:     at optionsCallback (/root/trademe/backend/user-service/node_modules/cors/lib/index.js:199:9)
+2025-09-18 17:10:24 +08:00:     at corsMiddleware (/root/trademe/backend/user-service/node_modules/cors/lib/index.js:204:7)
+2025-09-18 17:10:24 +08:00:     at Layer.handle [as handle_request] (/root/trademe/backend/user-service/node_modules/express/lib/router/layer.js:95:5)
+2025-09-18 17:10:24 +08:00:     at trim_prefix (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:328:13)
+2025-09-18 17:10:24 +08:00:     at /root/trademe/backend/user-service/node_modules/express/lib/router/index.js:286:9
+2025-09-18 17:10:24 +08:00:     at Function.process_params (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:346:12)
+2025-09-18 17:10:24 +08:00:     at next (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:280:10)
+2025-09-18 17:10:24 +08:00:     at internalNext (/root/trademe/backend/user-service/node_modules/helmet/index.cjs:537:6)
+2025-09-18 17:10:24 +08:00: 2025-09-18 17:10:24:1024 [31merror[39m: [31mServer error:[39m
+2025-09-18 17:10:24 +08:00: Error: Not allowed by CORS
+2025-09-18 17:10:24 +08:00:     at globalErrorHandler (/root/trademe/backend/user-service/src/middleware/errorHandler.ts:192:16)
+2025-09-18 17:10:24 +08:00:     at Layer.handle_error (/root/trademe/backend/user-service/node_modules/express/lib/router/layer.js:71:5)
+2025-09-18 17:10:24 +08:00:     at trim_prefix (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:326:13)
+2025-09-18 17:10:24 +08:00:     at /root/trademe/backend/user-service/node_modules/express/lib/router/index.js:286:9
+2025-09-18 17:10:24 +08:00:     at Function.process_params (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:346:12)
+2025-09-18 17:10:24 +08:00:     at next (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:280:10)
+2025-09-18 17:10:24 +08:00:     at Layer.handle_error (/root/trademe/backend/user-service/node_modules/express/lib/router/layer.js:67:12)
+2025-09-18 17:10:24 +08:00:     at trim_prefix (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:326:13)
+2025-09-18 17:10:24 +08:00:     at /root/trademe/backend/user-service/node_modules/express/lib/router/index.js:286:9
+2025-09-18 17:10:24 +08:00:     at Function.process_params (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:346:12)
+2025-09-18 17:10:24 +08:00: 2025-09-18 17:10:24:1024 [32minfo[39m: [32mRequest started[39m
+2025-09-18 17:10:24 +08:00: 2025-09-18 17:10:24:1024 [33mwarn[39m: [33mClient error:[39m
+2025-09-18 17:10:24 +08:00: 2025-09-18 17:10:24:1024 [32minfo[39m: [32mRequest completed[39m
+2025-09-18 17:10:25 +08:00: 2025-09-18 17:10:25:1025 [32minfo[39m: [32mRequest started[39m
+2025-09-18 17:10:25 +08:00: 2025-09-18 17:10:25:1025 [33mwarn[39m: [33mClient error:[39m
+2025-09-18 17:10:25 +08:00: 2025-09-18 17:10:25:1025 [32minfo[39m: [32mRequest completed[39m
+2025-09-18 17:10:25 +08:00: 2025-09-18 17:10:25:1025 [31merror[39m: [31mUnhandled error: Not allowed by CORS[39m
+2025-09-18 17:10:25 +08:00: Error: Not allowed by CORS
+2025-09-18 17:10:25 +08:00:     at origin (/root/trademe/backend/user-service/src/app.ts:86:20)
+2025-09-18 17:10:25 +08:00:     at /root/trademe/backend/user-service/node_modules/cors/lib/index.js:219:13
+2025-09-18 17:10:25 +08:00:     at optionsCallback (/root/trademe/backend/user-service/node_modules/cors/lib/index.js:199:9)
+2025-09-18 17:10:25 +08:00:     at corsMiddleware (/root/trademe/backend/user-service/node_modules/cors/lib/index.js:204:7)
+2025-09-18 17:10:25 +08:00:     at Layer.handle [as handle_request] (/root/trademe/backend/user-service/node_modules/express/lib/router/layer.js:95:5)
+2025-09-18 17:10:25 +08:00:     at trim_prefix (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:328:13)
+2025-09-18 17:10:25 +08:00:     at /root/trademe/backend/user-service/node_modules/express/lib/router/index.js:286:9
+2025-09-18 17:10:25 +08:00:     at Function.process_params (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:346:12)
+2025-09-18 17:10:25 +08:00:     at next (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:280:10)
+2025-09-18 17:10:25 +08:00:     at internalNext (/root/trademe/backend/user-service/node_modules/helmet/index.cjs:537:6)
+2025-09-18 17:10:25 +08:00: 2025-09-18 17:10:25:1025 [31merror[39m: [31mServer error:[39m
+2025-09-18 17:10:25 +08:00: Error: Not allowed by CORS
+2025-09-18 17:10:25 +08:00:     at globalErrorHandler (/root/trademe/backend/user-service/src/middleware/errorHandler.ts:192:16)
+2025-09-18 17:10:25 +08:00:     at Layer.handle_error (/root/trademe/backend/user-service/node_modules/express/lib/router/layer.js:71:5)
+2025-09-18 17:10:25 +08:00:     at trim_prefix (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:326:13)
+2025-09-18 17:10:25 +08:00:     at /root/trademe/backend/user-service/node_modules/express/lib/router/index.js:286:9
+2025-09-18 17:10:25 +08:00:     at Function.process_params (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:346:12)
+2025-09-18 17:10:25 +08:00:     at next (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:280:10)
+2025-09-18 17:10:25 +08:00:     at Layer.handle_error (/root/trademe/backend/user-service/node_modules/express/lib/router/layer.js:67:12)
+2025-09-18 17:10:25 +08:00:     at trim_prefix (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:326:13)
+2025-09-18 17:10:25 +08:00:     at /root/trademe/backend/user-service/node_modules/express/lib/router/index.js:286:9
+2025-09-18 17:10:25 +08:00:     at Function.process_params (/root/trademe/backend/user-service/node_modules/express/lib/router/index.js:346:12)
+2025-09-18 17:10:25 +08:00: 2025-09-18 17:10:25:1025 [32minfo[39m: [32mRequest started[39m
+2025-09-18 17:10:25 +08:00: 2025-09-18 17:10:25:1025 [33mwarn[39m: [33mClient error:[39m
+2025-09-18 17:10:25 +08:00: 2025-09-18 17:10:25:1025 [32minfo[39m: [32mRequest completed[39m
+2025-09-19 12:14:50 +08:00: 2025-09-19 12:14:50:1450 [32minfo[39m: [32mRequest started[39m
+2025-09-19 12:14:50 +08:00: prisma:query SELECT 1
+2025-09-19 12:14:50 +08:00: prisma:query SELECT `main`.`users`.`id`, `main`.`users`.`username`, `main`.`users`.`email`, `main`.`users`.`password_hash`, `main`.`users`.`membership_level`, `main`.`users`.`membership_expires_at`, `main`.`users`.`is_active`, `main`.`users`.`email_verified`, `main`.`users`.`avatar_url`, `main`.`users`.`created_at` FROM `main`.`users` WHERE (`main`.`users`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
+2025-09-19 12:14:50 +08:00: prisma:query INSERT INTO `main`.`user_sessions` (`user_id`, `token`, `refresh_token`, `expires_at`, `ip_address`, `user_agent`, `is_active`, `created_at`) VALUES (?,?,?,?,?,?,?,?) RETURNING `id` AS `id`, `user_id` AS `user_id`, `token` AS `token`, `refresh_token` AS `refresh_token`, `expires_at` AS `expires_at`, `ip_address` AS `ip_address`, `user_agent` AS `user_agent`, `is_active` AS `is_active`, `created_at` AS `created_at`
+2025-09-19 12:14:50 +08:00: prisma:query UPDATE `main`.`users` SET `last_login_at` = ?, `updated_at` = ? WHERE (`main`.`users`.`id` = ? AND 1=1) RETURNING `id` AS `id`, `username` AS `username`, `email` AS `email`, `password_hash` AS `password_hash`, `google_id` AS `google_id`, `avatar_url` AS `avatar_url`, `phone` AS `phone`, `membership_level` AS `membership_level`, `membership_expires_at` AS `membership_expires_at`, `is_active` AS `is_active`, `email_verified` AS `email_verified`, `last_login_at` AS `last_login_at`, `preferences` AS `preferences`, `created_at` AS `created_at`, `updated_at` AS `updated_at`
+2025-09-19 12:14:50 +08:00: 2025-09-19 12:14:50:1450 [32minfo[39m: [32mUser logged in:[39m
+2025-09-19 12:14:50 +08:00: 2025-09-19 12:14:50:1450 [32minfo[39m: [32mRequest completed[39m
+2025-09-19 13:51:09 +08:00: 2025-09-19 13:51:09:519 [32minfo[39m: [32mRequest started[39m
+2025-09-19 13:51:09 +08:00: 2025-09-19 13:51:09:519 [33mwarn[39m: [33mClient error:[39m
+2025-09-19 13:51:09 +08:00: 2025-09-19 13:51:09:519 [32minfo[39m: [32mRequest completed[39m
+2025-09-19 13:53:33 +08:00: 2025-09-19 13:53:33:5333 [32minfo[39m: [32mRequest started[39m
+2025-09-19 13:53:33 +08:00: 2025-09-19 13:53:33:5333 [33mwarn[39m: [33mClient error:[39m
+2025-09-19 13:53:33 +08:00: 2025-09-19 13:53:33:5333 [32minfo[39m: [32mRequest completed[39m
+2025-09-19 16:28:21 +08:00: 2025-09-19 16:28:21:2821 [32minfo[39m: [32mRequest started[39m
+2025-09-19 16:28:21 +08:00: prisma:query SELECT 1
+2025-09-19 16:28:21 +08:00: prisma:query SELECT 1
+2025-09-19 16:28:21 +08:00: 2025-09-19 16:28:21:2821 [32minfo[39m: [32mUpload service health check passed[39m
+2025-09-19 16:28:22 +08:00: 2025-09-19 16:28:22:2822 [32minfo[39m: [32mRequest completed[39m
+2025-09-19 16:52:18 +08:00: 2025-09-19 16:52:18:5218 [32minfo[39m: [32mRequest started[39m
+2025-09-19 16:52:18 +08:00: 2025-09-19 16:52:18:5218 [33mwarn[39m: [33mClient error:[39m
+2025-09-19 16:52:18 +08:00: 2025-09-19 16:52:18:5218 [32minfo[39m: [32mRequest completed[39m
+2025-09-19 16:52:29 +08:00: 2025-09-19 16:52:29:5229 [32minfo[39m: [32mRequest started[39m
+2025-09-19 16:52:29 +08:00: 2025-09-19 16:52:29:5229 [33mwarn[39m: [33mClient error:[39m
+2025-09-19 16:52:29 +08:00: 2025-09-19 16:52:29:5229 [32minfo[39m: [32mRequest completed[39m
+2025-09-19 16:52:43 +08:00: 2025-09-19 16:52:43:5243 [32minfo[39m: [32mRequest started[39m
+2025-09-19 16:52:43 +08:00: 2025-09-19 16:52:43:5243 [33mwarn[39m: [33mClient error:[39m
+2025-09-19 16:52:43 +08:00: 2025-09-19 16:52:43:5243 [32minfo[39m: [32mRequest completed[39m
+2025-09-19 16:52:47 +08:00: 2025-09-19 16:52:47:5247 [32minfo[39m: [32mRequest started[39m
+2025-09-19 16:52:47 +08:00: 2025-09-19 16:52:47:5247 [33mwarn[39m: [33mClient error:[39m
+2025-09-19 16:52:47 +08:00: 2025-09-19 16:52:47:5247 [32minfo[39m: [32mRequest completed[39m
+2025-09-19 16:52:52 +08:00: 2025-09-19 16:52:52:5252 [32minfo[39m: [32mRequest started[39m
+2025-09-19 16:52:52 +08:00: 2025-09-19 16:52:52:5252 [33mwarn[39m: [33mClient error:[39m
+2025-09-19 16:52:52 +08:00: 2025-09-19 16:52:52:5252 [32minfo[39m: [32mRequest completed[39m
+2025-09-19 16:59:04 +08:00: 2025-09-19 16:59:04:594 [32minfo[39m: [32mRequest started[39m
+2025-09-19 16:59:04 +08:00: prisma:query SELECT 1
+2025-09-19 16:59:04 +08:00: prisma:query SELECT `main`.`users`.`id`, `main`.`users`.`username`, `main`.`users`.`email`, `main`.`users`.`password_hash`, `main`.`users`.`membership_level`, `main`.`users`.`membership_expires_at`, `main`.`users`.`is_active`, `main`.`users`.`email_verified`, `main`.`users`.`avatar_url`, `main`.`users`.`created_at` FROM `main`.`users` WHERE (`main`.`users`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
+2025-09-19 16:59:05 +08:00: prisma:query INSERT INTO `main`.`user_sessions` (`user_id`, `token`, `refresh_token`, `expires_at`, `ip_address`, `user_agent`, `is_active`, `created_at`) VALUES (?,?,?,?,?,?,?,?) RETURNING `id` AS `id`, `user_id` AS `user_id`, `token` AS `token`, `refresh_token` AS `refresh_token`, `expires_at` AS `expires_at`, `ip_address` AS `ip_address`, `user_agent` AS `user_agent`, `is_active` AS `is_active`, `created_at` AS `created_at`
+2025-09-19 16:59:05 +08:00: prisma:query UPDATE `main`.`users` SET `last_login_at` = ?, `updated_at` = ? WHERE (`main`.`users`.`id` = ? AND 1=1) RETURNING `id` AS `id`, `username` AS `username`, `email` AS `email`, `password_hash` AS `password_hash`, `google_id` AS `google_id`, `avatar_url` AS `avatar_url`, `phone` AS `phone`, `membership_level` AS `membership_level`, `membership_expires_at` AS `membership_expires_at`, `is_active` AS `is_active`, `email_verified` AS `email_verified`, `last_login_at` AS `last_login_at`, `preferences` AS `preferences`, `created_at` AS `created_at`, `updated_at` AS `updated_at`
+2025-09-19 16:59:05 +08:00: 2025-09-19 16:59:05:595 [32minfo[39m: [32mUser logged in:[39m
+2025-09-19 16:59:05 +08:00: 2025-09-19 16:59:05:595 [32minfo[39m: [32mRequest completed[39m
+2025-09-19 17:03:06 +08:00: 2025-09-19 17:03:06:36 [32minfo[39m: [32mRequest started[39m
+2025-09-19 17:03:06 +08:00: 2025-09-19 17:03:06:36 [33mwarn[39m: [33mClient error:[39m
+2025-09-19 17:03:06 +08:00: 2025-09-19 17:03:06:36 [32minfo[39m: [32mRequest completed[39m
+2025-09-19 17:03:20 +08:00: 2025-09-19 17:03:20:320 [32minfo[39m: [32mRequest started[39m
+2025-09-19 17:03:20 +08:00: 2025-09-19 17:03:20:320 [33mwarn[39m: [33mClient error:[39m
+2025-09-19 17:03:20 +08:00: 2025-09-19 17:03:20:320 [32minfo[39m: [32mRequest completed[39m
+2025-09-19 20:06:45 +08:00: 2025-09-19 20:06:45:645 [32minfo[39m: [32mRequest started[39m
+2025-09-19 20:06:45 +08:00: 2025-09-19 20:06:45:645 [33mwarn[39m: [33mClient error:[39m
+2025-09-19 20:06:45 +08:00: 2025-09-19 20:06:45:645 [32minfo[39m: [32mRequest completed[39m
+2025-09-19 20:45:22 +08:00: 2025-09-19 20:45:22:4522 [32minfo[39m: [32mRequest started[39m
+2025-09-19 20:45:22 +08:00: 2025-09-19 20:45:22:4522 [33mwarn[39m: [33mClient error:[39m
+2025-09-19 20:45:22 +08:00: 2025-09-19 20:45:22:4522 [32minfo[39m: [32mRequest completed[39m
+2025-09-20 13:45:25 +08:00: 2025-09-20 13:45:25:4525 [32minfo[39m: [32mRequest started[39m
+2025-09-20 13:45:25 +08:00: 2025-09-20 13:45:25:4525 [33mwarn[39m: [33mClient error:[39m
+2025-09-20 13:45:25 +08:00: 2025-09-20 13:45:25:4525 [32minfo[39m: [32mRequest completed[39m
+2025-09-20 13:47:09 +08:00: 2025-09-20 13:47:09:479 [32minfo[39m: [32mRequest started[39m
+2025-09-20 13:47:09 +08:00: 2025-09-20 13:47:09:479 [33mwarn[39m: [33mClient error:[39m
+2025-09-20 13:47:09 +08:00: 2025-09-20 13:47:09:479 [32minfo[39m: [32mRequest completed[39m
+2025-09-20 16:42:54 +08:00: 2025-09-20 16:42:54:4254 [32minfo[39m: [32mRequest started[39m
+2025-09-20 16:42:54 +08:00: 2025-09-20 16:42:54:4254 [33mwarn[39m: [33mClient error:[39m
+2025-09-20 16:42:54 +08:00: 2025-09-20 16:42:54:4254 [32minfo[39m: [32mRequest completed[39m
+2025-09-20 16:42:57 +08:00: 2025-09-20 16:42:57:4257 [32minfo[39m: [32mRequest started[39m
+2025-09-20 16:42:57 +08:00: 2025-09-20 16:42:57:4257 [33mwarn[39m: [33mClient error:[39m
+2025-09-20 16:42:57 +08:00: 2025-09-20 16:42:57:4257 [32minfo[39m: [32mRequest completed[39m
+2025-09-20 16:43:03 +08:00: 2025-09-20 16:43:03:433 [32minfo[39m: [32mRequest started[39m
+2025-09-20 16:43:03 +08:00: 2025-09-20 16:43:03:433 [33mwarn[39m: [33mClient error:[39m
+2025-09-20 16:43:03 +08:00: 2025-09-20 16:43:03:433 [32minfo[39m: [32mRequest completed[39m
+2025-09-20 19:52:07 +08:00: 2025-09-20 19:52:07:527 [32minfo[39m: [32mRequest started[39m
+2025-09-20 19:52:07 +08:00: 2025-09-20 19:52:07:527 [33mwarn[39m: [33mClient error:[39m
+2025-09-20 19:52:07 +08:00: 2025-09-20 19:52:07:527 [32minfo[39m: [32mRequest completed[39m
+2025-09-20 20:48:16 +08:00: 2025-09-20 20:48:16:4816 [32minfo[39m: [32mRequest started[39m
+2025-09-20 20:48:16 +08:00: 2025-09-20 20:48:16:4816 [33mwarn[39m: [33mClient error:[39m
+2025-09-20 20:48:16 +08:00: 2025-09-20 20:48:16:4816 [32minfo[39m: [32mRequest completed[39m

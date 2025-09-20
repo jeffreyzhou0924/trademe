@@ -75,8 +75,8 @@ pm2 logs trademe-user-service
 # 重启服务
 pm2 restart trademe-user-service
 
-# 数据库访问
-mysql -u trademe -ptrademe123 trademe
+# 数据库访问（SQLite）
+sqlite3 /root/trademe/data/trademe.db
 ```
 
 ## 📱 移动端开发者

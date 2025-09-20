@@ -6,7 +6,7 @@
 
 #### 1.1 开发环境搭建
 - [ ] Docker环境配置
-- [ ] 数据库初始化（MySQL + Redis + InfluxDB）  
+- [ ] 数据库初始化（SQLite + Redis，InfluxDB 可选）  
 - [ ] CI/CD流水线配置
 - [ ] 代码规范和工具配置
 
@@ -30,7 +30,7 @@
 - [ ] 交易所API集成（CCXT）
 - [ ] 实时行情数据采集
 - [ ] WebSocket数据分发
-- [ ] 历史数据存储（InfluxDB）
+- [ ] 历史数据存储（可选，默认禁用 InfluxDB）
 - [ ] K线数据API接口
 
 #### 2.2 交易服务基础 (trading-service)

@@ -9,6 +9,9 @@ RUN npm ci --only=production
 # Copy source code
 COPY . .
 
+# Ensure data directory exists for SQLite database
+RUN mkdir -p /app/data
+
 # Generate Prisma client
 RUN npx prisma generate
 

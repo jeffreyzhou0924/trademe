@@ -686,10 +686,12 @@ class OKXDataDownloader:
                                 timestamp_ms = int(kline[0])
                                 dt_obj = dt.fromtimestamp(timestamp_ms / 1000)
                                 
+                                product_type = 'futures' if symbol.upper().endswith('-USDT-SWAP') or symbol.upper().endswith('-SWAP') else 'spot'
                                 market_record = MarketData(
                                     exchange="okx",
                                     symbol=symbol,
                                     timeframe=timeframe,
+                                    product_type=product_type,
                                     open_price=float(kline[1]),
                                     high_price=float(kline[2]), 
                                     low_price=float(kline[3]),

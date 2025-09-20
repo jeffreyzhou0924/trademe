@@ -4,11 +4,9 @@
   "description": "数字货币策略交易平台",
   "main": "index.js",
   "scripts": {
-    "dev": "concurrently \"npm run dev:user-service\" \"npm run dev:trading-service\" \"npm run dev:ai-service\" \"npm run dev:market-service\" \"npm run dev:frontend\"",
+    "dev": "concurrently \"npm run dev:user-service\" \"npm run dev:trading-service\" \"npm run dev:frontend\"",
     "dev:user-service": "cd backend/user-service && npm run dev",
-    "dev:trading-service": "cd backend/trading-service && python -m uvicorn main:app --reload --port 8001",
-    "dev:ai-service": "cd backend/ai-service && python -m uvicorn main:app --reload --port 8002",
-    "dev:market-service": "cd backend/market-service && python -m uvicorn main:app --reload --port 8003",
+    "dev:trading-service": "cd backend/trading-service && uvicorn app.main:app --reload --port 8001",
     "dev:frontend": "cd frontend && npm run dev",
     "build": "npm run build:backend && npm run build:frontend",
     "build:backend": "cd backend/user-service && npm run build",

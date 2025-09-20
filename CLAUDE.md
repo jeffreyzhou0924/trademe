@@ -848,7 +848,7 @@ class AISession:
 - 实现服务健康检查
 
 **3. 数据库架构优化**
-- 时序数据存储优化 (InfluxDB集成)
+- 时序数据存储（可选，默认不启用 InfluxDB）
 - Redis缓存分层策略
 - SQLite查询性能优化
 - 数据分片与读写分离
@@ -890,7 +890,7 @@ class AISession:
 - **错误处理**: 结构化异常处理 + 统一错误码
 
 **数据架构优化**:
-- **时序存储**: InfluxDB存储市场数据时序
+- **时序存储（可选）**: 存储市场数据时序（默认不启用 InfluxDB）
 - **缓存分层**: L1(内存) + L2(Redis) + L3(数据库)
 - **数据压缩**: Protocol Buffers序列化
 - **实时同步**: WebSocket + Server-Sent Events

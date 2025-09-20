@@ -7,7 +7,7 @@
 - **服务名称**: user-service
 - **端口**: 3001
 - **技术栈**: Node.js + TypeScript + Express + Prisma
-- **数据库**: MySQL + Redis
+- **数据库**: SQLite + Redis
 
 ## 通用信息
 

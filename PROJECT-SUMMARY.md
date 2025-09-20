@@ -13,10 +13,10 @@
 - ✅ 微服务架构设计 (4个服务: 用户、交易、AI、行情)
 - ✅ 数据库设计 (15+ 表结构，完整ER关系)
 - ✅ API接口设计 (70+ 端点，RESTful风格)
-- ✅ 技术栈选择 (Node.js + TypeScript + MySQL + Redis)
+- ✅ 技术栈选择 (Node.js + TypeScript + SQLite + Redis)
 
 ### 2. 🔐 用户服务 (已完成)
-**技术栈:** Node.js + TypeScript + Express.js + Prisma + MySQL + Redis
+**技术栈:** Node.js + TypeScript + Express.js + Prisma + SQLite + Redis
 
 #### 核心功能
 - ✅ **用户认证系统**
@@ -112,7 +112,7 @@
 Runtime: Node.js 20.x
 Language: TypeScript 5.x
 Framework: Express.js 4.x
-Database: MySQL 8.x + Prisma ORM
+Database: SQLite + Prisma ORM
 Cache: Redis 7.x
 Authentication: JWT + bcrypt
 Validation: Joi
@@ -122,7 +122,7 @@ Proxy: Nginx
 
 ### 数据库设计
 ```
-主数据库: MySQL (用户数据、业务数据)
+主数据库: SQLite (用户数据、业务数据)
 缓存: Redis (会话、验证码、限流)
 存储结构: 标准关系型设计，支持事务
 索引优化: 查询性能优化
@@ -176,7 +176,7 @@ Proxy: Nginx
 │   ├── user-service-api.md      # 用户服务API文档
 │   └── database-design.md       # 数据库设计文档
 ├── database/
-│   └── init.sql                 # 数据库初始化脚本
+│   └── init_sqlite.sql          # 数据库初始化脚本（SQLite）
 ├── backend/
 │   └── user-service/           # 用户服务 (已完成)
 │       ├── src/
@@ -201,7 +201,7 @@ Proxy: Nginx
 - **操作系统:** Ubuntu 24.04 LTS
 - **公网IP:** 43.167.252.120
 - **服务端口:** 80 (Nginx) → 3001 (Node.js)
-- **数据库:** MySQL 8.0 (本地)
+- **数据库:** SQLite (本地)
 - **缓存:** Redis 7.0 (本地)
 
 ### 启动命令
@@ -251,7 +251,7 @@ pm2 logs trademe-user-service
 3. **行情数据服务** (Python + FastAPI)  
    - 实时K线数据
    - 技术指标计算
-   - 历史数据存储 (InfluxDB)
+   - 历史数据存储（可选，默认禁用 InfluxDB）
    - WebSocket推送
 
 ### 前端开发
@@ -279,8 +279,8 @@ sudo systemctl reload nginx
 # 查看日志
 tail -f /root/trademe/logs/user-service.log
 
-# 数据库访问
-mysql -u trademe -ptrademe123 trademe
+# 数据库访问（SQLite）
+sqlite3 /root/trademe/data/trademe.db
 ```
 
 ## 🎯 项目亮点

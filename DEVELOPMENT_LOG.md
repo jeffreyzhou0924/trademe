@@ -68,7 +68,7 @@ curl http://localhost:8001/health
 
 - **待开发模块**:
   - ❌ 交易服务 (Python + FastAPI) - 极高优先级
-  - ❌ 市场数据服务 (WebSocket + InfluxDB) - 极高优先级  
+  - ❌ 市场数据服务 (WebSocket，时序存储可选) - 极高优先级  
   - ❌ AI服务 (OpenAI集成) - 高优先级
   - ❌ 前端页面实现 - 高优先级
 
@@ -76,9 +76,24 @@ curl http://localhost:8001/health
 - **微服务架构图**: 设计了完整的服务依赖关系
 - **数据流设计**: 定义了各服务间的数据交互模式
 - **数据库架构**: 
-  - MySQL主数据库 (用户、订单、配置)
-  - Redis缓存 (会话、限流、临时数据)
-  - InfluxDB时序数据库 (K线、交易数据)
+  - SQLite 主数据库 (用户、订单、配置)
+  - Redis 缓存 (会话、限流、临时数据)
+
+### 📅 2025-09-19 - 回测数据规范化修复
+
+**开发人员**: Coding Agent
+
+#### 🎯 目标
+- 修复同参数回测结果不一致问题，根因是符号变体与产品类型未严格匹配。
+
+#### ✅ 变更
+- 严格化符号与产品类型匹配（OKX 永续统一 `BASE-QUOTE-SWAP`，现货优先 `BASE/QUOTE`）
+- 查询阶段增加 `product_type` 过滤，避免现货/永续串用
+- 下载器写库时显式写入 `product_type`
+- 回测结果增加 `data_fingerprint` 用于追溯
+- 提供历史回填脚本：`backend/trading-service/scripts/backfill_product_type_market_data.py`
+
+  - （可选）时序数据库（K线、交易数据，默认不启用）
 
 ##### 3. 功能模块规划
 - **MVP核心功能**: 交易服务基础、市场数据、AI框架、前端页面
@@ -105,9 +120,9 @@ curl http://localhost:8001/health
    - 市场数据服务: Python + WebSocket (实时数据处理)
 
 2. **数据存储决策**:
-   - MySQL: 用户数据、业务数据 (ACID特性)
-   - Redis: 缓存、会话存储 (高性能读写)
-   - InfluxDB: 时序数据存储 (K线数据优化)
+  - SQLite: 用户数据、业务数据 (ACID特性)
+  - Redis: 缓存、会话存储 (高性能读写)
+  - （可选）时序数据存储（默认不启用）
 
 3. **前端技术决策**:
    - Next.js 14 App Router (SSR + 性能优化)
@@ -148,7 +163,7 @@ curl http://localhost:8001/health
 2. **市场数据服务开发**:
    - 创建market-service基础框架
    - 实现WebSocket连接管理器
-   - 集成InfluxDB数据存储
+  - （可选）集成时序数据存储（默认不启用）
 
 #### 💡 技术亮点与创新
 - **微服务架构**: 采用语言特性最优的技术栈组合
@@ -236,7 +251,7 @@ curl http://localhost:8001/health
   
 - **技术债务识别**:
   - 用户服务仍使用MySQL，需迁移SQLite
-  - trading-service requirements包含复杂依赖(InfluxDB等)
+- trading-service requirements 原含 InfluxDB 等复杂依赖（已移除）
   - docker-compose配置过于复杂
 
 ##### 2. 架构决策与重构方案

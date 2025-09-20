@@ -9,11 +9,7 @@ echo "🚀 启动 Trademe 用户服务..."
 # 检查必要的服务
 echo "📋 检查系统服务..."
 
-# 检查MySQL
-if ! systemctl is-active --quiet mysql; then
-    echo "🔄 启动 MySQL..."
-    sudo systemctl start mysql
-fi
+#（已弃用）MySQL 检查已移除：统一使用 SQLite
 
 # 检查Redis  
 if ! systemctl is-active --quiet redis-server; then

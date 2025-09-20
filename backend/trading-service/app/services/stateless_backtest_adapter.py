@@ -86,16 +86,20 @@ class StatelessBacktestAdapter:
             }
     
     async def run_backtest(
-        self, 
-        strategy_id: int, 
+        self,
+        strategy_id: int,
         user_id: int,
         start_date: datetime,
         end_date: datetime,
         initial_capital: float,
         symbol: str = "BTC/USDT",
-        exchange: str = "binance", 
+        exchange: str = "binance",
         timeframe: str = "1h",
-        db: AsyncSession = None
+        db: AsyncSession = None,
+        # 🔧 新增：确定性参数支持
+        deterministic: bool = False,
+        random_seed: int = 42,
+        product_type: str = "spot"
     ) -> Dict[str, Any]:
         """
         运行回测 - 兼容原接口
@@ -114,7 +118,11 @@ class StatelessBacktestAdapter:
                 initial_capital=initial_capital,
                 symbol=symbol,
                 exchange=exchange,
-                timeframe=timeframe
+                timeframe=timeframe,
+                product_type=product_type,
+                # 🔧 关键修复：支持确定性配置
+                deterministic=deterministic,
+                random_seed=random_seed
             )
             
             # 2. 执行无状态回测
@@ -180,7 +188,10 @@ class StatelessBacktestAdapter:
             fee_rate=0.001,
             ai_session_id=params.get('ai_session_id'),
             is_ai_generated=params.get('is_ai_generated', False),
-            membership_level=params.get('membership_level', 'basic')
+            membership_level=params.get('membership_level', 'basic'),
+            # 🔧 关键修复：传递确定性参数
+            deterministic=params.get('deterministic', False),
+            random_seed=params.get('random_seed', 42)
         )
     
     async def _create_temp_strategy(

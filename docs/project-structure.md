@@ -20,7 +20,7 @@ trademe/
 │   └── development-guide.md            # 开发指南
 │
 ├── database/                           # 数据库相关
-│   ├── init.sql                        # 数据库初始化脚本
+│   ├── init_sqlite.sql                 # 数据库初始化脚本（SQLite）
 │   ├── migrations/                     # 数据库迁移文件
 │   └── seeds/                          # 测试数据
 │

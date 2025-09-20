@@ -104,30 +104,56 @@ class BacktestContext:
         )
         self.strategy_code: Optional[str] = None
         self.market_data: Optional[pd.DataFrame] = None
-        
+
+    def _setup_deterministic_environment(self):
+        """设置确定性环境 - 确保回测结果100%可重现"""
+        import random
+        import os
+
+        # 设置Python内置随机数种子
+        random.seed(self.config.random_seed)
+
+        # 设置NumPy随机数种子
+        np.random.seed(self.config.random_seed)
+
+        # 设置pandas随机数种子
+        try:
+            pd.core.common.random_state(self.config.random_seed)
+        except AttributeError:
+            pass  # 老版本pandas可能没有这个方法
+
+        # 设置哈希种子（影响字典遍历顺序）
+        os.environ['PYTHONHASHSEED'] = str(self.config.random_seed)
+
+        logger.info(f"🔧 已设置确定性环境，随机种子: {self.config.random_seed}")
+
     async def execute(self) -> BacktestResult:
         """执行回测"""
         try:
             self.state.start_time = datetime.now()
-            
+
+            # 🔧 关键修复：在回测开始时应用确定性设置
+            if self.config.deterministic:
+                self._setup_deterministic_environment()
+
             # 1. 加载策略
             await self._load_strategy()
-            
+
             # 2. 获取市场数据
             await self._load_market_data()
-            
+
             # 3. 执行回测逻辑
             await self._run_backtest_loop()
-            
+
             # 4. 计算性能指标
             metrics = self._calculate_performance_metrics()
-            
+
             # 5. 保存结果
             backtest_id = await self._save_results(metrics)
-            
+
             self.state.end_time = datetime.now()
             execution_time = (self.state.end_time - self.state.start_time).total_seconds()
-            
+
             return BacktestResult(
                 success=True,
                 backtest_id=backtest_id,
@@ -136,7 +162,7 @@ class BacktestContext:
                 portfolio_history=self.state.portfolio_history,
                 execution_time=execution_time
             )
-            
+
         except Exception as e:
             logger.error(f"回测执行失败: {e}")
             return BacktestResult(
@@ -174,13 +200,27 @@ class BacktestContext:
         config_product_type = getattr(self.config, 'product_type', 'spot')
         mapped_product_type = product_type_mapping.get(config_product_type.lower(), 'spot')
 
-        # 构建查询（移除product_type过滤，因为数据库表中没有此字段）
+        # 构建查询（恢复 product_type 过滤，避免现货/永续数据串用）
+        from sqlalchemy import or_, and_
         query = select(MarketData).where(
-            MarketData.symbol == self.config.symbol,
-            MarketData.exchange == self.config.exchange,
-            MarketData.timeframe == self.config.timeframe,
-            MarketData.timestamp >= self.config.start_date,
-            MarketData.timestamp <= self.config.end_date
+            or_(
+                and_(
+                    MarketData.symbol == self.config.symbol,
+                    MarketData.exchange == self.config.exchange,
+                    MarketData.timeframe == self.config.timeframe,
+                    MarketData.product_type == mapped_product_type,
+                    MarketData.timestamp >= self.config.start_date,
+                    MarketData.timestamp <= self.config.end_date
+                ),
+                and_(
+                    MarketData.symbol == self.config.symbol,
+                    MarketData.exchange == self.config.exchange,
+                    MarketData.timeframe == self.config.timeframe,
+                    MarketData.product_type.is_(None),
+                    MarketData.timestamp >= self.config.start_date,
+                    MarketData.timestamp <= self.config.end_date
+                )
+            )
         ).order_by(MarketData.timestamp)
         
         result = await self.db.execute(query)

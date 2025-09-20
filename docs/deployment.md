@@ -1,22 +1,22 @@
 # Trademe 平台部署指南
 
-> **更新时间**: 2025-08-21  
-> **部署环境**: 公网云服务器 (43.167.252.120)  
-> **架构**: 简化双服务架构 + Nginx反向代理
+> **更新时间**: 2025-09-17  
+> **部署环境**: 公网云服务器 (可选)  
+> **架构**: 双服务架构（User + Trading）+ Redis（可选 Nginx 反代）
 
 ## 🌍 部署环境说明
 
-### 公网测试环境 (推荐)
-- **服务器**: 腾讯云 43.167.252.120 (4核8GB)
+### 公网测试环境 (参考)
+- **服务器**: 云主机（4核8GB 建议）
 - **操作系统**: Ubuntu 22.04 LTS
-- **访问地址**: http://43.167.252.120
+- **访问地址**: http://<your-server-ip>
 - **用途**: 测试、演示、集成开发
 
 ### 本地开发环境
 - **用途**: 本地代码开发和调试
 - **要求**: Node.js 20+, Python 3.12+, Redis, SQLite
 
-## 🚀 快速部署 (公网环境)
+## 🚀 快速部署 (Docker Compose)
 
 ### 1. 服务器准备
 
@@ -25,7 +25,7 @@
 sudo apt update && sudo apt upgrade -y
 
 # 安装基础依赖
-sudo apt install -y curl wget git vim nginx redis-server sqlite3
+sudo apt install -y curl wget git vim redis-server sqlite3 docker.io docker-compose
 
 # 安装Node.js 20+
 curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
@@ -34,8 +34,8 @@ sudo apt-get install -y nodejs
 # 安装Python 3.12+
 sudo apt install -y python3.12 python3.12-pip python3.12-venv
 
-# 配置防火墙
-sudo ufw enable
+## 可选：配置防火墙
+# sudo ufw enable
 sudo ufw allow 22/tcp
 sudo ufw allow 80/tcp
 sudo ufw allow 443/tcp
@@ -52,7 +52,31 @@ git clone <YOUR_REPO_URL> trademe
 cd trademe
 ```
 
-### 3. 部署用户服务 (Node.js)
+### 3. Docker Compose 一键启动（推荐）
+```bash
+cd /root/trademe
+docker-compose build
+docker-compose up -d
+
+# 查看容器状态
+docker-compose ps
+```
+
+### 4. 验证服务
+```bash
+# 前端
+open http://<your-server-ip>:3000
+
+# 用户服务健康
+curl http://<your-server-ip>:3001/health
+
+# 交易服务健康
+curl http://<your-server-ip>:8001/health
+```
+
+## 手动部署（不使用 Docker 的情况）
+
+### 4. 部署用户服务 (Node.js)
 
 ```bash
 cd /root/trademe/backend/user-service
@@ -67,14 +91,14 @@ cp .env.example .env
 # 构建项目
 npm run build
 
-# 使用ts-node启动 (推荐)
-npx ts-node -r tsconfig-paths/register src/app.ts &
+# 启动（开发）
+npm run dev &
 
-# 或使用编译后的代码启动
-# npm start &
+# 或生产
+npm start &
 ```
 
-### 4. 部署交易服务 (Python)
+### 5. 部署交易服务 (Python)
 
 ```bash
 cd /root/trademe/backend/trading-service
@@ -90,11 +114,14 @@ pip install -r requirements.txt
 cp .env.example .env
 # 编辑 .env 文件配置Claude API等
 
-# 启动服务
-PYTHONPATH=/root/trademe/backend/trading-service uvicorn app.main:app --host 0.0.0.0 --port 8001 --reload &
+# 启动服务（开发）
+uvicorn app.main:app --host 0.0.0.0 --port 8001 --reload &
+
+# 或生产
+uvicorn app.main:app --host 0.0.0.0 --port 8001 &
 ```
 
-### 5. 部署前端服务 (React)
+### 6. 部署前端服务 (React)
 
 ```bash
 cd /root/trademe/frontend
@@ -103,24 +130,25 @@ cd /root/trademe/frontend
 npm install
 
 # 公网环境启动
-npm run dev:public &
-
-# 本地环境启动
-# npm run dev:local &
+npm run dev &
 ```
 
-### 6. 配置Nginx反向代理
+## （可选）配置 Nginx 反向代理
 
-```bash
-# 使用已有配置
-sudo cp /etc/nginx/sites-enabled/trademe /etc/nginx/sites-available/
-sudo ln -sf /etc/nginx/sites-available/trademe /etc/nginx/sites-enabled/
+如果需要域名与 HTTPS，可配置 Nginx 将域名请求转发到 3000/3001/8001 端口。示例：
 
-# 测试配置
-sudo nginx -t
+```
+server {
+  listen 80;
+  server_name your.domain.com;
 
-# 重启Nginx
-sudo systemctl reload nginx
+  location / {
+    proxy_pass http://127.0.0.1:3000;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+  }
+}
 ```
 
 ## 📋 环境配置详解
@@ -176,22 +204,11 @@ HOST="0.0.0.0"
 PORT=8001
 ```
 
-### 前端环境配置
-
-#### 公网测试环境 (.env.public)
-```bash
-VITE_PUBLIC_TEST=true
-VITE_API_BASE_URL=http://43.167.252.120/api/v1
-VITE_WS_BASE_URL=ws://43.167.252.120/ws
-VITE_APP_ENV=public-test
-VITE_APP_TITLE=Trademe - 公网测试环境
-```
-
-#### 本地开发环境 (.env.local)
+### 前端环境配置 (.env.local)
 ```bash
 VITE_PUBLIC_TEST=false
 VITE_API_BASE_URL=http://localhost:3001/api/v1
-VITE_WS_BASE_URL=ws://localhost:8001/ws
+VITE_TRADING_API_URL=http://localhost:8001/api/v1
 VITE_APP_ENV=development
 VITE_APP_TITLE=Trademe - 本地开发环境
 ```

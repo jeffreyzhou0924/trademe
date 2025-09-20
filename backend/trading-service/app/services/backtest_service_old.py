@@ -1418,7 +1418,10 @@ class BacktestService:
             await db.commit()
             await db.refresh(backtest_record)
             
-            # 异步启动回测任务（不阻塞响应）
+            # 异步启动回测任务（不阻塞响应），传递用户配置的交易参数
+            exchange = getattr(backtest_data, 'exchange', 'binance')
+            symbol = getattr(backtest_data, 'symbol', 'BTC/USDT')
+            timeframe = getattr(backtest_data, 'timeframe', '1h')
             asyncio.create_task(
                 BacktestService._run_backtest_task(
                     db=db,
@@ -1427,7 +1430,10 @@ class BacktestService:
                     user_id=user_id,
                     start_date=datetime.combine(backtest_data.start_date, datetime.min.time()),
                     end_date=datetime.combine(backtest_data.end_date, datetime.min.time()),
-                    initial_capital=float(backtest_data.initial_capital)
+                    initial_capital=float(backtest_data.initial_capital),
+                    symbol=symbol,
+                    exchange=exchange,
+                    timeframe=timeframe
                 )
             )
             
@@ -1446,7 +1452,10 @@ class BacktestService:
         user_id: int,
         start_date: datetime,
         end_date: datetime,
-        initial_capital: float
+        initial_capital: float,
+        symbol: str = "BTC/USDT",
+        exchange: str = "binance",
+        timeframe: str = "1h"
     ):
         """后台执行回测任务"""
         try:
@@ -1469,8 +1478,9 @@ class BacktestService:
                     start_date=start_date,
                     end_date=end_date,
                     initial_capital=initial_capital,
-                    symbol="BTC/USDT",
-                    exchange="binance",
+                    symbol=symbol,
+                    exchange=exchange,
+                    timeframe=timeframe,
                     db=task_db
                 )
                 

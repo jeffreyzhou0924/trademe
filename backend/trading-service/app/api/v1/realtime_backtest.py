@@ -670,7 +670,13 @@ class RealtimeBacktestManager:
         }
     
     async def _prepare_data(self, config: RealtimeBacktestConfig, data: Dict) -> Dict:
-        """准备历史数据 - 直接从数据库获取真实数据"""
+        """准备历史数据 - 直接从数据库获取真实数据
+
+        修复点：
+        1. 严格按 exchange + product_type 规范化 symbol，优先命中唯一正确变体
+        2. 查询时增加 product_type 过滤，避免现货/永续串用
+        3. 产出数据指纹，便于排查两次回测是否使用了相同的数据集
+        """
         try:
             from app.models.market_data import MarketData
             from sqlalchemy import select, and_
@@ -707,20 +713,46 @@ class RealtimeBacktestManager:
         market_data = {}
 
         def normalize_symbol_for_db(symbol: str) -> list:
-            """智能转换symbol格式以匹配数据库"""
-            formats = []
+            """根据交易所与产品类型规范化符号，并提供有序的候选变体列表"""
             symbol = symbol.replace(' ', '').upper()
-            if '/' in symbol:
+
+            # OKX: 永续合约统一为 "BASE-QUOTE-SWAP"；现货优先 "BASE/QUOTE"
+            is_futures = str(getattr(config, 'product_type', 'spot')).lower() in ['perpetual', 'futures', 'swap']
+            if symbol and '/' in symbol:
                 base, quote = symbol.split('/')
-                formats.extend([
-                    f"{base}/{quote}",
-                    f"{base}-{quote}",
-                    f"{base}{quote}",
-                    f"{base}-{quote}-SWAP"
-                ])
+            elif symbol and '-' in symbol:
+                parts = symbol.split('-')
+                base, quote = parts[0], (parts[1] if len(parts) > 1 else 'USDT')
             else:
-                formats.append(symbol)
-            return formats
+                # 例如 BTCUSDT 之类，兜底拆分仅用于生成候选，不改变第一优先级
+                base, quote = symbol.replace('USDT', ''), 'USDT'
+
+            if str(getattr(config, 'exchange', '')).lower() == 'okx':
+                if is_futures:
+                    # 永续：唯一正确写法
+                    preferred = [f"{base}-{quote}-SWAP"]
+                    # 兜底候选（极端情况下库里历史写成其它格式）
+                    fallbacks = [f"{base}/{quote}", f"{base}-{quote}", f"{base}{quote}"]
+                    return preferred + fallbacks
+                else:
+                    # 现货：排除 -SWAP
+                    preferred = [f"{base}/{quote}"]
+                    fallbacks = [f"{base}-{quote}", f"{base}{quote}"]
+                    return preferred + fallbacks
+
+            # 其它交易所：保留历史兼容，但保持确定的优先顺序
+            return [f"{base}/{quote}", f"{base}-{quote}", f"{base}{quote}", f"{base}-{quote}-SWAP"]
+
+        # product_type 映射（查询过滤使用）
+        product_type_mapping = {
+            'perpetual': 'futures',
+            'futures': 'futures',
+            'spot': 'spot',
+            'swap': 'futures'
+        }
+        mapped_product_type = product_type_mapping.get(str(getattr(config, 'product_type', 'spot')).lower(), 'spot')
+
+        data_fingerprints: Dict[str, Any] = {}
 
         for symbol in config.symbols:
             try:
@@ -735,11 +767,16 @@ class RealtimeBacktestManager:
 
                 # 尝试所有符号变体直到找到数据
                 for symbol_variant in symbol_variants:
+                    from sqlalchemy import or_
                     query = select(MarketData).where(
                         and_(
                             MarketData.exchange == config.exchange.lower(),
                             MarketData.symbol == symbol_variant,
                             MarketData.timeframe == config.timeframes[0],
+                            or_(
+                                MarketData.product_type == mapped_product_type,
+                                MarketData.product_type.is_(None)
+                            ),
                             MarketData.timestamp >= start_date,
                             MarketData.timestamp <= end_date
                         )
@@ -768,7 +805,17 @@ class RealtimeBacktestManager:
                             'close': float(record.close_price),
                             'volume': float(record.volume)
                         })
-                    
+                    # 记录数据指纹
+                    data_fingerprints[symbol] = {
+                        'exchange': config.exchange.lower(),
+                        'symbol_variant': found_symbol,
+                        'timeframe': config.timeframes[0],
+                        'product_type': mapped_product_type,
+                        'records': len(market_records),
+                        'start': df_data[0]['timestamp'] if df_data else None,
+                        'end': df_data[-1]['timestamp'] if df_data else None
+                    }
+
                     market_data[symbol] = pd.DataFrame(df_data)
                     logger.info(f"✅ {symbol} 数据库真实数据加载成功: {len(df_data)} 条记录")
                     logger.info(f"📈 数据范围: {df_data[0]['timestamp']} 到 {df_data[-1]['timestamp']}")
@@ -790,7 +837,7 @@ class RealtimeBacktestManager:
                 logger.error(f"❌ {symbol} 数据库查询失败: {e}")
                 raise e
         
-        return {"market_data": market_data}
+        return {"market_data": market_data, "data_fingerprint": data_fingerprints}
 
     # 移除了 _generate_fallback_data 和 _generate_fallback_market_data 方法
     # 这些方法包含假数据生成逻辑，不再需要，现在系统在无真实数据时会抛出错误
@@ -813,10 +860,19 @@ class RealtimeBacktestManager:
                 logger.info("🔧 创建了新的回测引擎实例，确保状态独立性")
             
             # 构建回测参数
+            # 若前一步准备数据阶段解析出了实际命中的符号写法，则在回测阶段使用该规范写法
+            resolved_symbols = []
+            fingerprint = data.get('data_fingerprint') or {}
+            for s in config.symbols:
+                if isinstance(fingerprint, dict) and s in fingerprint and fingerprint[s].get('symbol_variant'):
+                    resolved_symbols.append(fingerprint[s]['symbol_variant'])
+                else:
+                    resolved_symbols.append(s)
+
             backtest_params = {
                 'strategy_code': config.strategy_code,
                 'exchange': config.exchange,
-                'symbols': config.symbols,
+                'symbols': resolved_symbols,
                 'timeframes': config.timeframes,
                 'start_date': config.start_date,
                 'end_date': config.end_date,
@@ -856,8 +912,9 @@ class RealtimeBacktestManager:
                 # 提取交易记录和最终资产
                 trades = backtest_result.get('trades', [])
                 final_value = backtest_result.get('final_portfolio_value', config.initial_capital)
-                
-                return {"trades": trades, "final_portfolio_value": final_value}
+                # 透传数据指纹，便于最终结果包含数据来源
+                fingerprint = data.get('data_fingerprint')
+                return {"trades": trades, "final_portfolio_value": final_value, "data_fingerprint": fingerprint}
             else:
                 error_msg = result.get('error', '未知错误')
                 logger.error(f"❌ 策略代码回测失败: {error_msg}")
@@ -958,7 +1015,8 @@ class RealtimeBacktestManager:
         """生成最终结果"""
         metrics = data.get("metrics", {})
         report = data.get("report", {})
-        
+        fingerprint = data.get("data_fingerprint")
+
         return {
             "total_return": metrics.get("total_return", 0),
             "sharpe_ratio": metrics.get("sharpe_ratio", 0),
@@ -968,7 +1026,8 @@ class RealtimeBacktestManager:
             "profit_factor": metrics.get("profit_factor", 0),
             "avg_win": metrics.get("avg_win", 0),
             "avg_loss": metrics.get("avg_loss", 0),
-            "report": report
+            "report": report,
+            "data_fingerprint": fingerprint
         }
 
 
@@ -1022,20 +1081,28 @@ async def start_realtime_backtest(
 
                 # 符号格式转换函数
                 def normalize_symbol_for_db(symbol: str) -> list:
-                    """智能转换symbol格式以匹配数据库"""
-                    formats = []
+                    """根据交易所与产品类型规范化符号，并提供有序的候选变体列表"""
                     symbol = symbol.replace(' ', '').upper()
-                    if '/' in symbol:
+                    is_futures = str(getattr(config, 'product_type', 'spot')).lower() in ['perpetual', 'futures', 'swap']
+                    if symbol and '/' in symbol:
                         base, quote = symbol.split('/')
-                        formats.extend([
-                            f"{base}/{quote}",
-                            f"{base}-{quote}",
-                            f"{base}{quote}",
-                            f"{base}-{quote}-SWAP"
-                        ])
+                    elif symbol and '-' in symbol:
+                        parts = symbol.split('-')
+                        base, quote = parts[0], (parts[1] if len(parts) > 1 else 'USDT')
                     else:
-                        formats.append(symbol)
-                    return formats
+                        base, quote = symbol.replace('USDT', ''), 'USDT'
+
+                    if str(getattr(config, 'exchange', '')).lower() == 'okx':
+                        if is_futures:
+                            preferred = [f"{base}-{quote}-SWAP"]
+                            fallbacks = [f"{base}/{quote}", f"{base}-{quote}", f"{base}{quote}"]
+                            return preferred + fallbacks
+                        else:
+                            preferred = [f"{base}/{quote}"]
+                            fallbacks = [f"{base}-{quote}", f"{base}{quote}"]
+                            return preferred + fallbacks
+
+                    return [f"{base}/{quote}", f"{base}-{quote}", f"{base}{quote}", f"{base}-{quote}-SWAP"]
 
                 mapped_product_type = map_product_type(config.product_type)
                 logger.info(f"🔄 产品类型映射: {config.product_type} → {mapped_product_type}")
@@ -1049,11 +1116,22 @@ async def start_realtime_backtest(
                         found_data = False
                         for symbol_variant in symbol_variants:
                             # 检查是否有足够的历史数据
+                            from sqlalchemy import or_
                             query = select(MarketData).where(
-                                MarketData.exchange == config.exchange.lower(),
-                                MarketData.symbol == symbol_variant,
-                                MarketData.timeframe == timeframe
-                                # MarketData.product_type == mapped_product_type  # 移除：数据库表中没有此字段
+                                or_(
+                                    and_(
+                                        MarketData.exchange == config.exchange.lower(),
+                                        MarketData.symbol == symbol_variant,
+                                        MarketData.timeframe == timeframe,
+                                        MarketData.product_type == mapped_product_type
+                                    ),
+                                    and_(
+                                        MarketData.exchange == config.exchange.lower(),
+                                        MarketData.symbol == symbol_variant,
+                                        MarketData.timeframe == timeframe,
+                                        MarketData.product_type.is_(None)
+                                    )
+                                )
                             ).limit(10)
 
                             result = await db_session.execute(query)
